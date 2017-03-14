@@ -1,0 +1,169 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-rpc-client</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/make-rpc-client.htm">9.0 version</a></td></tr></table><h2 id="2">make-rpc-client</h2>
+
+<p id="3"><b>Arguments: </b><i>
+port-class
+</i>&amp;key <i>home remote-host remote-port poll-interval poll-count if-error re-connect begin open verbose debug mode export message-tiemout server message-length ssl passcode confirm</i><i>
+</i></p>
+
+<p id="4">
+<b>make-rpc-client is the new name for the function named
+define-rpc-client in releases prior to 6.2. The new name follows
+standard Common Lisp naming conventions, since this function creates a
+server object.</b>
+</p>
+
+<p id="5">
+This function creates an <a href="../../classes/rpc/rpc-port.htm"><code>rpc-port</code></a> instance appropriate for the
+specified <i>port-class</i> ready to connect to an
+advertising host. The value returned is the <a href="../../classes/rpc/rpc-port.htm"><code>rpc-port</code></a> instance if the operation
+succeeds, or <code>nil</code> and a second value that
+describes the cause of the failure if the operation fails.
+</p>
+<p id="6">
+When the <i>port-class</i> argument is a subtype of
+<a href="../../classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a>, then
+an instance of a stream socket client is created.  Note that in this
+case, no value should be specified for the <i>server</i>
+keyword argument, which is used for datagram socket clients only. When
+<i>port-class</i> is also a subclass of <a href="../../classes/rpc/with-rpc-port-enabler.htm"><code>with-rpc-port-enabler</code></a> (such as
+<a href="../../classes/rpc/rpc-socket-port-with-enabler.htm"><code>rpc-socket-port-with-enabler</code></a>), a
+<i>passcode</i> keyword argument is also accepted. It is
+described with the other keyword arguments below.
+</p>
+<p id="7">
+When the <i>port-class</i> argument is a subtype of
+<a href="../../classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a>,
+then an instance of a datagram socket client is created. Note that in
+this case, no value should be specified for the
+<i>home</i> keyword argument, since the home name of a
+datagram connection is constructed from the local and remote hosts and
+ports. The <i>server</i> keyword argument can be a
+<a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>
+instance or the name of one.  The server instance is used for incoming
+messages and the client instance is used for outgoing messages.
+</p>
+<p id="8">
+The actual connection happens when <a href="rpc-open-client.htm"><b>rpc-open-client</b></a> is called. If the
+<i>open</i> argument is non-<code>nil</code>, an implicit call to 
+<a href="rpc-open-client.htm"><b>rpc-open-client</b></a> is made.
+</p>
+<p id="9">
+The <i>port-class</i> argument may be <code>nil</code> to denote the default port class, <a href="../../classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a>.
+</p>
+<p id="10">
+The keyword arguments are generally similar to those of <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>. They are:
+</p>
+<ul>
+<li id="11">
+<i>home</i>: same as for <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>.
+</li>
+<li id="12">
+<i>remote-host</i>: a string naming the host where the
+server is listening. The default is "localhost".
+</li>
+<li id="13">
+<i>remote-port</i>: a required number,
+the port number of the port at which the server is listening.
+</li>
+<li id="14">
+<i>poll-interval</i>: the number of seconds to wait
+between attempts to connect.
+</li>
+<li id="15">
+<i>poll-count</i>: <code>nil</code> or a
+number. When <code>nil</code>, try only once; when a
+number, try that many times.
+</li>
+<li id="16">
+<i>if-error</i>: same as for <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>.
+</li>
+
+
+<li id="17">
+<i>re-connect</i>: <code>nil</code> (allow
+only one explicit connection); <code>:on-first-use</code> or
+<code>:first-use</code> (allow only one implicit connection);
+<code>:on-demand</code>, <code>:demand</code> (re-connect
+when necessary) or <code>:connect</code> (attempt to re-connect
+and if the re-connect fails, tries a new connect).
+</li>
+
+<li id="18">
+<i>begin</i>: same as for <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>.
+</li>
+<li id="19">
+<i>open</i>: when non-<code>nil</code>, call
+<a href="rpc-open-client.htm"><b>rpc-open-client</b></a>.
+</li>
+<li id="20">
+<i>verbose</i>: same as for <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>.
+</li>
+<li id="21">
+<i>debug</i>: same as for <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>.
+</li>
+<li id="22">
+<i>mode</i>: same as for <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>.
+</li>
+<li id="23">
+<i>export</i>: a list of pairs passed to <a href="export-remote-symbol.htm"><b>export-remote-symbol</b></a> when a
+connection is established.
+</li>
+<li id="24">
+<i>message-timeout</i>: when the
+<i>port-class</i> argument is a subtype of <a href="../../classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a>, same as for
+<a href="make-rpc-server.htm"><b>make-rpc-server</b></a>. This
+argument is ignored when the <i>port-class</i> argument
+is a subtype of <a href="../../classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a>.
+</li>
+<li id="25">
+<i>message-length</i>: when the
+<i>port-class</i> argument is a subtype of <a href="../../classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a>, same as for
+<a href="make-rpc-server.htm"><b>make-rpc-server</b></a>. This
+argument is ignored when the <i>port-class</i> argument
+is a subtype of <a href="../../classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a>.
+</li>
+<li id="26">
+<i>server</i>: this argument is used only when
+<i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a>. The value may be <code>nil</code>, the name of an <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a> instance or an <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>
+instance. If <code>nil</code>, the
+<i>host</i> and <i>port</i> arguments must
+be sufficient to create an <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a> instance.
+</li>
+<li id="27">
+<i>ssl</i>: this argument is used only when
+<i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a>. When non-<code>nil</code>, call <a href="../socket/make-ssl-client-stream.htm"><b>make-ssl-client-stream</b></a> immediately
+after connecting to a server
+</li>
+<li id="28">
+<i>passcode</i> (this argument is only used when
+<i>port-class</i> is a subclass of <a href="../../classes/rpc/with-rpc-port-enabler.htm"><code>with-rpc-port-enabler</code></a>, for example, when it
+is an instance of <a href="../../classes/rpc/rpc-socket-port-with-enabler.htm"><code>rpc-socket-port-with-enabler</code></a>): the
+<i>passcode</i> argument sent in an implicit
+<code>:enable-client</code> request that is sent after a
+connection is established.
+</li>
+<li id="29">
+<i>confirm</i>: when this argument is non-<code>nil</code>, the Lisp RPC protocol includes additional
+confirmation messages that track the progress of a remote call in more
+detail (see <a href="rpc-query.htm"><b>rpc-query</b></a> for more details).  The
+default value is <code>nil</code>.
+<p id="30">
+A non-<code>nil</code> value may be applicable when using
+a very slow network connection. In such cases more detailed progress
+information could be useful.
+</p>
+<p id="31">
+This argument was not available in releases prior to 6.2, where this
+function worked as if this argument was specified non-<code>nil</code>.
+</p>
+</li>
+</ul>
+
+<p id="32">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="33"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/make-rpc-client.htm">9.0 version</a></td></tr></table></body></html>

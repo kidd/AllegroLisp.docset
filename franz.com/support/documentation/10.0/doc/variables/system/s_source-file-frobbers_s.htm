@@ -1,0 +1,74 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*source-file-frobbers*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/system/s_source-file-frobbers_s.htm">9.0 version</a></td></tr></table><h2 id="2">*source-file-frobbers*</h2>
+
+
+
+<p id="3">
+If true, the value of this variable should be a list of functions that
+will be called by the internal functions that do comparisons that
+generate redefinition warnings and determine the name of a file to
+which an Emacs buffer is open. The functions will also be called by
+<a href="../../../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> so the
+<i>input-filename</i> (required) argument
+to <a href="../../../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> will
+be frobbed and it is the frobbed file (rather than the actual
+argument) that will be compiled.
+</p>
+
+<p id="4">
+The functions in the list should take one argument, a pathname, and
+return one value, also a pathname.
+</p>
+<p id="5">
+A pathname passes if each function in the list, when passed that
+pathname, returns it exactly (that is, the returned pathname is
+<a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a> to the argument
+pathname). If a pathname does not pass, one of the functions in the
+list returns a pathname which is not <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a> to its argument pathname. When that
+happens, the non-<a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a>
+pathname becomes the new candidate pathname, passed to functions in
+the list in order, starting with the first. The process stops when a
+pathname that results from the process passes, with each function
+returning it exactly without any modification.
+</p>
+<p id="6">
+The first function, for example, might check to see whether the
+directory-namestring of the pathname starts with either "/tmp_mnt" or
+"/TMP_MNT". If it does, the pathname is modified so the "/tmp_mnt" or
+"/TMP_MNT" is stripped off and the modified pathname is returned. If
+it does not, the pathname is returned unchanged. Thus a pathname with
+namestring "/tmp_mnt/mymachine/usr/me/foo.cl" is first modified to a
+pathname with namestring "/mymachine/usr/me/foo.cl". When this
+pathname is passed to the first function, it is returned unchanged.
+</p>
+<p id="7">
+The second function might check that all alphabetic characters in the
+namestring are upcased, modifying the pathname so that it is true if it
+is not. So the second function, passed the result of the first changes
+it to a pathname with namestring "/MYMACHINE/USR/ME/FOO.CL". Since
+this would not be <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a>
+to the argument, that pathname is passed once again to the first
+function. But since the namestring does not start with "/tmp_mnt" or
+"/TMP_MNT", the first function returns it unchanged, as does the
+second function, since the namestring has only uppercase letters. If
+there are only two functions, the process is now done.
+</p>
+<p id="8">
+It is important that the function return a pathname <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a> to the argument (i.e. return the
+argument unchanged) if no frobbing is required. If a function creates
+a new pathname, <a href="../../../ansicl/dictentr/equal.htm"><b>equal</b></a> or <a href="../../../ansicl/dictentr/equalp.htm"><b>equalp</b></a> but not <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a> to the argument, frobbing will
+never stop.
+</p>
+
+<p id="9">
+The initial value of this variable is a list containing as its only
+element the symbol naming the function <a href="../../operators/system/tmp-mnt-frobber.htm"><b>tmp-mnt-frobber</b></a>.
+</p>
+
+<p id="10">
+See <a href="../../source-file-recording.htm">source-file-recording.htm</a> for
+general information on source file recording.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/system/s_source-file-frobbers_s.htm">9.0 version</a></td></tr></table></body></html>

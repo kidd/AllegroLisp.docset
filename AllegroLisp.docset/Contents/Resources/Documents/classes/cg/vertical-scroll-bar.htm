@@ -1,0 +1,115 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>vertical-scroll-bar</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/vertical-scroll-bar.htm">9.0 version</a></td></tr></table><h2 id="2">vertical-scroll-bar</h2>
+
+<p id="3">
+The class of a standard scroll-bar control running vertically
+alongside of its associated control. This control is paired
+programmatically with other controls (static pictures, for instance)
+to permit vertical scrolling when too much information prevents the
+viewer from seeing everything on their display simultaneously.
+</p>
+<p id="4">
+Scrollbars can also be used as sliders to affect another control by
+raising or lowering a number, intensifying or fading a color, or
+otherwise gradually increasing/decreasing some characteristic of the
+attached control. A good model of this appears in the Widgets and
+Menubars: general use example. Examples are accessed by clicking
+<a href="../../ide-menus-and-dialogs/help-menu.htm#examples">Help |
+CG Examples</a> (which brings up the 
+<a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator dialog</a> open to the
+Examples tab).
+</p>
+<p id="5">
+The <a href="../../operators/cg/r/range.htm"><b>range</b></a>
+property of the scrollbar is a list of two integers: for example, (0
+100). The value of the scrollbar determines the position of the
+scrollbox along the length of the scrollbar. The value of the
+scrollbar is an integer within the range.
+</p>
+<p id="6">
+The <a href="../../operators/cg/d/delayed.htm"><b>delayed</b></a> property controls
+whether the scrollbar's value is updated as the user scrolls or only
+at the end of the scrolling operation.
+</p>
+<p id="7">
+See the <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator
+dialog</a> example (on the Examples tab) entitled "Car Payments"
+for an example of basic usage of scroll-bar widgets.
+</p>
+<h3 id="8">
+Scrolling by logical objects rather than by pixels
+</h3>
+<p id="9">
+In a typical custom scrolling scheme, an application does not need to
+worry about how much data is above the current scroll position, and so
+the <a href="../../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method can simply
+start drawing whatever is known to be currently scrolled to the top of
+the window. This means that the application does not have to compute
+and/or cache the pixel sizes of everything above the <a href="../../operators/cg/s/scroll-position.htm"><b>scroll-position</b></a>, which simplifies
+the coding and can also speed scrolling up quite a bit when there is a
+huge amount of data to be scrolled. The drawbacks are that (1) this
+approach may be applicable only if data is entirely arranged into
+"rows" or "columns", (2) scrolling is not as visually smooth since an
+individual data object is always aligned with the top and/or left side
+of the window, and (3) custom methods need to be written to override
+several CG generic functions that are exported for this purpose.
+</p>
+<p id="10">
+See the <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator
+dialog</a> example (on the Examples tab) entitled "Scrolling by
+arbitrary objects rather than pixels" for a complete example of this
+special alternative for custom scrolling by logical objects.
+</p>
+<p id="11">
+It is now possible to customize scrolling in this way by overriding
+the default methods of several generic functions. Typically this is
+useful for scrolling by some sort of logical objects such as lines of
+text or grid cells rather than by pixels, as the default methods do.
+The generic functions that may need to be modified are:
+</p>
+<p id="12">
+<a href="../../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a>
+to decide what should be drawn based on a custom scroll-position and
+then draw it
+</p>
+<p id="13">
+<a href="../../operators/cg/n/nscroll-position.htm"><b>nscroll-position</b></a>
+to return a position object where a coordinate might be an index into
+a set of arbitrary objects rather than a pixel distance
+</p>
+<p id="14">
+<a href="../../operators/cg/s/scroll-range.htm"><b>scroll-range</b></a>
+which may return a value indicating the number of objects to be
+scrolled into the window rather than a pixel size
+</p>
+<p id="15">
+<a href="../../operators/cg/u/update-scroll-bars-for-new-window-size.htm"><b>update-scroll-bars-for-new-window-size</b></a>
+to adjust the scroll-range after a window has been resized
+</p>
+<p id="16">
+<a href="../../operators/cg/s/scroll-to.htm"><b>scroll-to</b></a> to
+interpret a new programmatic scroll position
+</p>
+<p id="17">
+<a href="../../operators/cg/u/user-scroll.htm"><b>user-scroll</b></a> to
+interpret an interactive scrolling gesture
+</p>
+<p id="18">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="19">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/vertical-scroll-bar.htm">9.0 version</a></td></tr></table></body></html>

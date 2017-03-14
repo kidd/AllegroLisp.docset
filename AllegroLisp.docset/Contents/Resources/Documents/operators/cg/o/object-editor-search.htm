@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>object-editor-search</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/object-editor-search.htm">9.0 version</a></td></tr></table><h2 id="2">object-editor-search</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object-editor
+</i></p>
+
+<p id="4">
+This function is called by the <code>:search-button</code>
+widget of an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>
+dialog (see <a href="../c/command-buttons.htm"><b>command-buttons</b></a>),
+and may also be called directly by application code.
+</p>
+<p id="5">
+It allows the user to search for an arbitrary string in a slot (or all
+slots) of the <a href="../e/edited-instances.htm"><b>edited-instances</b></a>
+of the <b><i>object-editor</i></b> (which must be an
+<a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>).  It does
+this by displaying a modal dialog where the user may enter the search
+string and select the slot to search.  Multiple matches are presented
+in a list where the user can select a matching instance to display.
+</p>
+<p id="6">
+A match is found whenever the search string is a subsequence of the
+stringified slot value.  (When the value of a searched slot is not a
+string, then <a href="../../../../ansicl/dictentr/write-to.htm"><b>prin1-to-string</b></a>
+is used to produce a string to test.)  The test is <a href="../../../../ansicl/dictentr/charchar.htm"><b>char=</b></a> if the <b>Case Sensitive</b> check-box is
+checked, and <a href="../../../../ansicl/dictentr/charchar.htm"><b>char-equal</b></a>
+otherwise.
+</p>
+<p id="7">
+Successive invocations of this dialog will initially display the
+previous matches.  This allows the user to display another matching
+instance without redoing the search.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/object-editor-search.htm">9.0 version</a></td></tr></table></body></html>

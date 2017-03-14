@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>default-top-left</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-top-left.htm">9.0 version</a></td></tr></table><h2 id="2">default-top-left</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window window-width window-height
+</i></p>
+
+<p id="4">
+This generic function is called when a window is created if none of
+the initargs to <a href="../m/make-window.htm"><b>make-window</b></a> (specifically :left and
+:top, :exterior-top-left, :exterior, or :interior) specifies a
+position for the window. Returns a default position at which to place
+the exterior upper-left corner of the new window. An application may
+add <a href="../d/default-top-left.htm"><b>default-top-left</b></a> methods to specify
+the default positioning for various window classes.
+</p>
+<p id="5">
+If the <a href="../o/offset-from-selected-window.htm"><b>offset-from-selected-window</b></a>
+configuration property is turned on (as it is by default), then the
+default <a href="../d/default-top-left.htm"><b>default-top-left</b></a> method will
+position the window just down and right (by the height of a titlebar)
+from the selected child window of the new window's parent window if
+any. Otherwise it places the window at the most recently used default
+position, which is initially the upper left of the screen.
+</p>
+<p id="6">
+A special wrapper method in the IDE defaults any windows that are
+owned by the invisible IDE owner window (the <a href="../d/development-main-window.htm"><b>development-main-window</b></a>)
+to a special location selected by the IDE, which is the position where
+new forms are placed. (When running the IDE, a window will in fact be
+owned by the IDE owner window if no :parent initarg is passed to
+<a href="../m/make-window.htm"><b>make-window</b></a>; in a
+standalone application a new window will be an ordinary top-level
+window by default.)
+</p>
+<p id="7">
+This generic function is similar to <a href="../d/default-width.htm"><b>default-width</b></a> and <a href="../d/default-height.htm"><b>default-height</b></a>, but
+differs in that those are also configuration properties while
+default-top-left is not a configuration property.
+</p>
+
+
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-top-left.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,166 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>class-grid</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/class-grid.htm">9.0 version</a></td></tr></table><h2 id="2">class-grid</h2>
+
+
+<p id="3">
+A <a href="class-grid.htm"><code>class-grid</code></a> is a
+specialized <a href="grid-widget.htm"><code>grid-widget</code></a>
+subclass that makes it easier to create grids that edit instances of
+classes.  Rather than defining row and column classes and then
+instantiating those classes and adding them to a <a href="grid-widget.htm"><code>grid-widget</code></a>, you instead specify a single
+expression that parametrically describes the slots to be edited, and
+then the <a href="class-grid.htm"><code>class-grid</code></a> will
+automatically create grid columns for those slots.  It will also
+automatically create grid rows for a set of instances when you set its
+<a href="../../operators/cg/v/value.htm"><b>value</b></a> property to be a list of
+instances.
+</p>
+<p id="4">
+A <a href="class-grid.htm"><code>class-grid</code></a> always has a
+single body section with other sections for column and row headers,
+and there are other limitations to the style of the grid. In exchange
+for those limitations, a <a href="class-grid.htm"><code>class-grid</code></a> is much easier to set up than a
+general <a href="grid-widget.htm"><code>grid-widget</code></a>.
+</p>
+
+<h2 id="5">
+Using a Class-Grid
+</h2>
+
+<p id="6">
+To use a <a href="class-grid.htm"><code>class-grid</code></a>, there
+are three main properties that you need to set:
+</p>
+<ul>
+<li id="7">
+
+The <a href="../../operators/cg/e/edited-class.htm"><b>edited-class</b></a> property: set
+it to the name of the class whose instances the grid will display
+and/or edit.
+
+</li>
+<li id="8">
+
+The <a href="../../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property: set
+it to an association list of slot names with parameters that specify
+what sort of value is in each slot and how they should be edited in
+the grid.  This will make a <a href="grid-column.htm"><code>grid-column</code></a> for each specified slot, and is the
+biggest step in creating a <a href="class-grid.htm"><code>class-grid</code></a>.  See <a href="../../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> for a full description of the
+format of this value. If a <a href="class-grid.htm"><code>class-grid</code></a> is on a form window in an IDE
+Project, then you can specify this large value interactively by using
+the IDE's <a href="../../ide-menus-and-dialogs/class-interface-editor-dialog.htm">Class Interface Editor</a>
+dialog.
+
+</li>
+<li id="9">
+
+The <a href="../../operators/cg/v/value.htm"><b>value</b></a> property: set it to
+be a list of instances of the <a href="../../operators/cg/e/edited-class.htm"><b>edited-class</b></a>.  This will make a <a href="grid-row.htm"><code>grid-row</code></a> for each instance.
+Alternately you can call <a href="../../operators/cg/a/add-class-grid-row.htm"><b>add-class-grid-row</b></a> to add each row individually.
+Changing the list of instances in the <a href="../../operators/cg/v/value.htm"><b>value</b></a> property in either of these ways will also
+cause the widget's <a href="../../operators/cg/o/on-change.htm"><b>on-change</b></a>
+function to be run for user side effects.
+
+</li>
+</ul>
+
+<h2 id="10">
+Other Class-Grid Properties
+</h2>
+
+<p id="11">
+A <a href="class-grid.htm"><code>class-grid</code></a> has all of the
+properties of a <a href="grid-widget.htm"><code>grid-widget</code></a>, but you shouldn't set the <a href="../../operators/cg/c/column-sections.htm"><b>column-sections</b></a> and <a href="../../operators/cg/r/row-sections.htm"><b>row-sections</b></a> properties because they are created
+automatically from the <a href="../../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property.  Since you cannot specify
+properties of a <a href="class-grid.htm"><code>class-grid</code></a>'s sections and subsections directly
+at creation time, some high-level properties are defined on the
+<a href="class-grid.htm"><code>class-grid</code></a> class itself
+that will affect its subobjects.  These properties include:
+</p>
+<ul>
+<li id="12">
+
+<a href="../../operators/cg/r/row-header-font.htm"><b>row-header-font</b></a>
+
+</li>
+<li id="13">
+
+<a href="../../operators/cg/c/column-header-font.htm"><b>column-header-font</b></a>
+
+</li>
+<li id="14">
+
+<a href="../../operators/cg/b/body-row-height.htm"><b>body-row-height</b></a>
+
+</li>
+<li id="15">
+
+<a href="../../operators/cg/d/default-column-width.htm"><b>default-column-width</b></a>
+
+</li>
+<li id="16">
+
+<a href="../../operators/cg/r/row-header-width.htm"><b>row-header-width</b></a>
+
+</li>
+<li id="17">
+
+<a href="../../operators/cg/c/column-header-height.htm"><b>column-header-height</b></a>
+
+</li>
+<li id="18">
+
+<a href="../../operators/cg/r/row-header-justification.htm"><b>row-header-justification</b></a>
+
+</li>
+<li id="19">
+
+<a href="../../operators/cg/r/row-header-value-type.htm"><b>row-header-value-type</b></a>
+
+</li>
+<li id="20">
+
+<a href="../../operators/cg/r/rows-are-movable.htm"><b>rows-are-movable</b></a>
+
+</li>
+<li id="21">
+
+<a href="../../operators/cg/r/rows-are-resizable.htm"><b>rows-are-resizable</b></a>
+
+</li>
+<li id="22">
+
+<a href="../../operators/cg/r/rows-are-selectable.htm"><b>rows-are-selectable</b></a>
+
+</li>
+
+<li id="23">
+<a href="../../operators/cg/h/horizontally-scrollable.htm"><b>horizontally-scrollable</b></a>
+</li>
+
+</ul>
+
+
+<p id="24">
+To reject invalid slot values as soon as the user enters them, write
+one or more <a href="../../operators/cg/v/validate-edited-slot-value.htm"><b>validate-edited-slot-value</b></a> methods.
+</p>
+
+
+<p id="25">
+For advanced use, after a <a href="class-grid.htm"><code>class-grid</code></a> has been created you could find the
+automatically created column and row sections and their subsections
+and modify them as with any other <a href="grid-widget.htm"><code>grid-widget</code></a>.  To do so, you may want to know
+that the two <a href="../../operators/cg/c/column-sections.htm"><b>column-sections</b></a>
+are named <code>:header</code> and <code>:body</code> (in
+that order), and so are the two <a href="../../operators/cg/r/row-sections.htm"><b>row-sections</b></a>.  The single subsection of each
+header section is also named <code>:header</code>.  The name of
+each column in the body is the name of the slot that it edits.
+</p>
+
+<p id="26">
+See also <a href="class-grid-top-pane.htm"><code>class-grid-top-pane</code></a> and <a href="class-grid-drawing-pane.htm"><code>class-grid-drawing-pane</code></a>.
+</p>
+
+<hr><p id="27"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/class-grid.htm">9.0 version</a></td></tr></table></body></html>

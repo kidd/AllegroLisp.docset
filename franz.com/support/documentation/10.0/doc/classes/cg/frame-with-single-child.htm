@@ -1,0 +1,80 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>frame-with-single-child</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/frame-with-single-child.htm">9.0 version</a></td></tr></table><h2 id="2">frame-with-single-child</h2>
+
+<p id="3">
+A non-instantiable superclass of the instantiable window classes
+<a href="non-refreshing-window.htm"><code>non-refreshing-window</code></a>, <a href="bitmap-window.htm"><code>bitmap-window</code></a>, and
+<a href="text-edit-window.htm"><code>text-edit-window</code></a>.
+When a <a href="frame-with-single-child.htm"><code>frame-with-single-child</code></a> subclass is
+instantiated by calling <a href="../../operators/cg/m/make-window.htm"><b>make-window</b></a>, the frame window that
+is created directly serves only as a frame (consisting of a title-bar
+and/or a border), and a second window is created automatically as
+child pane that serves as the interior drawing area.
+</p>
+<p id="4">
+A <a href="frame-with-single-child.htm"><code>frame-with-single-child</code></a> window is
+most useful when a toolbar or status-bar is to be added to the window,
+especially if the window has scrollbars. The reason is that these
+auxilliary windows are created as siblings of the automatically-added
+child pane, and the scrollbars (if any) are created on the child pane
+rather than on the frame. This arrangement allows the application to
+draw in the entire <a href="../../operators/cg/p/page-box.htm"><b>page-box</b></a> of the child pane without
+any of the drawing being covered by the toolbar or status-bar, and
+allows the drawing to scroll without scrolling the toolbar or
+status-bar along with it.
+</p>
+<p id="5">
+This double-window arrangement is also needed for a <a href="text-edit-window.htm"><code>text-edit-window</code></a>, because a <a href="text-edit-pane.htm"><code>text-edit-pane</code></a> is
+actually a control internally and cannot have a frame itself. (For
+other window classes, frame attributes may be added even when the
+class excludes them by default for typical usage as a frameless pane.)
+</p>
+<p id="6">
+A <a href="../../operators/cg/d/default-pane-class.htm"><b>default-pane-class</b></a> method that
+specializes on the <a href="frame-with-single-child.htm"><code>frame-with-single-child</code></a> class
+determines what class is instantiated to make the child pane. When
+subclassing a <a href="frame-with-single-child.htm"><code>frame-with-single-child</code></a> class for
+use in an application, it is typically necessary to subclass both the
+frame class and the pane class, and then to define a trivial <a href="../../operators/cg/d/default-pane-class.htm"><b>default-pane-class</b></a> method
+to associate the two with each other. Several of the examples in the
+Examples tab of the <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog, including the
+"Custom Windows" example at the top of the list, illustrate this
+common technique.
+</p>
+<p id="7">
+The function <a href="../../operators/cg/f/frame-child.htm"><b>frame-child</b></a> returns the child pane
+that was automatically added to a <a href="frame-with-single-child.htm"><code>frame-with-single-child</code></a> window.
+The function <a href="../../operators/cg/o/owner.htm"><b>owner</b></a>, as usual, will return the
+frame window from the pane.
+</p>
+<p id="8">
+Note that any drawing that is done must be done on the pane window
+rather than on the frame window, because the frame's interior is
+covered by the pane. Until version 6.0, Common Graphics would
+automatically divert drawing to the pane window, but this is no longer
+done because it was deemed more confusing than useful. Various other
+functions must be called on the pane itself when it is the true object
+of interest, even though the two windows are conceptually a single
+window.
+</p>
+<p id="9">
+The <a href="../../operators/cg/f/frame-child.htm"><b>frame-child</b></a>
+pane window resizes itself as needed whenever the frame window (or its
+interior) is resized by always setting its <a href="../../operators/cg/r/right-attachment.htm"><b>right-attachment</b></a> property to
+<code>:right</code> and its <a href="../../operators/cg/b/bottom-attachment.htm"><b>bottom-attachment</b></a> to
+<code>:bottom</code>. Applications may use this techique for
+custom child panes that do not use the built-in <a href="frame-with-single-child.htm"><code>frame-with-single-child</code></a> facility.
+This may be necessary, for example, if multiple child panes are
+desired or a single child pane is desired that does not fill the frame
+window's interior.
+</p>
+
+
+<p id="10">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/frame-with-single-child.htm">9.0 version</a></td></tr></table></body></html>

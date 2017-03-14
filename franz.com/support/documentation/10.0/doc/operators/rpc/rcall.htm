@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rcall</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rcall.htm">9.0 version</a></td></tr></table><h2 id="2">rcall</h2>
+
+<p id="3"><b>Arguments: </b><i>
+function-ref </i> &amp;rest <i>arg-refs</i><i>
+</i></p>
+
+<p id="4">
+This function, along with the others listed at the end of this page,
+is used to make remote calls within the dynamic scope of a <a href="with-remote-port.htm"><b>with-remote-port</b></a> form. This
+function returns the value(s) of the remote call.
+</p>
+<p id="5">
+The first argument is a function reference that may be a string, a
+symbol, or a remote reference to a string, symbol or function
+(see <a href="../../rpc.htm#operator-conversion-2">Operator Conversion</a>
+in <a href="../../rpc.htm">rpc.htm</a>). Remote
+references are described in <a href="../../rpc.htm#data-rep-1">Data representation</a> in
+<a href="../../rpc.htm">rpc.htm</a>. The remote reference is resolved to a
+function in the remote environment, and the function is called with
+the arguments passed in the call. The value of the expression is the
+value or values returned by the remote call. These may be local values
+or remote references.
+</p>
+<p id="6">
+This function performs its call returning the value to the caller.
+</p>
+
+<p id="7">
+See also <a href="rcall.htm"><b>rcall</b></a>,
+<a href="rcall-ignore.htm"><b>rcall-ignore</b></a>,
+<a href="rcall-one-way.htm"><b>rcall-one-way</b></a>,
+<a href="rapply.htm"><b>rapply</b></a>, <a href="rapply-ignore.htm"><b>rapply-ignore</b></a>, and
+<a href="rapply-one-way.htm"><b>rapply-one-way</b></a>.
+</p>
+<p id="8">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rcall.htm">9.0 version</a></td></tr></table></body></html>

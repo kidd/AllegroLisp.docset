@@ -1,0 +1,92 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-function-input-stream</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-function-input-stream.htm">9.0 version</a></td></tr></table><h2 id="2">with-function-input-stream</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(sym function </i> &amp;rest <i>args</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+
+
+<p id="4">
+<a href="with-function-input-stream.htm"><b>with-function-input-stream</b></a>
+evalutes <i>body</i> as an implicit <a href="../../../ansicl/dictentr/progn.htm"><b>progn</b></a> with <i>sym</i> bound to the
+stream returned by <a href="make-function-input-stream.htm"><b>make-function-input-stream</b></a>.  When control
+leaves the body, either normally or abnormally (such as by the use of
+<a href="../../../ansicl/dictentr/throw.htm"><b>throw</b></a>), the stream is
+automatically closed.
+</p>
+<p id="5">
+See <a href="make-function-input-stream.htm"><b>make-function-input-stream</b></a> for details.
+</p>
+<h4 id="6">
+Example 1
+</h4>
+
+<pre id="7">
+(defun filler (writeto count)
+  (dotimes (n count)
+     (write-byte n writeto))
+  (close writeto))
+
+(with-function-input-stream (readfrom #'filler 5)
+  (let ((count 0)
+        (sum 0)
+        got)
+    (while (setf got (read-byte readfrom nil nil))
+       (incf sum got)
+       (incf count))
+    (format t "Read ~d bytes, totalling ~a~%" count sum)))
+</pre>
+<h4 id="8">
+Example 2
+</h4>
+
+<pre id="9">
+(defun head-filter (outstream instream &key (lines 10))
+  (dotimes (n lines)
+    (let ((line (read-line instream nil nil)))
+      (if (null line)
+	  (return))
+      (write-line line outstream))))
+
+(defun tail-filter (outstream instream &key (lines 10))
+  (let ((buffer (make-array lines))
+	(pos 0)
+	(wrapped nil)
+	line)
+    (while (setf line (read-line instream nil nil))
+      (setf (aref buffer pos) line)
+      (incf pos)
+      (if (= pos lines)
+	  (progn 
+	    (setf pos 0)
+	    (setf wrapped t))))
+
+    (if wrapped
+	(dotimes (n (- lines pos))
+	  (write-line (aref buffer (+ n pos)) outstream)))
+
+    (dotimes (n pos)
+      (write-line (aref buffer n) outstream))))
+
+(defun uniq-filter (outstream instream)
+  (let (lastline 
+	line)
+    (while (setf line (read-line instream nil nil))
+      (if (or (not lastline) (string/= line lastline))
+	  (progn
+	    (write-line line outstream)
+	    (setf lastline line))))))
+
+;; uniq the last 5 of the first 10 lines of the sourcefile.
+(defun test-filters (sourcefile)
+  (with-open-file (f sourcefile)
+    (with-function-input-stream (headstream #'head-filter f)
+      (with-function-input-stream (tailstream #'tail-filter headstream
+					      :lines 5)
+	(uniq-filter *terminal-io* tailstream)))))
+</pre>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-function-input-stream.htm">9.0 version</a></td></tr></table></body></html>

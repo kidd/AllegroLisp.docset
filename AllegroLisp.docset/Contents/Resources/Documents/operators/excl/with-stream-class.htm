@@ -1,0 +1,103 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-stream-class</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-stream-class.htm">9.0 version</a></td></tr></table><h2 id="2">with-stream-class</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(class-name </i> &amp;optional <i>stream</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+
+<p id="4">
+Returns the resulting values of the body forms. Within the body, all
+<a href="sm.htm"><b>sm</b></a>, <a href="funcall-stm-handler.htm"><b>funcall-stm-handler</b></a>, and <a href="funcall-stm-handler-2.htm"><b>funcall-stm-handler-2</b></a> forms are expanded in
+such a way that the access into the stream requires only one or two
+memory-reference instructions, as indicated next.
+</p>
+<ul>
+<li id="5">
+If the optional <i>stream</i> argument is not specified
+or is nil, an <a href="sm.htm"><b>sm</b></a> form will
+require two memory-reference instructions -- one to load the slots
+vector of the stream instance, and one to get the slot.
+</li>
+<li id="6">
+If the optional <i>stream</i> argument is specified, it
+must be the <i>stream</i> argument to <a href="sm.htm"><b>sm</b></a>. Such specification results in a temporary
+variable being set up and the slots vector loaded into that variable,
+and from then on every access requires only one memory-reference
+instruction, because the slots vector is already available.  The
+stream argument to sm is ignored in this situation.
+</li>
+<li id="7">
+If the <i>slot-name</i> of the 
+<a href="sm.htm"><b>sm</b></a> (or funcall...) form
+does not name a fixed-index slot within the stream of the specified
+class-name, a warning is issued and an unoptimized call to slot-value
+is used instead.
+</li>
+</ul>
+<p id="8">
+The decision as to whether to use the optional
+<i>stream</i> argument or not depends on whether there
+are more than one access anticipated.  If two or more accesses are
+done within the body form, then the stream argument should be
+specified. If only one access is done, it is not necessary to specify
+the <i>stream</i> argument. However, if two <a href="with-stream-class.htm"><b>with-stream-class</b></a> forms are nested
+and the outer form specifies a <i>stream</i> argument,
+then the inner form must also specify the <i>stream</i>
+argument, otherwise the accesses within the inner form will be from
+the wrong object.
+</p>
+<h3 id="9">Example</h3>
+<p id="10">
+This example is taken from real source.  Note that the
+<i>stream</i> argument is specified, because there are 3
+accesses here: one to grab the co-state slot, one to funcall the
+j-write-char function, and one to get the plist slot of the
+stream. All three accesses take one instruction each, after <a href="with-stream-class.htm"><b>with-stream-class</b></a> arranges for an
+extra variable to be pre-loaded with the instance slots vector of the
+stream.
+</p>
+<pre id="11">
+(defmethod (setf stream-external-format)
+    :after (external-format (stream single-channel-simple-stream))
+  (with-stream-class (single-channel-simple-stream stream)
+    (when (sm co-state stream)
+      ;; stream has an ef writer state, flush ef here.
+      (funcall-stm-handler-2 j-write-char nil stream))
+    (install-single-channel-character-strategy
+     stream external-format (getf (sm plist stream) 'access))))
+</pre>
+<p id="12">
+This example demonstrates a nested <a href="with-stream-class.htm"><b>with-stream-class</b></a>. Note that the optional
+<i>stream</i> argument to the outer form isn't really
+necessary, but presumably a real-life situation would have more than
+one access to stream. Also, note that if the inner macro did not
+specify a new optional <i>stream</i> argument
+(i.e. dribble), then the <a href="funcall-stm-handler-2.htm"><b>funcall-stm-handler-2</b></a> would have
+gotten its write-char handler from the wrong stream.
+</p>
+<pre id="13">
+(defun do-a-dribble (stream char)
+  (with-stream-class (dual-channel-simple-stream stream)
+    (let ((dribble (sm dribble stream)))
+       (when dribble
+         (with-stream-class (stream dribble)
+	   (funcall-stm-handler-2
+	    j-write-char char dribble))))))
+</pre>
+
+<p id="14">
+You must load the <code>:iodefs</code> module to use this
+macro. Do that by evaluating <code>(require :iodefs)</code>. (It
+is not an error to evaluate that form if the module is already
+loaded.) This macro is intended for implementing device-level
+functionality and should not be used except for that purpose. See <a href="../../streams.htm#ss-description-2">Simple-stream Description</a>
+in <a href="../../streams.htm">streams.htm</a> for a description of the device-level.
+</p>
+<p id="15">
+See <a href="../../streams.htm">streams.htm</a> for information on the
+simple-streams implementation in Allegro CL. 
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-stream-class.htm">9.0 version</a></td></tr></table></body></html>

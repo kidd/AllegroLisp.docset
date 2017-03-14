@@ -1,0 +1,118 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-coverage</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-coverage.htm">9.0 version</a></td></tr></table><h2 id="2">with-coverage</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(</i> &amp;rest <i>funcs</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+Executes <b><i>body</i></b> and returns the result. As a
+side-effect, the functions specified by
+the <b><i>funcs</i></b> list (either as function objects
+or as function specs) are instrumented with breakpoints that will
+determine how well those functions are being exercised in the body
+form. When the body form is finished, statitics are printed on how
+good the coverage is.
+</p>
+<p id="5">
+Certain additional tools must be activated. The compiler switch
+<a href="../../variables/compiler/save-source-level-debug-info-switch.htm"><code>save-source-level-debug-info-switch</code></a> must be
+true during compilation (which is the default happens when the debug
+optimization quality is 3). Further source file recording must be on,
+that is <a href="../../variables/excl/s_record-source-file-info_s.htm"><code>*record-source-file-info*</code></a>
+and <a href="../../variables/excl/s_load-source-file-info_s.htm"><code>*load-source-file-info*</code></a> must both be true (if
+source file info is recorded but not loaded, you will be prompted for
+the name of the relevant fasl file).
+</p>
+
+<h3 id="6">
+Example script
+</h3>
+
+<pre id="7">
+(with-open-file (ff &quot;cov-test.cl&quot;
+		 :direction :output
+		 :if-exists :supersede)
+  (setq *load-source-file-info* t *record-source-file-info* t)
+  (write-string &quot;
+
+(eval-when (load compile eval) (require :coverage))
+
+(eval-when (compile) (declaim (optimize (debug 3))))
+
+(defun foo ()
+  (let ((x (random 3)))
+    (cond ((zerop x) (write-string \&quot;yes \&quot;))
+          (t (bar \&quot;no \&quot;)))))
+
+(defun bar (x)
+  (if (string= x \&quot;yes \&quot;)
+      (progn (write-string x) (write-string \&quot;!\&quot;))
+    (write-string x)))
+&quot; ff))
+
+(compile-file &quot;cov-test.cl&quot;)
+(load &quot;cov-test.fasl&quot;)
+
+(excl::with-coverage (foo bar)
+  (funcall 'foo)
+  (funcall 'foo))
+
+;; The last form produces the following output (what you see
+;; if you try this may differ in detail):
+
+;; Found 9 applicable records for #&lt;Function foo&gt;:
+  pc 0: (defun foo ()
+          (let ((x (random 3)))
+            (cond ((zerop x) (write-string yes )) (t (bar no )))))
+  pc 31: (let ((x (random 3)))
+           (cond ((zerop x) (write-string yes )) (t (bar no ))))
+  pc 31: (random 3)
+  (duplicate)
+  pc 56: ((x (random 3)) x nil)
+  pc 56: (cond ((zerop x) (write-string yes )) (t (bar no )))
+  (duplicate)
+  pc 56: (zerop x)
+  (duplicate)
+  pc 65: (write-string yes )
+  pc 108: (bar no )
+  pc 84: (defun foo ()
+           (let ((x (random 3)))
+             (cond ((zerop x) (write-string yes )) (t (bar no )))))
+;; Found 6 applicable records for #&lt;Function bar&gt;:
+  pc 0: (defun bar (x)
+          (if (string= x yes )
+              (progn (write-string x) (write-string !))
+            (write-string x)))
+  pc 37: (string= x yes )
+  pc 53: (progn (write-string x) (write-string !))
+  pc 53: (write-string x)
+  (duplicate)
+  pc 64: (write-string !)
+  pc 88: (write-string x)
+;; Starting executing of ((funcall 'foo) (funcall 'foo))
+no no 
+;; Finished executing.
+
+Coverage report for #&lt;Function foo&gt;:
+    Not hit: (write-string &quot;yes &quot;)
+  subtotal = 88%  (8 of 9 breakpoints hit).
+
+Coverage report for #&lt;Function bar&gt;:
+    Not hit: (write-string &quot;!&quot;)
+    Not hit: (write-string x)
+    Not hit: (progn (write-string x) (write-string &quot;!&quot;))
+  subtotal = 50%  (3 of 6 breakpoints hit).
+Total coverage = 73%  (11 of 15 breakpoints hit).
+&quot;no &quot;
+cl-user(6): 
+</pre>
+
+<p id="8">
+See <a href="../../miscellaneous.htm#coverage-1">Coverage
+analysis in Allegro CL</a>
+in <a href="../../miscellaneous.htm">miscellaneous.htm</a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-coverage.htm">9.0 version</a></td></tr></table></body></html>

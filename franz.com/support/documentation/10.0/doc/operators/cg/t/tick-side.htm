@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>tick-side</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/tick-side.htm">9.0 version</a></td></tr></table><h2 id="2">tick-side</h2>
+
+<p id="3"><b>Arguments: </b><i>
+trackbar
+</i></p>
+
+<p id="4">
+Returns the value of the tick-side property of the argument. The
+possible values are <code>:left</code> and
+<code>:top</code> (which, as we explain below, are equivalent),
+<code>:right</code> and <code>:bottom</code> (also
+equivalent), <code>:both</code>, and <code>:none</code>. 
+</p>
+<p id="5">
+A trackbar can be oriented horizontally or vertically. Tick marks
+provide a scale for the trackbar. Therefore <code>:left</code>
+and <code>:right</code> are appropriate for a vertical
+orientation while <code>:top</code> and
+<code>:bottom</code> are appropriate for a horizontal
+orientation. However, to avoid errors when the orientation is changed,
+if <code>:left</code> is specified for a horizontal trackbar, it
+is interpreted to mean <code>:top</code>, and
+<code>:right</code> is interpreted to mean
+<code>:bottom</code>.  Similarly, if <code>:top</code> or
+<code>:bottom</code> is specified for a vertical trackbar, it is
+interpreted as <code>:left</code> or <code>:right</code>
+respectively.
+</p>
+<p id="6">
+The trackbar pointer points toward the side with the ticks. If there
+are ticks on both sides, the pointer does not have a point (it is
+squared on both sides. If there are no ticks, the pointer points right
+or down.
+</p>
+<p id="7">
+The <a href="../t/tick-frequency.htm"><b>tick-frequency</b></a> property determines
+the spacing of tick marks.  See also <a href="../t/tick-position.htm"><b>tick-position</b></a>.
+</p>
+<p id="8">
+The <a href="../t/tick-side.htm"><b>tick-side</b></a>
+property may not be changed on an existing control, and must instead
+be specified with the inspector when designing a control (using a
+form) or with the :tick-side initarg of <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>. (It can be changed using the
+inspector when designing a form but not for a running control, either
+in the IDE or in an application.)
+</p>
+<p id="9">
+<a href="../t/tick-side.htm"><b>tick-side</b></a> is a
+property of the <a href="../../../classes/cg/trackbar.htm"><code>trackbar</code></a> class.
+</p>
+
+<h3 id="10">
+GTK Note
+</h3>
+
+<p id="11">
+This property is not supported by the simple GTK <a href="../../../classes/cg/trackbar.htm"><code>trackbar</code></a> widget, where it will have no effect.
+</p>
+
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/tick-side.htm">9.0 version</a></td></tr></table></body></html>

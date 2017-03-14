@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>draw-major-grid-lines</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-major-grid-lines.htm">9.0 version</a></td></tr></table><h2 id="2">draw-major-grid-lines</h2>
+
+<p id="3"><b>Arguments: </b><i>
+chart-axis
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../d/draw-major-grid-lines.htm"><b>draw-major-grid-lines</b></a> property of
+a <a href="../../../classes/cg/chart-axis.htm"><code>chart-axis</code></a>. The value
+may be set at creation time by passing
+the <code>:draw-major-grid-lines</code> initarg, or any
+time later by calling <a href="../d/draw-major-grid-lines.htm"><b>(setf draw-major-grid-lines)</b></a>.
+</p>
+<p id="5">
+A value indicating whether (and how) grid lines are drawn for the
+major tic positions of a <a href="../../../classes/cg/chart-axis.htm"><code>chart-axis</code></a> in a <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>.
+</p>
+<p id="6">
+When drawn, a grid line extends across the body of the chart,
+perpendicular to the axis with which it is associated.
+</p>
+<p id="7">
+Here are the possible values:
+</p>
+<ul>
+<li id="8">
+
+<code>nil</code> - Major grid lines are not drawn.  This
+is the default value.
+
+</li>
+<li id="9">
+
+<code>t</code> - Major grid lines are drawn, and are drawn
+at the major tic positions.
+
+</li>
+<li id="10">
+
+
+<code>:after</code> - Each major grid line is drawn midway
+between its major tic position and the next major tic position. This
+may be especially useful for delimiting groups of non-stacked bars by
+drawing lines between the groups, for example, rather than drawing a
+line through the middle of each group of bars.  This choice is
+probably not aesthetic when <a href="../d/draw-minor-grid-lines.htm"><b>draw-minor-grid-lines</b></a> is true.
+
+</li>
+<li id="11">
+
+<code>:before</code> - Like <code>:after</code>, except
+that each grid line is drawn between its official position and that of
+the previous grid line.
+
+</li>
+<li id="12">
+
+<code>:between</code> - Like <code>:after</code> and
+<code>:before</code> except that no grid line is drawn before
+the first major tic position or after the last one.
+
+</li>
+</ul>
+<p id="13">
+See also <a href="../m/major-grid-line-color.htm"><b>major-grid-line-color</b></a>, <a href="../m/major-grid-line-dashing.htm"><b>major-grid-line-dashing</b></a>, <a href="../m/major-grid-line-width.htm"><b>major-grid-line-width</b></a>, and
+<a href="../d/draw-minor-grid-lines.htm"><b>draw-minor-grid-lines</b></a>.
+</p>
+
+
+<p id="14">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-major-grid-lines.htm">9.0 version</a></td></tr></table></body></html>

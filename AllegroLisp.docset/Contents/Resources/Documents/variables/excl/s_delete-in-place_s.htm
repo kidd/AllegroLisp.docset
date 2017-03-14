@@ -1,0 +1,65 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*delete-in-place*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_delete-in-place_s.htm">9.0 version</a></td></tr></table><h2 id="2">*delete-in-place*</h2>
+
+<p id="3">
+This variable determines whether <a href="../../../ansicl/dictentr/removere.htm"><b>delete</b></a> uses the in-place style of
+modification to change a vector, or if it makes a copy of the old
+vector after the matching slots have been compressed out of it.  It
+serves as the default value to a new keyword argument to delete.
+</p>
+<p id="4">
+To set this variable to <code>nil</code> causes the
+contents of the vector to change as usual, but the size of the
+original vector is never modified.  Instead, a copy is made and given
+the correct new size, and is returned from delete.
+</p>
+<p id="5">
+To set this variable to true in an SMP Lisp is very dangerous; it
+could result in the Lisp's heap becoming corrupted if any two threads
+are working on the same object at the same time. <b>(Though unlikely,
+this can happen in a non-SMP multiprocessing Lisp as well.)</b> An
+in-place modification of the size of a vector could remove the
+protections in code which is unsafe but correct by causing the second
+thread to see a different size than the underlying storage actually
+contains.  If <b>(setf aref)</b> is used in this manner and stores
+beyond the current end of the array, codewalkers and especially the
+garbage-collector could then see an inconsistent heap and the lisp
+could die with a gc-error.  The code could be as innocuous as
+</p>
+
+<pre id="6">
+(declare (optimize speed))
+  (dotimes (i (length vec))
+    (setf (aref vec i) t)))
+</pre>
+
+<p id="7">
+If, in an SMP Lisp, another thread has called delete and the in-place
+option is set, then the vector may change out from under this thread's
+loop, and the <b>(setf aref)</b> clauses may write off the end of the
+array, causing death.
+</p>
+<p id="8">
+While heap corruption will not happen when the sequence argument is a
+list, other unspecified and unexpected behavior can result.
+</p>
+<p id="9">
+Deleting in place is safe when only one thread traverses a sequence.
+</p>
+<p id="10">
+This variable is set globally, and is not bound on any threads, but is
+not declared non-bindable; it may be bound and the value used based on
+user needs.
+</p>
+<p id="11">
+The initial value is <code>t</code> in non-SMP Lisps and
+<code>nil</code> in SMP Lisps.
+</p>
+<p id="12">
+See <a href="../../implementation.htm#cl-delete-2">cl:delete,
+cl:delete-if, cl:delete-if-not, cl:delete-duplicates: multiprocessing
+issues</a> in <a href="../../implementation.htm">implementation.htm</a> for details.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_delete-in-place_s.htm">9.0 version</a></td></tr></table></body></html>

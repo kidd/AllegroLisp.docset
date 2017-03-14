@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-sigio-handler</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/set-sigio-handler.htm">9.0 version</a></td></tr></table><h2 id="2">set-sigio-handler</h2>
+
+<p id="3"><b>Arguments: </b><i>fd function</i></p>
+
+<p id="4">Sigio handling is not supported on Windows.</p>
+
+<p id="5">This function is used for its side effects. Its return value is not
+specified. Calling this function establishes
+<i>function</i> as the sigio handler for the Unix file
+descriptor <i>fd</i>. Sigio handling should be
+initialized before using the function with 
+<a href="initialize-sigio-handling.htm"><b>initialize-sigio-handling</b></a>.</p>
+
+<p id="6"><i>fd</i> should be an integer identifying a Unix
+file descriptor. (We assume that the file descriptor has been
+established by a call to a Unix I/O operation such as
+<strong>open()</strong> and returned to Lisp via a call to a foreign
+function.)</p>
+
+<p id="7"><i>function</i> should be a symbol naming a
+function. The function must accept one argument. The system will pass
+it the file descriptor number <i>fd</i> when it is
+called.</p>
+
+<p id="8">Note that only input signals are available to Allegro CL. (Output
+signals are filtered out.) Note too that SIGIO handlers will only work
+if the SIGIO interface is available, as indicated by the return value
+of the function 
+<a href="sigio-supported-p.htm"><b>sigio-supported-p</b></a>.</p>
+
+<p id="9">Signal handlers are removed with <a href="remove-sigio-handler.htm"><b>remove-sigio-handler</b></a>.</p>
+
+<p id="10">Here is an example of a SIGIO function.</p>
+
+<pre id="11">;; Assume that MY-FD is a UNIX file descriptor
+;; returned by a foreign
+;; function and that the function MY-GET-EVENT-HANDLER returns a
+;; process
+;;
+;; This function shows how to schedule an event-handler associated
+;; with the file descriptor to execute as soon as safely possible.
+;; This way, data (from say a window or other input device) can be
+;; processed sooner than it normally would be were lisp to wait for
+;; the event-handler to be run by normal scheduling sequence.
+
+(defun my-sigio-handler (fd)
+  (mp:without-interrupts
+     (let ((event-handler (my-get-event-handler fd)))
+       (when (and mp:*current-process* ; Not in scheduler stack group
+                  (not sys:*disallow-scheduling*) ; Avoid MP hazards
+         (process-active-p event-handler)
+         (not (eq mp:*current-process* event-handler)))
+         (mp:process-allow-schedule event-handler)))))
+
+(sys:set-sigio-handler my-fd 'my-sigio-handler)</pre>
+
+<p id="12">Note the polling of 
+<a href="../../variables/system/s_disallow-scheduling_s.htm"><code>*disallow-scheduling*</code></a>
+to avoid multiprocessing hazards. </p>
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/set-sigio-handler.htm">9.0 version</a></td></tr></table></body></html>

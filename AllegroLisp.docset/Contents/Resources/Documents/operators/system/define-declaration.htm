@@ -1,0 +1,78 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>define-declaration</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/define-declaration.htm">9.0 version</a></td></tr></table><h2 id="2">define-declaration</h2>
+
+<p id="3"><b>Arguments: </b><i>
+namespec lambda-list prop kind </i> &amp;optional <i>def</i><i>
+</i></p>
+
+<p id="4">
+This macro defines a handler for the declaration named by
+<i>namespec</i>. <a href="augment-environment.htm"><b>augment-environment</b></a> uses the
+information provided by this macro when processing declarations.
+</p>
+<p id="5">
+The arguments are:
+</p>
+<ul>
+<li id="6">
+<i>namespec</i> is either a single name, or else it is a
+list which allows classes of declarations (an example of this is the
+inline and notinline declaration, which, when returned from a <a href="function-information.htm"><b>function-information</b></a> call is
+either the value <code>(inline inline)</code> or
+<code>(inline notinline)</code>.  This classification allows
+proper shadowing of declarations as they are propagated into inward
+contours, so that for example a free inline declaration will shadow
+any other notinline declaration by virtue of its presence as the
+first declaration of the inline class to be found.
+</li>
+<li id="7">
+<i>lambda-list</i> is a simple lambda list.
+The only lambda-list keywords recognized are &optional and &rest.  The
+"arguments" for the declaration specifier are implied by the whole
+lambda list, which is useful for recasting the declaration by either
+extracting one or more individual declarations from the declaration
+specifier, or putting multiple declarations together.
+</li>
+<li id="8">
+<i>prop</i> allows a symbol to be defined (it should not
+be a keyword, nor should it be exported or accessible from the user
+package) to use as a property indicator.  This is for global
+declarations which will either be attached to the environment, or in
+the case of the null environment it will serve as a property indicator
+for the name globally. The value <code>nil</code> can be
+given for this argument, in which case declarations in the global
+environment are ignored, and <a href="augment-environment.htm"><b>augment-environment</b></a> to a global environment
+silently ignores that declaration.
+</li>
+<li id="9">
+<i>kind</i> is one of <code>:variable</code>,
+<code>:function</code>, <code>:both</code>, or
+<code>:declare</code>.  It determines how the declaration is
+treated, and the first value returned from the parsing function
+defined by <a href="define-declaration.htm"><b>define-declaration</b></a>.
+</li>
+<li id="10">
+If <i>def</i> is given it can be either a symbol or a
+lambda expression of two arguments, receiving the declaration and the
+current environment. If <i>def</i> is a symbol it is
+taken to be the name of an already-defined function which is of the
+same two arguments.  If <i>def</i> is not provided or is
+<code>nil</code>, a function is created with default
+actions, which assumes the declaration is to be of the form
+<code>(decl name1 name2 ... nameN)</code>. If the body is
+specified, it must return two values, according to the definition in
+CLtL-2 p 213 (with the two exceptions that kind might be :both, which
+follows the same rules for both :variable and :function, and also if
+the kind is :declare, the list returned is a list of (list key value)
+instead of the cons that is specified there, to ease the consistency
+of the implementation).
+</li>
+</ul>
+
+<p id="11">
+See <a href="../../environments.htm">environments.htm</a> for more information on
+environments.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/define-declaration.htm">9.0 version</a></td></tr></table></body></html>

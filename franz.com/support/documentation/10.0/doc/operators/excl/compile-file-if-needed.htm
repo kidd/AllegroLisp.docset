@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>compile-file-if-needed</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/compile-file-if-needed.htm">9.0 version</a></td></tr></table><h2 id="2">compile-file-if-needed</h2>
+
+<p id="3"><b>Arguments: </b><i>input-filename </i> &amp;rest <i> allargs </i><i></i>&amp;key <i>force-compile</i></p>
+
+<p id="4">
+Compiles (with <a href="../../../ansicl/dictentr/compile-.htm"><b>compile-file</b></a>)
+<i>input-filename</i> if
+</p>
+
+<ol>
+  <li id="5">there is no compiled version of that file, or</li>
+  <li id="6">the compiled version is older than 
+  <i>input-filename</i>, or</li>
+  <li id="7">the <i>force-compile</i> keyword argument is specified true.</li>
+</ol>
+
+<p id="8">All arguments acceptable to <a href="../../../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> can also be specified to this
+function. <i>input-filename</i> must be a string naming
+a file or a pathname object identifying a file.
+</p>
+<p id="9">
+<a href="compile-file-if-needed.htm"><b>compile-file-if-needed</b></a>
+returns what <a href="../../../ansicl/dictentr/compile-.htm"><b>compile-file</b></a>
+returns if a compilation is actually done (that is, it returns three
+values). If no compilation is done, <a href="compile-file-if-needed.htm"><b>compile-file-if-needed</b></a> returns the name of the
+compiled file as a single return value. To determine whether a
+compilation was in fact done, capture the returned values in a list
+(with, say, <a href="../../../ansicl/dictentr/multipl1.htm"><b>multiple-value-list</b></a>) and see whether its length
+is 3 (compilation performed) or 1 (no compilation performed).
+</p>
+<p id="10">
+See <a href="../../compiling.htm">compiling.htm</a> for general information on
+compiling.
+</p>
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/compile-file-if-needed.htm">9.0 version</a></td></tr></table></body></html>

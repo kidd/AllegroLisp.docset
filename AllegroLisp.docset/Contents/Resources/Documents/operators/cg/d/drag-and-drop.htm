@@ -1,0 +1,154 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>drag-and-drop</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/drag-and-drop.htm">9.0 version</a></td></tr></table><h2 id="2">drag-and-drop</h2>
+
+<p id="3"><b>Arguments: </b><i>
+widget
+</i></p>
+
+<p id="4">
+Initiates a dragging operation from <i>widget</i>. The
+user may "drop" onto another control by clicking the mouse to
+associate the two controls together in some way.
+</p>
+<p id="5">
+The drag continues until the user "drops" by either pressing a mouse
+button (if no mouse buttons were down when <a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a> was called),
+releasing a mouse button (if a mouse button was down when <a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a> was
+called), or pressing ESCAPE to cancel the drag.
+</p>
+<p id="6">
+During this time, the mouse cursor changes to indicate whether a drop
+is allowed at the current mouse cursor location. A drop is allowed
+whenever the mouse cursor is over a control where <a href="../d/droppable-p.htm"><b>droppable-p</b></a> returns true when
+called on the dragged control and that dropped-onto control. When the
+drop is done on the dragged widget, then both <a href="../d/droppable-p.htm"><b>droppable-p</b></a> and <a href="../d/droppable-onto-self.htm"><b>droppable-onto-self</b></a> must return true to
+allow the drop.
+</p>
+<p id="7">
+The default <a href="../d/droppable-p.htm"><b>droppable-p</b></a> and
+<a href="../d/droppable-onto-self.htm"><b>droppable-onto-self</b></a> methods
+return <code>nil</code>, so an application must supply
+methods in order to allow any drag-and-drop behavior.
+</p>
+<p id="8">
+By convention, <a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a> should not be called
+for a particular control if
+</p>
+<pre id="9">
+(draggable-p control) 
+</pre>
+<p id="10">
+returns <code>nil</code>. The default <a href="../d/draggable-p.htm"><b>draggable-p</b></a> method
+returns true for any control.
+</p>
+<p id="11">
+If the user drops where a drop is allowed, then <a href="../g/good-drop.htm"><b>good-drop</b></a> is called; if the user
+drops elsewhere, then <a href="../b/bad-drop.htm"><b>bad-drop</b></a> is called; if the user
+cancels by pressing ESCAPE, then neither function is called.
+</p>
+<p id="12">
+An application will typically add <a href="../d/draggable-p.htm"><b>draggable-p</b></a> methods to determine
+which controls may be dragged from, <a href="../d/droppable-p.htm"><b>droppable-p</b></a> methods to determine
+which controls may be dropped onto which, and <a href="../g/good-drop.htm"><b>good-drop</b></a> methods to process
+successful drops. <a href="../d/drag-and-drop-mouse-moved.htm"><b>drag-and-drop-mouse-moved</b></a> methods could be added
+to trigger side effects as the user drags the mouse cursor.
+</p>
+<p id="13">
+<a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a>
+returns the control that was dropped onto if any, or <code>nil</code> otherwise. There is no dropped-onto control if
+the user either cancels the drag by pressing ESCAPE or drops at a
+location that is not over any control.
+</p>
+<p id="14">
+By default, the only visual indication that a drag is taking place is
+the changing mouse cursor. This is the standard drag-and-drop
+approach in Windows. But if
+</p>
+<pre id="15">
+(drag-images (configuration *system*))
+</pre>
+<p id="16">
+is set to true, then an attempt is made to drag an image of some part
+of the dragged-from control. (See <a href="../c/configuration.htm"><b>configuration</b></a>, <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>, and
+<a href="../d/drag-images.htm"><b>drag-images</b></a>.)
+</p>
+<p id="17">
+This image is obtained by calling <a href="../b/box-to-drag.htm"><b>box-to-drag</b></a> on the
+dragged-from control and copying pixels from the screen for that
+section of the control. <a href="../b/box-to-drag.htm"><b>box-to-drag</b></a> methods are
+supplied for most of the controls to specify the area occupied by the
+currently selected value of the control. Note that this approach will
+not work well if the current value of the control is ever scrolled out
+of view. Depending on which types of controls are being dragged from,
+these images may or may not be considered sufficiently aesthetic for
+an application's interface, and so this dragging option should not be
+used if the result is unsatisfactory.
+</p>
+<p id="18">
+When the IDE is running, a general <a href="../m/mouse-left-down.htm"><b>mouse-left-down</b></a> method (shown
+below) causes <a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a> to be called if the
+ALT key is held down and a left click and drag is done on a control.
+A <a href="../d/droppable-p.htm"><b>droppable-p</b></a>
+method for the inspector allows dropping arbitrary values from
+arbitrary controls into inspector slots, and a <a href="../d/droppable-p.htm"><b>droppable-p</b></a> method specializing on
+both the main IDE toolbar and the extended IDE toolbar allows dragging
+commands between or within these toolbars. Other than these cases, the
+IDE does not make use of <a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a>, and the methods
+described in this paragraph exist in the IDE only. Applications must
+define their own gestures to call <a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a>, as well as their own
+<a href="../d/droppable-p.htm"><b>droppable-p</b></a>
+methods to define where drops are allowed.
+</p>
+<p id="19">
+The following code implements the IDE's <a href="../m/mouse-left-down.htm"><b>mouse-left-down</b></a> method for
+initiating drags. It checks to see if the alt-key is down (but not
+the control-key or shift-key) and if the mouse cursor was in the
+interior area of the widget that was clicked. If so, it then
+initiates a drag, and otherwise it calls the next method.
+</p>
+<pre id="20">
+(defmethod mouse-left-down ((widget dialog-item)
+                            buttons cursor-position)
+  ;; This method exists in the IDE to allow initiating drags
+  ;; by alt-clicking any widget.
+  (with-boxes (box1)
+    (case (logand buttons #.(logior control-key shift-key alt-key))
+      (#.alt-key
+       (when (and (draggable-p widget)
+                  (inside-box-p cursor-position
+                                (nvisible-box (window widget) box1)))
+         (drag-and-drop widget)))
+      (t (call-next-method)))))
+</pre>
+<p id="21">
+Applications can add similar methods to initiate drags. Note that
+while a simple left click could alternately be used to initiate a
+drag, this should not be done for certain widgets where a <a href="../m/mouse-left-down.htm"><b>mouse-left-down</b></a> always
+waits for a <a href="../m/mouse-left-up.htm"><b>mouse-left-up</b></a> to complete a value
+selection gesture, since the mouse will not be in a meaningful
+position for this when the user finally releases the mouse button
+after dragging; this constraint appears to be limited to the <a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a> and
+<a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a> widgets. See also
+<a href="../w/wait-for-drag.htm"><b>wait-for-drag</b></a> for
+another way to decide whether to initiate a drag.
+</p>
+
+
+<h3 id="22">
+GTK Note
+</h3>
+
+<p id="23">
+<a href="../d/drag-and-drop.htm"><b>drag-and-drop</b></a> is not yet
+supported on the GTK platform due to an unsolved problem with not
+being able to change the mouse cursor while the mouse button is down.
+If you call the function on GTK, it will otherwise work, but it is not
+really useful without being able to change the mouse cursor image to
+show the user where a drop is allowed.
+</p>
+
+
+
+
+<hr><p id="24"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/drag-and-drop.htm">9.0 version</a></td></tr></table></body></html>

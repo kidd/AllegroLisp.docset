@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>eval-string</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/eval-string.htm">9.0 version</a></td></tr></table><h2 id="2">eval-string</h2>
+
+<p id="3"><b>Arguments: </b><i>
+string </i> &amp;optional  (<i>eof-error-p</i> t)<i>eof-value</i><i>
+</i>&amp;key  (<i>start</i> 0)<i> end preserve-whitespace</i> (<i>read-error-p</i> t)<i> read-error-value</i> (<i>eval-error-p</i> t)<i> eval-error-value</i><i>
+</i></p>
+
+
+<p id="4">
+This function reads the contents of the string
+<i>string</i> and then evaluates the resulting
+object. It returns the result(s) of the evaluation. This function is useful when making complex remote calls.
+</p>
+<p id="5">
+The arguments <i>eof-error-p</i>,
+<i>eof-value</i>, <i>start</i>,
+<i>end</i>, and <i>preserve-whitespace</i>
+are passed to <a href="../../../ansicl/dictentr/read-fro.htm"><b>read-from-string</b></a>
+and control the values returned from <a href="../../../ansicl/dictentr/read-fro.htm"><b>read-from-string</b></a>.
+</p>
+<p id="6">
+If <a href="../../../ansicl/dictentr/read-fro.htm"><b>read-from-string</b></a>
+returns a value, it is passed to <a href="../../../ansicl/dictentr/eval.htm"><b>eval</b></a>.  If <a href="../../../ansicl/dictentr/read-fro.htm"><b>read-from-string</b></a> signals an error, then the
+behavior is controlled by the <i>read-error-p</i>
+argument.  If the value is non-<code>nil</code> (the
+default), then the same error is signaled from eval-string.  If the
+value is <code>nil</code>, then the value of the
+<i>read-error-value</i> argument is passed to eval.
+</p>
+<p id="7">
+If the call to <a href="../../../ansicl/dictentr/eval.htm"><b>eval</b></a> returns
+values, those values are returned from <a href="eval-string.htm"><b>eval-string</b></a>. If the call to <a href="../../../ansicl/dictentr/eval.htm"><b>eval</b></a> signals an error, then the
+behavior is controlled by the <i>eval-error-p</i>
+argument. If the value is non-<code>nil</code> (the
+default), then the same error is signaled from <a href="eval-string.htm"><b>eval-string</b></a>. If the value is <code>nil</code>, then the value of the
+<i>eval-error-value</i> argument is returned as the
+single value of <a href="eval-string.htm"><b>eval-string</b></a>.
+</p>
+
+<p id="8">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/eval-string.htm">9.0 version</a></td></tr></table></body></html>

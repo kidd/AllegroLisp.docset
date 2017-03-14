@@ -1,0 +1,72 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>foreground-color</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/foreground-color.htm">9.0 version</a></td></tr></table><h2 id="2">foreground-color</h2>
+
+<p id="3"><b>Arguments: </b><i>
+
+standard-object
+</i></p>
+
+<p id="4">
+Returns the foreground color for <i>standard-object</i>
+if one has been specified for it, and otherwise returns <code>nil</code>.  (By contrast, <a href="../e/effective-foreground-color.htm"><b>effective-foreground-color</b></a> will
+always return a color, by calling <a href="../d/default-foreground-color.htm"><b>default-foreground-color</b></a> when
+<a href="../f/foreground-color.htm"><b>foreground-color</b></a>
+returns <code>nil</code>.)
+</p>
+<p id="5">
+The foreground-color is the color in which graphics will be drawn and
+text will be written on the argument object, by calling functions such
+as <a href="../d/draw-line.htm"><b>draw-line</b></a>,
+<a href="../f/fill-box.htm"><b>fill-box</b></a>, <a href="../d/draw-string-in-box.htm"><b>draw-string-in-box</b></a>, or
+<a href="../../../../ansicl/dictentr/writepri.htm"><b>print</b></a>.  By contrast, <a href="../b/background-color.htm"><b>background-color</b></a> is the
+color used to "erase" the object's drawing area. <a href="../f/foreground-color.htm"><b>foreground-color</b></a> and <a href="../b/background-color.htm"><b>background-color</b></a> apply to
+windows,
+<a href="../../../classes/cg/dialog-item.htm"><code>dialog-item</code></a>s,
+<a href="../../../classes/cg/button-info.htm"><code>button-info</code></a>s
+(of a <a href="../../../classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a>), and <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a>s (of an
+outline).
+</p>
+<p id="6">
+A foreground color may be specified either by calling <a href="../f/foreground-color.htm"><b>(setf
+foreground-color)</b></a> or by passing the
+<i>foreground-color</i> initarg to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> or <a href="../m/make-window.htm"><b>make-window</b></a> when creating the
+object. The value may be either an RGB instance (see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>) or <code>nil</code>.  <code>nil</code> means to use the
+<a href="../d/default-foreground-color.htm"><b>default-foreground-color</b></a> for the
+object.  (In particular, the value cannot be an HLS color, as returned
+by <a href="../m/make-hls.htm"><b>make-hls</b></a>.  If
+you use HLS colors, apply <a href="../h/hls-to-rgb.htm"><b>hls-to-rgb</b></a> to them before setting
+this property, and call <a href="../r/rgb-to-hls.htm"><b>rgb-to-hls</b></a> to get the HLS
+equivalent of an RGB value.)
+</p>
+<p id="7">
+It is typical to leave the foreground-color of an object <code>nil</code>. In that case, the <a href="../d/default-foreground-color.htm"><b>default-foreground-color</b></a> is
+used. If the initial method of that generic function is used, <a href="../d/default-foreground-color.htm"><b>default-foreground-color</b></a>
+will return a system color such as the one returned by <a href="../s/system-foreground-color.htm"><b>system-foreground-color</b></a>.
+This causes your application to use the end user's preferred colors
+that they have selected in the Windows Control Panel.
+</p>
+<p id="8">
+When the <a href="../f/foreground-color.htm"><b>foreground-color</b></a> is an RGB color,
+the actual RGB instance that is passed to <a href="../f/foreground-color.htm"><b>(setf
+foreground-color)</b></a> is retained to be returned later by <a href="../f/foreground-color.htm"><b>foreground-color</b></a>. Therefore,
+applications should not modify an RGB instance while it is assigned to
+an object. A single RGB instance may be assigned to any number of
+objects, however.
+</p>
+<p id="9">
+In earlier releases, this generic function had an optional argument,
+<i>result-rgb</i>, which was already deprecated and
+unused.  Starting in release 7.0, that argument is no longer
+supported. Code which includes that argument will signal an error. The
+error can be fixed by removing any reference to a second, optional
+argument.
+</p>
+<p id="10">
+See also <a href="../w/with-foreground-color.htm"><b>with-foreground-color</b></a>, a convenient
+macro that temporarily changes the foreground color while a body of
+code is executed. See also <a href="../b/background-color.htm"><b>background-color</b></a>.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/foreground-color.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>locale-attribute</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/locale-attribute.htm">9.0 version</a></td></tr></table><h2 id="2">locale-attribute</h2>
+
+<p id="3"><b>Arguments: </b><i>
+locale attribute </i>&amp;key <i>category</i><i>
+</i></p>
+
+<p id="4">
+The <i>attribute</i> and <i>category</i>
+arguments to <a href="locale-attribute.htm"><b>locale-attribute</b></a> are string designators. The
+lookup is first done using a case-sensitive search. If the attribute
+cannot be found, then the search is retried using a case-insensitive
+search.
+</p>
+<p id="5">
+A call to (locale-attribute x-locale x-attr) returns the value for
+x-attr in locale x-locale.  Since attribute names are unique among all
+categories, it is not necessary to supply the category, but the
+:category keyword argument limits the attribute search to the
+specified category.  This may help speed up the attribute's search.
+If the attribute can not be found, then 
+<a href="locale-attribute.htm"><b>locale-attribute</b></a> returns the
+keyword :unspecified.  It is an error to specify a category for which
+the attribute is not defined.
+</p>
+<p id="6">
+Note that <a href="locale-attribute.htm"><b>locale-attribute</b></a>
+is a general attribute accessor. Many attributes have their own
+specific accessors (which have more Lisp-like names). Thus:
+</p>
+
+<pre id="7">
+(locale-attribute locale "int_curr_symbol" :category "LC_MONETARY")
+ == (locale-int-curr-symbol locale) 
+</pre>
+
+<p id="8">
+See <a href="../../iacl.htm#localization-1">Localization support
+in Allegro CL</a> in <a href="../../iacl.htm">iacl.htm</a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/locale-attribute.htm">9.0 version</a></td></tr></table></body></html>

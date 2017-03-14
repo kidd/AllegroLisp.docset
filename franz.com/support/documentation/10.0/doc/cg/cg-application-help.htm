@@ -1,0 +1,619 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>About adding context-sensitive help to your  Common Graphics application</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-application-help.htm">9.0 version</a></td></tr></table><h1 id="2">About adding context-sensitive help to your  Common Graphics application</h1><p id="3">This document contains the following sections:</p><a href="#displaying-help-1">1.0 Displaying help</a><br>&nbsp;&nbsp;&nbsp;<a href="#comprehensive-help-2">1.1 Comprehensive help</a><br>&nbsp;&nbsp;&nbsp;<a href="#quick-help-2">1.2 Quick help</a><br><a href="#triggering-help-1">2.0 Triggering help</a><br>&nbsp;&nbsp;&nbsp;<a href="#automatic-triggering-2">2.1 Triggering help automatically</a><br>&nbsp;&nbsp;&nbsp;<a href="#trigger-on-request-2">2.2 Triggering help on request</a><br><a href="#where-provide-help-1">3.0 Deciding what to provide help on</a><br>&nbsp;&nbsp;&nbsp;<a href="#selected-window-help-2">3.1 Help on the selected window</a><br>&nbsp;&nbsp;&nbsp;<a href="#selected-object-help-2">3.2 Help on the selected data object</a><br><a href="#example-of-help-1">4.0 An example of providing help</a><br><a href="#unexpected-error-1">5.0 Dealing with an unexpected error in an application</a><br><p id="4">
+This document describes techniques that can be used in Common Graphics
+to allow the end user to quickly get help on whatever feature of your
+application they happen to be using at any moment. Typically, it's
+important to add such context-sensitive help to your application so
+that your users are able to easily discover all of the wonderful
+features that you have designed and to get quick reminders about
+features that they've already learned.
+</p><hr><hr><h2 id="5"><a name="displaying-help-1">1.0 Displaying help</a></h2>
+
+<p id="6">
+This section describes how to display help once you've decided what to
+show help on. Further sections cover how to trigger the displaying of
+help and how to decide what to provide help on.
+</p>
+
+<hr><h2 id="7"><a name="comprehensive-help-2">1.1 Comprehensive help</a></h2>
+
+<p id="8">
+Comprehensive help is useful for initially learning about a feature.
+Quick help, covered below, is better for providing quick reminders
+about features that have already been learned.  The techniques covered
+here for comprehensive help are HTML, WinHelp, and rich text.
+</p>
+
+<h3 id="9">HTML</h3>
+
+<p id="10">
+A popular and easy way to display comprehensive help is to show it in
+a web browser.  In CG, an application can display an HTML file by
+simply calling <a href="../operators/cg/i/invoke-html-browser.htm"><b>invoke-html-browser</b></a> on a pathname
+or namestring of an HTML file that you have prepared.
+</p>
+<p id="11">
+This facility requires either that the end user has established
+Internet Explorer or Netscape Navigator as their default HTML browser,
+or that they are currently running one of those programs. In the
+unlikely event that a user does not have either of these browsers,
+your app could instruct them to simply download one of them. (You can
+detect this case by checking if <a href="../operators/cg/i/invoke-html-browser.htm"><b>invoke-html-browser</b></a> returns <code>nil</code>.)
+</p>
+<p id="12">
+Common Graphics tries to expose the HTML browser after it has
+displayed the HTML file in it (starting up the default browser if none
+is running), though newer versions of Windows prevent exposing a
+window in another thread, and instead the browser's button in the
+taskbar will flash to tell the user that the browser is asking to be
+selected.
+</p>
+<p id="13">
+Allegro does not provide an HTML editor, so it is up to you to create
+your HTML files using whatever tool you like.
+</p>
+
+<h3 id="14">WinHelp</h3>
+
+<p id="15">
+WinHelp is a standard facility for help in Windows programs, though
+many people have moved to HTML or XML more recently in order to
+maintain their master help data in a less proprietary or more
+forward-looking format. If you prefer WinHelp, it can be used in an
+Allegro application, though you must call the Windows API function for
+this facility directly. You must also use a third-party tool to
+construct the WinHelp file to distribute.
+</p>
+<p id="16">
+To invoke WinHelp, you just need to call the function
+<b>windows:WinHelp</b>. Below is a sample function that shows how you
+can call this Windows API function directly. (The <a href="../operators/ff/def-foreign-call.htm"><b>def-foreign-call</b></a> for WinHelp has
+already been set up, as with many other Windows API functions that
+exist as lisp functions in the "windows" package.)  The function shown
+below does not exist in Allegro, but you may use it or something
+similar.  To implement additional WinHelp options, refer to
+Microsoft's documentation.
+</p>
+
+<pre id="17">
+(defun windows-help (window winhelp-file topic)
+  ;; WINDOW should be any window in your application.
+  ;; WINHELP-FILE should be the pathname or namestring of a winhelp file.
+  ;; TOPIC should be either a string naming a "key" in the winhelp file,
+  ;;   or the symbol :index to display the winhelp file's index,
+  ;;   or the symbol :close to close the winhelp window.
+  (let* ((key? nil)
+         (type (case topic
+                 (:index win:HELP_FINDER)
+                 (:close win:HELP_QUIT)
+                 (t (setq key? t) win:HELP_KEY))))
+    (excl:with-native-string (native-path-string (namestring winhelp-file))
+      (excl:with-native-string (native-topic-string (if key? topic ""))
+        (win:WinHelp (cg:handle window) native-path-string type
+                     (if key? native-topic-string 0))))))
+</pre>
+
+<p id="18">
+Allegro does not provide any tools for creating WinHelp files, so you
+need to use other tools to create them.
+</p>
+
+<h3 id="19">Rich text</h3>
+
+<p id="20">
+Another option is to use rich text.  Common Graphics includes a
+<a href="../classes/cg/rich-edit.htm"><code>rich-edit</code></a> widget,
+and so displaying help in such a widget allows you to integrate help
+anywhere in the window hierarchy of your Common Graphics application,
+rather than as a separate top-level HTML browser or WinHelp window
+over which your application has less control.  The rich-edit control
+does not support multiple columns or pixmaps, but does support such
+things as multiple font faces and sizes, colored text, bulleted lists,
+and different indentation and justification in each paragraph, which
+can go a long way.
+</p>
+<p id="21">
+You can create rich text documents to be read into a Common Graphics
+<a href="../classes/cg/rich-edit.htm"><code>rich-edit</code></a>
+control either in a word processor such as Word or Wordpad, or in a
+Common Graphics rich-edit control.  To try editing rich text in the
+IDE, invoke the <a href="../ide-menus-and-dialogs/file-menu.htm">File</a>
+| <a href="../ide-menus-and-dialogs/file-menu.htm#new-form">New
+Form</a> command and select <code>rich-edit-dialog</code>
+from the list of window types. Running this form allows you to start
+editing rich text immediately.
+</p>
+<p id="22">
+A non-standard rich text feature that Common Graphics provides is the
+ability to add colored hypertext links to a rich text document (see
+find-links), similar to HTML links.  You will need to use a Common
+Graphics <a href="../classes/cg/rich-edit-dialog.htm"><code>rich-edit-dialog</code></a> to add the links,
+rather than a third-party word processor.
+</p>
+<p id="23">
+See <a href="cg-rich-text.htm">cg-rich-text.htm</a> for an introduction
+to Common Graphics's rich text functionality.
+</p>
+
+
+
+
+
+<hr><h2 id="24"><a name="quick-help-2">1.2 Quick help</a></h2>
+
+<p id="25">
+Common Graphics makes it easy to display quick reminders to the user
+either as status-bar messages or as tooltips.
+</p>
+
+<h3 id="26">Status bar messages</h3>
+
+<p id="27">
+A status bar is a narrow area along the bottom of a window into which
+short messages can be displayed. Common Graphics offers two types of
+status bars:
+</p>
+
+<ul>
+<li id="28">
+The <a href="../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a> class implements
+a status bar provided by the operating system. It can have multiple
+sections with borders between them, and has a border that matches the
+current style of the OS (including a large resizing handle at the
+right end). It can display only a single line of text.
+</li>
+<li id="29">
+The <a href="../classes/cg/status-bar.htm"><code>status-bar</code></a>
+class implements a status bar completely within Common Graphics. It
+cannot have multiple sections, but can have multiple lines of text.
+Since it is usually best to keep status-bar messages as concise as
+possible, the <a href="../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a> is recommended
+unless multi-line messages are really needed.
+</li>
+</ul>
+
+<p id="30">
+When designing a form interactively, you can add a status bar to any
+window by toggling the window's <a href="../operators/cg/s/status-bar.htm"><b>status-bar</b></a> property in the
+inspector. The resulting status bar will always be a <a href="../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a>.
+Call <a href="../operators/cg/a/add-common-status-bar.htm"><b>add-common-status-bar</b></a> to add a
+<a href="../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a> programmatically,
+or <a href="../operators/cg/a/add-status-bar.htm"><b>add-status-bar</b></a>
+if the multi-line model is preferred.
+</p>
+<p id="31">
+You can display text in a status bar at run time by calling either
+<a href="../operators/cg/s/status-bar-message.htm"><b>status-bar-message</b></a> (passing in the
+status bar itself) or <a href="../operators/cg/w/window-message.htm"><b>window-message</b></a> (passing in the
+window that the status-bar is on; this is typically more convenient).
+Calling <a href="../operators/cg/p/parts.htm"><b>(setf
+parts)</b></a> on a <a href="../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a> will divide it
+into sections for multiple short messages.
+</p>
+
+<h3 id="32">Tooltips</h3>
+
+<p id="33">
+A tooltip window is a small window that pops up momentarily, usually
+as a reminder of what an interface component does.
+</p>
+<p id="34">
+A tooltip can be implemented for any control (dialog-item) by simply
+setting its <a href="../operators/cg/t/tooltip.htm"><b>tooltip</b></a> property to an appropriate
+short string. The built-in behavior of Common Graphics will cause a
+small tooltip window to appear when the mouse cursor has been over the
+control for a short time. You can customize this default behavior by
+modifying configuration options such as <a href="../operators/cg/s/show-tooltips.htm"><b>show-tooltips</b></a>, <a href="../operators/cg/t/tooltip-delay.htm"><b>tooltip-delay</b></a>, and <a href="../operators/cg/t/tooltip-vertical-offset.htm"><b>tooltip-vertical-offset</b></a>.
+</p>
+
+
+
+
+<hr><hr><h2 id="35"><a name="triggering-help-1">2.0 Triggering help</a></h2>
+
+<p id="36">
+The preceding section covered how to display help in various ways.
+This section covers how to enable the user to invoke help. This can
+be done either automatically, where a gesture that a user is making
+for some other reason is also used to display help, or on request,
+where the user makes an explicit request for help.
+</p>
+
+<hr><h2 id="37"><a name="automatic-triggering-2">2.1 Triggering help automatically</a></h2>
+
+<h3 id="38">On tooltip delay</h3>
+
+<p id="39">
+When using tooltips, there is nothing you need to do to trigger
+showing the tooltip window, since the tooltips facility handles this
+for you.
+</p>
+<p id="40">
+But if you would like to show additional help at the time that a
+tooltip is triggered, you can add a <a href="../operators/cg/s/show-tooltip.htm"><b>show-tooltip</b></a> method, which will
+always be called at this time. Be sure not to overwrite the existing
+primary method on dialog-item, though, since that would disable all
+tooltips. For example, the following :after method would display the
+name and the help-string property of a control in the status-bar of
+control's parent window (if it has one) at the same time that the
+tooltip window appears. (The IDE uses a similar method, but it is not
+built into a Common Graphics app unless you add such a method
+yourself.)
+</p>
+
+<pre id="41">
+(defmethod show-tooltip :after ((control dialog-item))
+  (window-message (parent control)
+    "~a --- ~a" (name control)(or (help-string control)
+                                  "MISSING HELP STRING")))
+</pre>
+
+<p id="42">
+Note that <a href="../operators/cg/s/show-tooltip.htm"><b>show-tooltip</b></a> is called even when
+the control has no tooltip, so the above method will display
+status-bar help after the mouse cursor pauses briefly over a control
+even if it has no tooltip.
+</p>
+<p id="43">
+Note also that Common Graphics does not make any use of the <a href="../operators/cg/h/help-string.htm"><b>help-string</b></a> property of
+controls itself; it is simply provided as a handy hook where you can
+place help strings to display whenever and however you like.
+Typically a <a href="../operators/cg/h/help-string.htm"><b>help-string</b></a> is displayed in a
+status bar, and is longer than a tooltip.
+</p>
+
+<h3 id="44">On entering a window or widget</h3>
+
+<p id="45">
+To trigger help when the mouse cursor moves into a control or window,
+an <a href="../operators/cg/o/on-mouse-in.htm"><b>on-mouse-in</b></a>
+event-handler can be added to a control, or a <a href="../operators/cg/m/mouse-in.htm"><b>mouse-in</b></a> method can be written for
+a window class
+or a <a href="../classes/cg/hotspot.htm"><code>hotspot</code></a>
+class. This allows triggering help immediately rather than after the
+tooltip pause. This technique can also be applied to arbitrary
+windows and to hotspots rather than to controls only.
+</p>
+<p id="46">
+The following example would show a status bar message whenever the
+mouse moves into a window.
+</p>
+
+<pre id="47">
+(defmethod mouse-in :after ((window basic-pane) buttons mouse-out-object)
+  (window-message *my-main-window*
+    "Moving from ~a into ~a." (name mouse-out-object)(name window)))
+</pre>
+
+<h3 id="48">On highlighting a menu-item</h3>
+
+<p id="49">
+The generic function <a href="../operators/cg/m/menu-item-highlighted.htm"><b>menu-item-highlighted</b></a> is called
+whenever the user moves the mouse over a menu-item to highlight it.
+You can add a <a href="../operators/cg/m/menu-item-highlighted.htm"><b>menu-item-highlighted</b></a> method to
+display help on the menu-item at this time. Built-in methods will
+display the <a href="../operators/cg/h/help-string.htm"><b>help-string</b></a> of a menu-item in the
+status-bar of the menu's owner window if there is a status-bar there.
+If you'd prefer to show some other sort of help on menu-items, then
+you can override the built-in <a href="../operators/cg/m/menu-item-highlighted.htm"><b>menu-item-highlighted</b></a> methods.
+</p>
+
+<h3 id="50">On changing a value in a control</h3>
+
+<p id="51">
+It may be useful to display status bar messages when the value of a
+control changes. This can be done easily by adding a call to <a href="../operators/cg/w/window-message.htm"><b>window-message</b></a> in the
+<a href="../operators/cg/o/on-change.htm"><b>on-change</b></a>
+functions of the controls. This is especially useful for controls such
+as a <a href="../classes/cg/single-item-list.htm"><code>single-item-list</code></a> and <a href="../classes/cg/outline.htm"><code>outline</code></a> that list options
+that a user can click on in order to see the help string for each one
+before committing to any particular choice.
+</p>
+
+
+
+
+<hr><h2 id="52"><a name="trigger-on-request-2">2.2 Triggering help on request</a></h2>
+
+<p id="53">
+You can add menu commands, global keyboard shortcuts, or buttons
+that the user can use to invoke help explicitly.
+</p>
+
+<h3 id="54">Menu-bar commands (with F1 as a keyboard shortcut)</h3>
+
+<p id="55">
+The standard way to allow users to explicitly request help is to add
+one or more menu-items to the application's menu-bar, typically on a
+Help menu at the right end of the menu-bar.  And a convention in
+Windows is that the keyboard shortcut for the most basic help command
+in the application is the F1 key.  Specify the :event-synonym initarg
+to <a href="../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> as the symbol
+<a href="../variables/cg/vk-f1.htm"><code>vk-f1</code></a> when
+creating a menu-item to give it this keyboard shortcut.
+</p>
+
+<h3 id="56">Shortcut pop-up menus</h3>
+
+<p id="57">
+Help commands can also be added to pop-up menus. A convention in
+Windows is to add commands for quick access to a pop-up-menu invoked
+by clicking the right mouse button in the interior of a window. This
+can be implemented in a general way by adding a <a href="../operators/cg/m/mouse-right-down.htm"><b>mouse-right-down</b></a> method that calls
+<a href="../operators/cg/o/open-menu.htm"><b>open-menu</b></a> and
+<a href="../operators/cg/p/pop-up-menu.htm"><b>pop-up-menu</b></a>. Or
+using <a href="../operators/cg/s/shortcut-commands.htm"><b>shortcut-commands</b></a> and <a href="../operators/cg/p/pop-up-shortcut-menu.htm"><b>pop-up-shortcut-menu</b></a> may
+be somewhat more convenient for typical shortcut menus.
+</p>
+
+<h3 id="58">Global keyboard accelerators</h3>
+
+<p id="59">
+If your application includes top-level windows that are not children
+of your main top-level window that has a menu-bar, then you may want
+to add global keyboard accelerators for help commands that should
+always be available. See <a href="../operators/cg/a/add-global-keyboard-accelerator.htm"><b>add-global-keyboard-accelerator</b></a>.
+</p>
+
+<h3 id="60">context-sensitive-help methods</h3>
+
+<p id="61">
+An alternative to adding an explicit menu-item or global keyboard
+accelerator for the common F1 gesture for context-sensitive help is to
+add one or more <a href="../operators/cg/c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> methods.
+That generic function is called whenever the user presses the F1 key,
+and also when the user uses the question mark button on the title-bar
+of a window that has been given the <a href="../operators/cg/h/help-button.htm"><b>help-button</b></a> property.
+</p>
+
+<h3 id="62">Buttons</h3>
+
+<p id="63">
+Another option, of course, is to have a simple button control on each
+dialog whose title is Help and which invokes help on the dialog that
+it is on. Just add an <a href="../operators/cg/o/on-change.htm"><b>on-change</b></a> event-handler to the
+button that invokes the appropriate help.
+</p>
+
+
+
+
+<hr><hr><h2 id="64"><a name="where-provide-help-1">3.0 Deciding what to provide help on</a></h2>
+
+<p id="65">
+When the user invokes a general command that asks for help on the
+current context, you must decide what object they want contextual help
+on. This is typically the dialog or other window that they are
+currently working in, or perhaps the currently selected application
+value in that window. The first two commands in the IDE's Help menu,
+for example, provide options for those two cases.
+</p>
+
+
+<hr><h2 id="66"><a name="selected-window-help-2">3.1 Help on the selected window</a></h2>
+
+<p id="67">
+The function <a href="../operators/cg/s/selected-window.htm"><b>selected-window</b></a> can be called to
+find what window the user is currently working in. It may be first
+called on the screen to find which top-level window is selected, or
+you may know that already (either by keeping your main window in a
+global variable or by noting the owner window of the menu that was
+invoked).  If this top-level window is just a container for other more
+interesting windows, calling <a href="../operators/cg/s/selected-window.htm"><b>selected-window</b></a> on that window will
+tell you what child window is selected within it.
+</p>
+<p id="68">
+An alternative is to call <a href="../operators/cg/g/get-focus.htm"><b>get-focus</b></a>, typically as
+<code>(get-focus (screen *system*))</code>, to directly ask
+which child window has the keyboard focus.
+</p>
+
+
+
+<hr><h2 id="69"><a name="selected-object-help-2">3.2 Help on the selected data object</a></h2>
+
+<p id="70">
+The function <a href="../operators/cg/s/selected-object.htm"><b>selected-object</b></a> (or related
+functions such as <a href="../operators/cg/s/selected-symbol.htm"><b>selected-symbol</b></a>, <a href="../operators/cg/s/selected-class.htm"><b>selected-class</b></a>, and <a href="../operators/cg/s/selected-string.htm"><b>selected-string</b></a>) may be
+used to find the application value that is considered to be selected
+currently in a control or window. When called on a control, the
+built-in methods will likely return a usable value. There are no
+built-in methods for non-control windows, but an application can write
+a <a href="../operators/cg/s/selected-object.htm"><b>selected-object</b></a>
+method for any window to return a value in some application-specific
+way.
+</p>
+
+
+
+<hr><hr><h2 id="71"><a name="example-of-help-1">4.0 An example of providing help</a></h2>
+
+<p id="72">
+The remainder of this document is a basic example that illustrates
+many of the points covered above.  It displays a window with a <a href="../classes/cg/menu-bar.htm"><code>menu-bar</code></a>, a <a href="../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a>, and a
+<a href="../classes/cg/single-item-list.htm"><code>single-item-list</code></a> control.  Choosing
+commands either from the menu-bar or from the right-button shortcut
+menu will display help strings in the status-bar.
+</p>
+<p id="73">
+Evaluate (help-menu-example) to run the example.
+</p>
+
+<pre id="74">
+(in-package :cg-user)
+
+;;; Define our own window and widget subclasses so that
+;;; we can add mouse-right-down methods to them below.
+
+(defclass my-main-window (frame-window)())
+
+(defclass my-single-item-list (single-item-list)())
+
+;; Call this function to create the example's window
+;; and give it a menu-bar and a common-status-bar.
+
+(defun help-menu-example ()
+  (let* ((window (make-window :my-main-window
+                   :class 'my-main-window
+                   :title "Menus and Help Options"
+                   :exterior (make-box 100 200 600 500)
+                   :scrollbars nil
+                   :dialog-items
+                   (list (make-instance 'my-single-item-list
+                           :name :list
+                           :range '(one two three)
+                           :value 'one
+                           :tooltip "The first three."
+                           :help-string "Pick a number.  Any number."
+                           :on-mouse-in 'show-the-help-string
+                           :on-mouse-out 'clear-the-status-bar
+                           :on-change 'my-on-change
+                           :left 20 :top 60
+                           :width 100 :height 80)))))
+    (add-common-status-bar window)
+    
+    ;; Give the window a menu-bar that has a single Help pull-down
+    ;; menu, which in turn has two help commands on it.
+    (open-menu
+     
+     ;; This is the menu-bar's menu-item for the Help pull-down menu.
+     (list (make-instance 'menu-item
+             :name :help-menu
+             :title "~Help"
+             :help-string "This pull-down menu contains help commands."
+             :value (open-menu
+                     
+                     ;; This is the Help pull-down menu itself.
+                     (list (make-instance 'menu-item
+                             :name :help-on-value
+                             :title "~Help on Value"
+                             :value 'help-on-value
+                             :help-string "Shows help on the selected value."
+                             :event-synonym 'vk-f1)
+                           (make-instance 'menu-item
+                             :name :help-on-dialog
+                             :title "Help on ~Dialog"
+                             :value 'help-on-dialog
+                             :help-string "Shows help on the selected window."
+                             :event-synonym '(control-key vk-f1)))
+                     'pull-down-menu (screen *system*)
+                     :on-click 'funcall-menu-item-with-window)))
+     'menu-bar window)
+    window))
+
+(defun help-on-value (window)
+  "Called by the Help on Value menu command."
+  
+  ;; Find the selected value in the single-item-list on the main window.
+  (let* ((value (selected-object (dialog-item (selected-window window)))))
+    
+    ;; Display information about this value in the window's status-bar.
+    (window-message window "~a --- ~a"
+      value
+      (case value
+        (one "The loneliest number.")
+        (two "The second loneliest number.  Sometimes as bad as one.")
+        (three "The number of dogs required for adequate warmth tonight.")
+        (t "No value selected.")))
+    
+    #+later ;; This could be used if the HTML pages existed.
+    (invoke-html-browser
+     (merge-pathnames (format nil "help-dir/~a.html" value)
+                      
+                      ;; This returns the directory of the running
+                      ;; executable lisp (IDE or standalone app).
+                      (translate-logical-pathname "sys:")))))
+
+(defun help-on-dialog (window)
+  "Called by the Help on Window menu command."
+  (window-message window "~a"
+    "This window implements the famous CG Help example."))
+
+(defun show-the-help-string (widget buttons mouse-out-window)
+  "Called when the mouse moves into WIDGET."
+  (declare (ignore buttons mouse-out-window))
+  (window-message (parent widget) "~a" (help-string widget)))
+
+(defun clear-the-status-bar (widget buttons mouse-in-window)
+  "Called when the mouse moves out of WIDGET."
+  (declare (ignore buttons mouse-in-window))
+  (window-message (parent widget) ""))
+
+(defun my-on-change (widget new-value old-value)
+  "Called when the value of WIDGET has changed."
+  (window-message (parent widget) "Widget ~s goes from ~s to ~s."
+    (name widget) new-value old-value))
+
+(defmethod mouse-right-down ((window my-main-window)
+                             buttons cursor-position)
+  ;; This is called when the user right-clicks the main window interior.
+  (my-mouse-right-down window buttons cursor-position))
+
+(defmethod mouse-right-down ((control my-single-item-list)
+                             buttons cursor-position)
+  ;; This is called when the user right-clicks the single-item-list.
+  (my-mouse-right-down (parent control) buttons cursor-position))
+
+(defun my-mouse-right-down (window buttons cursor-position)
+  "Pops up a shortcut menu for this application."
+  (declare (ignore buttons cursor-position))
+  (let* ((menu (open-menu
+                (list (make-instance 'menu-item
+                        :name :help-on-value
+                        :title "~Help on Value"
+                        :value 'help-on-value
+                        :help-string "Shows help on the selected value.")
+                      (make-instance 'menu-item
+                        :name :help-on-dialog
+                        :title "Help on ~Dialog"
+                        :value 'help-on-dialog
+                        :help-string "Shows help on the selected window."))
+                'pop-up-menu (screen *system*)))
+         value)
+    (unwind-protect
+        
+        ;; If the user selected a choice from the menu, call the
+        ;; function which is the select menu-item's value.
+        (when (setq value (pop-up-menu menu window))
+          (funcall value window))
+      
+      ;; Be sure to close temporarily-used menus to free up
+      ;; operating system menu resources.
+      (close menu))))
+
+(defmethod redisplay-window ((window my-main-window) &optional box)
+  (declare (ignore box))
+  (call-next-method) ;; draw the background
+  
+  ;; Draw this string in the window whenever it is uncovered.
+  (draw-string-in-box
+   window "Right-click to see the shortcut menu."
+   nil nil (make-box 40 180 400 200) :left :top))
+
+#+test
+(help-menu-example)
+</pre>
+
+
+<hr><hr><h2 id="75"><a name="unexpected-error-1">5.0 Dealing with an unexpected error in an application</a></h2>
+
+<p id="76">
+If an unexpected error is signaled while your application is running,
+it is preferable that it be handled so that minimal user data is lost
+and the chance of recovery is maximized. The app property
+default-error-handler-for-delivery allows you to specify a function
+that will be called, with the signaled condition as an argument, that
+can deal with the error (although exiting the program after attempting
+to save data and collect useful debugging information is often the
+only reasonable action).
+</p>
+<p id="77">
+See the description of the property for more details. The defaul
+function simply displays a dialog that tells the user an unexpected
+error has occurred and exits Lisp.
+</p>
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-application-help.htm">9.0 version</a></td></tr></table></html>

@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>weak-vector</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/weak-vector.htm">9.0 version</a></td></tr></table><h2 id="2">weak-vector</h2>
+
+<p id="3"><b>Arguments: </b><i>n</i></p>
+
+<p id="4">Returns a weak vector of <i>n</i> elements. The
+vector will be similar to a simple general vector in that the value of
+each slot can be any Lisp object and it cannot have a
+fill-pointer. The fact that a slot in a weak vector contains an object
+does <i>not</i> protect that object from being identified as garbage
+and scavenged (or global-gc'ed) away.  (In contrast, if an object was
+the value of a slot of an ordinary vector which was not itself
+garbage, the object could not be garbage.) If the object is disposed
+of by the garbage collector, the value of the slot in any weak vectors
+pointing to it is changed to <code>nil</code>. </p>
+
+<p id="5">In addition to <a href="weak-vector.htm"><b>weak-vector</b></a>, <a href="../../../ansicl/dictentr/make-arr.htm"><b>make-array</b></a> takes a :weak keyword argument, which
+defaults to <code>nil</code>. If specified <code>t</code>, a weak vector of the specified type is
+returned. It is an error to specify both :weak and :displaced-to.</p>
+
+<p id="6">
+As with a normal vector, the values of slots can be accessed with
+<a href="../../../ansicl/dictentr/aref.htm"><b>aref</b></a> and set with <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> used in conjunction with
+<a href="../../../ansicl/dictentr/aref.htm"><b>aref</b></a>. </p>
+
+<p id="7">
+See <a href="../../gc.htm">gc.htm</a> for general information on garbage
+collection and <a href="../../gc.htm#weak-vecs-etc-1">Weak
+vectors, finalizations, static arrays, etc.</a> in that document
+for more on weak vectors.
+</p>
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/weak-vector.htm">9.0 version</a></td></tr></table></body></html>

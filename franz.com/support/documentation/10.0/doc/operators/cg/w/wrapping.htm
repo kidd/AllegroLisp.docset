@@ -1,0 +1,137 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>wrapping</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/wrapping.htm">9.0 version</a></td></tr></table><h2 id="2">wrapping</h2>
+
+<p id="3"><b>Arguments: </b><i>
+widget
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../w/wrapping.htm"><b>wrapping</b></a> property of the argument.
+<a href="../w/wrapping.htm"><b>wrapping</b></a> is a
+property of the following classes:
+</p>
+<ul>
+
+
+<li id="5">
+
+<a href="../../../classes/cg/lamp.htm"><code>lamp</code></a>
+
+</li>
+ 
+<li id="6">
+
+<a href="../../../classes/cg/up-down-control.htm"><code>up-down-control</code></a>
+
+</li>
+<li id="7">
+
+<a href="../../../classes/cg/static-text.htm"><code>static-text</code></a>
+
+</li>
+
+<li id="8">
+
+<a href="../../../classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a>
+
+</li>
+
+<li id="9">
+
+<a href="../../../classes/cg/button.htm"><code>button</code></a>
+
+</li>
+<li id="10">
+
+<a href="../../../classes/cg/default-button.htm"><code>default-button</code></a>
+
+</li>
+<li id="11">
+
+<a href="../../../classes/cg/cancel-button.htm"><code>cancel-button</code></a>
+
+</li>
+<li id="12">
+
+<a href="../../../classes/cg/radio-button.htm"><code>radio-button</code></a>
+
+</li>
+<li id="13">
+
+<a href="../../../classes/cg/check-box.htm"><code>check-box</code></a>
+
+</li>
+</ul>
+
+<p id="14">
+The meaning is different for <a href="../../../classes/cg/up-down-control.htm"><code>up-down-control</code></a> than for the other
+classes. The default value is <code>t</code> for <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a> and
+<a href="../../../classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a> and is
+<code>nil</code> for the others.
+</p>
+<p id="15">
+The <a href="../w/wrapping.htm"><b>wrapping</b></a>
+property cannot be modified on an existing control by calling <a href="../w/wrapping.htm"><b>(setf
+wrapping)</b></a>. Instead it must be specified by passing the
+:wrapping initarg to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> when creating the control. (When
+using the inspector to interactively edit controls on a form, the
+inspector can still make such modifications because it internally
+recreates the control's window to reflect the change and creates the
+<a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>
+form to create the control in the actual application.)
+</p>
+
+<h3 id="16">up-down-control</h3>
+<p id="17">
+An <a href="../../../classes/cg/up-down-control.htm"><code>up-down-control</code></a> allows the user to
+change the (typically) numeric value in an <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> control by clicking
+on an up arrow or a down arrow displayed on the up-down control. The
+issue with <a href="../w/wrapping.htm"><b>wrapping</b></a> is what happens when the
+user clicks the up arrow when the <a href="../v/value.htm"><b>value</b></a> is at the top of the <a href="../r/range.htm"><b>range</b></a> or clicks the down
+arrow when the <a href="../v/value.htm"><b>value</b></a> is at the bottom of the
+<a href="../r/range.htm"><b>range</b></a>.
+</p>
+<p id="18">
+If the <a href="../w/wrapping.htm"><b>wrapping</b></a>
+property is true, clicking the up arrow when the <a href="../v/value.htm"><b>value</b></a> is at the top of the <a href="../r/range.htm"><b>range</b></a> changes the <a href="../v/value.htm"><b>value</b></a> to the bottom of
+the <a href="../r/range.htm"><b>range</b></a> while
+clicking the down arrow at the bottom changes the value to the top. If
+<a href="../w/wrapping.htm"><b>wrapping</b></a> is
+<code>nil</code>, clicking an arrow when the <a href="../v/value.htm"><b>value</b></a> is at the extreme
+of the <a href="../r/range.htm"><b>range</b></a> has
+no effect.
+</p>
+
+<h3 id="19">static-text and the various button controls</h3>
+<p id="20">
+If the <a href="../w/wrapping.htm"><b>wrapping</b></a>
+property on one of these controls is true (the default for <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a> and
+<a href="../../../classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a> but not for
+the others), the text (in the <a href="../t/title.htm"><b>title</b></a> of the various button
+controls and the <a href="../v/value.htm"><b>value</b></a> of <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a> controls) is
+automatically wrapped at spaces as necessary to prevent the text from
+extending beyond the right edge of the control.  If <code>nil</code>, the text is displayed on a single line up to the
+point where the text is clipped at the right edge of the
+control. Turning this property off can be useful for a static-text
+that displays only a single line of text so that a long word that
+would otherwise be wrapped to the next (unseen) line will instead
+remain on the first line to be visible up to the point where it is
+clipped by the right edge of the control.
+</p>
+
+
+<h3 id="21">
+GTK Note
+</h3>
+
+<p id="22">
+This property is not supported by the GTK <a href="../../../classes/cg/check-box.htm"><code>check-box</code></a> and <a href="../../../classes/cg/radio-button.htm"><code>radio-button</code></a> widgets. You can, however, add
+explicit newline characters into the title string, and the text will
+always wrap there.
+</p>
+
+
+
+
+<hr><p id="23"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/wrapping.htm">9.0 version</a></td></tr></table></body></html>

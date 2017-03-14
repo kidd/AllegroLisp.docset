@@ -1,0 +1,111 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>mci-record</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mci-record.htm">9.0 version</a></td></tr></table><h2 id="2">mci-record</h2>
+
+<p id="3"><b>Arguments: </b><i>
+device </i>&amp;key <i>from to notify-p wait-p insert-p overwrite-p</i><i>
+</i></p>
+
+<p id="4">
+Records audio that may be saved as a <i>.wav</i> file by
+calling <a href="../m/mci-save.htm"><b>mci-save</b></a>.
+<i>device</i> is an <a href="../../../classes/cg/mci-wave-audio.htm"><code>mci-wave-audio</code></a>
+instance. <i>from</i> may be <code>nil</code> to default to recording at the end of the
+already-recorded audio on this device (if any), or else an integer
+indicating the starting position within the already-recorded audio
+(see <a href="../m/mci-device-set-time-format.htm"><b>mci-device-set-time-format</b></a> and
+<a href="../t/tmsf-to-integer.htm"><b>tmsf-to-integer</b></a>)
+from which to begin overwritting. <i>to</i> may be
+either <code>nil</code> to default to recording
+indefinitely until <a href="../m/mci-stop.htm"><b>mci-stop</b></a> is called, or else a
+position indicating the position at which to stop recording
+automatically.
+</p>
+<p id="5">
+If the <i>wait-p</i> argument is specified true, this
+function will not return until the action is completed. If <code>nil</code>, this function is run asynchronously. If
+<i>notify-p</i> is true, <a href="../m/mci-notify.htm"><b>mci-notify</b></a> will be called when this
+function completes.
+</p>
+<p id="6">
+See <a href="../../../cg/cg-mci.htm">cg-mci.htm</a> for information about
+MCI support in Common Graphics.
+</p>
+
+<h3 id="7">Example</h3>
+
+<p id="8">
+Here is a sample recording session as a series of top-level forms that
+may be evaluated sequentially in the IDE editor, for example.  Note
+that <a href="../m/mci-record.htm"><b>mci-record</b></a>
+returns immediately though recording continues until the <a href="../m/mci-stop.htm"><b>mci-stop</b></a> call is made.  A
+real application would typically have widgets that make these calls.
+</p>
+<p id="9">
+When recording audio, a microphone or other audio input must be
+connected to a sound card, with a driver for that sound card selected
+as the default audio device in Control Panel.  The sound card may have
+a mixer applet in which you must select the current recording input
+jack(s) and level.
+</p>
+<pre id="10">
+(use-package :cg)
+
+;; Create and open a wave audio device for recording.
+(setq wav (make-instance 'mci-wave-audio))
+(mci-open wav)
+
+;; Check the default audio quality (low).
+(mci-device-bits-per-sample wav) ;; ==&gt; 8
+(mci-device-samples-per-second wav) ;; ==&gt; 11025
+(mci-device-channels wav) ;; ==&gt; 1 (monophonic)
+
+;; Set higher quality audio before recording.
+(mci-set-wave-options wav
+                      :bits-per-sample 16
+                      :samples-per-second 48000
+                      :channels 1)   ;; still monophonic for now
+
+;; Try a recording.
+(mci-record wav)           ;; recording starts now (start talking ...)
+(mci-stop wav)             ;; recording stops now
+(mci-record wav)           ;; append more recording to the end
+(mci-stop wav)             ;; stop again
+
+;; Save the recording so far to a .wav file.
+(mci-save wav :file &quot;c:\\temp1.wav&quot;)
+
+;; Play back what we've recorded.
+(mci-seek wav :seek-to-start-p t)   ;; rewind to beginning
+(mci-play wav)                      ;; play from current position
+(mci-stop wav)                      ;; interrupt a long playback
+
+;; Start over, re-using the same device.
+(mci-delete wav)           ;; delete everything recorded so far
+(mci-set-wave-options wav  ;; try a stereo recording this time
+                      :bits-per-sample 16
+                      :samples-per-second 48000
+                      :channels 2) ;; stereo
+(mci-record wav)           ;; record from scratch
+(mci-stop wav)             ;; stop recording
+
+;; Try &quot;editing out&quot; a middle section of the recording.
+(mci-seek wav :seek-to-start-p t)    ;; rewind to beginning
+(mci-play wav)             ;; play the recording for a little while
+(mci-stop wav)             ;; stop in the middle of playback
+(setq from (mci-device-position wav))  ;; remember where we stopped
+(mci-play wav)             ;; play back a bit further
+(mci-stop wav)             ;; stop playback again
+(setq to (mci-device-position wav))  ;; remember where we stopped again
+(mci-delete wav :from from :to to)   ;; delete the middle section
+(mci-seek wav :seek-to-start-p t)    ;; rewind to beginning
+(mci-play wav)             ;; play the edited recording
+
+;; Save the edited recording over the file that was saved earlier.
+(mci-save wav :file &quot;c:\\temp1.wav&quot;)
+(mci-close wav)            ;; close the device when we're done with it
+</pre>
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mci-record.htm">9.0 version</a></td></tr></table></body></html>

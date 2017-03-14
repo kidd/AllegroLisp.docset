@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>draw-ellipse</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-ellipse.htm">9.0 version</a></td></tr></table><h2 id="2">draw-ellipse</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream center semi-major-axis semi-minor-axis semi-major-axis-angle
+</i></p>
+
+<p id="4">
+Draws an ellipse on <i>stream</i>. The ellipse is
+defined by the center (a position) and the two half-axes, lengths from
+the center to the farthest point on the edge and to the nearest point
+on the edge, called the semi-major-axis and the
+semi-minor-axis. (Technically, the major axis should be longer than
+the minor axis but the two arguments need not have that relationship.)
+Because the Windows ellipse drawer can only draw ellipses that are
+vertically or horizontally oriented, the
+<i>semi-major-axis-angle</i> argument must be a multiple
+of 90. Other values will signal an error.  The argument specifies the
+angle between the semi-major-axis and a line parallel to the x-axis
+passing through the <i>center</i>. Angles are measured
+clockwise.
+</p>
+<p id="5">
+<i>center</i> should be a position (see <a href="../m/make-position.htm"><b>make-position</b></a>).
+<i>stream</i> should be a <a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+</p>
+<p id="6">
+The following example creates a window that draws a thin
+vertically-oriented ellipse that is 200 pixels tall and has a
+line-width of 3 pixels:
+</p>
+<pre id="7">
+(defclass ellipse-window (frame-window)()
+  (:default-initargs
+   :exterior (make-box-relative 100 100 100 400)
+   :title "Ellipse"))
+
+(defmethod redisplay-window ((window ellipse-window) 
+                             &optional clipping-box)
+  (declare (ignore clipping-box))
+  (call-next-method)   ;; Draw the background
+  (with-line-width (window 3)
+    (draw-ellipse window (make-position 50 150) 100 20 90)))
+
+(make-window :ellipse-example :class 'ellipse-window)
+</pre>
+
+<p id="8">
+See also <a href="../../../cg/cg-drawing.htm">cg-drawing.htm</a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-ellipse.htm">9.0 version</a></td></tr></table></body></html>

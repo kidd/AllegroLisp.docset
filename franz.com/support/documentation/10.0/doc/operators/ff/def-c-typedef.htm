@@ -1,0 +1,31 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-c-typedef</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/def-c-typedef.htm">9.0 version</a></td></tr></table><h2 id="2">def-c-typedef</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name </i> &amp;rest <i> slots</i><i>
+</i></p>
+
+<p id="4">This macro is obsolete and kept for backward compatibility only. Please use <a href="def-foreign-type.htm"><b>def-foreign-type</b></a>.</p>
+
+<p id="5">This macro returns name if name is a symbol or (car name) if name is a list but this
+macro is used for its side effects. The side effect is to define a C type to Lisp. (The
+list of allowable types is the same as given in the definition of <a href="def-c-type.htm"><b>def-c-type</b></a>.
+It includes structures and unions as well as ordinary types.) However, unlike the related
+macro <a href="def-c-type.htm"><b>def-c-type</b></a>, no accessor functions and no constructor
+functions are defined. You cannot even use <a href="make-cstruct.htm"><b>make-cstruct</b></a>
+to create an object of the defined type. The purpose of <a href="def-c-typedef.htm"><b>def-c-typedef</b></a>
+is to provide building blocks which will be used by <a href="def-c-type.htm"><b>def-c-type</b></a>
+(which does create accessors and a constructor as side effects) without paying the
+overhead of defining the additional functions. <a href="def-c-typedef.htm"><b>def-c-typedef</b></a> takes the same arguments
+as <a href="def-c-type.htm"><b>def-c-type</b></a>. (If the name argument is a list, only the
+first element, which must be a symbol, is used. A list is accepted for compatibility with <a href="def-c-type.htm"><b>def-c-type</b></a>.) </p>
+
+<p id="6">
+See <a href="../../ftype.htm">ftype.htm</a> for
+information on foreign types in Allegro CL and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/def-c-typedef.htm">9.0 version</a></td></tr></table></body></html>

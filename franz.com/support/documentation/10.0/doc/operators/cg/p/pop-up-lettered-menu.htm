@@ -1,0 +1,180 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pop-up-lettered-menu</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pop-up-lettered-menu.htm">9.0 version</a></td></tr></table><h2 id="2">pop-up-lettered-menu</h2>
+
+
+
+<p id="3"><b>Arguments: </b><i>
+choices </i>&amp;key  (<i>sortp</i> t) (<i>sort-predicate</i> (function string&lt;)) (<i>sort-key</i> (function identity))<i> on-print</i> (<i>stream</i> (screen *system*))<i> position on-help</i><i>
+</i></p>
+
+
+<p id="4">
+Calls <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a>
+to display a list of choices, returning the choice selected by the
+user. The added feature of this function is that it prepends
+consecutive letters of the alphabet to the displayed menu-item
+strings to allow the user to quickly choose an item with the keyboard.
+If there are no more than 26 choices in the menu, then any choice may
+be made by typing the single shortcut letter displayed at the left end
+of the menu-item.  If there are more than 26 choices, then multiple
+menu-items will share shortcut letters, and the user may need to type
+a shortcut letter multiple times until the desired item is
+highlighted, and then press the ENTER key to choose the highlighted
+item.
+</p>
+<p id="5">
+<b><i>choices</i> arbitrary values
+from which the user can choose.  The <i>on-print</i>
+function will convert these values to strings to display on the menu
+from top to bottom.</b> Shortcut letters
+are prepended to the displayed strings automatically. A list member
+may be the symbol <a href="../../../variables/cg/menu-separator.htm"><code>menu-separator</code></a> or its global value
+to insert a horizontal separator line into the menu at that position;
+this is suitable only when <i>sortp</i>
+is <code>nil</code>.
+</p>
+<p id="6">
+<b><i>sortp</i></b>, if specified, should be either true
+or <code>nil</code>.  If true, then the items in the
+<i>choices</i> list will first be sorted by the
+<i>sort-predicate</i> function before being
+displayed. The default value is <code>t</code>, so
+<code>:sortp nil</code> should be specified to avoid sorting the
+items.
+</p>
+<p id="7">
+<b><i>sort-predicate</i></b>, if specified, should be a
+funcallable object (a function object or function name).  The default
+value is the function <b>string&lt;</b>. The function should take two
+arguments, as with the <i>predicate</i> argument to
+<a href="../../../../ansicl/dictentr/sortstab.htm"><b>sort</b></a>.  If
+<i>sortp</i> is true, then the items in the
+<i>choices</i> list will be sorted by this function.
+</p>
+
+<p id="8">
+<b><i>sort-key</i></b>, if specified, should be a
+funcallable object (a function object or function name) or <code>nil</code>. The default value is <code>nil</code>, which acts as if the <a href="../../../../ansicl/dictentr/identity.htm"><b>identity</b></a> function were specified. The function
+should take one argument, as with the <i>key</i>
+argument to <a href="../../../../ansicl/dictentr/sortstab.htm"><b>sort</b></a>. If
+<i>sortp</i> is true, then the items will be passed to
+this function and the returned values will be compared with
+<i>sort-predicate</i>.
+</p>
+
+<p id="9">
+<b><i>on-print</i></b>, if specified, should be either
+<code>nil</code>, a function object, or a function name.
+The default value is <code>nil</code>.  If <code>nil</code>, strings in the <i>choices</i>
+argument will appear as if printed by <a href="../../../../ansicl/dictentr/writepri.htm"><b>princ</b></a>, and symbols will appear as if printed by
+<a href="../../../../ansicl/dictentr/writepri.htm"><b>prin1</b></a>.  If a function, the
+function should take a single argument, which is an item from the
+<i>choices</i> list, and all items will appear as if
+printed by the <i>on-print</i> function.  Note that the
+sort, if done at all, is done on the actual items in the
+<i>choices</i> list rather than on the strings returned
+by the <i>on-print</i> function.
+</p>
+
+<p id="10">
+<b><i>stream</i></b> is either the screen or else a
+window that will serve as the owner of the pop-up menu.  The default
+value is the screen (see <a href="../s/screen.htm"><b>screen</b></a>).  The <i>position</i>
+argument is relative to this stream.
+</p>
+<p id="11">
+<b><i>position</i></b> is the position relative to the
+upper-left interior corner of the specified stream at which the
+upper-left corner of the pop-up menu will appear. The default is
+offset a bit from the current position of the mouse cursor.
+</p>
+<p id="12">
+<b><i>on-help</i></b>, if specified, should be a
+funcallable object (a function object or function name)
+or <code>nil</code>.  The default
+is <code>nil</code>.  A function may be used for
+displaying status bar messages as the user highlights individual menu
+items.  The function should take a single argument, which will be one
+of the values in the <i>choices</i> list, and it should
+return a string that can be displayed in a status bar.  The strings
+will be displayed in the status bar of the specified stream, if it has
+a status bar, or else in the status bar of the first ancestor window
+of that stream that has a status bar, if any.
+</p>
+
+<p id="13">
+This function returns the item from the <i>choices</i>
+list that was chosen by the user, or <code>nil</code> if
+the user cancels from the menu by pressing the ESCAPE key or clicking
+off the menu.
+</p>
+<p id="14">
+<b>Multiprocessing note</b>: The keyboard shortcuts for a pop-up menu
+will work only if the window that had the keyboard focus at the time
+<a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a> was
+called was created by the process that is calling <a href="../p/pop-up-lettered-menu.htm"><b>pop-up-lettered-menu</b></a>. Otherwise the
+keystrokes will go to the focused window in the other process.  For
+example, the keyboard shortcuts will not work when evaluating a call
+to <a href="../p/pop-up-lettered-menu.htm"><b>pop-up-lettered-menu</b></a> directly in
+the initial IDE listener pane, because the IDE will evaluate the
+expression in the Listener 1 process, though the currently focused
+window (the listener pane) was created in the IDE GUI process.
+</p>
+<p id="15">
+An alternative way to ask the user for a choice from a list is to call
+<a href="../a/ask-user-for-choice-from-list.htm"><b>ask-user-for-choice-from-list</b></a>.
+This function may be better when the list of choices is large, as it
+uses a scrolling <a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a> or <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>.  For
+four choices or fewer, <a href="../a/ask-user-for-choice.htm"><b>ask-user-for-choice</b></a> may be used.
+</p>
+
+
+<p id="16">
+<b>Examples</b>:
+</p>
+<pre id="17">
+(pop-up-lettered-menu (list "one" "two" "three") :sortp nil)
+</pre>
+<p id="18">
+displays a menu 
+</p>
+<pre id="19">
+a one
+b two
+c three
+</pre>
+<p id="20">
+while
+</p>
+<pre id="21">
+(pop-up-lettered-menu (list "one" "two" "three") :sortp t)
+</pre>
+<p id="22">
+displays a menu with the entries alphabetical:
+</p>
+<pre id="23">
+a one
+b three
+c two
+</pre>
+<p id="24">
+and
+</p>
+<pre id="25">
+(pop-up-lettered-menu (list "one" "two" "three") :sortp t 
+                      :on-print 'capitalize-object)
+</pre>
+<p id="26">
+displays a menu with the entries alphabetical and capitalized:
+</p>
+<pre id="27">
+a One
+b Three
+c Two
+</pre>
+
+
+
+
+<hr><p id="28"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pop-up-lettered-menu.htm">9.0 version</a></td></tr></table></body></html>

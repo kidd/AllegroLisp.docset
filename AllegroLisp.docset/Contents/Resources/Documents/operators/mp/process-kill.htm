@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>process-kill</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-kill.htm">9.0 version</a></td></tr></table><h2 id="2">process-kill</h2>
+
+<p id="3"><b>Arguments: </b><i>
+process </i>&amp;key <i>wait</i><i>
+</i></p>
+
+
+<p id="4">
+This function initiates killing the
+argument <i>process</i> (i.e. a thread). Killing a
+process involves unwinding it. If all goes well,
+<i>process</i> will removed from consideration for
+running and also be removed from the <a href="../../variables/system/s_all-processes_s.htm"><code>*all-processes*</code></a> list, but those things
+typically happen after <a href="process-kill.htm"><b>process-kill</b></a> has returned,
+assuming <i>wait</i>
+is <code>nil</code>. That is, those actions are initiated
+by the call to <a href="process-kill.htm"><b>process-kill</b></a>
+but are completed separately (in part, by <i>process</i>
+itself). <a href="process-kill.htm"><b>process-kill</b></a> can be
+viewed as a request to the system to kill a process.
+</p>
+<p id="5">
+If the <b><i>wait</i></b> keyword argument is
+non-<code>nil</code>, the this function (and the thread
+that called it) wait until the killed
+process is really gone. <a href="process-kill.htm"><b>process-kill</b></a> signals an error if
+the process to be killed is an active immigrant. An inactive immigrant
+is one that was created to handle a lisp call from a foreign thread,
+and has returned from the topmost lisp call back into the foreign
+regime. The thread may still be processing, but it has no lisp
+state. This will kill the lisp process associated with that foreign
+thread, but will not kill the foreign thread itself. If it later calls
+into lisp, a new immigrant process will be created for it.
+</p>
+<p id="6">
+If <i>wait</i> is true and for some
+reason <i>process</i> is not killed, this function will
+not return.
+</p>
+
+<p id="7">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-kill.htm">9.0 version</a></td></tr></table></body></html>

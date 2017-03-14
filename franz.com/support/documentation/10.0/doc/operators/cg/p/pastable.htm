@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pastable</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pastable.htm">9.0 version</a></td></tr></table><h2 id="2">pastable</h2>
+
+<p id="3"><b>Arguments: </b><i>
+dialog-item 
+</i></p>
+
+<p id="4">
+Returns whether anything will be done when <a href="../p/paste-selection.htm"><b>paste-selection</b></a> or <a href="../i/insert-selection.htm"><b>insert-selection</b></a> is
+called on <i>dialog-item</i> or its <a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a>.  The value of this
+property may be set by calling <a href="../p/pastable.htm"><b>(setf pastable)</b></a>, or
+it may be set in the inspector when laying out forms in the IDE.
+</p>
+<p id="5">
+If <code>nil</code>, then <a href="../p/paste-selection.htm"><b>paste-selection</b></a> or <a href="../i/insert-selection.htm"><b>insert-selection</b></a> will do
+nothing and will return <code>nil</code>.  Otherwise they
+will proceed as usual (though insertion is still done only when there
+is an applicable method to do it).
+</p>
+<p id="6">
+The default value is <code>t</code> for text-editing
+widgets, where text insertion is typically allowed, and <code>nil</code> elsewhere.
+</p>
+<p id="7">
+If the <a href="../p/pastable.htm"><b>pastable</b></a> property is
+true for a <a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a>
+or <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>, then a
+pasted value will be inserted just before the currently focused item
+unless the property value is the special keyword
+<code>:after</code>, in which case it will inserted just after
+the currently focused item.  An item-list will not paste a value that
+is already in its range according to the widget's <a href="../o/on-change-test.htm"><b>on-change-test</b></a> function.
+</p>
+<p id="8">
+A <a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a> can cut and
+paste text in its type-in pane if it is <a href="../t/typable.htm"><b>typable</b></a> (as well as <a href="../c/cuttable.htm"><b>cuttable</b></a> and/or <a href="../p/pastable.htm"><b>pastable</b></a>), but cutting and pasting will never
+remove or add items to its range as with an item-list.
+</p>
+
+
+<p id="9">
+See also <a href="../c/cuttable.htm"><b>cuttable</b></a> and <a href="../../../cg/cg-clipboard.htm">cg-clipboard.htm</a>.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pastable.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rpc-get</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-get.htm">9.0 version</a></td></tr></table><h2 id="2">rpc-get</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(self rpc-port) (m rpc-message) </i>&amp;key  (<i>error-p</i> t)<i>
+</i></p>
+
+<p id="4">
+This method is used with the message handle returned by <a href="rpc-invoke.htm"><b>rpc-invoke</b></a> to extract the
+result of the remote call. If the state of the message is :rms-done,
+one or more values are returned, one for each value returned by the
+remote call.
+</p>
+<p id="5">
+If the state of the message is :rms-throw, then the effect depends on
+the thrown result and the <i>error-p</i> argument. If
+<i>error-p</i> is <code>nil</code>, three
+values are always returned: the tag argument of the throw, the value
+of the throw, and an unwind-protect flag. When the unwind-protect
+flag is non-<code>nil</code>, the first two values are
+<code>nil</code>; the remote call was terminated by a
+throw past the return to this caller. 
+</p>
+<p id="6">
+If <i>error-p</i> is non-<code>nil</code>, and the tag is non-<code>nil</code>,
+then the throw is continued in the calling environment. Otherwise an
+error is signaled.
+</p>
+<p id="7">
+If the state of the message is :rms-error an error is signaled, unless
+the <i>error-p</i> argument is <code>nil</code>. If the <i>error-p</i> argument is
+<code>nil</code>, the value returned is usually a list
+where the first element is a keyword denoting the error and the second
+element is a string describing the remote error in more detail.
+</p>
+
+<p id="8">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-get.htm">9.0 version</a></td></tr></table></body></html>

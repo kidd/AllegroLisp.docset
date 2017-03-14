@@ -1,0 +1,172 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>About the Common Graphics timer facility</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-timers.htm">9.0 version</a></td></tr></table><h1 id="2">About the Common Graphics timer facility</h1><p id="3">
+A timer can be used to cause an arbitrary piece of application code to
+be asynchronously invoked after a specified amount of time has
+elapsed. A timer can then be stopped in order to run its code a single
+time only, or it can be allowed to continue running in order to run
+its code an indefinite number of times at a regular time interval.
+</p><p id="4">
+Common Graphics has a <a href="../classes/cg/timer.htm"><code>timer</code></a> class, which can
+be instantiated to create a timer object. A single timer can be
+started and stopped a number of times, using various time intervals,
+to time a number of different activities. If multiple activities need
+to be timed simultaneously, then multiple timers can be created and
+run alongside each other. It is also convenient to create a separate
+timer for each piece of code that is to be invoked by timers, even
+when they do not need to run simultaneously.
+</p><p id="5">
+A timer is an instance of the <a href="../classes/cg/timer.htm"><code>timer</code></a> class, which has
+the following properties. All of these except for id may be set by an
+application. See the page for the <a href="../classes/cg/timer.htm"><code>timer</code></a> class or for the
+individual properties for more detailed information.
+</p><ul>
+<li id="6">
+<a href="../operators/cg/n/name.htm"><b>name</b></a>: an
+arbitrary symbol that is used to find a timer (by calling <a href="../operators/cg/f/find-timer.htm"><b>find-timer</b></a>), or to
+distinguish an individual timer during development and debugging.
+</li>
+<li id="7">
+<a href="../operators/cg/a/active.htm"><b>active</b></a>: a boolean
+value indicating whether a timer is currently running. An active timer
+"fires" each time its 
+<a href="../operators/cg/i/interval.htm"><b>interval</b></a> passes, while an inactive timer
+does nothing. This property of a timer will be non-nil if <a href="../operators/cg/s/start-timer.htm"><b>start-timer</b></a> has been
+called on the timer more recently than <a href="../operators/cg/s/stop-timer.htm"><b>stop-timer</b></a> has. If the active
+property is explicitly modified by an application from nil to non-nil,
+then start-timer is called internally, and if the active property is
+explicitly modified from non-nil to nil, then stop-timer is called
+internally. Therefore, in order to wrap all starting and stopping of
+timers, it is sufficient to add <a href="../operators/cg/s/start-timer.htm"><b>start-timer</b></a> and <a href="../operators/cg/s/stop-timer.htm"><b>stop-timer</b></a> methods.
+</li>
+<li id="8">
+<a href="../operators/cg/i/id.htm"><b>id</b></a>: a positive
+integer that is assigned and used by the operating system to uniquely
+identify a particular timer. Use of <a href="../operators/cg/i/id.htm"><b>id</b></a> is deprecated. An application
+should never modify this property. Any given timer object will always
+use the same id, and no other timer object will use that id.
+</li>
+<li id="9">
+<a href="../operators/cg/i/interval.htm"><b>interval</b></a> a
+positive integer indicating the number of milliseconds after a timer
+is started that it will "fire" by calling the generic function <a href="../operators/cg/t/timer.htm"><b>timer</b></a>. The default timer
+method calls the timer's individual <a href="../operators/cg/o/on-timer.htm"><b>on-timer</b></a> function (if it
+has one), which is where timer messages are usually handled by an
+application. If the interval property is modified while a timer is
+active, then the timer is stopped and immediately restarted using the
+new interval. The interval default-initarg for the timer class is
+1000, which will fire the timer once a second.
+</li>
+<li id="10">
+<a href="../operators/cg/o/on-timer.htm"><b>on-timer</b></a>:
+the name of a function that is invoked after the timer's interval has
+elapsed (assuming that the default 
+<a href="../operators/cg/t/timer.htm"><b>timer</b></a> method has not been
+overridden). The function should take a single argument, which is the
+timer itself.  Its returned values are not used. The default value is
+nil, and so a timer will not "do anything" unless it is given a custom
+on-timer function (or a 
+<a href="../operators/cg/t/timer.htm"><b>timer</b></a> method is added for it).
+<p id="11">
+An on-timer function may call <a href="../operators/cg/s/stop-timer.htm"><b>stop-timer</b></a> on the timer (or set the
+timer's <a href="../operators/cg/a/active.htm"><b>active</b></a>
+property to nil) if the on-timer function should be invoked only a
+single time after the timer is started. Otherwise the on-timer
+function will be called each time the timer's interval has elapsed
+until <a href="../operators/cg/s/stop-timer.htm"><b>stop-timer</b></a>
+is called on the timer (or its <a href="../operators/cg/a/active.htm"><b>active</b></a> property is set to nil).
+</p>
+</li>
+<li id="12">
+<a href="../operators/cg/t/timer-count.htm"><b>timer-count</b></a>: a
+non-negative integer indicating the number of times that a timer's
+interval has elapsed since it was most recently started. This value is
+supplied for general information, and is not used internally by Common
+Graphics. An application could modify this value if desired, though
+there is probably no reason to do so.
+<p id="13">
+When a timer is started, this property is set to zero. Each time a
+timer's interval has elapsed, the default <a href="../operators/cg/t/timer.htm"><b>timer</b></a> method increments the
+timer's timer-count by one and then calls its <a href="../operators/cg/o/on-timer.htm"><b>on-timer</b></a> function. If a timer count
+reaches 50 million, it is reset to zero to prevent the consing of
+bignums.
+</p>
+</li>
+<li id="14">
+<a href="../operators/cg/t/timer-info.htm"><b>timer-info</b></a>: a
+place for an application to store arbitrary information about its
+current use of a timer. Typically, when an application starts a timer,
+it will store an object here to which the timer's <a href="../operators/cg/o/on-timer.htm"><b>on-timer</b></a> function may (or
+may not) apply its functionality when it is invoked. The value of this
+property can be any Lisp object.
+<p id="15">
+(The <a href="../classes/cg/timer.htm"><code>timer</code></a>
+class can of course be subclassed in order to add custom slots for
+this or any other purpose, but this single timer-info slot is provided
+since such a handy place is often needed due to the asynchronous
+nature of timers, and a single slot is often sufficient.)
+</p>
+</li>
+</ul><h3 id="16">
+Functions that apply to all timers
+</h3><p id="17">
+<a href="../operators/cg/f/find-timer.htm"><b>find-timer</b></a><br>
+<a href="../operators/cg/s/start-timer.htm"><b>start-timer</b></a><br>
+<a href="../operators/cg/s/stop-timer.htm"><b>stop-timer</b></a><br>
+<a href="../operators/cg/t/timer.htm"><b>timer</b></a>
+</p><h3 id="18">
+Functions apply to particular built-in timers
+</h3><ul>
+<li id="19">
+<a href="../operators/cg/c/cg-timer.htm"><b>cg-timer</b></a>
+(returns a built-in timer that is used internally by common graphics
+for a variety of purposes and which normally is always active).
+</li>
+<li id="20">
+<a href="../operators/cg/h/handle-cg-timer.htm"><b>handle-cg-timer</b></a> (a
+generic function that is called whenever the built-in timer returned
+by cg-timer fires).
+</li>
+<li id="21">
+<a href="../operators/cg/c/cg-timer-interval.htm"><b>cg-timer-interval</b></a>
+</li>
+<li id="22">
+<a href="../operators/cg/t/tooltip-delay.htm"><b>tooltip-delay</b></a>
+</li>
+<li id="23">
+<a href="../operators/cg/m/menu-tooltip-delay.htm"><b>menu-tooltip-delay</b></a>
+</li>
+<li id="24">
+<a href="../operators/cg/m/multi-picture-button-scroll-interval.htm"><b>multi-picture-button-scroll-interval</b></a>
+</li>
+</ul><h3 id="25">
+A trivial timer example
+</h3>
+<p id="26">
+On the GTK platform you might need to adjust the value of <a href="../variables/cg/s_cg-timer-resolution_s.htm"><code>*cg-timer-resolution*</code></a>.
+</p>
+<pre id="27">
+;; Define an on-timer event handler 
+(defun my-on-timer (timer)
+   ;; Show a status bar message each time the timer fires.
+   (lisp-message &quot;Timer event ~a for ~s&quot;
+     (timer-count timer)(name timer)))
+
+;; Create a timer that uses the above on-timer event-handler.
+(setq tim (make-instance 'timer :on-timer 'my-on-timer))
+
+(active tim) ==&gt; nil        ;; the new timer is not active yet
+
+;; Start the timer, telling it to fire every half second
+(start-timer tim :interval 500)
+
+(active tim) ==&gt; t          ;; now it's active
+
+(stop-timer tim)            ;; stop it for a while
+
+(setf (active tim) t)       ;; this is another way to start it back up
+
+(setf (interval tim) 800)   ;; slow it down even while it's running
+
+(setf (active tim) nil)     ;; another way to stop it
+</pre></body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-timers.htm">9.0 version</a></td></tr></table></html>

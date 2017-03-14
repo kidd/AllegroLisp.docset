@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-default-command-line-arguments</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: windows</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/set-default-command-line-arguments.htm">9.0 version</a></td></tr></table><h2 id="2">set-default-command-line-arguments</h2>
+
+<p id="3"><b>Arguments: </b><i>
+exe option-strings
+</i></p>
+
+
+<p id="4">
+<i>exe</i> should be a pathname or string which
+represents the executable image program for which you want to change
+the default command line arguments.  By <i>default</i> we mean the
+command line arguments are not given in an actual call to the program,
+but the program behaves as if they were given.
+<i>option-strings</i> is a list of strings representing
+command line arguments, such as <code>'("+m" "+R")</code>.  For
+example:
+</p>
+<pre id="5">
+(win:set-default-command-line-arguments "foo.exe" '("-I" "bar.dxl"))
+</pre>
+<p id="6">
+would cause <b>foo.exe</b> to load <i>bar.dxl</i>
+instead of <i>foo.dxl</i> upon startup.
+</p>
+<pre id="7">
+(win:set-default-command-line-arguments "foo.exe" '("+B" "+cn"))
+</pre>
+<p id="8">
+would cause <b>foo.exe</b> to start without a splash screen and to not grab
+the focus on startup.
+</p>
+<p id="9">
+A typical use of this function is to call it on the executable created
+with <a href="../excl/generate-application.htm"><b>generate-application</b></a>:
+</p>
+<pre id="10">
+  (generate-application "foo" "foo/" ...)
+  #+windows
+  (win:set-default-command-line-arguments "foo/foo.exe" '("+B" ...))
+</pre>
+
+<p id="11">
+See <a href="../../startup.htm#command-line-args-1">Command
+line arguments</a> in <a href="../../startup.htm">startup.htm</a> for a list
+of command-line arguments accepted by Allegro CL.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/set-default-command-line-arguments.htm">9.0 version</a></td></tr></table></body></html>

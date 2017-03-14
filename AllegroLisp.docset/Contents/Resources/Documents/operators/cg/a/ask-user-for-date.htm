@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ask-user-for-date</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">ask-user-for-date</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key  (<i>initial-date</i> (get-universal-time)) (<i>title</i> "Select a Date") (<i>stream</i> (selected-window-or-screen))<i>
+</i></p>
+
+<p id="4">
+This function displays a modal dialog that contains
+a <a href="../../../classes/cg/calendar.htm"><code>calendar</code></a> widget, allowing
+the user to select a date.
+</p>
+<p id="5">
+<b><i>initial-date</i></b> is a universal time integer
+for the date that will initially be selected. The default is today.
+</p>
+<p id="6">
+<b><i>title</i></b> is a string to display in the title
+bar of the dialog. The default is "Select a Date".
+</p>
+<p id="7">
+<b><i>stream</i></b> is the owner window (or the screen)
+on which the dialog will be displayed. The default is the
+currently-selected window, if any, and otherwise the screen.
+</p>
+<p id="8">
+If the user cancels the dialog, then <code>nil</code> is
+returned.  Otherwise four values are returned, all integers.
+</p>
+<ol>
+<li id="9">
+A universal time for the date that the user selected.
+</li>
+<li id="10">
+The year of that universal time.
+</li>
+<li id="11">
+The month (1 to 12) of that universal time.
+</li>
+<li id="12">
+The date (1 to 31) of that universal time.
+</li>
+</ol>
+
+<p id="13">
+See the <a href="../../../classes/cg/calendar.htm"><code>calendar</code></a> class for
+general information on the widget that is shown in the dialog. An
+additional feature of this dialog is that the user can double-click a
+date to immediately return that date from the dialog, as an
+alternative to first selecting a date and then either pressing
+the <b>OK</b> button or pressing the <b>Enter</b> key.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

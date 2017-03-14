@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>bottom-margin</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/bottom-margin.htm">9.0 version</a></td></tr></table><h2 id="2">bottom-margin</h2>
+
+<p id="3"><b>Arguments: </b><i>
+graphical-stream 
+</i> &amp;optional  (<i>stream-units-p</i> t)<i>
+</i></p>
+
+<p id="4">
+Returns the current bottom margin of a <a href="../../../classes/cg/graphical-stream.htm"><code>graphical-stream</code></a>, measured from the
+top edge of the stream.  The <a href="../b/bottom-margin.htm"><b>bottom-margin</b></a> is initially the
+page-height of the stream, except as noted below.  <a href="../b/bottom-margin.htm"><b>(setf
+bottom-margin)</b></a> may be called to set the margin at any time.
+</p>
+<p id="5">
+If <i>stream-units-p</i> is true, as it is by default,
+then the margin is measured in pixels.  If <code>nil</code>, it is measured in text line heights (see <a href="../l/line-height.htm"><b>line-height</b></a>).
+</p>
+<p id="6">
+Margin attributes are provided primarily to allow an application to
+keep a drawing within arbitrary margins by drawing everything within
+the coordinates returned by <a href="../l/left-margin.htm"><b>left-margin</b></a>, <a href="../t/top-margin.htm"><b>top-margin</b></a>, <a href="../r/right-margin.htm"><b>right-margin</b></a>, and <a href="../b/bottom-margin.htm"><b>bottom-margin</b></a>.  Common Graphics
+also uses them in a few special ways, though, as described below.
+</p>
+<p id="7">
+When drawing on a <a href="../../../classes/cg/printer.htm"><code>printer</code></a> stream, typically an
+application should check whether the next thing that it is about to
+draw would extend past the <a href="../b/bottom-margin.htm"><b>bottom-margin</b></a>.  If so, then it
+should call <a href="../n/new-page.htm"><b>new-page</b></a> to tell the printer to
+move to a new sheet of paper, and then proceed to draw on the new
+page.  The call to <a href="../n/new-page.htm"><b>new-page</b></a> will set the <a href="../c/current-position-x.htm"><b>current-position-x</b></a> of the
+stream to its <a href="../l/left-margin.htm"><b>left-margin</b></a> and the <a href="../c/current-position-y.htm"><b>current-position-y</b></a> of the
+stream to its <a href="../t/top-margin.htm"><b>top-margin</b></a>, so that text output
+will continue from the top of the new page.  For other drawing
+functions, the application should adjust the coordinates at which it
+is drawing, generally by subtracting the <a href="../p/page-length.htm"><b>page-length</b></a> of the stream.  The
+<a href="../p/page-length.htm"><b>page-length</b></a> is
+equal to the stream's <a href="../t/top-margin.htm"><b>top-margin</b></a> subtracted from its
+<a href="../b/bottom-margin.htm"><b>bottom-margin</b></a>.
+</p>
+<p id="8">
+A <a href="../../../classes/cg/printer.htm"><code>printer</code></a>
+stream's coordinate system has position (0, 0) at the <a href="../p/printer-physical-offset.htm"><b>printer-physical-offset</b></a>
+of the printer. To allow an application to avoid dealing with this
+arbitrary offset, Common Graphics sets the margins of a printer stream
+to the distance from the physical offset to the margins selected by
+the user in the print job dialog or page setup dialog.  This allows
+the application to maintain the requested paper margins by simply
+drawing everything within the four margins that were set up
+automatically.  See <a href="../../../variables/cg/s_default-printer-left-margin_s.htm"><code>*default-printer-left-margin*</code></a> for
+more information.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/bottom-margin.htm">9.0 version</a></td></tr></table></body></html>

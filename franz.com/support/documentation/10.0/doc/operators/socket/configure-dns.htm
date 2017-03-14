@@ -1,0 +1,98 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>configure-dns</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: socket</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/configure-dns.htm">9.0 version</a></td></tr></table><h2 id="2">configure-dns</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>nameserver search domain auto</i><i>
+</i></p>
+
+<p id="4">
+In order to work, the DNS utility needs to know the IP address of at
+least one nameserver willing to respond to recursive queries (that is,
+to do the work of the query if it doesn't know the answer). This
+function is used to specify the nameserver addresses.  It can also
+specify other optional information. When DNS is configured, the
+variable <a href="../../variables/socket/s_dns-configured_s.htm"><code>*dns-configured*</code></a> is set to true.
+</p>
+
+<table border="1" width="100%">
+  <tr>
+    <th width="20%">Name</th>
+    <th width="80%">What</th>
+  </tr>
+  <tr>
+    <td width="20%"><i>nameserver</i></td>
+    <td width="80%">An IP address or a list of IP addresses of the 
+    nameservers we should consult</td>
+  </tr>
+  <tr>
+    <td width="20%"><i>search</i></td>
+    <td width="80%">a list of strings naming the domains 
+    we should search in
+    dns-lookup-hostname.</td>
+  </tr>
+  <tr>
+    <td width="20%"><i>domain</i></td>
+    <td width="80%">the domain of this machine (e.g. "foo.com"). 
+    This value is stored in the variable <a href="../../variables/socket/s_dns-domain_s.htm"><code>*dns-domain*</code></a> 
+    for programs to use.</td>
+  </tr>
+  <tr>
+    <td width="20%"><i>auto</i></td>
+    <td width="80%">If true, determine as much of this information 
+    as possible automatically,
+    overriding the values set by the other arguments.</td>
+  </tr>
+</table>
+
+<p id="5">
+We would like to be able to compute this information automatically in
+every situation.  Currently we can handle Unix machines that specify
+this information in a file called
+<i>/etc/resolv.conf</i>, and we try to handle all
+versions of Windows (but see the note under the heading <b>Automatic
+DNS configuation on Windows</b> below).
+</p>
+
+<p id="6">
+When <a href="dns-query.htm"><b>dns-query</b></a> is
+called, it checks to see if <strong>configure-dns</strong> has been
+called since lisp started, and if not it calls
+<strong>configure-dns</strong> with <code>:auto t</code>.  If
+this doesn't work it means that you need to call
+<strong>configure-dns</strong> with the appropriate information before
+you call <a href="dns-query.htm"><b>dns-query</b></a> on this
+machine.
+</p>
+
+
+
+
+<h3 id="7">Automatic DNS configuation on Windows</h3>
+
+<p id="8">
+On Windows the information we need to automatically configure this
+module is found in the Windows registry. Unfortunately the information
+we need is in a different place in each on the various Windows
+configurations we tested (such as Win NT 4 and Win2000, each with a
+fixed IP address or using DCHP to configure the IP address).
+Therefore it's likely that information will move around again in
+future versions of Windows. Furthermore sometimes we encounter stale
+information in the registry (for example, a laptop computer that used
+to be on a network but isn't at the moment may hold the last known
+nameserver information in the registry even though those nameservers
+are unreachable). Therefore, if you wish to make use of the Allegro CL
+DNS facility, you should be prepared to manually configure-dns on
+machines (by calling this function with <i>auto</i>
+&nbsp;<code>nil</code> and filling in the
+necessary information) when auto configuration fails.
+</p>
+
+
+<p id="9">
+See <a href="../../dns.htm">dns.htm</a> for information on the domain naming
+system utility in Allegro CL and see <a href="../../socket.htm">socket.htm</a> for
+general information on sockets in Allegro CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/configure-dns.htm">9.0 version</a></td></tr></table></body></html>

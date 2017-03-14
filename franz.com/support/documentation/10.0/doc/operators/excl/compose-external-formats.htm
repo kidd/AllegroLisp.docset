@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>compose-external-formats</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/compose-external-formats.htm">9.0 version</a></td></tr></table><h2 id="2">compose-external-formats</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name1 name2 </i> &amp;optional <i>name</i><i>
+</i></p>
+
+<p id="4">
+All arguments should be symbols.
+</p>
+<p id="5">
+<b>compose-external-formats</b> creates a new external-format with
+name <i>name</i>, or, if <i>name</i> is
+<code>nil</code>, a keyword symbol whose symbol-name is
+the concatenation of names <i>name1</i> followed by #\-
+followed by <i>name2</i>. The composed external-format
+is returned.
+</p>
+<p id="6">
+<i>name1</i> is called the <i>composer</i> and
+<i>name2</i> is called the <i>composee</i>. External
+formats have slots for the composer and composee. If the value in
+those slots is <code>nil</code>, the external format is
+not composed. The functions <a href="ef-composer-ef.htm"><b>ef-composer-ef</b></a> and <a href="ef-composee-ef.htm"><b>ef-composee-ef</b></a> access those slots. The
+function <a href="composed-external-format-p.htm"><b>composed-external-format-p</b></a> returns true or
+false as its argument is or is not a composed external format.
+</p>
+<p id="7">
+The <code>chars-to-octets</code> and
+<code>octets-to-char</code> macros of the composed
+external-format are formed as if by evaluation of forms equivalent to
+the following:
+</p>
+<pre id="8">
+(def-char-to-octets-macro name (char state
+				&key put-next-octet external-format)
+   `(chars-to-octets NAME1
+		     ,char
+		     ,state
+		   :put-next-octet ,put-next-octet
+		   :external-format NAME2))
+
+(def-octets-to-chars-macro name (state
+				 &key get-next-octet external-format)
+   `(octets-to-char NAME1
+		    ,state
+		    :get-next-octet ,get-next-octet
+		    :external-format NAME2))
+</pre>
+
+<p id="9">
+See <a href="../../iacl.htm">iacl.htm</a> for more information on international
+character support in Allegro CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/compose-external-formats.htm">9.0 version</a></td></tr></table></body></html>

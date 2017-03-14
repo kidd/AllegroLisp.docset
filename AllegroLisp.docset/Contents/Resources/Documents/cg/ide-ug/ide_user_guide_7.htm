@@ -1,0 +1,1414 @@
+<html>
+
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<meta NAME="GENERATOR" CONTENT="Microsoft FrontPage 3.0">
+<title>IDE User Guide, Chapter 7: Menus</title>
+</head>
+
+<body LINK="#0000ff">
+
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+  <tr>
+    <td bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3">
+      <tr>
+        <td align="left" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td>
+      </tr>
+    </table>
+    </td>
+    <td align="right"><b>Allegro CL version 10.0</b></td>
+  </tr>
+</table>
+
+<h1><a name="begin"></a>7. Menus</h1>
+
+<p>This document contains the following sections:</p>
+
+<blockquote>
+  <p><a href="#sec-7-1">7.1 Some menu notation</a><br>
+  <a href="#sec-7-2">7.2 Usual menu behavior</a><br>
+  <a href="#sec-7-3">7.3 Pull-down and pop-up menus</a><br>
+  <a href="#sec-7-4">7.4 Menu bars</a><br>
+  <a href="#sec-7-5">7.5 The menu editor</a><br>
+  <a href="#sec-7-6">7.6 Getting rid of a menu bar</a><br>
+  <a href="#sec-7-7">7.7 Specifying menu titles and shortcuts</a><br>
+  <a href="#sec-7-8">7.8 Access keys</a><br>
+  <a href="#sec-7-9">7.9 Working with the menu pane</a><br>
+  <a href="#sec-7-10">7.10 More on the menu editor toolbar and some anomalies</a><br>
+  <a href="#sec-7-11">7.11 The Menu Item group</a><br>
+  <a href="#sec-7-12">7.12 How choosing a menu command causes something to happen</a><br>
+  <a href="#sec-7-13">7.13 Some examples of getting menus to do something</a><br>
+  <a href="#sec-7-14">7.14 Changing a menu or command (menu-item) programmatically</a><br>
+  <a href="#sec-7-15">7.15 Doing something just before a menu is displayed</a><br>
+  <a href="#sec-7-16">7.16 Menu Classes</a><br>
+  <a href="#sec-7-17">7.17 Creating and modifying menus at run time</a><br>
+  <a href="#sec-7-18">7.18 Menu tutorial</a><br>
+  <a href="#sec-7-19">7.19 Displaying Pop-up Menus</a><br>
+  <a href="#sec-7-20">7.20 Shortcut menu tutorial</a><br>
+  <a href="#sec-7-21">7.21 Pop-up menu</a></p>
+</blockquote>
+
+<p>This is chapter 7 of the User Guide for the Allegro CL 10.0 Integrated Development
+Environment (IDE).</p>
+
+<p>The chapters of the IDE User Guide are:</p>
+
+<blockquote>
+  <p><a href="ide_user_guide_1.htm">Chapter 1: Introduction to the IDE</a> <br>
+  <a href="ide_user_guide_2.htm">Chapter 2: The Allegro CL Development Environment (IDE)</a><br>
+  <a href="ide_user_guide_3.htm">Chapter 3: An example</a><br>
+  <a href="ide_user_guide_4.htm">Chapter 4: Projects</a><br>
+  <a href="ide_user_guide_5.htm">Chapter 5: Components</a><br>
+  <a href="ide_user_guide_6.htm">Chapter 6: Designing a user interface using forms</a><br>
+  <b>Chapter 7: Menus</b> (this chapter)<br>
+  <a href="ide_user_guide_8.htm">Chapter 8: Events</a></p>
+</blockquote>
+
+<p>A menu is a pull-down or pop-up list of commands. Because menus can contain any
+(reasonable) number of commands and are displayed only by user action, they provide a
+convenient way to group related commands in a way that they are available at any time to
+users. </p>
+
+<p>Only top-level windows can have a menu bar. A top-level window is a window that is
+owned by the screen or another top-level window and is not a child window. </p>
+
+<p>In the following illustration, the window has a menu bar with two menus: <strong>File</strong>
+and <strong>Edit</strong>. Each menu can have zero or more menu-items. For the <strong>File</strong>
+menu, there are 6 menu items. The horizontal line is a special type of menu-item called a
+separator. The menus of a menu bar are of type pull-down-menu because as you click on the
+title of the menu its menu items are displayed.</p>
+
+<p><img src="menu1.gif"></p>
+
+<h3><a name="sec-7-1"></a>7.1 Some menu notation</h3>
+
+<p>Menus contain <i>commands</i>. The object corresponding to a command is a <i>menu-item</i>.
+However, we use <i>menu-item</i> when describing the programmatic aspects of menu but <i>command</i>
+when discussing the appearance of menus in an application. There are special kinds of
+menu-items, such as the separator in the illustration above.</p>
+
+<p>A user can <i>point to</i> a command while the menu is visible. The command pointed to
+is highlighted and if it names a submenu, the submenu is displayed.</p>
+
+<p>You<i> click</i> a menu command not associated with a submenu to effect it (<i>choose</i>
+can be used in place of click). When a command is clicked, the menu disappears and the
+action associated with the command is performed. </p>
+
+<p>In the title of a menu or menu item, you can define an <em>access key</em>. An access
+key lets your user open the menu or access the menu item using the keyboard. If you wanted
+to open the <strong>File</strong> menu in the illustration above, you would press ALT+F.
+To invoke the <strong>Exit</strong> menu item, you would press &quot;x&quot;. Within a
+particular menu, you should have each access key be as unique and mnemonic as possible.</p>
+
+<p><em>Shortcut keys</em> are another way for your users to access your menu commands. A
+shortcut key is (typically) a combination of a key like Control or Alt and a letter or
+number. It runs a menu item immediately when pressed. In the illustration above, Control-O
+is the shortcut key for the Open command on the File menu. You should assign shortcut keys
+to frequently used commands. Windows reserves some shortcut keys for cross-application
+commands like Cut, Copy and Paste.</p>
+
+<p>A menu command may be associated with another menu (called a <em>submenu</em>).
+Pointing to (putting the mouse over) the menu command causes the submenu to be displayed
+and the user can point to or click on a command from the submenu just as with the main
+menu. (Submenus allow very many commands to be presented rather conveniently since most
+commands are not displayed at any one time.)</p>
+
+<p>In this document, we specify a menu and command with the menu title followed by a
+horizontal bar (|) followed by the command name, all in bold. Thus <b>File | Save</b> is
+the Save command on the File menu. Commands from submenus are shown with additional |'s,
+thus <b>View | Manage Windows | Iconize</b> is the Iconize command on the Manage Windows
+submenu of the View menu. (We have been using this notation in other chapters of this
+document.)</p>
+
+<h3><a name="sec-7-2"></a>7.2 Usual menu behavior</h3>
+
+<p>Clicking or choosing a command causes some action. Menus are rarely used simply to
+display information (although a command can cause an informative dialog to appear).
+Information can be conveyed incidentally, however. The fact that a command is unavailable
+(cannot be pointed to or chosen) can be informative. Some editors make the <strong>Save</strong>
+command on the <strong>File</strong> menu unavailable if there are no changes to save and <strong>Paste</strong>
+can be made unavailable when there is nothing on the clipboard.</p>
+
+<p>A user can click on no command and cause the menu to disappear. Typically nothing
+happens when no item is selected and the state of the program is typically the same as if
+the menu had never been displayed. (We say <i>typically</i> twice in the last sentence
+because the application programmer can associate any action &#150; displaying the menu or
+pointing to a command or whatever &#150; with any effect. If you are programming a game,
+you might have a Hint menu and cause the game player to lose points if the Hint menu is
+looked at, whether or not a command is chosen. Or an application designed to study user
+interfaces may record how often menus are displayed and items chosen as a way of learning
+about user behavior, perhaps with an eye to improving the interface.)</p>
+
+<h3><a name="sec-7-3"></a>7.3 Pull-down and pop-up menus</h3>
+
+<p>A pull-down menu is displayed on a menu bar. Menu bars are displayed only on a
+top-level window. The menu bar is typically always visible and the user can display a menu
+any time the mouse is available. </p>
+
+<p>Pop-up menus are displayed by specific user action but have no specific location and no
+title. Pressing or clicking the right mouse button in various locations in the Allegro CL
+development environment displays a pop-up menu with context-related items. Another pop-up
+menu is the symbol completion menu displayed by choosing <a
+href="../../ide-menus-and-dialogs/search-menu.htm#complete-symbol">Search | Complete
+Symbol</a>. While typing in the Debug window or in an editor window. For example, at a
+prompt in the Debug window, type </p>
+
+<blockquote>
+  <pre>string&gt;</pre>
+</blockquote>
+
+<p>and, leaving the cursor right after the <em>&gt;</em>, choose <a
+href="../../ide-menus-and-dialogs/search-menu.htm#complete-symbol">Search | Complete
+Symbol</a>. A pop-up menu appears with items <code>string&gt;</code> and <code>string&gt;=</code>
+(the two symbols whose names begin with <code>string&gt;</code>).</p>
+
+<p><img SRC="Image54.jpg"></p>
+
+<p>This chapter is concerned with pull-down menus. For information on pop-up menus, see
+the online help topics <a href="../../operators/cg/p/pop-up-shortcut-menu.htm">pop-up-shortcut-menu</a>
+and <a href="../../operators/cg/p/pop-up-lettered-menu.htm">pop-up-lettered-menu</a>.</p>
+
+<h3><a name="sec-7-4"></a>7.4 Menu bars</h3>
+
+<p>To add a menubar to a form, select the form, and then either (1) click on <a
+href="../../ide-menus-and-dialogs/form-menu.htm#add-menu-bar">Form | Add Menu Bar</a> or
+(2) select the menu property in the Inspector, and click on the Extended Editor button:</p>
+
+<p><img SRC="form2-insp.jpg"></p>
+
+<p>This displays the menu editor.</p>
+
+<p>To have a pull-down menu on a window, you must: 
+
+<ul>
+  <li>Put a menu bar on the window. </li>
+  <li>Decide on the menu title for each pull-down menu.</li>
+  <li>Decide on command names. </li>
+  <li>Arrange that choosing a command effects the desired action. </li>
+  <li>Optionally make pointing to a command display a submenu.</li>
+</ul>
+
+<p>Do all that and you will have a working menu. Here are some more things that you can
+do: 
+
+<ul>
+  <li>Specify how to choose each pull-down menu using the Alt key. </li>
+  <li>Specify a keyboard equivalent to a menu command (pressing specified keys has the same
+    effect as choosing the menu command). This keyboard equivalent is called a <i>keyboard
+    accelerator </i>and the menu-item accessor function for it is called the <i>event-synonym</i>.
+  </li>
+  <li>Make a menu command unavailable or available programmatically (unavailable means that
+    the command cannot be selected or chosen and usually means that the appearance of the
+    command is modified to indicate its unavailability). </li>
+  <li>Adding command separator lines to menus (separating groups of commands). </li>
+  <li>Checking and unchecking menu commands. </li>
+  <li>Change the commands in a menu programmatically. </li>
+  <li>Change the menus on the menu bar programmatically. </li>
+</ul>
+
+<p>Each one of these issues will be dealt with below. The basic tool for placing menu bars
+on top-level windows and creating pull-down menus is the Menu Editor, which we describe
+next.</p>
+
+<h3><a name="sec-7-5"></a>7.5 The menu editor</h3>
+
+<p>The menu editor looks like this:</p>
+
+<p><img SRC="menu-ed.jpg"></p>
+
+<p>You are given a default starter menu bar. You can make changes and accept the menu bar
+by clicking on the OK button. As you work in the menu editor, you will see the menu bar
+update on your form. If you click the Cancel button, the editor is closed and the menu
+property is left unchanged (meaning no menu bar if it was nil before, the previous menubar
+if there was one before). The starter menu bar has a File menu and an Edit menu containing
+some Windows-standard commands.</p>
+
+<h3><a name="sec-7-6"></a>7.6 Getting rid of a menu bar</h3>
+
+<p>If a form has a menu bar and you decide you do not want one on that form, you can get
+rid of it by clicking <a href="../../ide-menus-and-dialogs/form-menu.htm#remove-menu-bar">Form
+| Remove Menu Bar</a> while the form is selected. You can also do it by selecting the
+contents of the menu property when the form is being inspected and replacing those
+contents with nil (by typing n i l).</p>
+
+<p>The menubar will also not be displayed if you 
+
+<ul>
+  <li>click on the Delete All (<strong>x*</strong>) button on the menu editor toolbar. This
+    makes the value of the menu property a null menu, effectively the same as <code>nil</code>.
+  </li>
+  <li>delete all commands listed by repeated clicking on the Delete (<strong>x</strong>)
+    button on the toolbar until all commands are gone.</li>
+</ul>
+
+<h3><a name="sec-7-7"></a>7.7 Specifying menu titles and shortcuts</h3>
+
+<p>The menu titles, command names, and shortcuts are displayed in the Menu group in the
+center of the menu editor. The display is an outline control, with leaves (terminal
+entries with no subentries) corresponding to commands and nodes (entries with subentries)
+corresponding to menus or submenus. The title of a menu appears in the menu bar or, if the
+menu is a submenu, as an item in the parent menu. The title is not a command. Clicking on
+it displays the menu whose title it is. </p>
+
+<p>A shortcut is a key combination which when pressed has the same effect as choosing the
+menu command. The shortcuts are shown in the second column. Menus do not have shortcuts,
+only commands, shown as leaves in the display.</p>
+
+<p><img SRC="Image57.jpg"></p>
+
+<h3><a name="sec-7-8"></a>7.8 Access keys</h3>
+
+<p>An access key in combination with the Alt key lets you display a menu and choose a
+command from the keyboard. A tilde (~) is a non-displaying character in a menu title or
+command name which marks the next character as the one to press when the Alt key is down
+to display a menu or submenu (in a menu or submenu title) or choose a command. Thus, Alt-F
+displays the File menu (whose title is ~File). Pressing Alt and keeping it down while
+pressing F (displays the File menu) and N (chooses the New command) is the same as
+choosing New from the File menu. The character after the tilde is underlined when the menu
+is displayed. If no tilde appears, the command cannot be selected using Alt and other
+keys. <b>Note</b>: because of an apparent Windows bug in some versions of Windows (but not
+in WIndows 2000), access keys may not work when running a project with a form that has a
+menubar but no other controls. If that happens, then to see access keys working, add any
+control (e.g., a button) to the form. </p>
+
+<h3><a name="sec-7-9"></a>7.9 Working with the menu pane</h3>
+
+<p>The Menu group is the portion of the menu editor labeled Menu Name:</p>
+
+<p><img SRC="Image58.jpg"></p>
+
+<p>You cannot type in the Menu group. (You make changes that require typing &#150;
+changing a title of a command name, adding or removing a tilde, etc. &#150; in the Menu
+Item pane described below.) When a line is selected (as the ~File line is in the
+illustration), its details are displayed in the Menu Item group described below and the
+toolbar buttons will affect it as follows: 
+
+<ul>
+  <li>The Add button (with the +). Adds a new entry below the selected line and all its
+    subitem lines, with the same indentation as the selected command. This new entry is named <i>Untitled</i>.
+  </li>
+  <li>The Delete button (with the x). Deletes the entry and all subentries if the entry is a
+    node, not a leaf. </li>
+  <li>The Delete All button (with x*). Removes all commands. This button is not specific to
+    the selected entry. If chosen, all commands are removed and the menu bar is deleted from
+    the form. </li>
+  <li>The Move Up button (up arrow). Moves the entry up. It stays at the same level in the
+    hierarchy. </li>
+  <li>The Unindent button (left arrow). Removes one level of indentation from the entry. The
+    entries below at the same level become subentries. Thus, if ~New is selected in the
+    illustration (rather than ~File) and the left arrow is clicked, ~New becomes the title of
+    a menu on the menu bar with entries ~Open, ~Save, etc. while the ~File menu has no
+    entries. </li>
+  <li>The Indent button (right arrow). Adds a level of indentation to the entry so it becomes
+    a subentry of the entry above previously at the same level. All subentries are also
+    indented. </li>
+  <li>The Move Down button (down arrow). Moves the entry down among entries at the same level.
+  </li>
+</ul>
+
+<h3><a name="sec-7-10"></a>7.10 More on the menu editor toolbar and some anomalies</h3>
+
+<p>If you add an entry (by clicking on the Add button -- with a +), the new entry has the
+same indentation as the currently selected entry and becomes the selected entry.</p>
+
+<p>If you delete all entries, the menu bar ceases to be visible but still exists. (Make
+the menu property nil if you want no menubar.)</p>
+
+<h3><a name="sec-7-11"></a>7.11 The Menu Item group</h3>
+
+<p>The Menu Item pane, at the bottom of the Menu Editor, allows you to specify the details
+of the entries in the Menu group. The details of the selected entry in the Menu Pane are
+displayed in the Menu Item pane and changes affect that entry only. Only one entry can be
+selected at a time. Here is the Menu Item pane from the default menus (i.e. the File and
+Edit menus displayed when the Menu Editor first appears) with the third (~Open) entry
+selected:</p>
+
+<p><img src="misect-menu-ed.jpg"></p>
+
+<p>The elements of this pane are: 
+
+<ul>
+  <b>
+  <li>Item Name</b>: the value should name a symbol. This name can be used to find the
+    menu-item programmatically. It is not necessary to provide a name. </li>
+  <b>
+  <li>Title</b>: a string (but do not type quotation marks when entering a title) which will
+    be used as the label, of the menu on the menu bar if the entry is unindented, of a menu
+    command if indented. The tilde (~) character is special: the tilde will not be displayed
+    but the character immediately following the tilde will be underlined. When running a form,
+    pressing Alt and that letter will display the menu if the entry names a menu or submenu
+    (display as long as Alt is pressed) or choose the command. Thus in our example, pressing
+    and holding Alt and then pressing F will display the File menu; then pressing O will
+    choose the Open menu command. </li>
+</ul>
+
+<p>If you want a tilde displayed, enter two tildes. Thus, if the title is ~~Open, it will
+display as ~Open and it cannot be chosen using the Alt key. 
+
+<ul>
+  <b>
+  <li>Value</b>: menu commands (such as Open) have values, menus (such as File) have on-click
+    functions. Since Open is a command, this box is active and the On Click box is
+    unavailable. So if a menu is the selected entry, this box would be unavailable and the On
+    Click box would be active. Both Value and On Click are described below under the heading<b>
+    How choosing a menu command causes something to happen</b>. </li>
+  <b>
+  <li>On Click</b>: see the description of Value just above. </li>
+  <b>
+  <li>Help string</b>: a string (but do not type quotation marks when entering text) which
+    will be displayed in the status bar when the menu is displayed or the command is pointed
+    to. </li>
+  <b>
+  <li>Synonym</b>: a synonym is a single key or combination of a modifier key (Control, Shift,
+    and Alt) and a single key the pressing of which, while the window has focus, is equivalent
+    to choosing the menu command. Only menu commands have synonyms. If the entry names a menu
+    (as File does), this area of the Menu Item group is dimmed and unresponsive. To specify a
+    synonym, choose a letter or another character (such as F9 or caps-lock) from the drop-down
+    list and check which of the modifiers to the right (Ctrl, Alt, Shift) you want. You can
+    require more than one modifier and you need not select any modifier, but if the window on
+    which the menu is placed accepts text input, an unmodified letter key may make entering
+    text tiresome. </li>
+  <b>
+  <li>Available</b>: the Available check box on the right allows you to specify whether the
+    menu or menu command is initially available. An available menu can be displayed; an
+    available menu command can be selected and chosen. Unavailable menus are dimmed on the
+    menu bar; they cannot be displayed so pressing or clicking the mouse over the menu title
+    has no effect. Unavailable menu items are dimmed in the menu, do not highlight when the
+    cursor is over them, and cannot be chosen. We describe below how to change the
+    availability of a menu or menu item programmatically when the application is running. It
+    is common to make menu items (or menus) unavailable when the choice is not meaningful in
+    the context or is not (for whatever reason) permitted to the user. Thus, when an open file
+    does not need to be saved, <b>File | Save</b> may be unavailable. In a game, a choice may
+    be unavailable because the user (player) does not have enough points to qualify for the
+    choice. </li>
+  <b>
+  <li>Selected</b>: if a menu command is selected, a check mark appears next to the command in
+    the menu. Communicating information by the presence or absence of a check, is the only
+    &nbsp; effect of being selected. The user cannot by any standard action uncheck the item
+    or remove the check. That is done programmatically and user actions can often trigger the
+    programmatic change. Look at the <b>View</b> menu from the Allegro CL Development
+    Environment. The <b>Toolbars</b> and <b>Status Bar</b> items are all checked (selected) if
+    they are visible and unchecked if they are not. Clicking on <b>Toolbars</b> causes the
+    toolbars (the standard and component toolbars on the Project Window) to appear or
+    disappear (as they were invisible or visible) and for the <b>Toolbars</b> menu item to be
+    programmatically selected or unselected. </li>
+  <li><strong>Help-String Tooltips</strong> (available only when a menu rather than a
+    menu-item is selected, and so is unavailable in the illustration): when checked,
+    help-strings for menu-items on a menu are displayed as tooltips after the mouse cursor has
+    been over an item for at least <a href="../../operators/cg/m/menu-tooltip-delay.htm">menu-tooltip-delay</a>
+    milliseconds. See <a href="../../operators/cg/s/show-help-strings-as-tooltips.htm">show-help-strings-as-tooltips</a>.</li>
+</ul>
+
+<h3><a name="sec-7-12"></a>7.12 How choosing a menu command causes something to happen</h3>
+
+<p>When you click on a menu command, the system knows what you have done: it knows which
+window contained the menu bar, it knows which menu contained the command, and it knows
+which command was chosen. But it doesn't know what to do with this information other than
+pass it to the application owning the window, so that is what it does. In an Allegro CL
+application, every menu has an on-click function. When a menu command is clicked, the menu
+on-click function is called with three arguments: the menu object, the menu-item
+corresponding to the command clicked on, and the window owning the menubar.</p>
+
+<p>You can specify the menu on-click function in the On Click field of the menu-item
+group. This field is only active when a menu or submenu (rather than a command) is
+selected. </p>
+
+<p>The default selection function for the default menus is <a
+href="../../operators/cg/f/funcall-menu-item-with-window.htm">funcall-menu-item-with-window</a>.
+This function examines the menu-item, extracts the menu-item value (which in this case is
+a symbol naming a function of one argument, a window), and <b>funcall</b>s that function
+with the window (owning the menu bar) as the argument.</p>
+
+<p>It is common to have the menu-item value contain the information about what should be
+done when the user clicks on a menu command. Menu-item values can be any Lisp object but
+symbols naming functions are common choices. Since you define the function, you have great
+flexibility about what it does. The menu on-click function is then just a function which
+funcalls the menu-item value with whatever arguments you want, often no arguments or just
+the owning window as an argument.</p>
+
+<p>The menu-item value is specified in the menu-item group when a menu item is selected.</p>
+
+<p>We have already mentioned the predefined function <a
+href="../../operators/cg/f/funcall-menu-item-with-window.htm">funcall-menu-item-with-window</a>.
+Another useful predefined selection function is <a
+href="../../operators/cg/f/funcall-menu-item.htm">funcall-menu-item</a>, which <b>funcall</b>s
+the menu-item value with no arguments.</p>
+
+<h3><a name="sec-7-13"></a>7.13 Some examples of getting menus to do something</h3>
+
+<p>The function <a href="../../operators/cg/p/pop-up-message-dialog.htm">pop-up-message-dialog</a>
+takes arguments <em>stream</em>, <em>title</em>, <em>text</em>, <em>icon</em>, <em>button-label</em>.
+We are going to construct a menu whose command pops-up a message using that function where
+the title and text say what command you chose. Now, of course, this is likely not very
+useful in a real application but if you can get a menu command to pop-up a message like
+this, you can probably get it to do many other things by emulation.</p>
+
+<p>Our menu will be called Messages and have two commands: Hello and Goodbye. The menu
+on-click function will be <a href="../../operators/cg/f/funcall-menu-item.htm">funcall-menu-item</a>
+and the menu-item-values will be the symbols <code>hello-function</code> and <code>goodbye-function</code>,
+which are defined as follows:</p>
+
+<pre>(defun hello-function ()
+  (pop-up-message-dialog (screen *system*) &quot;Hello&quot; 
+                         &quot;Clicked Hello Command!!!&quot; warning-icon &quot;OK&quot;))</pre>
+
+<pre>(defun goodbye-function ()
+ (pop-up-message-dialog (screen *system*) &quot;Goodbye&quot; 
+                        &quot;Clicked Goodbye Command!!!&quot; warning-icon &quot;OK&quot;))</pre>
+
+<p>We define these to the system (by, for example, evaluating them in the debug window). <code>(screen
+*system*)</code> is the screen (meaning the dialog can pop-up anywhere), warning-icon is a
+picture of a yellow triangle with an exclamation point, and OK is the label for the
+button. Our menu editor after we have defined the new menu (and deleted the default File
+and Edit menus) looks like this:</p>
+
+<p><img SRC="ch7-me-hg.jpg"></p>
+
+<p>Note that the On Click field when Messages is selected is <a
+href="../../operators/cg/f/funcall-menu-item.htm">funcall-menu-item</a>. The On Click
+field for Messages will only be available after you have added and indented the Hello and
+Goodbye items, and when it is available, its value starts as <a
+href="../../operators/cg/f/funcall-menu-item-with-window.htm">funcall-menu-item-with-window</a>.
+You must edit that to be <a href="../../operators/cg/f/funcall-menu-item.htm">funcall-menu-item</a>
+for this example to work.</p>
+
+<p>If we run the form and click on the Hello command in the Messages menu, we see:</p>
+
+<p><img SRC="Image61.jpg"></p>
+
+<p>If we click on Goodbye, we see:</p>
+
+<p><img SRC="Image62.jpg"></p>
+
+<p>There is not in this example much information in the menu-items. We could define a
+selection function that extracts information from the menu-item but processes it itself
+rather than having the menu-item value do the work. This can be useful when you define
+menu commands on the fly, based on runtime information. In this case, the menu-item values
+are strings &quot;Hello&quot; and &quot;Goodbye&quot;. The menu-selection function is the
+following:</p>
+
+<pre>(defun my-menu-on-click-function 
+    (menu menu-item window)
+  (declare (ignore menu window))
+  (let ((title (value menu-item))
+        (message (concatenate 'string 
+                   &quot;You clicked &quot; 
+                   (value menu-item)
+                   &quot;!!!!&quot;)))
+    (pop-up-message-dialog 
+     (screen *system*) 
+     title message warning-icon &quot;OK&quot;))) </pre>
+
+<p>The behavior is the same as before.</p>
+
+<h3><a name="sec-7-14"></a>7.14 Changing a menu or command (menu-item) programmatically</h3>
+
+<p>Commands are what appear on menus. On our example menus, the commands are Hello and
+Goodbye. However, the programmatic object associated with a command is a menu-item, which
+is an instance of class menu-item and has various properties. One is the <i>available</i>
+property. If mi-var is a variable whose value is a menu item,</p>
+
+<blockquote>
+  <pre>(available mi-var)</pre>
+</blockquote>
+
+<p>returns true or false as the menu-item is or is not available. You can use <b>setf</b>
+with <a href="../../operators/cg/a/available.htm">available</a> to change (or set) the
+availability of a menu-item. Evaluating the following makes the menu-item mi-var
+unavailable:</p>
+
+<blockquote>
+  <pre>(setf (available mi-var) nil)</pre>
+</blockquote>
+
+<p>So, the only issue is how to find a menu-item programatically. There are various ways
+to do this, but one of the easiest is to give the object a name and get it using
+find-named-object and that name. Here is the menu editor again with our Messages menu. We
+have given the Hello menu-item the name <code>:hello-item</code> (illustrated) and the
+Goodbye menu-item the name <code>:goodbye-item</code> (not shown):</p>
+
+<p><img SRC="ch7-me-hi.jpg"></p>
+
+<p>Now let us get a handle on the the form or window. When developing, click on <strong>Get
+Component</strong> on the <strong>Tools</strong> menu and then click on the form (or
+window, if you are running the form) and then in the debug window, enter</p>
+
+<blockquote>
+  <pre>(setq mywin *)</pre>
+</blockquote>
+
+<p>Programmatically, you can use <a href="../../operators/cg/f/find-window.htm">find-window</a>.
+</p>
+
+<p>Now that mywin is the window with the Messages menu,</p>
+
+<pre>(find-named-object :hello-item mywin)</pre>
+
+<p>will return the Hello menu-item,</p>
+
+<pre>(available (find-named-object :hello-item mywin))</pre>
+
+<p>returns true or false as the Hello item is or is not available, and</p>
+
+<pre>(setf (available 
+       (find-named-object :hello-item mywin)) 
+  nil)</pre>
+
+<p>makes it unavailable. </p>
+
+<h3><a name="sec-7-15"></a>7.15 Doing something just before a menu is displayed</h3>
+
+<p>The system calls <a href="../../operators/cg/a/about-to-show-menu.htm">about-to-show-menu</a>
+with arguments the window and the menu when user action should cause a menu to appear
+(user action being, e.g., clicking on the menu title on a menu bar or pressing Alt and the
+underlined letter of the menu title). <a
+href="../../operators/cg/a/about-to-show-menu.htm">about-to-show-menu</a> is a generic
+function. You can write a before method that will run before the system call to the
+function (making items unavailable, registering the fact that the menu was looked at, or
+whatever). If you do this, it is best to make your own class of windows and specialize the
+method on that class. This avoids paying the overhead every time any menu is displayed
+anywhere within Allegro CL or your application.</p>
+
+<h3><a name="sec-7-16"></a>7.16 Menu Classes</h3>
+
+<p>There are several classes related to menus. The following is a class diagram showing
+the menu classes. </p>
+
+<pre>window
+   ^
+   |-- basic-pane
+   |
+   |-- menu
+         ^
+         |-- windows-menu
+                 ^
+                 |---------- menu-bar
+                 |
+                 |---------- pop-up-menu
+                                ^
+                                |
+                                |----- pull-down-menu
+                                |
+                                |----- shortcut-menu
+                                |
+                                |----- builder-menu</pre>
+
+<pre>Key: ^ = &quot;is a subclass of&quot;, reading up.</pre>
+
+<p>Notice that all menus inherit from <a href="../../classes/cg/window.htm">window</a>.
+That is a very primitive window class that provides a handle to an OS window object. The <a
+href="../../classes/cg/menu-item.htm">menu-item</a> class is not shown because it does not
+inherit from menu because menu-items are not an OS visible object. Instead, menu-items
+inherit from standard-object.</p>
+
+<p>There are several different functions related to creating an instance of a menu; the
+table shows which function should be used for each menu class. <a
+href="../../classes/cg/menu-item.htm">menu-item</a> is created with <strong>make-instance</strong>.
+A <a href="../../classes/cg/menu-bar.htm">menu-bar</a> is created with <a
+href="../../operators/cg/m/make-window.htm">make-window</a>. A <a
+href="../../classes/cg/pop-up-menu.htm">pop-up-menu</a>, a <a
+href="../../classes/cg/pull-down-menu.htm">pull-down-menu</a>, and a <a
+href="../../classes/cg/shortcut-menu.htm">shorcut-menu</a> are all created with <a
+href="../../operators/cg/o/open-menu.htm">open-menu</a>.</p>
+
+<h3><a name="sec-7-17"></a>7.17 Creating and modifying menus at run time</h3>
+
+<p>Code similar to the following is generated if you accept the default menu bar that is
+created when you open the <strong>Menu Editor</strong>. It provides the value of the <em>menu</em>
+keyword argument to <a href="../../operators/cg/m/make-window.htm">make-window</a>. If you
+want to see the code for yourself, then toggle the menu property on a form without a menu
+bar to <font face="Courier New">on</font>. In the <strong>Menu Editor</strong>, click on <strong>OK</strong>
+to accept the default menu bar. With the focus on the form, save it using the <strong>File
+| Save</strong> command. In the editor, open the <strong>.bil</strong> file and search for
+<em>open-menu</em>. </p>
+
+<pre>(open-menu
+ (list (make-instance 'menu-item :name :file-menu
+         :title &quot;~File&quot; :value
+         (open-menu          
+          (list
+           (make-instance 'menu-item
+             :name 'new-text-editor
+             :title &quot;~New&quot;
+             :value 'new-text-editor
+             :selected nil
+             :available t
+             :event-synonym '(control-key #\N)
+             :help-string &quot;New editor&quot;)
+           (make-instance 'menu-item
+             :name 'open-text-file
+             :title &quot;~Open&quot;
+             :value 'open-text-file
+             :selected nil
+             :available t
+             :event-synonym '(control-key #\O)
+             :help-string &quot;Open a file&quot;)
+           (make-instance 'menu-item
+             :name :save
+             :title &quot;~Save&quot;
+             :value 'save-text-file
+             :selected nil
+             :available t
+             :event-synonym '(control-key #\S)
+             :help-string &quot;Save to file&quot;)
+           (make-instance 'menu-item
+             :name 'save-as-text-file
+             :title &quot;Save ~As...&quot;
+             :value 'save-as-text-file
+             :selected nil
+             :available t
+             :event-synonym nil
+             :help-string &quot;Save to new file&quot;)
+           (make-instance 'menu-item
+             :name nil
+             :title &quot;-&quot;
+             :value nil
+             :selected nil
+             :available nil
+             :event-synonym nil
+             :help-string nil)
+           (make-instance 'menu-item
+             :name 'user-close
+             :title &quot;E~xit&quot;
+             :value 'user-close
+             :selected nil
+             :available t
+             :event-synonym '(alt-key vk-f4)
+             :help-string &quot;Exit application&quot;))
+          'pull-down-menu
+          (screen *system*)
+          :name :file-menu          
+          :show-help-strings-as-tooltips nil
+          :on-click 'funcall-menu-item-with-window)
+         :selected nil :available t
+         :event-synonym nil
+         :help-string nil)
+       (make-instance 'menu-item :name :edit-menu
+         :title &quot;~Edit&quot; :value
+         (open-menu          
+          (list
+           (make-instance 'menu-item
+             :name 'cut-command
+             :title &quot;~Cut&quot;
+             :value 'cut-command
+             :selected nil
+             :available t
+             :event-synonym '(control-key #\X)
+             :help-string &quot;Copy contents to clipboard and delete&quot;)
+           (make-instance 'menu-item
+             :name 'copy-command
+             :title &quot;C~opy&quot;
+             :value 'copy-command
+             :selected nil
+             :available t
+             :event-synonym '(control-key #\C)
+             :help-string &quot;Copy contents to clipboard&quot;)
+           (make-instance 'menu-item
+             :name 'paste-command
+             :title &quot;~Paste&quot;
+             :value 'paste-command
+             :selected nil
+             :available t
+             :event-synonym '(control-key #\V)
+             :help-string &quot;Paste contents from clipboard&quot;))
+          'pull-down-menu
+          (screen *system*)
+          :name :edit-menu
+          :show-help-strings-as-tooltips nil
+          :on-click 'funcall-menu-item-with-window)
+         :selected nil :available t
+         :event-synonym nil
+         :help-string nil))
+ 'menu-bar (screen *system*) :name :default-menu
+ :show-help-strings-as-tooltips nil
+ :on-click 'funcall-menu-item)</pre>
+
+<pre><a href="../../operators/cg/o/open-menu.htm">open-menu</a></pre>
+
+<pre>(open-menu (list ...) 'pull-down-menu (screen *system*)
+                      :on-click 'funcall-menu-item-with-window ...)</pre>
+
+<p>Use the <a href="../../operators/cg/o/open-menu.htm">open-menu</a> function to create a
+pop-up-menu or pull-down-menu. The arguments to <a
+href="../../operators/cg/o/open-menu.htm">open-menu</a> are the list of menu-items, the
+type of menu, the screen, and zero or more keyword arguments for the properties of the
+menu.</p>
+<div align="center"><center>
+
+<table border="1" cellpadding="6" cellspacing="1" width="90%">
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">name</font></td>
+    <td VALIGN="top" align="left">The symbolic name of the menu item</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">title</font></td>
+    <td VALIGN="top" align="left">The title of the command. Place a &quot;~&quot; before the
+    access key of the command. <br>
+    Use &quot;-&quot; to indicate a menu separator.</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><strong><font face="Courier New">on-click</font></strong></td>
+    <td VALIGN="top" align="left">The event handler that is invoked when the user clicks on a
+    menu item in the menu</td>
+  </tr>
+</table>
+</center></div>
+
+<p><strong><font face="Courier New"><br>
+make-instance</font></strong></p>
+
+<p><font face="Courier New, Courier, Teletype" size="3">(<strong>make-instance</strong>
+'menu-item :name :new :title &quot;~New&quot; ...)</font></p>
+
+<p>For every command on a menu, you need to create an instance of <a
+href="../../classes/cg/menu-item.htm">menu-item</a>. In general, you need to specify most
+of the properties of a <a href="../../classes/cg/menu-item.htm">menu-item</a> to have it
+perform properly.</p>
+<div align="center"><center>
+
+<table CELLSPACING="0" BORDER="1" CELLPADDING="6" WIDTH="90%">
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">allow-during-modality</font></td>
+    <td VALIGN="top" align="left">A Boolean value indicating whether or not the command can be
+    invoked when a modal dialog is displayed</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">available</font></td>
+    <td VALIGN="top" align="left">A Boolean value indicating whether the command is displayed
+    as available or dimmed</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">event-synonym</font></td>
+    <td VALIGN="top" align="left">The shortcut key(s) that can invoke the command. Values can
+    be <font face="Courier New">nil</font> or a list of key constants/characters. Here are two
+    examples, <font face="Courier New">'(vk-f8)</font> and <font face="Courier New">'(control-key
+    #\N)</font>.</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">help-string</font></td>
+    <td VALIGN="top" align="left">A string that is displayed when the user points to the menu
+    item</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">name</font></td>
+    <td VALIGN="top" align="left">The symbolic name of the menu item</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">selected</font></td>
+    <td VALIGN="top" align="left">A Boolean value indicating whether or not the menu item is
+    displayed with a check mark or not.</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">title</font></td>
+    <td VALIGN="top" align="left">The title of the command. Place a &quot;~&quot; before the
+    access key of the command. Use &quot;-&quot; to indicate a menu separator.</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" align="left"><font face="Courier New">value</font></td>
+    <td VALIGN="top" align="left">The value of the menu item. If the menu item has sub-items,
+    then the value is a pull-down or pop-up menu.</td>
+  </tr>
+</table>
+</center></div>
+
+<p><font face="Courier New, Courier, Teletype" size="3">(<strong>make-instance</strong>
+'menu-item :name nil :title &quot;-&quot;)</font></p>
+
+<p>Creates a menu separator. When the title of a <a href="../../classes/cg/menu-item.htm">menu-item</a>
+is &quot;-&quot;, then a menu separator is displayed as a horizontal line in the menu. You
+can also use the constant, menu-separator, instead of creating a menu-item. Menu items can
+be placed on more than one menu.</p>
+
+<h3><a name="sec-7-18"></a>7.18 Menu tutorial</h3>
+
+<p>This short tutorial demonstrates creating and customizing an application's menu bar.
+The sample application is a mini-text editor that extends the default menu bar. <font
+FACE="Arial, Helvetica, Sans Serif" size="3"></p>
+
+<h4>Setup</font> </h4>
+
+<ol>
+  <li>Open a new project using <strong>File | New Project</strong>. </li>
+  <li>If there is no form by default, add a form with <strong>File | New Form</strong>.</li>
+  <li>Inspect the new form by double-clicking on it.</li>
+  <li>In the form inspector, change its name to :menu-example, title to &quot;Menu
+    Example&quot;, and status-bar to t. </li>
+  <li>View the <strong>Project Manager</strong>, using <strong>View | Project Manager</strong>
+    if necessary. </li>
+  <li>In the <strong>Project Manager</strong>, change the name of the project to :menu-example
+    by clicking on the Options tab and entering :menu-example for the name. Press the tab key
+    and notice that the title in the top Project window (the Allegro CL window with the menus
+    and component toolbar) changes to &quot;Menu-example&quot;. </li>
+  <li>Because you are creating a new text application, you will need to have your own window
+    class with its unique behavior. Later, it will be necessary to add methods customized on
+    your window class. The class property of a form determines the type of running window that
+    is created. Before you can change the device to your window's class, you have to define a
+    new window class. </li>
+  <li>In the <strong>Project Manager</strong>, view the source code for the menu-example form.
+    You do this by clicking on the General tab and selecting the menu-example module and press
+    the View Selected Code button (the second one with binoculars in the icon). </li>
+  <li>In the menu-example editor, add the following class definition. Since we want our
+    application to behave as a text editor we inherit from text-edit-window. In future steps,
+    we will customize methods on our new window class.</li>
+</ol>
+
+<dir>
+  <ul>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defclass my-window (text-edit-window)
+    ())</pre>
+    </font>
+  </ul>
+</dir>
+
+<ol start="10">
+  <li>The <a href="../../classes/cg/text-edit-window.htm">text-edit-window</a> class is
+    derived from <a href="../../classes/cg/frame-with-single-child.htm">frame-with-single-child</a>.
+    Therefore, creating an instance of my-window also creates an instance of a pane. For some
+    of the commands, it is necessary to add methods specialized on the pane of <font
+    face="Courier New"><strong>my-window</strong></font>. Therefore, you need to specify a
+    custom pane class for my-window. In the <strong>menu-example</strong> editor, add the
+    following class and method definitions.</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defclass my-pane (text-edit-pane)
+    ())
+
+(defmethod default-pane-class ((window my-window))
+    'my-pane)</font></pre>
+  </dir>
+</dir>
+
+<ol start="11">
+  <li>You need to compile the new window class definitions so they are known. Because you have
+    added several new definitions, it is easier to let the <strong>Project Manager</strong> do
+    the compiling for you. First, save all your changes by clicking on <strong>File | Save All</strong>.
+    If you chose a directory for the new project, the files will be saved there. Otherwise
+    save to a convenient directory.</li>
+  <li>Then, compile the project using <strong>Tools | Compile Project</strong>. </li>
+  <li>In the form inspector, change the class to my-window. Whenever you run the form, an
+    instance of my-window is created. </li>
+  <li>Save your changes using <strong>File | Save All</strong>.</li>
+</ol>
+
+<h4>Adding a Menu Bar</h4>
+
+<ol start="15">
+  <li>Add a menu bar to your form. In the form inspector, select the <font face="Courier New">menu</font>
+    property and click on the extended editor button (the one with three dots). Notice that
+    the <strong>Menu </strong>Editor is displayed and the default menu bar is added to your
+    form. </li>
+  <li>In the <strong>Menu Editor</strong>, click on the <strong>File</strong> menu item.
+    Notice that it has an <a href="../../operators/cg/o/on-click.htm">on-click</a> function
+    named <a href="../../operators/cg/f/funcall-menu-item-with-window.htm">funcall-menu-item-with-window</a>.
+    This is the default <a href="../../operators/cg/o/on-click.htm">on-click</a> function for
+    menus and applicable for most cases. Later in this tutorial (under the heading <strong>On-click
+    event handler</strong>) we will show you how to use a different <a
+    href="../../operators/cg/o/on-click.htm">on-click</a> function. </li>
+  <li>In the <strong>Menu Editor</strong>, click on the <strong>File | New</strong> menu item.
+    Notice that it has a value, which is a function name, and that it does not have an <font
+    face="Courier New"><strong>on-click</strong></font> function. Also, notice that there is a
+    help string assigned to the menu item. In the next step, we will display this help string
+    in the status bar of our form. </li>
+  <li>Accept the default menu bar by clicking on the <strong>OK</strong> button in the <strong>Menu
+    Editor</strong>. Notice that the menu bar remains on your form and that you can preview
+    the menu by selecting menu items. </li>
+  <li>Run your project and try the menu bar using <strong>Run | Run Project</strong>. Try
+    selecting menu items and notice the help strings displayed in the status bar. Try
+    selecting commands on the <strong>File</strong> and <strong>Edit</strong> menus. In future
+    steps, we will customize the behavior so that your text editor behaves better. When you
+    are satisfied, stop the project using <strong>Run | Stop</strong>.</li>
+</ol>
+
+<h4>Implementing Menu Commands</h4>
+
+<ol start="20">
+  <li>In the previous step, you may have tried the <strong>File | New</strong> and <strong>File
+    | Open</strong> commands. By default, these commands created new editor windows similar to
+    a multi-document interface (MDI) style. For our simple example, we want a single document
+    interface (SDI) style similar to Notepad's behavior. In Notepad, you can only edit a
+    single file at a time. </li>
+  <li>First, let's fix the behavior of the <strong>File | New</strong> command. When <strong>File
+    | New</strong> command is selected, the function, <font face="Courier New"><strong>new-text-editor</strong></font>
+    is called. You can determine what function is called by using the <strong>Menu Editor</strong>.
+    Inspect the <strong>menu-example</strong> form. In the inspector, select the menu property
+    and click on the extended editor button. In the <strong>Menu Editor</strong>, select the <strong>File
+    | New</strong> menu item. Notice that its value is <font face="Courier New"><strong>new-text-editor</strong></font>.
+    <br>
+    Click <strong>Cancel</strong> on the <strong>Menu Editor</strong> when satisfied.</li>
+  <li>To add the new method for <a href="../../operators/cg/n/new-text-editor.htm">new-text-editor</a>,
+    display the source code for the <font face="Courier New">menu-example</font> form. View
+    the <strong>Project Manager</strong> using <strong>View | Project Manager</strong>. In the
+    project manager, select the menu-example module on the General tab and press the View
+    Selected Code button. </li>
+  <li>In the <strong>menu-exampl</strong>e editor, add the following method. Notice that this
+    method needs to be specialized on the pane rather than the window. This is because <a
+    href="../../operators/cg/f/funcall-menu-item-with-window.htm">funcall-menu-item-with-window</a>
+    automatically calls the <a href="../../classes/cg/menu-item.htm">menu-item</a>'s value on
+    the pane if one exists. This method uses an internal common-graphics function for
+    convenience.</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defmethod new-text-editor ((window my-pane))
+   (setf (file window) nil)
+   (clear-page window))</pre>
+    </font>
+  </dir>
+</dir>
+
+<ol start="24">
+  <li>Next, let's customize the behavior of the <strong>File | Open</strong> command. <strong>File
+    | Open</strong> calls the function <a href="../../operators/cg/o/open-text-file.htm">open-text-file</a>.
+    In the <strong>menu-example</strong> editor, add another method specialized on the pane.
+    Again, internal common-graphics functions are used for convenience.</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defmethod open-text-file ((window my-pane))
+   (let* ((pathname 
+            (ask-user-for-existing-pathname &quot;Edit File&quot;
+             :stream window)))
+      (cond ((or (null pathname) (not (probe-file pathname))) nil)
+            (t 
+              (load-file window pathname)))))</pre>
+    </font>
+  </dir>
+</dir>
+
+<ol start="25">
+  <li>Save all your changes using the <strong>File | Save All</strong>. Try running your
+    application and using the <strong>File | New</strong> and <strong>Open</strong> commands.
+    Notice the new SDI behavior. You can try opening an existing file and making changes. The <strong>File
+    | Save</strong> and <strong>Save As</strong> commands do not actually save your changes.
+    That is the next step. When you are satisfied, stop the application using the <strong>Run
+    | Stop</strong> command. </li>
+  <li>To complete the <strong>File</strong> menu, you need to fix the <strong>File | Save</strong>
+    and <strong>File | Save As</strong> commands. In the <strong>menu-example</strong> editor,
+    add the following methods. Common-graphics functions are used again, for convenience. The <a
+    href="../../operators/cg/s/save-file.htm">save-file</a> function requires a file argument,
+    so we call <a href="../../operators/cg/a/ask-user-for-new-pathname.htm">ask-user-for-new-pathname</a>
+    if one is required (the first save for <strong>Save</strong> and any save for <strong>Save
+    As</strong>).</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defmethod save-text-file ((window my-pane))
+   (let ((file-to-save (file (parent window))))
+     (if (null file-to-save) 
+         (setq file-to-save 
+           (ask-user-for-new-pathname &quot;Save file as&quot;
+                :allowed-types '((&quot;Text Files&quot; . &quot;*.txt&quot;) 
+                                 (&quot;All Files&quot; . &quot;*.*&quot;)))))
+     (if file-to-save (save-file window file-to-save))))
+
+(defmethod save-as-text-file ((window my-pane))
+   (let ((file-to-save 
+           (ask-user-for-new-pathname &quot;Save file as&quot;
+                :allowed-types '((&quot;Text Files&quot; . &quot;*.txt&quot;)
+                                 (&quot;All Files&quot; . &quot;*.*&quot;)))))
+     (if file-to-save (save-file window file-to-save))))</pre>
+    </font>
+  </dir>
+</dir>
+
+<ol start="27">
+  <li>Save all your changes using <strong>File | Save All</strong>. Try running your
+    application using the <strong>Run | Run Project</strong> command. In the running window,
+    try using the File commands. Notice that the Edit menu works but it would be nice to
+    invalidate the <strong>Edit | Cut</strong> and <strong>Copy</strong> command when there is
+    no selected text. When you are satisfied, stop the application using the <strong>Run |
+    Stop</strong>.</li>
+</ol>
+
+<h4>Customizing Showing Menus</h4>
+
+<ol start="28">
+  <li>In the previous step, you noticed that the <strong>Edit | Cut</strong> and <strong>Copy</strong>
+    commands were available even if nothing was selected. For this section, we will customize
+    the <a href="../../operators/cg/a/about-to-show-menu.htm">about-to-show-menu</a> behavior
+    for our window to provide better user feedback. </li>
+  <li>In the menu-example editor, add the following method to <a
+    href="../../operators/cg/a/about-to-show-menu.htm">about-to-show-menu</a>. Notice that
+    this method needs to specialize on the window rather than its pane. This <a
+    href="../../operators/cg/a/about-to-show-menu.htm">about-to-show-menu</a> method makes the
+    <strong>Edit | Cut</strong> and <strong>Copy</strong> commands unavailable if there is no
+    selected text. Also, the <strong>Edit | Paste</strong> command is made unavailable if
+    nothing is on the clipboard. For all other menus, the default behavior is invoked by using
+    <strong>call-next-method</strong>.</li>
+</ol>
+
+<dir>
+  <dir>
+    <pre>(defmethod about-to-show-menu ((window my-window) menu)
+   (case (name menu)
+     (:edit-menu
+       (multiple-value-bind (start end)
+           (get-selection (frame-child window))
+          (setf (available (find-named-object 'cut-command menu))
+                (not (eq start end)))
+          (setf (available (find-named-object 'copy-command menu))
+                (not (eq start end)))
+          (setf (available (find-named-object 'paste-command menu))
+                (first (first *clipboard*)))))
+     (t
+       (call-next-method))))</pre>
+  </dir>
+</dir>
+
+<ol start="30">
+  <li>Save all your changes using <strong>File | Save All</strong>. Try running your
+    application using <strong>Run | Run Project</strong>. In the running window, try using the
+    <strong>Edit</strong> commands with and without selected text. When you are satisfied,
+    stop the application using <strong>Run | Stop</strong>.</li>
+</ol>
+
+<h4>On-Click event handler</h4>
+
+<ol start="31">
+  <li>Up to this point, you have not needed to define an on-click event handler for your
+    menus. You have been using the default on-click event handler, which is <a
+    href="../../operators/cg/f/funcall-menu-item-with-window.htm">funcall-menu-item-with-window</a>.
+    We will extend our mini-text editor to allow users to select a different background color
+    from a menu. For our example, we will allow the user to choose between system specified,
+    red, green and blue. The background color menu will display a list of color names that the
+    user can select. </li>
+  <li>First, you need to add a Background menu to your menu bar. Inspect the menu-example
+    form. In the form inspector, select the menu property and click on the extended editor
+    button. In the <strong>Menu Editor</strong>, scroll down and select the Edit menu item.
+    With the Edit item selected, press the Insert Item button (the big <strong>+</strong> in
+    the upper left). Scroll down and notice that an Untitled menu has been added to the list. </li>
+  <li>In the <strong>Menu Editor</strong>, make sure that the new Untitled menu item is
+    selected. Change its name to :background-menu and title to &quot;~Background&quot;. </li>
+  <li>Let's add the system specified menu item to the Background menu. In the <strong>Menu
+    Editor</strong>, make sure that Background menu is selected and press the Insert Item
+    button. Select the new Untitled menu item and press the Indent button (right-pointing
+    arrow). Change the name of the menu item to :system and title to &quot;~System&quot;. The
+    value of the menu is deliberately left nil because a background-color of nil means use the
+    system-specified color. </li>
+  <li>Let's add a red background menu item. In the <strong>Menu Editor</strong>, select the
+    System menu item and press the Insert Item button. Select the Untitled menu item and
+    change its name to :red, title to &quot;~Red&quot; and value to red. The symbol, red, is
+    bound to an rgb constant for red. Later, we will use the value of the menu item to specify
+    the background color of the pane. </li>
+  <li>Repeat the previous step for Blue and Green menu items. Set their values to blue and
+    green, respectively. At this point, your background menu should have four items, System,
+    Red, Green and Blue. </li>
+  <li>Stylistically, it is better to have System separated from the other menu items because
+    it behaves a little differently. In the <strong>Menu Editor</strong>, select the <strong>Background
+    | System</strong> menu item and press the Insert Item button. Select the Untitled menu
+    item and change the title to &quot;-&quot;. Setting the title to &quot;-&quot; is a
+    special case that creates a menu separator for you. </li>
+  <li>Finally, you should change the on-click event handler for the Background menu to
+    background-color-on-click (which we define in 41 below). You cannot use the default
+    on-click event handler because it tries to call the value of the menu item as a function.
+    For this menu, the values of the menu items are the color for the background of the
+    editor. </li>
+  <li>Save your menu bar by clicking on the <strong>OK</strong> button in the <strong>Menu
+    Editor</strong>. </li>
+  <li>Next, you add a background-color-on-click function. View the <strong>Project Manager</strong>
+    using <strong>View | Project Manager</strong>. In the <strong>Project Manager</strong>,
+    select the General tab, select the menu-example module, and press the View Selected Code
+    button. </li>
+  <li>In the menu-example editor, add the following method. This method is invoked whenever
+    the user clicks on a menu item in the Background menu. Notice that you have to change the
+    background color of the frame-child (pane) rather than the editor window.</li>
+</ol>
+
+<dir>
+  <dir>
+    <pre>(defmethod background-color-on-click 
+    (menu menu-item (window my-window))
+   (declare (ignore menu))
+   (setf (background-color (frame-child window)) 
+         (value menu-item)))</pre>
+  </dir>
+</dir>
+
+<ol start="42">
+  <li>Save all your changes using <strong>File | Save All</strong>. Try running your
+    application using <strong>Run | Run Project</strong>. In the running window, try selecting
+    different Background colors. Notice that the Background menu works but it would be nice to
+    indicate what the current background color is by a check mark. When you are satisfied,
+    stop the application using <strong>Run | Stop</strong>.</li>
+</ol>
+
+<h4>Checking Menu Items</h4>
+
+<ol start="43">
+  <li>In the previous section, you noticed that it would be nice to check the current
+    background color when the Background menu is displayed. This is very similar to setting
+    the availability of the Edit menu commands before the Edit menu is shown. In fact, you
+    need to extend the about-to-show-menu method for your window. </li>
+  <li>Edit the about-to-show-menu method for my-window. View the <strong>Project Manager</strong>
+    using <strong>View | Project Manager</strong>. In the <strong>Project Manager</strong>,
+    select the General tab, select the menu-example module, and press the View Selected Code
+    button. </li>
+  <li>In the menu-example editor, change the <a
+    href="../../operators/cg/a/about-to-show-menu.htm">about-to-show-menu</a> method to match
+    the following. The selected property of a menu item indicates whether or not it is
+    checked. There is a check for the menu separator item so that it will not appear checked
+    and the system item is checked if the background color is nil.</li>
+</ol>
+
+<pre>
+(defmethod about-to-show-menu ((window my-window) menu)
+   (case (name menu)
+     (:edit-menu
+       (multiple-value-bind (start end)
+           (get-selection (frame-child window))
+          (setf (available (find-named-object 'cut-command menu))
+                (not (equalp start end)))
+          (setf (available (find-named-object 'copy-command menu))
+                (not (equalp start end)))
+          (setf (available (find-named-object 'paste-command menu))
+                (first (first *clipboard*)))))
+     (:background-menu
+       (let ((color (background-color (frame-child window))))
+            (dolist (item (menu-items menu))
+               (setf (selected item)
+                     (and (null (string-equal (title item) &quot;-&quot;))
+                          (or (and (null color) (null (value item)))
+                              (if (and color (value item))
+                                 (rgb-equal (symbol-value (value item)) 
+                                            color))))))))
+     (t
+       (call-next-method))))</pre>
+
+<ol start="46">
+  <li>Save all your changes using <strong>File | Save All</strong>. Try running your
+    application using <strong>Run | Run Project</strong>. In the running window, try selecting
+    different Background colors. Notice that the Background menu checks the current background
+    color. When you are satisfied, stop the application using <strong>Run | Stop</strong>.</li>
+</ol>
+
+<h3><a name="sec-7-19"></a>7.19 Displaying Pop-up Menus</h3>
+
+<p>Floating menus are implemented using pop-up-menus. A pop-up-menu is similar to a
+pull-down-menu because it can have one or more menu items. The difference is that a pop-up
+menu is not activated by clicking on the menu's title or by using the ALT key. Usually,
+pop-up-menus are opened by using the right mouse click. You cannot use the <strong>Menu
+Editor</strong> to specify pop-up-menus.</p>
+
+<p>Pop-up menus that are opened using a mouse right click are called shortcut menus. If
+you want to define a shortcut menu for your window, you do the following: 
+
+<ol>
+  <li>Define your own window class that inherits from one of Common Graphics window classes
+    like dialog.</li>
+  <li>Optionally, define your own shortcut menu class that inherits from shortcut-menu. Add a <a
+    href="../../operators/cg/s/shortcut-menu-class.htm">shortcut-menu-class</a> method
+    specialized on your window that returns the name of your shortcut menu class.</li>
+  <li>Add a <a href="../../operators/cg/m/mouse-right-down.htm">mouse-right-down</a> method
+    specialized on your window that calls <a
+    href="../../operators/cg/p/pop-up-shortcut-menu.htm">pop-up-shortcut-menu</a>.</li>
+  <li>Add a <a href="../../operators/cg/s/shortcut-commands.htm">shortcut-commands</a> method
+    specialized on your window and on your shortcut menu class that returns a list of menu
+    items for the shortcut menu.</li>
+</ol>
+
+<p>There is a more general exported function called pop-up-menu. If you use pop-up-menu,
+you are responsible for opening the menu, creating the menu items, and positioning the
+pop-up menu.</p>
+
+<p>The utility function called <a href="../../operators/cg/p/pop-up-lettered-menu.htm">pop-up-lettered-menu</a>
+takes a list of strings and displays a <a href="../../operators/cg/p/pop-up-menu.htm">pop-up-menu</a>
+with alphabetized accelerator keys. If the user clicks on an option, then the string of
+the selected item is returned. Otherwise, <font face="Courier New">nil</font> is returned
+if no item is selected. <a href="../../operators/cg/p/pop-up-lettered-menu.htm">pop-up-lettered-menu</a>
+enables an end user to type a single key to select an item. It is used by the <strong>Search
+| Complete Symbol</strong> command in the Integrated Development Environment.</p>
+
+<h3><a name="sec-7-20"></a>7.20 Shortcut menu tutorial</h3>
+
+<p>The following steps extend the previous mini-text editor example. For shortcut menus,
+you cannot use the <strong>Menu Editor</strong> and will have to work programmatically. We
+use the menu-example project created in section <a href="#sec-7-18">7.18</a> above.</p>
+
+<h4>Shortcut Menu</h4>
+
+<ol>
+  <li>Open the menu-example project using <strong>File | Open Project</strong>. </li>
+  <li>First, let's define a new shortcut-menu class that is associated with my-window. View
+    the <strong>Project Manager</strong> using <strong>View | Project Manager</strong>. In the
+    <strong>Project Manager</strong>, select the General tab, select the menu-example module,
+    and press the View Selected Code button. </li>
+  <li>In the menu-example editor, add the class definition for your shortcut-menu.</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defclass my-shortcut-menu (shortcut-menu)
+    ())</pre>
+    </font>
+  </dir>
+</dir>
+
+<ol start="4">
+  <li>Next, you need to associate your new shortcut-menu class with your pane class. You need
+    to specialize for your pane rather than the window because the user will be clicking
+    inside the pane not the window. Therefore, you need to add a shortcut-menu-class method
+    specialized for my-pane to return my-shortcut-menu.</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defmethod shortcut-menu-class ((window my-pane))
+   'my-shortcut-menu)</pre>
+    </font>
+  </dir>
+</dir>
+
+<ol start="5">
+  <li>Whenever the user presses the mouse right button, you want your shortcut menu to appear.
+    By default, nothing happens when the user clicks the mouse right button in your window.
+    Therefore, you need to add a mouse-right-down event method.</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defmethod mouse-right-down ((window my-pane) buttons data)
+   (declare (ignore buttons data))
+   (pop-up-shortcut-menu window))</pre>
+    </font>
+  </dir>
+</dir>
+
+<ol start="6">
+  <li>Finally, you must specify what commands you want on your shortcut menu. For this case,
+    we have inspect and changing the background color.</li>
+</ol>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>(defmethod shortcut-commands ((window my-pane) (menu my-shortcut-menu))
+   (list (make-instance 'menu-item
+           :name :inspect
+           :value 'inspect-command
+           :title &quot;Inspect&quot;)
+     menu-separator
+     (make-instance 'menu-item
+       :name :system-background
+       :value 'system-background-color-command
+       :title &quot;System Background&quot;
+       :selected (not (background-color window)))
+     (make-instance 'menu-item
+       :name :blue-background
+       :value 'blue-background-color-command
+       :title &quot;Blue Background&quot;
+       :selected (rgb-equal (background-color window) blue))))
+
+(defmethod inspect-command ((window my-pane))
+   (inspect window))
+
+(defmethod system-background-color-command ((window my-pane))
+   (setf (background-color window) nil))
+
+(defmethod blue-background-color-command ((window my-pane))
+   (setf (background-color window) blue))</pre>
+    </font>
+  </dir>
+</dir>
+
+<ol start="7">
+  <li>Save all your changes using <strong>File | Save All</strong>. Try running your
+    application using <strong>Run | Run Project</strong>. In the running window, try clicking
+    the mouse right button in the editor pane. When you are satisfied, stop the application
+    using <strong>Run | Stop</strong>.</li>
+</ol>
+
+<h3><a name="sec-7-21"></a>7.21 Pop-up menu</h3>
+
+<p>Sometimes you may want to use the more general <a
+href="../../operators/cg/p/pop-up-menu.htm">pop-up-menu</a> function rather than <a
+href="../../operators/cg/p/pop-up-shortcut-menu.htm">pop-up-shortcut-menu</a>. Here we use
+the menu-example project created in section <a href="#sec-7-18">7.18</a> above. 
+
+<ul>
+  <li>Display the <strong>menu-example</strong> editor. View the <strong>Project Manager</strong>
+    using the <strong>View | Project Manager</strong> command. </li>
+  <li>In the <strong>Project Manager</strong>, select the General tab, select the <strong>menu-example</strong>
+    module and press the View Selected Code button. </li>
+</ul>
+
+<blockquote>
+  <p>In the <strong>menu-example</strong> editor, you would need to rewrite the <a
+  href="../../operators/cg/m/mouse-right-down.htm">mouse-right-down</a> function to use <a
+  href="../../operators/cg/p/pop-up-menu.htm">pop-up-menu</a> instead. Since you are not
+  using the shortcut menu functions, you are responsible for creating the menu and its menu
+  items. The <a href="../../operators/cg/p/pop-up-menu.htm">pop-up-menu</a> function
+  displays a pop-up menu at a specified location.</p>
+</blockquote>
+
+<dir>
+  <dir>
+    <font face="Courier New, Courier, Teletype" size="3"><pre>;; Redefined mouse-right-down that calls pop-up-menu.
+(defmethod mouse-right-down ((window my-pane) buttons data)
+  (declare (ignore buttons data))
+  (let ((menu (open-menu 
+	       (list (make-instance 'menu-item
+		       :name :inspect
+		       :value 'inspect-command
+		       :title &quot;Inspect&quot;)
+		     menu-separator
+		     (make-instance 'menu-item
+		       :name :system-background
+		       :value 'system-background-color-command
+		       :title &quot;System Specified Background&quot;
+		       :selected (not (background-color window)))
+		     (make-instance 'menu-item
+		       :name :blue-background
+		       :value 'blue-background-color-command
+		       :title &quot;Blue Background&quot;
+		       :selected (rgb-equal (background-color window) blue)))
+	       'my-shortcut-menu (screen *system*)
+	       :window window)))
+    (prog1 (pop-up-menu menu (screen *system*))
+      (close menu))))</pre>
+    </font>
+  </dir>
+</dir>
+
+<ul>
+  <li>Save all your changes using <strong>File | Save All</strong>. Try running your
+    application using <strong>Run | Run Project</strong>. In the running window, try clicking
+    the mouse right button in the editor's pane. When you are satisfied, stop the application
+    with <strong>Run | Stop</strong>.</li>
+</ul>
+
+<p>Go to <a href="ide_user_guide_8.htm">chapter 8</a>. Go to the <a href="#begin">beginning</a>
+of this chapter.</p>
+
+<hr>
+
+<p><small>Copyright (c) 1998-2015, Franz Inc. Berkeley, CA., USA. All rights reserved.</small><br>
+<small>Documentation for Allegro CL version 10.0. This is the initial (unrevised) page.</small><br>
+<small>Created 2015.1.25.</small></p>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+  <tr>
+    <td bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3">
+      <tr>
+        <td align="left" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td>
+      </tr>
+    </table>
+    </td>
+    <td align="right"><b>Allegro CL version 10.0</b></td>
+  </tr>
+</table>
+</body>
+</html>

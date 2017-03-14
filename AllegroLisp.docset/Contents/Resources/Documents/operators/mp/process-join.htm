@@ -1,0 +1,106 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>process-join</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-join.htm">9.0 version</a></td></tr></table><h2 id="2">process-join</h2>
+
+<p id="3"><b>Arguments: </b><i>
+process </i>&amp;key  (<i>errorp</i> t)<i> error-values</i> (<i>search-list</i> (quote (:current :previous :next)))<i>
+</i></p>
+
+<p id="4">
+Suspend the current process until <a href="process-thread.htm"><b>mp:process-thread</b></a>
+of <b><i>process</i></b> exits, and then return the list
+of result values of the preset function
+of <i>process</i>. If the thread does not exit normally,
+signal a <code>mp::process-join-error</code>
+if <i>errorp</i> is true or
+return <i>error-values</i>
+if <i>errorp</i> is <code>nil</code>.
+</p>
+<p id="5">
+This simple state of affairs is complicated by the fact that a process
+can have several threads associated with it over its lifetime. One may
+want (1) to wait for the current thread or (2) get the return values
+of the most recently finished thread of <i>process</i>
+or (3) wait for the thread to finish even if there is no current
+one. The <b><i>search-list</i></b> argument controls
+which threads are considered and in what order.  Valid elements
+for <i>search-list</i> are <code>:current</code>,
+<i>:previous</i>, and <code>:next</code>. The list
+is processed in order.  <code>:next</code>, if present, should
+always be last in the list.
+</p>
+<p id="6">
+If <code>:current</code> is found and there is a live thread
+associated with the process then it is waited for and its values
+returned as described above, else the processing of the list
+continues.  If <code>:previous</code> is found and there was a
+thread associated with <i>process</i> but by now it has
+finished then its values are returned (no waiting is needed in this
+case), else the processing of the list continues.
+If <code>:next</code> is found then <a href="process-join.htm"><b>process-join</b></a> waits for a thread
+of <i>process</i> to finish. 
+</p>
+<p id="7">
+The difference between
+<code>:current</code> and <code>:next</code> is
+that <code>:next</code> will wait for a thread that has not even
+started while <code>:current</code> only waits if there is a
+live thread.  
+</p>
+<p id="8">
+If the end of the <i>search-list</i> list is reached,
+that is considered an error and
+a <code>mp::process-join-error</code> is signaled
+if <i>errorp</i> is true,
+and <i>error-values</i> is returned
+if <i>errorp</i> is nil.
+</p>
+<p id="9">
+When successful, <a href="process-join.htm"><b>process-join</b></a> returns a second value: the element of <i>search-list</i> which resulted in matching a thread and
+terminating the processing of the list.
+</p>
+<p id="10">
+This function is async unwind safe: one can wrap it
+in <a href="../system/with-timeout.htm"><b>sys:with-timeout</b></a>.
+</p>
+<h4 id="11">
+Example:
+</h4>
+<pre id="12">
+(mp:process-join process :search-list '(:current :previous :next))
+
+:CURRENT makes it wait for the current thread associated with the
+process if any.
+
+:PREVIOUS makes it take the return values from the most recently
+finished thread that was associated with the process if any.
+
+:NEXT (there hasn't been a thread associated with this process) so we
+wait for the next one.
+
+The first of these to succeed ends the call to PROCESS-JOIN and
+returns the associated values. :NEXT, if present, should be last.  If,
+for example, :SEARCH-LIST is '(:current :previous) and there is no
+current thread and was no previous thread, an error is signaled, as in
+this case:
+
+cg-user(11):   (let ((process (mp:make-process)))
+    (mp:process-join process :search-list '(:current :previous)))
+Error: Joining process #&lt;process Process.1&gt; failed.
+
+[condition type: process-join-error]
+cg-user(12): 
+
+Because the process created in the LET binding was never started,
+there is no current thread for it and no previous thread. Since
+:SEARCH-LIST is '(:current :previous), an error is signaled.
+</pre>
+
+<p id="13">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-join.htm">9.0 version</a></td></tr></table></body></html>

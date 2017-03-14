@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>char-to-octets</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/char-to-octets.htm">9.0 version</a></td></tr></table><h2 id="2">char-to-octets</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ef-name char state-loc </i>&amp;key <i>put-next-octet external-format</i><i>
+</i></p>
+
+<p id="4">
+<i>ef-name</i> should be a
+symbol. <i>char</i> should be a
+character. <i>state-loc</i> should be a place suitable
+as the first argument to <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>.
+<i>put-next-octet</i> should be a form.
+<i>external-format</i> should be an external-format
+object or symbol naming an external-format.
+</p>
+<p id="5">
+The <a href="char-to-octets.htm"><b>char-to-octets</b></a> macro
+expands to the macro stored in the char-to-octets-macro slot of the
+external-format named by <i>name</i>. See the description
+of <a href="def-char-to-octets-macro.htm"><b>def-char-to-octets-macro</b></a>
+for descriptions of the macro's expansion as well as of the
+<i>get-next-char</i>,
+<i>put-next-octet</i>, and
+<i>external-format</i> arguments.
+</p>
+<p id="6">
+Users generally do not need to invoke the <a href="char-to-octets.htm"><b>char-to-octets</b></a> macro. In most cases, it is
+more convenient to use <a href="string-to-octets.htm"><b>string-to-octets</b></a>.
+</p>
+<h3 id="7">
+Examples:
+</h3>
+<pre id="8">
+;; Ensure utf8 conversion macros are available by explicitly loading the
+;; external-format definition.  This suppresses the macro removal
+;; optimizations that may occur when external-format is autoloaded.
+;;
+(let ((*modules* (remove &quot;ef-utf8&quot; *modules* :test #'string-equal)))
+  (require &quot;ef-utf8&quot;))
+
+(let ((utf8-vector (make-array 10
+			       :element-type '(unsigned-byte 8)
+			       :initial-element 255))
+      (state nil)
+      (str &quot;hello&quot;))
+  (do ((s 0 (1+ start-s))
+       (start-s 0 s)
+       (v 0))
+      ((&gt;= s (length str)) utf8-vector)
+      ;; :utf8-base is (crlf-base-ef :utf8)
+      (char-to-octets :utf8-base (prog1 (schar str s) (incf s)) state
+		      :put-next-octet (lambda (b)
+					 (setf (aref utf8-vector v) b)
+					 (incf v)))))
+
+	   ==&gt; #(104 101 108 108 111 255 255 255 255 255)
+</pre>
+
+
+<p id="9">
+See <a href="../../iacl.htm">iacl.htm</a> for more information on international
+character support in Allegro CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/char-to-octets.htm">9.0 version</a></td></tr></table></body></html>

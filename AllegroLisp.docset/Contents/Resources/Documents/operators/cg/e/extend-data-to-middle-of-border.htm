@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>extend-data-to-middle-of-border</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/extend-data-to-middle-of-border.htm">9.0 version</a></td></tr></table><h2 id="2">extend-data-to-middle-of-border</h2>
+
+<p id="3"><b>Arguments: </b><i>
+chart-or-plot
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../e/extend-data-to-middle-of-border.htm"><b>extend-data-to-middle-of-border</b></a> property of
+a <a href="../../../classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a>. The value
+may be set at creation time by passing
+the <code>:extend-data-to-middle-of-border</code> initarg, or
+any time later by calling <a href="../e/extend-data-to-middle-of-border.htm"><b>(setf
+extend-data-to-middle-of-border)</b></a>.
+</p>
+<p id="5">
+A boolean value indicating whether the data area of
+a <a href="../../../classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a> extends to
+the middle of the body border rather than only to the inner edge of
+the body border. This choice is a subtle trade-off in the aesthetics
+of how a chart is drawn, where neatly aligning end tic marks with axes
+means that data will extend into the middle of a thick axis. The
+default value is <code>t</code> for just that choice.
+</p>
+<p id="6">
+This property matters most when a chart body border is thick, and is
+best described by example.  Let's assume that the chart-orientation is
+:vertical (meaning that the value axis is vertical), that the
+<a href="../a/axis-width.htm"><b>axis-width</b></a> of the horizontal
+item-axis is 7, that the <a href="../r/range-bottom.htm"><b>range-bottom</b></a> of the value-axis is zero, and that
+a data value of zero is being plotted.
+</p>
+<p id="7">
+In this example, if <a href="../e/extend-data-to-middle-of-border.htm"><b>extend-data-to-middle-of-border</b></a>
+is <code>nil</code>, then a line that is drawn downward to
+the zero data point will be drawn just to the top of the thick
+item-axis along the bottom of the chart.  Any icon for the zero data
+point will be centered at the top of the thick item-axis line as well.
+If this property is true instead, then the line will extend four
+pixels farther downward to the middle of the thick item axis, and any
+icon would be centered about the middle of the axis.
+</p>
+<p id="8">
+A thick tic mark on the vertical value axis will always be vertically
+centered about the data value to which it points.  So if the value of
+this property is <code>nil</code>, then a thick tic mark
+at the bottom of the value axis will appear jogged upward from the
+horizontal item-axis a bit so that its center is aligned with the top
+of the item-axis, because that is where a data value of zero is
+plotted. That tends to look a bit sloppy, so the default value of
+this property is true to instead align a thick end tic mark exactly
+with an axis of the same thickness. The trade-off is that this causes
+data values to extend to the middle of the item-axis, which may
+obscure the data somewhat.
+</p>
+
+
+<p id="9">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/extend-data-to-middle-of-border.htm">9.0 version</a></td></tr></table></body></html>

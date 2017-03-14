@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>load-file</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/l/load-file.htm">9.0 version</a></td></tr></table><h2 id="2">load-file</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+text-edit-pane </i> &amp;optional <i>pathname delay-redraw</i><i>
+</i></p>
+
+
+
+
+<p id="4">
+Loads text from a text file into a multi-line text-editing window.
+</p>
+<p id="5">
+<b><i>text-edit-pane</i></b> should be the
+<a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> to load the
+text into.  Alternately it can be a <a href="../../../classes/cg/text-edit-window.htm"><code>text-edit-window</code></a>, in which case the text will be
+loaded into the frame-child of the window.  It may also be the window
+of a <a href="../../../classes/cg/multi-line-editable-text.htm"><code>multi-line-editable-text</code></a> widget.
+</p>
+<p id="6">
+<b><i>pathname</i></b> should be a pathname or path
+namestring of a text file, or else <code>nil</code>. If
+<code>nil</code>, the usual file-selection dialog is shown
+to let the user interactively select the file to load.
+</p>
+<p id="7">
+<b><i>delay-redraw</i></b> is used internally and is
+probably not useful in applications. It prevents the text-edit-pane
+from redrawing itself automatically to reveal the loaded text.
+</p>
+<p id="8">
+On the Windows platform, this function will attempt to determine if
+the file is in a 16-bit Unicode format (either little- or big-endian)
+or UTF8, and will read the text using that external format if so.
+Otherwise it will read the file using using the external format of the
+locale with which the Windows operating system is currently booted, on
+the assumption that it matches. The function
+<a href="../e/external-format-for-save.htm"><b>external-format-for-save</b></a> will
+return the format that <a href="../l/load-file.htm"><b>load-file</b></a> used, and calling <a href="../s/save-file.htm"><b>save-file</b></a> later on the <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> will write the file back in the
+same format (except for cases documented under
+<a href="../e/external-format-for-saved-files.htm"><b>external-format-for-saved-files</b></a>
+and <a href="../e/external-format-for-save.htm"><b>external-format-for-save</b></a>).
+</p>
+<p id="9">
+See the configuration option <a href="../l/load-utf8-if-no-bom.htm"><b>load-utf8-if-no-bom</b></a> which controls behavior when
+loading a text file with no byte order marker (BOM) bytes at the
+beginning.
+</p>
+
+
+
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/l/load-file.htm">9.0 version</a></td></tr></table></body></html>

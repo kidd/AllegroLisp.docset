@@ -1,0 +1,117 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>draw-string-in-box</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-string-in-box.htm">9.0 version</a></td></tr></table><h2 id="2">draw-string-in-box</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream string start end box horizontal-justification vertical-justification 
+</i> &amp;optional <i>string-vertical-p wrap-p calculate-height no-clip</i><i>
+</i></p>
+
+<p id="4">
+If <i>calculate-height</i> is <code>nil</code> (the default), this function draws all or part of
+<i>string</i> in <i>box</i> on
+<i>stream</i> with the specified formatting options. The
+string is clipped as necessary to prevent it from extending outside
+the box. The string is wrapped at spaces if
+<i>wrap-p</i> is true. See below
+for more information on <i>wrap-p</i>. This function
+returns the height of the wrapped text that was drawn, in pixels. This
+value is useful when the <i>wrap-p</i> argument is true,
+since it is hard to predict how many lines of text will result from
+the wrapping.
+</p>
+<p id="5">
+If <i>calculate-height</i> is specified
+true, then the text is <i>not</i> drawn, but the
+height necessary if it were drawn is returned. This information may be
+useful for determining how much space is needed to draw particular
+pieces of text.
+</p>
+<p id="6">
+The <i>start</i> and <i>end</i> arguments
+specify the starting and ending locations of the portion of the string
+to be drawn. These are not optional arguments. The values must be
+non-negative integers or nil. To get the whole string drawn, specify 0
+or nil and (length string) or nil as the values. 
+</p>
+<p id="7">
+<i>box</i> should be a box object (as made with <a href="../m/make-box.htm"><b>make-box</b></a>). It denotes the
+rectangular region of the stream into which to fit the string.
+</p>
+<p id="8">
+<i>stream</i>
+should be a <a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+</p>
+<p id="9">
+The remaining arguments
+are as follows:
+</p>
+<ul>
+<li id="10">
+<i>horizontal-justification</i> can be one of :left,
+:right, :center, :fill. Any other value (including nil) is taken to
+mean :left. If :fill, then the <i>wrap-p</i> argument is
+coerced to nil and extra space is added at the space characters in the
+string to stretch the string as a single line of text to fill the
+entire width of the specified box.
+</li>
+<li id="11">
+<i>vertical-justification</i> can be one of :top,
+:bottom, :center. Any other value (including nil) is taken to
+mean :top. If the <i>wrap-p</i> optional argument is
+specified and true, vertical-justification is :top regardless of what
+value is specified.
+</li>
+<li id="12">
+<i>string-vertical-p</i>: the functionality associated
+with this argument is unimplemented and the value is ignored.
+</li>
+<li id="13">
+<i>wrap-p</i>: this optional argument is a Boolean which
+specifies whether text should be wrapped in the box. If specified
+true, then the string will be wrapped (at space
+characters) into multiple lines, each fitting horizontally into the
+specified box. All wrapping occurs at spaces. When this argument is
+true, vertical-justification is :top (regardless of what is
+specified). Note that newline characters in
+<i>string</i> always cause a wrap to the next line
+whatever the value of <i>wrap-p</i>.
+</li>
+<li id="14">
+<i>no-clip</i>: if true, then the string is not clipped
+as usual at the edges of the specified box, and so the string will
+extend off the right or bottom edge of the box if it is too long to
+fit within the box.  Even if the general non-clipping behavior is not
+a problem, using this option may also be useful for avoiding an
+apparent Windows glitch where part an uppercase W will be clipped off
+the left edge of the box in certain fonts.
+</li>
+</ul>
+<p id="15">
+Each character printed can be surrounded by a rectangle large enough
+to contain the character. When a character is printed, what should
+happen to this surrounding rectangle? There are two choices: it should
+be colored in with the window <a href="../b/background-color.htm"><b>background-color</b></a>, or it should be
+untouched, so that only the pixels associated with the character
+itself are modified. See <a href="../t/transparent-character-background.htm"><b>transparent-character-background</b></a>
+for information on how the background pixels of each character cell
+are drawn.
+</p>
+<p id="16">
+An alternative to <a href="../d/draw-string-in-box.htm"><b>draw-string-in-box</b></a> is to call Common Lisp stream
+output functions such as <a href="../../../../ansicl/dictentr/format.htm"><b>format</b></a> or <a href="../../../../ansicl/dictentr/writepri.htm"><b>princ</b></a>, which work on Common Graphics windows and
+other graphical-streams because they are set up as lisp streams.
+These functions will position the upper-left corner of the string at
+the <a href="../c/current-position.htm"><b>current-position</b></a> of the
+stream.  In particular, <a href="../d/draw-string-in-box.htm"><b>draw-string-in-box</b></a> is not suitable when the
+current font of the stream has a non-zero <a href="../f/font-angle.htm"><b>font-angle</b></a>, because the text will be rotated
+about its upper-left corner and will therefore extend outside the
+specified box. If you call the lower-level functions <a href="../../../../ansicl/dictentr/write-st.htm"><b>write-string</b></a>, <a href="../../../../ansicl/dictentr/write-ch.htm"><b>write-char</b></a>, and <a href="../../../../ansicl/dictentr/write-se.htm"><b>write-sequence</b></a> on a Common Graphics
+stream, then you should call <a href="../../../../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> or <a href="../../../../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> before subsequently
+calling any graphics-related functions; see the note at the end
+of <a href="../../../cgide.htm">Common Graphics
+Streams</a> in <a href="../../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-string-in-box.htm">9.0 version</a></td></tr></table></body></html>

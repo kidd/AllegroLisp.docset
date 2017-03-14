@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>load-localedef</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/load-localedef.htm">9.0 version</a></td></tr></table><h2 id="2">load-localedef</h2>
+
+<p id="3"><b>Arguments: </b><i>pathname </i> &amp;optional <i>name</i></p>
+
+<p id="4">
+This function loads locale information from a localedef source file.
+<i>pathname</i> specifies the source file and the
+optional <i>name</i> specifies the name of the
+locale. If <i>name</i> is not provided, it defaults to
+the <a href="../../../ansicl/dictentr/pathnam0.htm"><b>pathname-name</b></a> of
+<i>pathname</i>. The new locale is returned, but it is
+accessible using <a href="find-locale.htm"><b>find-locale</b></a> and the name anytime
+after <a href="load-localedef.htm"><b>load-localedef</b></a>
+completes.
+</p>
+<p id="5">
+Several localedef source files are
+included with Allegro CL. These definitions come from the IBM
+Universal Locales project. They can be found in the directory
+specified by <a href="../../variables/excl/s_locales-dir_s.htm"><code>*locales-dir*</code></a>.
+</p>
+
+<p id="6">
+The localedef file does not include external-format information.
+After load-localedef parses the input file and creates the appropriate
+attribute/value pairings, the external-format is determined by looking
+to see if a charset is specified in the locale name (using the
+&quot;.[charset]&quot; specification).  If the name does not specify the
+external-format, then Allegro CL uses a [language -&gt; external-format]
+table which is kept in Lisp.
+</p>
+
+<p id="7">
+See <a href="../../iacl.htm#localization-1">Localization support
+in Allegro CL</a> in <a href="../../iacl.htm">iacl.htm</a>.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/load-localedef.htm">9.0 version</a></td></tr></table></body></html>

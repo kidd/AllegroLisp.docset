@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>help-button</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/help-button.htm">9.0 version</a></td></tr></table><h2 id="2">help-button</h2>
+
+<p id="3"><b>Arguments: </b><i>
+basic-pane
+</i></p>
+
+<p id="4">
+Returns whether <i>basic-pane</i> has a "question mark"
+button in its title-bar for invoking context-sensitive help.  If the
+user clicks this button and then clicks a dialog-item or child window
+of <i>basic-pane</i>, then the generic function <a href="../c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> is
+called. An application can add methods to <a href="../c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> to display
+help on the clicked dialog-item or child window.
+</p>
+<p id="5">
+<b>Microsoft Windows note</b>: due to operating system design, this
+button may not be used along with the minimize or maximize buttons
+(see <a href="../m/minimize-button.htm"><b>minimize-button</b></a> and <a href="../m/maximize-button.htm"><b>maximize-button</b></a>). Those
+buttons will not appear if specified along with the <a href="../h/help-button.htm"><b>help-button</b></a> option.
+</p>
+<p id="6">
+<b>GTK note</b>: A help button will never appear on a top-level
+window, because X window managers do not provide such a thing.
+</p>
+<p id="7">
+This property should be specified by passing a
+<i>help-button</i> initarg to <a href="../m/make-window.htm"><b>make-window</b></a>, since this property
+cannot be changed on an existing window by calling <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> and this generic function.  (You may also
+specify it interactively in the inspector for a form window; the
+button will not appear on the form itself but will appear on the
+running window of the form.)
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/help-button.htm">9.0 version</a></td></tr></table></body></html>

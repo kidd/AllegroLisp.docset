@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>locale-parse-number</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/locale-parse-number.htm">9.0 version</a></td></tr></table><h2 id="2">locale-parse-number</h2>
+
+<p id="3"><b>Arguments: </b><i>
+string 
+</i>&amp;key  (<i>locale</i> *locale*) (<i>start</i> 0) (<i>end</i> nil)<i>
+</i></p>
+
+<p id="4">
+Arguments:
+</p>
+<ul>
+<li id="5">
+<i>string</i> is a string.
+</li>
+<li id="6">
+<i>locale</i> is a locale.
+</li>
+<li id="7">
+<i>start</i> is a bounding index designator of
+<i>string</i>. The default is 0.
+</li>
+<li id="8">
+<i>end</i> is a bounding index designator of
+<i>string</i>. The default is nil.
+</li>
+</ul>
+
+<p id="9">
+<a href="locale-parse-number.htm"><b>locale-parse-number</b></a> parses the
+number in string, with bounds designated by start/end, assuming that
+the number is in locale's format (i.e., follows locale's thousands
+separator and decimal point rules).
+</p>
+<p id="10">
+It is an error for the boundary designated by start/end in the string
+not to consist entirely of the representation of the number, possibly
+surrounded on either side by whitespace characters.
+</p>
+<p id="11">
+The first value returned is the number that was parsed.  The type is
+that of <a href="../../../ansicl/dictentr/read-def.htm"><code>*read-default-float-format*</code></a>.
+</p>
+<p id="12">
+The second value returned is the index into the string of the
+delimiter that terminated the parse, or the upper bounding index of
+the substring if the parse terminated at the end of the substring.
+</p>
+<h3 id="13">
+Example:
+</h3>
+
+<pre id="14">
+(locale-parse-number &quot;1.234,56&quot; :locale :de_DE) 
+  ==&gt; values 1234.56 7
+</pre>
+
+<p id="15">
+See <a href="../../iacl.htm#localization-1">Localization support
+in Allegro CL</a> in <a href="../../iacl.htm">iacl.htm</a>.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/locale-parse-number.htm">9.0 version</a></td></tr></table></body></html>

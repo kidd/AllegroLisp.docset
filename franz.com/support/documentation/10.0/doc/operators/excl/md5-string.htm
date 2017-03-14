@@ -1,0 +1,54 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>md5-string</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/md5-string.htm">9.0 version</a></td></tr></table><h2 id="2">md5-string</h2>
+
+<p id="3"><b>Arguments: </b><i>
+string </i>&amp;key <i>start end external-format return</i><i>
+</i></p>
+
+<p id="4">
+Using <a href="md5-init.htm"><b>md5-init</b></a> (which
+creates a context), <a href="md5-update.htm"><b>md5-update</b></a> (which updates the context with the
+argument string), and <a href="md5-final.htm"><b>md5-final</b></a> (which finalizes the hash), this
+function computes the MD5 hash for
+<i>string</i>.
+</p>
+<p id="5">
+The <i>start</i> and <i>end</i> arguments
+specify the portion of the string to be considered and the
+<i>external-format</i> argument specifies the external
+hashing of the string that will be used to update the
+context. <i>start</i> defaults to 0,
+<i>end</i> defaults to the length of
+<i>string</i>, and <i>external-format</i>
+defaults to the default external format. These arguments, along with
+<i>string</i>, are passed to <a href="md5-update.htm"><b>md5-update</b></a>.
+</p>
+<p id="6">
+The format of the result, just as for <a href="md5-final.htm"><b>md5-final</b></a>, is determined by the return keyword
+argument. The possible values are <code>:integer</code>,
+<code>:usb8</code>, and <code>:hex</code>. See <a href="md5-final.htm"><b>md5-final</b></a> for information on these
+values and the corresponding formats of the returned value.
+</p>
+
+<pre id="7">
+cl-user(4): (md5-string "foo")  ;; default return format :integer
+229609063533823256041787889330700985560
+cl-user(5): (md5-string "foo" :return :usb8)
+#(172 189 24 219 76 194 248 92 237 239 ...)
+cl-user(6): 
+</pre>
+
+<p id="8">
+An earlier version of md5-string only accepted the single keyword
+argument <code>:usb8-result</code> (which, when specified true,
+produced a result equivalent to specifying ':return :usb8'). That
+keyword argument is no longer supported.
+</p>
+
+<p id="9">
+See <a href="../../miscellaneous.htm#md5-1">MD5, SHA*, HMAC, RC4, and other message digest
+support</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a>.
+See also <a href="digest-string.htm"><b>digest-string</b></a>.
+</p>
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/md5-string.htm">9.0 version</a></td></tr></table></body></html>

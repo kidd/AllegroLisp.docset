@@ -1,0 +1,152 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>lisp-to-bat-file</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/lisp-to-bat-file.htm">9.0 version</a></td></tr></table><h2 id="2">lisp-to-bat-file</h2>
+
+<p id="3"><b>Arguments: </b><i>
+lisp-file bat-file </i>&amp;key  (<i>executable</i> "sys:mlisp.exe") (<i>image</i> "sys:mlisp.dxl") (<i>pause</i> t)<i> if-exists</i><i>
+</i></p>
+
+<p id="4">
+This function creates a bat file which (on Windows) will execute the
+contents of <b><i>lisp-file</i></b>. The
+<b><i>bat-file</i></b> argument specifies the name of
+the bat file. It does this by wrapping around the Lisp code commands
+from the Windows command shell (<b>cmd.exe</b>), and using the new
+arguments to Allegro CL, <b>--bat</b> and <b>--bat-pause</b>. (See
+<a href="../../startup.htm#command-line-args-1">Command line
+arguments</a> in <a href="../../startup.htm">startup.htm</a> for a list of
+command-line arguments accepted by Allegro CL.)
+</p>
+<p id="5">
+<b>bat</b> files are only supported on Windows. This function exists
+and works on UNIX platforms but only for creating bat files that will
+be used on Windows with Allegro CL on Windows. Similar functionality,
+running Lisp from a shell script, is supported on UNIX (but not on
+Windows, where shell scripts are not supported). See <a href="../../startup.htm#starting-unix-script-3">Starting on UNIX using
+a shell script</a> in <a href="../../startup.htm">startup.htm</a> for details
+of using a shell script on UNIX to run Lisp.
+</p>
+<p id="6">
+The <b><i>executable</i></b> keyword argument must
+specify a exe file. There are effectively four exe files on Windows:
+<b>mlisp.exe</b> and <b>buildi.exe</b>, and <b>mlisp8.exe</b> and
+<b>build.exe</b>. The first pair use international characters (16-bits
+per character) while the second pair use 8-bit
+charcaters. <b>build.exe</b> and <b>buildi.exe</b> run console apps on
+Windows (note the warning about multiprocessing and console apps
+below). (Executables with other names are copies of one or another of
+those four -- <b>alisp8.exe</b>, for example, is a copy of
+<b>mlisp8.exe</b>.)
+</p>
+<p id="7">
+The <b><i>image</i></b> keyword argument must specify an
+image file (with type <b>dxl</b>). Examples of existing image files
+include <b>mlisp.dxl</b> and <b>mlisp8.dxl</b>. <b>allegro.dxl</b> is
+the image file for the IDE. While you can call that image in a bat
+file, it is necessarily interactive so it is hard to see why doing so
+would be practical.
+</p>
+<p id="8">
+The specified executable and image files must be compatible, that is
+they must use the same character sizes. The table below shows
+compatible executables and images among those supplied with the
+distribution.
+</p>
+<p id="9">
+The <b><i>pause</i></b> keyword argument indicates if a
+pause at the end of the script is desired. (By pause, we mean the
+script will execute and then Lisp will not exit until the user hits
+the Enter key. This allows the user to examine information which may
+be displayed. If there is no pause, it is likely the user will not be
+able to see anything displayed before Lisp exits.) For console apps
+<i>pause</i> should be <code>nil</code>, but
+for Windows apps <code>t</code> is a good value for, as we
+said, seeing the results of the script before Lisp exits. (If
+<i>pause</i> is specified true, the <b>--bat-pause</b>
+command-line argument is used. If <i>pause</i> is
+<code>nil</code>, <b>--bat</b> is used.
+</p>
+<p id="10">
+The value of the <b><i>if-exists</i></b> keyword
+argument is passed to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> when creating
+<i>bat-file</i>.
+</p>
+
+<h4 id="11">
+<a name="ltbf-table-compat-images">Table of compatible predefined images</a>
+</h4>
+
+<p id="12">
+The supplied executables in the first column are compatible with the
+images in the second column. (Often an executable is compatible with
+more images: the only important feature is character size. We list
+them this way for ease of specifying arguments.) <b>I18n</b> is an
+abbreviation for <b>Internationalization</b>. If the <b>I18n</b> is
+<code>t</code>, international characters are supported.
+</p>
+
+<table align="center" border="2" cellpadding="3" cellspacing="1" width="50%">
+<tr>
+<th width="10%" align="left">executable</th>
+<th width="20%" align="left">images</th>
+<th width="10%" align="left">type</th>
+<th width="10%" align="left">i18n?</th>
+</tr>
+<tr>
+<td width="10%" align="left">build.exe</td>
+<td width="20%" align="left">mlisp8.dxl, alisp8.dxl</td>
+<td width="10%" align="left">console</td>
+<td width="10%" align="left">no</td>
+</tr>
+<tr>
+<td width="10%" align="left">buildi.exe</td>
+<td width="20%" align="left">mlisp.dxl, alisp.dxl</td>
+<td width="10%" align="left">console</td>
+<td width="10%" align="left">yes</td>
+</tr>
+<tr>
+<td width="10%" align="left">mlisp.exe</td>
+<td width="20%" align="left">mlisp.dxl</td>
+<td width="10%" align="left">windows</td>
+<td width="10%" align="left">yes</td>
+</tr>
+<tr>
+<td width="10%" align="left">alisp.exe</td>
+<td width="20%" align="left">alisp.dxl</td>
+<td width="10%" align="left">windows</td>
+<td width="10%" align="left">yes</td>
+</tr>
+<tr>
+<td width="10%" align="left">mlisp8.exe</td>
+<td width="20%" align="left">mlisp8.dxl</td>
+<td width="10%" align="left">windows</td>
+<td width="10%" align="left">no</td>
+</tr>
+<tr>
+<td width="10%" align="left">alisp8.exe</td>
+<td width="20%" align="left">alisp8.dxl</td>
+<td width="10%" align="left">windows</td>
+<td width="10%" align="left">no</td>
+</tr>
+</table>
+
+<h4 id="13">
+Warning about Console Apps and multiprocessing
+</h4>
+
+<p id="14">
+Console apps may not work properly when they use multiprocessing. If
+you intend to use multiple processes, you should use a Windows app.
+</p>
+
+<h4 id="15">
+More information and an example
+</h4>
+
+<p id="16">
+This <a href="http://franz.com/support/tech_corner/windows_scripting.lhtml">Tech
+Corner entry</a> talks about the bat file feature and gives an
+example.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/lisp-to-bat-file.htm">9.0 version</a></td></tr></table></body></html>

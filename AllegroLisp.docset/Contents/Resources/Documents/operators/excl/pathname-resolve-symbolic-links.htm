@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pathname-resolve-symbolic-links</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/pathname-resolve-symbolic-links.htm">9.0 version</a></td></tr></table><h2 id="2">pathname-resolve-symbolic-links</h2>
+
+<p id="3"><b>Arguments: </b><i>pathname</i></p>
+
+<p id="4">The argument must be a existing pathname or something (like a
+string) coercible to a existing pathname.  If the argument is a logical
+pathname, it is first translated to a physical pathname. The
+directories of the pathname are then checked from left to
+right. Whenever a directory component is encountered that is a
+symbolic link, the target of the link is merged into the pathname, and
+the new pathname is rescanned, starting from the beginning if the
+target of the symbolic link was an absolute pathname. When all
+symbolic links have been resolved, the resultant pathname object is
+returned.
+</p>
+<h3 id="5">
+Error when pathname does not exist
+</h3>
+<p id="6">
+When <i>pathname</i> names a non-existent pathname, an
+error is signaled, similar to:
+</p>
+<pre id="7">
+CL-USER(2): (excl:pathname-resolve-symbolic-links #p"/does/not/exist")
+Error: realpath failed: No such file or directory [errno=2].
+  [condition type: SYSCALL-ERROR]
+</pre>
+
+<p id="8">
+See also 
+<a href="symbolic-link-p.htm"><b>symbolic-link-p</b></a>. See 
+<a href="../../pathnames.htm">pathnames.htm</a> for general
+information on pathnames in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/pathname-resolve-symbolic-links.htm">9.0 version</a></td></tr></table></body></html>

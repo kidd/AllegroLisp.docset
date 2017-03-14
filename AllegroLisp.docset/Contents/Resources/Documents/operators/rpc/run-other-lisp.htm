@@ -1,0 +1,209 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>run-other-lisp</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/run-other-lisp.htm">9.0 version</a></td></tr></table><h2 id="2">run-other-lisp</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>log vecp env remote-command prefix remote-host suffix image lisp flags infile opts args debug</i><i>
+</i></p>
+
+<p id="4">
+When this function is used to start a second Lisp image, most of the
+other functions in this document are not available since the <a href="../../classes/rpc/client-lisp.htm"><code>client-lisp</code></a> infrastructure is
+not enabled. This function is used by <a href="run-other-client.htm"><b>run-other-client</b></a> and may be useful in
+situations where an application needs behavior outside of the scope of
+this document.
+</p>
+<p id="5">
+This is a more primitive function (than <a href="run-other-client.htm"><b>run-other-client</b></a>) to start a new Allegro CL
+Lisp image.  There is no implied calling or loading performed by this
+call. The values returned by
+<a href="run-other-lisp.htm"><b>run-other-lisp</b></a> are the
+same as the value returned by <a href="../excl/run-shell-command.htm"><b>run-shell-command</b></a>.
+</p>
+<p id="6">
+If the <b><i>log</i></b> argument is non-<code>nil</code>, it must be a string that denotes a file. The new
+Lisp image will start a <a href="../../../ansicl/dictentr/dribble.htm"><b>dribble</b></a> there.
+</p>
+<p id="7">
+The <b><i>vecp</i></b> argument is only used on Unix.
+When the <i>vecp</i> argument is non-<code>nil</code> (the default), the command is passed to <a href="../excl/run-shell-command.htm"><b>run-shell-command</b></a> as a vector of
+strings.
+</p>
+<p id="8">
+The <b><i>env</i></b> argument is an association list of
+environment variable names and values.  The environment variables are
+added to the OS environment of the new Lisp image
+</p>
+<p id="9">
+The <b><i>remote-command</i></b> argument may be a
+string or a list of strings. The flattened sequence of strings is used
+as the command that starts the new Lisp image. The default is
+"rsh". If the command consists of several tokens it is recommended to
+pass it as a list of strings instead of a single string of tokens and
+spaces.
+</p>
+<p id="10">
+The <b><i>prefix</i></b> argument may be a
+string or a list of strings. The flattened sequence of strings is
+inserted in the command that starts the new Lisp image.
+</p>
+<p id="11">
+The <b><i>remote-host</i></b> argument is a string that
+names the host where the new Lisp image must run.  If omitted or
+<code>nil</code>, the value "localhost" is used.
+</p>
+<p id="12">
+The <b><i>suffix</i></b> argument may be a string or a
+list of strings. The flattened sequence of strings is inserted in the
+command that starts the new Lisp image.
+</p>
+<p id="13">
+The <b><i>image</i></b> argument may be a string that
+names the Lisp image file for the new Lisp image.
+</p>
+<p id="14">
+The <b><i>lisp</i></b> argument may be a string or a
+list of strings. The flattened sequence of strings is inserted in the
+command that starts the new Lisp image.
+</p>
+<p id="15">
+The <b><i>flags</i></b> argument may be a string or a
+list of strings. The flattened sequence of strings is inserted in the
+command that starts the new Lisp image.
+</p>
+<p id="16">
+The <b><i>infile</i></b> argument may be a string or a
+list of strings. Each string names a file that is loaded in the new
+Lisp image with a -L flag.
+</p>
+<p id="17">
+The <b><i>opts</i></b> argument may be a string or a
+list of strings. The flattened sequence of strings is inserted in the
+command that starts the new Lisp image.
+</p>
+<p id="18">
+The <b><i>args</i></b> argument may be a string or a
+list of strings. The flattened sequence of strings is inserted in the
+command that starts the new Lisp image.
+</p>
+<p id="19">
+The <b><i>debug</i></b> argument, when
+non-<code>nil</code>, causes the <a href="../excl/run-shell-command.htm"><b>run-shell-command</b></a> arguments to be printed
+to <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>.
+</p>
+<p id="20">
+The arguments to <a href="run-other-lisp.htm"><b>run-other-lisp</b></a> are used to construct an
+operating system command string from three main components. The
+components are concatenated into a single command that is invoked with
+<a href="../excl/run-shell-command.htm"><b>run-shell-command</b></a>.
+</p>
+<ol>
+<li id="21">
+The first component is present only if the
+<i>remote-host</i> argument is specified. It is
+constructed as:
+<pre id="22">
+&lt;remote-command&gt; &lt;prefix&gt; &lt;remote-host&gt; &lt;suffix&gt;
+</pre>
+<p id="23">
+Each of the items in the first component may be a single string or
+a list of strings.  Each string is passed as a separate argument
+in the OS command. Thus, if an item consists of several OS tokens,
+they should be presented as a list of strings; otherwise, they will
+not be recognized as separate arguments.
+</p>
+</li>
+<li id="24">
+The second component is always present and specifies the command that
+starts a Lisp image.  The default is to use the value returned by
+<a href="../system/command-line-arguments.htm"><b>sys:command-line-arguments</b></a> for
+the current Lisp image.  This value is reasonable if the client image
+is to run in the same machine and not calling from an IDE image.
+<p id="25">
+If the calling image is an IDE image, it is unlikely that the
+client image should be an IDE image; therefore it is necessary
+to specify this argument explicitly.
+</p>
+<p id="26">
+If the
+client image is to run on a separate host, then the lisp argument must
+be specified.
+</p>
+<pre id="27">
+&lt;lisp-command&gt;
+</pre>
+</li>
+<li id="28">
+The third component is the argument list to the lisp-command component.  
+<pre id="29">
+&lt;flags&gt; &lt;-I image&gt; &lt;-d log&gt; &lt;-L infile&gt;... &lt;opts&gt; -- &lt;args&gt;
+</pre>
+</li>
+</ol>
+
+<p id="30">
+The <i>flags</i>, <i>opts</i>, and
+<i>args</i> arguments may be any combination of lists
+and strings.  Any list structure is flattened out and the resulting
+elements are separated by spaces in the command string, or appear as
+separate elements in the command vector.
+</p>
+<p id="31">
+If the <i>image</i> argument is not specified, the &lt;-I
+image&gt; part is omitted.
+</p>
+<p id="32">
+If the <i>infile</i> argument is not specified, the
+&lt;-L infile&gt; part is omitted. If the <i>infile</i>
+argument is a list, then multiple &lt;-L&gt; parts are inserted.
+</p>
+<p id="33">
+If the case-modes of the calling and client images are different,
+then the applications are responsible for passing information
+in a way that is compatible with the respective case-mode values.
+If symbols are specified as lowercase package-qualified strings,
+then case-mode issues are generally avoided.
+</p>
+
+
+<h4 id="34">
+Simple example
+</h4>
+
+<p id="35">
+To run a second Lisp image on the same host as the caller, almost all the 
+arguments may be omitted:
+</p>
+<pre id="36">
+(run-other-lisp) 
+</pre>
+<p id="37">
+is sufficient to start a second Lisp image that simply waits for some
+top-level input.
+</p>
+<pre id="38">
+(run-other-lisp :infile "foo.cl") 
+</pre>
+<p id="39">
+will start a second Lisp image that loads "foo.cl" during startup.
+</p>
+<pre id="40">
+(run-other-lisp :remote-host "spot" 
+                :lisp "~/bin/start-lisp" 
+                :args '("-flag1" "-flag2"))
+</pre>
+<p id="41">
+will start a Lisp image on host "spot". The script "~/bin/start-lisp"
+is assumed to contain whatever is needed to start a Lisp on that host.
+The two argumtens "-flag1" "-flag2" will be added to the command line
+after the "--" separator.
+</p>
+
+<p id="42">
+See <a href="../../rpc.htm#several-images-1">Running several
+communicating Allegro CL images</a> in
+<a href="../../rpc.htm">rpc.htm</a> for information on running several Lisp
+images.
+</p>
+
+<hr><p id="43"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/run-other-lisp.htm">9.0 version</a></td></tr></table></body></html>

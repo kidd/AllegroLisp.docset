@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>save-source-level-debug-info-switch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: compiler</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/save-source-level-debug-info-switch.htm">9.0 version</a></td></tr></table><h2 id="2">save-source-level-debug-info-switch</h2>
+
+<p id="3">As with most compiler switch variables, the value of this variable
+can be <code>t</code>, <code>nil</code>, or a
+function object that accepts five arguments and returns <code>t</code> or <code>nil</code>. The arguments
+passed to the function will be the values of the safety, space, speed,
+debug, and compilation-speed optimization qualities, in that order. <code>nil</code> is equivalent to a function that always returns
+<code>nil</code> and <code>t</code> to a
+function that always returns <code>t</code>.  When the
+value is a function and we say <code>t</code> (or true) or
+<code>nil</code> (or false) in the text below, we mean
+that the function returns, respectively, <code>t</code> or
+<code>nil</code>.</p>
+
+<p id="4">
+Bound to a function which, given safety, space, speed, debug, and
+compilation-speed, returns <code>t</code> if the compiler
+should save information in fasl files useful for source-level
+debugging (see <a href="../../debugging.htm#source-step-1">The
+source stepper</a> in <a href="../../debugging.htm">debugging.htm</a>) and for
+coverage analysis (see <a href="../../operators/excl/with-coverage.htm"><b>with-coverage</b></a>).
+</p>
+<p id="5">
+Initially true if debug is greater than 2. 
+</p>
+<p id="6">
+Note: when this switch is true, the compiler uses more stack. If you
+have problem compiling because of stack overflows, evaluate (setq
+comp:save-source-level-debug-info-switch nil) to suppress collection
+of the data.
+</p>
+
+<p id="7">
+See <a href="../../compiling.htm">compiling.htm</a> for
+information on the compiler.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/save-source-level-debug-info-switch.htm">9.0 version</a></td></tr></table></body></html>

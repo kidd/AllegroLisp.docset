@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>object-editor-save</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/object-editor-save.htm">9.0 version</a></td></tr></table><h2 id="2">object-editor-save</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object-editor
+</i></p>
+
+<p id="4">
+This function is called by the <code>:save-button</code> widget
+of an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> dialog
+(see <a href="../c/command-buttons.htm"><b>command-buttons</b></a>), and may
+also be called directly by application code.
+</p>
+<p id="5">
+It writes any values that the user has modified in the widgets of the
+<b><i>object-editor</i></b> (an instance of <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>) back into the slots
+of the <a href="../c/current-instance.htm"><b>current-instance</b></a> that
+the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> is
+displaying.  If <a href="../o/object-editor-revert.htm"><b>object-editor-revert</b></a> is called first to undo the
+current edits, then they will never be saved.
+</p>
+<p id="6">
+This function is called automatically whenever a new instance is
+displayed, to save the previously-displayed instance first.  It is
+also called when the keyboard focus is moved from the
+<i>object-editor</i> if its <a href="../s/save-on-clear-focus.htm"><b>save-on-clear-focus</b></a> property is true.  It is
+called anytime the user has modified a widget if the <a href="../s/save-on-new-widget-value.htm"><b>save-on-new-widget-value</b></a> property is true.
+</p>
+<p id="7">
+The <a href="../m/modified.htm"><b>modified</b></a> property of an
+<a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will be true
+when there are unsaved edits to the currently-displayed instance.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/object-editor-save.htm">9.0 version</a></td></tr></table></body></html>

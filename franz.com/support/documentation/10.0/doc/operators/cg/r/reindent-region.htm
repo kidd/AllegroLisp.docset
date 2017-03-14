@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>reindent-region</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/reindent-region.htm">9.0 version</a></td></tr></table><h2 id="2">reindent-region</h2>
+
+<p id="3"><b>Arguments: </b><i>lisp-edit-pane </i>&amp;key <i>pretty-print</i><i>
+</i></p>
+
+<p id="4">
+Reindents the selected lisp code or top-level lisp form in the
+specified <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a>.  If any text is
+currently selected, then that is the text that will be reindented;
+otherwise the top-level form that the text cursor is inside (or after)
+will be reindented.
+</p>
+<p id="5">
+If <i>pretty-print</i> is <code>nil</code>
+(the default), then spaces are simply added to or removed from the
+beginning of each line as needed for conventional lisp source code
+indentation.  If <i>pretty-print</i> is true, then the
+top-level form is pretty-printed as a whole into the
+<i>lisp-edit-pane</i> (fitting the text to the current
+window width), replacing the previous version of the form.
+Pretty-printing will likely wrap the form differently (changing how
+much code appears on each line), and will always remove any comments
+that were in the top-level form.
+</p>
+<p id="6">
+The text cursor should end up in the same logical position as before
+the operation if <i>pretty-print</i> is <code>nil</code>; this is not feasible if
+<i>pretty-print</i> is true.  In either case,
+parenthesis-matching will be updated after the operation (see <a href="../p/parentheses-matched.htm"><b>parentheses-matched</b></a>).
+</p>
+<p id="7">
+Reindenting may not work correctly if the text is auto-wrapped.
+Auto-wrapping will happen if the <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> has no horizontal scrollbar and
+one or more of its text lines is longer than the interior width of the
+window.  Therefore, a <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> in which reindenting will be done
+should have a horiztonal scrollbar by setting its <a href="../s/scrollbars.htm"><b>scrollbars</b></a> property either to
+<code>:horizontal</code> or (more typically) to <code>t</code> (which is the default).
+</p>
+<p id="8">
+See also <a href="../r/reindent-single-line.htm"><b>reindent-single-line</b></a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/reindent-region.htm">9.0 version</a></td></tr></table></body></html>

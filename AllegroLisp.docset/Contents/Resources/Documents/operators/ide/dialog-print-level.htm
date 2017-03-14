@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>dialog-print-level</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">dialog-print-level</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+This is one of a series of operators which determine the values of
+various printer variables for use on IDE dialogs. All values can be
+set on the <b>IDE 2</b> tab of the <a href="../../ide-menus-and-dialogs/tools-menu.htm#options">Tools | Options</a>. This
+operator determines the value of <a href="../../../ansicl/dictentr/print-le.htm"><code>*print-level*</code></a>. Other operators include
+<a href="dialog-print-length.htm"><b>dialog-print-length</b></a>
+(*print-length*), <a href="dialog-print-circle.htm"><b>dialog-print-circle</b></a> (<a href="../../../ansicl/dictentr/print-ci.htm"><code>*print-circle*</code></a>), and <a href="dialog-print-array.htm"><b>dialog-print-array</b></a> (<a href="../../../ansicl/dictentr/print-ar.htm"><code>*print-array*</code></a>).The general description on this
+page applies to all the operators (replacing <i>-level</i>
+appropriately) and so pages describing those operators simply link
+here.
+</p>
+<p id="5">
+This user option determines the value to which <a href="../../../ansicl/dictentr/print-le.htm"><code>*print-level*</code></a> will be bound when the IDE is
+printing arbitrary Lisp values into widgets in various tool dialogs.
+The affected dialogs include the backtrace pane (which appears when
+you elect to debug an error that is signaled), the listener's
+drop-down history, the <a href="../../ide-menus-and-dialogs/inspect-dialog.htm">Inspect dialog</a>,
+the <a href="../../ide-menus-and-dialogs/trace-dialog.htm">Trace
+Dialog</a>, and some widgets in the <a href="../../ide-menus-and-dialogs/stepper-dialog.htm">Stepper Dialog</a>.
+</p>
+<p id="6">
+Typically you would modify this option interactively on the <b>IDE
+2</b> tab of the <a href="../../ide-menus-and-dialogs/tools-menu.htm#options">Tools | Options</a>, though you could also set it
+programmatically with a form like this one:
+</p>
+
+<pre id="7">
+
+(setf (ide:dialog-print-level (cg:configuration ide:*ide-system*))
+      3)
+</pre>
+
+<p id="8">
+A small value is typically desirable because it usually affects how
+values are displayed on a single line in a widget where there's not a
+lot of room.  To see a longer representation, you could for example
+use <a href="../../ide-menus-and-dialogs/tools-menu.htm#return-selected-object">Tools | Return Selected Object</a>
+to return a selected value to the listener, where it will be printed
+using the value of
+<a href="../../variables/tpl/s_print-level_s.htm"><code>tpl:*print-level*</code></a> and
+associated variables in the top-level package.  Or
+use <a href="../../ide-menus-and-dialogs/tools-menu.htm#inspect-selected-object">Tools | Inspect Selected Object</a>
+to see more information about the selected value in the inspector.
+</p>
+<p id="9">
+It is likely a bad idea to set this variable
+to <code>nil</code>, and likewise for <a href="dialog-print-length.htm"><b>dialog-print-length</b></a> and
+<a href="dialog-print-circle.htm"><b>dialog-print-circle</b></a>, due to
+delays that could occur if arbitrary lists that the IDE encounters are
+circular or deeply nested or extremely long. You might set it
+temporarily to <code>nil</code>, though, if needed for a
+specific purpose.
+</p>
+
+<p id="10">
+Prior to release 10.0, this option was known
+as <b>backtrace-print-level</b>.  For 10.0 it was renamed and applied
+to additional dialogs.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

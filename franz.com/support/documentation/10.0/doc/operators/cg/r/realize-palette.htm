@@ -1,0 +1,31 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>realize-palette</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/realize-palette.htm">9.0 version</a></td></tr></table><h2 id="2">realize-palette</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream </i> &amp;optional <i>invalidate-p update-colors-p</i><i>
+</i></p>
+
+<p id="4">
+The function maps the current <a href="../p/palette.htm"><b>palette</b></a> of
+<i>stream</i> into the hardware palette, so that the
+window's colors are in active use. This may be useful after another
+window (or another application) has mapped its colormap, possibly
+displacing from the single hardware palette the palette that was
+established for stream via <a href="../p/palette.htm"><b>(setf
+palette)</b></a>. <i>stream</i> should be a <a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+</p>
+<p id="5">
+When a top-level Allegro CL window is brought in front of other
+top-level windows (as when Alt-Tab is used), then the palette of that
+top-level window is realized automatically. Thus, calling
+realize-palette is not necessary unless you use multiple palettes
+under a single top-level window or some palette assigned to a
+lower-level window is not also assigned to its top-level
+parent. Recall that a top-level window is one whose parent is 
+<code>(screen *system*)</code> (see <a href="../s/screen.htm"><b>screen</b></a> and
+<a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>).
+</p>
+
+
+<hr><p id="6"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/realize-palette.htm">9.0 version</a></td></tr></table></body></html>

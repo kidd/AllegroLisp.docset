@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>reserve-righthand-alt-key</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/reserve-righthand-alt-key.htm">9.0 version</a></td></tr></table><h2 id="2">reserve-righthand-alt-key</h2>
+
+<p id="3"><b>Arguments: </b><i>
+cg-configuration
+</i></p>
+
+<p id="4">
+This option has an effect only on the Windows platform.
+</p>
+<p id="5">
+This Common Graphics configuration option specifies how the right-hand
+Alt key is handled. This key is sometimes known as the AltGr key,
+especially on European keyboards.
+</p>
+<p id="6">
+If the value is <code>nil</code>, then Common Graphics
+handles the righthand Alt key as a regular Alt key, just as it does
+for the lefthand Alt key.  Keystrokes with this key held down will
+call <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> methods
+as usual, or invoke menu commands whose <a href="../e/event-synonym.htm"><b>event-synonym</b></a> shortcuts
+use <a href="../../../variables/cg/alt-key.htm"><code>alt-key</code></a>.
+</p>
+<p id="7">
+If the value is true, then Common Graphics will not handle keystrokes
+at all when the righthand Alt key is held down, and will instead pass
+the keystrokes directly back to the Windows operating system. This is
+needed with some keyboards for entering characters for which the
+keyboard does not have dedicated keys.
+</p>
+<p id="8">
+The default value is true, to allow the AltGr key to be used for
+alternate character input by default.  The following form sets the option
+to <code>nil</code>:
+</p>
+
+<pre id="9">
+(setf (reserve-righthand-alt-key (configuration *system*)) nil)
+</pre>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/reserve-righthand-alt-key.htm">9.0 version</a></td></tr></table></body></html>

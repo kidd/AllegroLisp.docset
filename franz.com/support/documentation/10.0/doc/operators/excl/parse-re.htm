@@ -1,0 +1,59 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>parse-re</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/parse-re.htm">9.0 version</a></td></tr></table><h2 id="2">parse-re</h2>
+
+<p id="3"><b>Arguments: </b><i>
+string </i>&amp;key <i>extended-mode</i><i>
+</i></p>
+
+<p id="4">
+The several functions that accept quasi-Perl string representation for
+regular expressions (e.g. <a href="match-re.htm"><b>match-re</b></a>) also accept parse tree syntax.
+<a href="parse-re.htm"><b>parse-re</b></a> is the function
+that translates the string representation into the tree
+representation.  It is used internally as the first pass of
+compile-regexp, but occasionally is may be useful in application code.
+</p>
+<p id="5">
+The <i>extended-mode</i> keyword argument controls
+whether the parse begins in regular or extended mode. The default is
+<code>nil</code>.  If true, it is as if the regexp string is
+prefaced with "(?x)".
+</p>
+
+
+
+<h3 id="6">
+Example
+</h3>
+<pre id="7">
+cl-user(11): (parse-re ".*")
+(:greedy-repetition 0 nil :everything)
+cl-user(12): (parse-re ".*?")
+(:non-greedy-repetition 0 nil :everything)
+cl-user(13): (parse-re "^[A-E]")
+(:sequence :start-anchor (:char-class (:range #\A #\E)))
+cl-user(14): (parse-re "i.*s")
+(:sequence #\i (:greedy-repetition 0 nil :everything) #\s)
+cl-user(15): 
+</pre>
+
+<p id="8">
+See <a href="../../regexp.htm#regexp-tree-2">Regexp
+trees</a> in <a href="../../regexp.htm">regexp.htm</a> for information on
+the tree syntax.
+</p>
+
+
+<p id="9">
+The symbol naming this operator is 
+also exported from the regexp package.
+</p>
+
+<p id="10">
+See <a href="../../regexp.htm#regexp-new-1">The new regexp2
+module</a> in <a href="../../regexp.htm">regexp.htm</a> for further
+information on this function and the regexp2 module.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/parse-re.htm">9.0 version</a></td></tr></table></body></html>

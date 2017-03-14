@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>on-sort-predicate</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-sort-predicate.htm">9.0 version</a></td></tr></table><h2 id="2">on-sort-predicate</h2>
+
+<p id="3"><b>Arguments: </b><i>
+standard-object
+</i></p>
+
+<p id="4">
+Returns or sets with <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> the value of the <a href="../o/on-sort-predicate.htm"><b>on-sort-predicate</b></a> event-handler
+property of a <a href="../../../classes/cg/dialog-item.htm"><code>dialog-item</code></a>.  The value may be a
+function name or function object, which determines the ordering of
+items in a <a href="../../../classes/cg/list-view-column.htm"><code>list-view-column</code></a>, <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>, or
+<a href="../../../classes/cg/outline.htm"><code>outline</code></a>
+control.  The value may also be <code>nil</code> to
+indicate that the control is not sortable (using its built-in sorting
+functionality).  When the value is a function, the function should
+accept two arguments and return true when the first value should
+precede the second (as with the predicate argument to <a href="../../../../ansicl/dictentr/sortstab.htm"><b>cl:sort</b></a>).
+</p>
+<p id="5">
+For a <a href="../../../classes/cg/list-view-column.htm"><code>list-view-column</code></a>, where the sorted
+values are always strings, the default value is <a href="../../../../ansicl/dictentr/stringst.htm"><b>string-lessp</b></a> (for a case-insensitive
+alphanumeric sort).  For a <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a> or <a href="../../../classes/cg/outline.htm"><code>outline</code></a>, the default is <code>nil</code> because the sortable values are arbitrary Lisp
+objects, and so there is no possible general default predicate that
+would not cons strings in many cases.  For these objects, a custom
+<a href="../o/on-sort-predicate.htm"><b>on-sort-predicate</b></a>
+must be supplied in order to use the built-in sorting behavior.
+</p>
+<p id="6">
+The <a href="../o/on-sort-predicate.htm"><b>on-sort-predicate</b></a> function (if any)
+is used when calling <a href="../s/sort-grid.htm"><b>sort-grid</b></a> on a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>, when calling <a href="../a/add-outline-item-value.htm"><b>add-outline-item-value</b></a>
+(without an explicit <i>position</i> argument) or
+<a href="../r/replace-outline-item-value.htm"><b>replace-outline-item-value</b></a> on an
+<a href="../../../classes/cg/outline.htm"><code>outline</code></a>
+control, when calling <a href="../l/list-view-sort.htm"><b>list-view-sort</b></a>, <a href="../s/sort-column.htm"><b>(setf
+sort-column)</b></a> or <a href="../s/sort-reverse.htm"><b>(setf sort-reverse)</b></a> on a <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> control
+(which happens internally when clicking a <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> column header).
+</p>
+
+<p id="7">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics.
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-sort-predicate.htm">9.0 version</a></td></tr></table></body></html>

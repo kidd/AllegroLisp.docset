@@ -1,0 +1,139 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>sql</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dbi</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dbi/sql.htm">9.0 version</a></td></tr></table><h2 id="2">sql</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+sql-statement
+</i>&amp;key <i>db hstmt types column-names row-count width query</i><i>
+</i></p>
+
+<p id="4">
+This is the primary function for doing database queries and
+modification. The <i>sql-statement</i> is executed on the database
+and the results are returned.
+</p>
+
+<p id="5">
+If <i>row-count</i> is <code>nil</code>, the data is
+returned as one or two values. The first value is a list of rows. Each
+row is a list of column values (or 
+<code>nil</code> for null
+values). If <i>column-names</i> is true (which is the default) then
+a second value is returned which is the list of column names for each
+row value. Some column names may be empty strings (especially if this
+column is a computed column).
+</p>
+
+<p id="6">
+If <i>row-count</i> is true then a single integer is returned which
+is the number of rows affected by the operation. It only makes
+sense to ask for the number of rows after an sql <strong>update,
+insert</strong>, or <strong>delete</strong> statement.
+</p>
+
+<p id="7">
+The <i>query</i> keyword argument is a boolean which if true causes
+a query object to be returned as the first value (instead of a list of
+the results of the sql statement).  The query object then can be
+passed to the <a href="fetch-row.htm"><b>fetch-row</b></a>
+function to retrieve the next row of data. Query objects are closed
+with <a href="close-query.htm"><b>close-query</b></a>.
+</p>
+
+<p id="8">
+If statement handle <i>hstmt</i> is non-<code>nil</code> then it must be a valid statement handle value
+for the database to be accessed. Otherwise, if
+<i>hstmt</i> is <code>nil</code> then the
+value of <i>db</i> is checked. If it is non-<code>nil</code> then it must be a database object and the sql
+statement is run on that database. If <i>db</i> is <code>nil</code> then the database object that is the value of
+<a href="../../variables/dbi/s_default-database_s.htm"><code>*default-database*</code></a> is
+used.
+</p>
+
+<p id="9">
+Normally the column values in each row are returned as strings (or
+<code>nil</code> for the null value). You can specify in
+<i>types</i> the kinds of values you want returned for each
+column. <i>types</i> can either be the keyword
+<code>:auto</code> or a list of type specifiers from the table
+below. The value <code>:auto</code> means use the best Lisp type
+for the given database type. In practice, only integers and
+floating-point numbers are converted; all other types are returned as
+strings, as with the <strong>t</strong> specifier.
+</p>
+
+<table border="1">
+  <tr>
+    <td width="29%"><big><strong>Specifier</strong></big></td>
+    <td width="71%"><big><strong>Meaning</strong></big></td>
+  </tr>
+  <tr>
+    <td width="29%"><strong>:int</strong></td>
+    <td width="71%">return as a 4 byte signed value</td>
+  </tr>
+  <tr>
+    <td width="29%"><strong>:long</strong></td>
+    <td width="71%">return as a 4 byte signed value</td>
+  </tr>
+  <tr>
+    <td width="29%"><strong>:double</strong></td>
+    <td width="71%">return as an 8 byte floating point value</td>
+  </tr>
+  <tr>
+    <td width="29%"><strong>t</strong></td>
+    <td width="71%">return as a string (the default)</td>
+  </tr>
+</table>
+
+<p id="10">
+<strong>Note</strong>: an earlier version of this document stated that
+<code>:auto</code> was permissible as a value in the list of type
+specifiers when <i>types</i> is a list.  That was
+incorrect. <i>types</i> can be <code>:auto</code> or a list
+consisting of the specifiers in the table above, which does not
+contain <code>:auto</code>.
+</p>
+
+<p id="11">
+The first type specifier in the <i>types</i> list describes the type
+of the first column, and so on. If there are too few type
+specifiers given then the <strong>t</strong> specifier is
+assumed. If there are too many type specifiers given then the
+extras are ignored.</p>
+
+<p id="12">
+<i>width</i> is the size for character buffers used in
+retrieving character-valued fields. If not given, then the width
+for the database, <a href="db-width.htm"><b>db-width</b></a>,
+is used. Data wider than <i>width</i> will still be retrieved
+correctly.
+</p>
+
+<p id="13">
+The <i>sql-statement</i> must be a valid sql statement for the given
+database connection. Each database vendor has a different version of
+sql although they all support a very minimal subset of expressions and
+data types.
+</p>
+
+<p id="14">
+The <i>sql-statement</i> may contain parameters. A parameter is
+denoted by a <strong>?</strong> where a value would normally be
+found. Before calling <strong>sql</strong> on a parameterized
+<i>sql-statement</i> it is necessary to set values for each of the
+parameters in the statement. This is done with <a href="bind-parameter.htm"><b>bind-parameter</b></a>.
+</p>
+
+<p id="15">
+If the same sql statement is going to be repeatedly executed you may
+want to use <a href="prepare-sql.htm"><b>prepare-sql</b></a> and
+<a href="run-prepared-sql.htm"><b>run-prepared-sql</b></a>.
+</p>
+
+<p id="16">
+See <a href="../../aodbc.htm">aodbc.htm</a> for more information on
+Allegro ODBC.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dbi/sql.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>mapped-file-simple-stream-buffer</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table><h2 id="2">mapped-file-simple-stream-buffer</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+<p id="4">
+Returns the buffer that has been established by the opening of the
+<b><i>stream</i></b>, which must be a subclass
+of <a href="../../classes/excl/mapped-file-simple-stream.htm"><code>mapped-file-simple-stream</code></a>.  This buffer will
+always be an <a href="../../ftype.htm#aligned-pointers-1">aligned pointer</a>. It is a reader
+only, and is thus not <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'able.
+</p>
+
+<h3 id="5">
+Example
+</h3>
+<p id="6">
+This example uses <a href="../system/memref.htm"><b>sys:memref</b></a>.
+</p>
+<pre id="7">
+;; We have a file named xxx which contains a single line of text:
+;;
+cl-user(1): (shell &quot;cat xxx&quot;)
+abcdefgxxxxxxxxx
+0
+cl-user(2): (setq xxx (open &quot;xxx&quot; :mapped t))
+#&lt;mapped-file-simple-stream #P&quot;xxx&quot; mapped for input pos 0 @
+  #x10003b83772&gt;
+cl-user(3): (setq buf (mapped-file-simple-stream-buffer xxx))
+17461927465472
+cl-user(4): (code-char (sys:memref buf 0 0 :unsigned-byte))
+#\a
+cl-user(5): (code-char (sys:memref buf 0 3 :unsigned-byte))
+#\d
+cl-user(6): (code-char (sys:memref buf 0 10 :unsigned-byte))
+#\x
+cl-user(7):
+
+
+</pre>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table></body></html>

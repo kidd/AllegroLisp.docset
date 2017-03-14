@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>html-widget-new-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/html-widget-new-window.htm">9.0 version</a></td></tr></table><h2 id="2">html-widget-new-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+html-widget
+</i></p>
+
+<p id="4">
+This generic function is called when the user clicks on a link that
+requests that a new browser window be made. It should return true to
+allow the new window to be made, or <code>nil</code> to
+disallow it.
+</p>
+<p id="5">
+The default method will call the widget's <a href="../o/on-new-window.htm"><b>on-new-window</b></a> function if it has one, returning
+what it returned, and otherwise will do nothing. An application could
+add methods for a subclass of html-widget.
+</p>
+<p id="6">
+<i>html-widget</i> is the <a href="../../../classes/cg/html-widget.htm"><code>html-widget</code></a> that is requesting a new window.
+</p>
+<p id="7">
+When allowing the new browser to be made, currently on Linux the
+return value needs to be a new <a href="../../../classes/cg/html-widget.htm"><code>html-widget</code></a> that you have created, whereas on
+Windows the return value may be any non-<code>nil</code>
+value to indicate whether the control is allowed to make a new
+Internet Explorer window itself.
+</p>
+
+<p id="8">
+See the <a href="../../../classes/cg/html-widget.htm"><code>html-widget</code></a>
+control.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/html-widget-new-window.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,598 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>URI support in Allegro CL</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/uri.htm">9.0 version</a></td></tr></table><h1 id="2">URI support in Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#uri-intro-1">1.0 Introduction</a><br><a href="#uri-api-1">2.0 The URI API definition</a><br><a href="#parsing-decoding-1">3.0 Parsing, escape decoding/encoding and the path</a><br><a href="#interning-uris-1">4.0 Interning URIs</a><br><a href="#acl-implementation-1">5.0 Allegro CL implementation notes</a><br><a href="#examples-1">6.0 Examples</a><br><hr><hr><h2 id="4"><a name="uri-intro-1">1.0 Introduction</a></h2>
+
+<p id="5">
+<em>URI</em> stands for <em>Universal Resource Identifier</em>. For a
+description of URIs, see RFC2396, which can be found in several
+places, including the IETF web site (<a href="http://www.ietf.org/rfc/rfc2396.txt">http://www.ietf.org/rfc/rfc2396.txt</a>)
+and the UCI/ICS web site (<a href="http://www.ics.uci.edu/pub/ietf/uri/rfc2396.txt">http://www.ics.uci.edu/pub/ietf/uri/rfc2396.txt</a>).
+We prefer the UCI/ICS one as it has more examples.
+</p>
+
+<p id="6">
+URIs are a superset in functionality and syntax to URLs (Universal
+Resource Locators) and URNs (Universal Resource Names). That is,
+RFC2396 updates and merges RFC1738 and RFC1808 into a single syntax,
+called the URI. It does exclude some portions of RFC1738 that define
+specific syntax of individual URL schemes.
+</p>
+
+<p id="7">
+In URL slang, the <em>scheme</em> is usually called the `protocol',
+but it is called scheme in RFC1738. A URL `host' corresponds to the
+URI `authority.' The URL slang `bookmark' or `anchor' is `fragment' in
+URI lingo. 
+</p>
+
+<p id="8">
+The URI facility might not be in an Allegro CL image by
+default. Evaluate <code>(require :uri)</code> to ensure the
+facility is loaded (that form returns <code>nil</code> if
+the URI module is already loaded).
+</p>
+
+
+<p id="9">
+Broadly, the URI facility creates a Lisp object that represents a URI,
+and provides setters and accessors to fields in the URI object. The
+URI object can also be interned, much like symbols in CL are. This
+document describes the facility and the related operators. 
+</p>
+
+<p id="10">
+Aside from the obvious slots which are called out in the RFC, URIs
+also have a property list. With interning, this is another similarity
+between URIs and CL symbols. 
+</p>
+
+<hr><hr><h2 id="11"><a name="uri-api-1">2.0 The URI API definition</a></h2>
+
+
+<p id="12">
+Symbols naming objects (functions, variables, etc.) in the
+<em>uri</em> module are exported from the <code>net.uri</code>
+package.
+</p>
+
+<p id="13">
+URIs are represented by CLOS objects. Their slots are: 
+</p>
+
+<pre id="14">
+scheme 
+host 
+port 
+path 
+query
+fragment 
+plist 
+</pre>
+
+<p id="15">
+The <code>host</code> and <code>port</code> slots together
+correspond to the <code>authority</code> (see RFC2396). There is
+an accessor-like function, <a href="operators/uri/uri-authority.htm"><b>uri-authority</b></a>, that can be used to extract
+the authority from a URI. See the RFC2396 specifications pointed to at
+the beginning of the <a href="#uri-intro-1">Section 1.0 Introduction</a> for
+details of all the slots except <code>plist</code>. The
+<code>plist</code> slot contains a standard Common Lisp property
+list.
+</p>
+
+<p id="16">
+All symbols are external in the <code>net.uri</code> package,
+unless otherwise noted. Brief descriptions are given in this document,
+with complete descriptions in the individual pages.
+</p>
+
+<ul>
+
+<li id="17">
+<a href="classes/uri/uri.htm"><code>uri</code></a>: the class of URI objects.
+</li>
+<li id="18">
+<a href="classes/uri/urn.htm"><code>urn</code></a>: the class of URN objects.
+</li>
+<li id="19">
+<p id="20">
+<a href="operators/uri/uri-p.htm"><b>uri-p</b></a>
+</p>
+<p id="21"><b>Arguments: </b><i>object</i></p>
+<p id="22">
+Returns true if <i>object</i> is an instance of class 
+<a href="classes/uri/uri.htm"><code>uri</code></a>.
+</p>
+</li>
+
+<li id="23">
+<p id="24">
+<a href="operators/uri/copy-uri.htm"><b>copy-uri</b></a>
+</p>
+<p id="25"><b>Arguments: </b><i>
+uri 
+</i>&amp;key <i>place scheme host port path query fragment plist</i><i>
+</i></p>
+<p id="26">
+Copies the specified URI object. See the description page for information
+on the keyword arguments.
+</p>
+</li>
+
+<li id="27">
+<p id="28">
+<a href="operators/uri/uri-scheme.htm"><b>uri-scheme</b></a><br>
+<a href="operators/uri/uri-host.htm"><b>uri-host</b></a><br>
+<a href="operators/uri/uri-port.htm"><b>uri-port</b></a><br>
+<a href="operators/uri/uri-path.htm"><b>uri-path</b></a><br>
+<a href="operators/uri/uri-query.htm"><b>uri-query</b></a><br>
+<a href="operators/uri/uri-fragment.htm"><b>uri-fragment</b></a><br>
+<a href="operators/uri/uri-plist.htm"><b>uri-plist</b></a><br>
+</p>
+<p id="29"><b>Arguments: </b><i>
+uri-object
+</i></p>
+<p id="30">
+These accessors return the value of the associated slots of the
+<i>uri-object</i>
+</p>
+</li>
+
+<li id="31">
+<p id="32">
+<a href="operators/uri/uri-authority.htm"><b>uri-authority</b></a>
+</p>
+<p id="33"><b>Arguments: </b><i>
+uri-object
+</i></p>
+<p id="34">
+Returns the authority of <i>uri-object</i>. The
+authority combines the host and port.
+</p>
+</li>
+
+<li id="35">
+<p id="36">
+<a href="operators/uri/render-uri.htm"><b>render-uri</b></a>
+</p>
+<p id="37"><b>Arguments: </b><i>
+uri stream
+</i></p>
+<p id="38">
+Print to <i>stream</i> the printed representation of
+<i>uri</i>.
+</p>
+</li>
+
+<li id="39">
+<p id="40">
+<a href="operators/uri/parse-uri.htm"><b>parse-uri</b></a>
+</p>
+<p id="41"><b>Arguments: </b><i>
+string </i>&amp;key  (<i>class</i> (quote uri))<i>
+</i></p>
+<p id="42">
+Parse <i>string</i> into a URI object.
+</p>
+</li>
+
+<li id="43">
+<p id="44">
+<a href="operators/uri/merge-uris.htm"><b>merge-uris</b></a>
+</p>
+<p id="45"><b>Arguments: </b><i>
+uri base-uri </i> &amp;optional <i>place</i><i>
+</i></p>
+<p id="46">
+Return an absolute URI, based on <i>uri</i>, which can
+be relative, and <i>base-uri</i> which must be absolute.
+</p>
+</li>
+
+<li id="47">
+<p id="48">
+<a href="operators/uri/enough-uri.htm"><b>enough-uri</b></a>
+</p>
+<p id="49"><b>Arguments: </b><i>
+uri base
+</i></p>
+<p id="50">
+Converts <i>uri</i> into a relative URI using
+<i>base</i> as the base URI.
+</p>
+</li>
+
+<li id="51">
+<p id="52">
+<a href="operators/uri/uri-parsed-path.htm"><b>uri-parsed-path</b></a>
+</p>
+<p id="53"><b>Arguments: </b><i>
+uri
+</i></p>
+<p id="54">
+Return the parsed representation of the path.
+</p>
+</li>
+
+<li id="55">
+<p id="56">
+<a href="operators/uri/uri.htm"><b>uri</b></a>
+</p>
+<p id="57"><b>Arguments: </b><i>
+object
+</i></p>
+<p id="58">
+Defined methods: if argument is a uri object, return it; create a uri
+object if possible and return it, or error if not possible.
+</p>
+</li>
+
+<li id="59">
+<p id="60">
+<a href="operators/uri/pathname-to-uri.htm"><b>pathname-to-uri</b></a>
+</p>
+<p id="61"><b>Arguments: </b><i>
+pathname
+</i></p>
+<p id="62">
+Converts a pathname to a file scheme URI.
+</p>
+</li>
+<li id="63">
+<p id="64">
+<a href="operators/uri/uri-to-pathname.htm"><b>uri-to-pathname</b></a>
+</p>
+<p id="65"><b>Arguments: </b><i>
+uri
+</i></p>
+<p id="66">
+Converts a file scheme URI to a pathname.
+</p>
+</li>
+
+</ul>
+
+<p id="67">
+The variable <a href="variables/uri/s_strict-parse_s.htm"><code>*strict-parse*</code></a> controls how strictly the
+parser observes syntax rules (many websites violate these rules and so
+will not parse when they are strictly observed).
+</p>
+
+<hr><hr><h2 id="68"><a name="parsing-decoding-1">3.0 Parsing, escape decoding/encoding and the path</a></h2>
+
+<p id="69">
+The method <a href="operators/uri/uri-path.htm"><b>uri-path</b></a>
+returns the path portion of the URI, in string form. The method
+<a href="operators/uri/uri-parsed-path.htm"><b>uri-parsed-path</b></a> returns
+the path portion of the URI, in list form. This list form is discussed
+below, after a discussion of decoding/encoding.
+</p>
+
+<p id="70">
+RFC2396 lays out a method for inserting into URIs <em>reserved
+characters</em>. You do this by escaping the character. An
+<em>escaped</em> character is defined like this: 
+</p>
+
+<pre id="71">
+escaped = "%" hex hex 
+
+hex = digit | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f" 
+</pre>
+
+<p id="72">In addition, the RFC defines excluded characters: </p>
+
+<pre id="73">
+&quot;&lt;&quot; | &quot;&gt;&quot; | &quot;#&quot; | &quot;%&quot; | &lt;&quot;&gt; | &quot;{&quot; | &quot;}&quot; | &quot;|&quot; | &quot;\&quot; | &quot;^&quot; | &quot;[&quot; | &quot;]&quot; | &quot;`&quot; 
+</pre>
+
+<p id="74">The set of reserved characters are: </p>
+
+<pre id="75">
+";" | "/" | "?" | ":" | "@" | "&" | "=" | "+" | "$" | "," 
+</pre>
+
+<p id="76">
+with the following exceptions: 
+</p>
+
+<ul>
+  <li id="77">within the authority component, the characters ";", ":",
+    "@", "?", and "/" are reserved. </li>
+  <li id="78">within a path segment, the characters "/", ";", "=", and
+    "?" are reserved. </li>
+  <li id="79">within a query component, the characters ";", "/", "?",
+    ":", "@", "&", "=", "+",
+    ",", and "$" are reserved. </li>
+</ul>
+
+<p id="80">
+From the RFC, there are two important rules about escaping and
+unescaping (encoding and decoding):
+</p>
+
+<ul>
+  <li id="81">decoding should only happen when the URI is parsed into component parts;</li>
+  <li id="82">encoding can only occur when a URI is made from component parts (ie, rendered for
+    printing). </li>
+</ul>
+
+<p id="83">
+The implication of this is that to decode the URI, it must be in a
+parsed state. That is, you can't convert <font face="Courier New">%2f</font> (the escaped form of "/") until the path has
+been parsed into its component parts. Another important desire is for
+the application viewing the component parts to see the decoded values
+of the components. For example, consider: 
+</p>
+
+<pre id="84">
+http://franz.com/calculator/3%2f2 
+</pre>
+
+<p id="85">
+This might be the implementation of a calculator, and how someone
+would execute 3/2.  Clearly, the application that implements this
+would want to see path components of "calculator" and
+"3/2". "3%2f2" would not be useful to the
+calculator application. 
+</p>
+
+<p id="86">
+For the reasons given above, a parsed version of the path is available
+and has the following form: 
+</p>
+
+<pre id="87">
+([:absolute | :relative] component1 [component2...]) 
+</pre>
+
+<p id="88">where components are: </p>
+
+<pre id="89">
+element | (element param1 [param2 ...]) 
+</pre>
+
+<p id="90">
+and <em>element</em> is a path element, and the param's are path
+element parameters.  For example, the result of 
+</p>
+
+<pre id="91">
+(uri-parsed-path (parse-uri "foo;10/bar:x;y;z/baz.htm")) 
+</pre>
+
+<p id="92">is </p>
+
+<pre id="93">
+(:relative ("foo" "10") ("bar:x" "y" "z") "baz.htm") 
+</pre>
+
+<p id="94">
+There is a certain amount of canonicalization that occurs when parsing: 
+</p>
+
+<ul>
+  <li id="95">A path of <code>(:absolute)</code> or 
+  <code>(:absolute "")</code> is equivalent to a 
+  <code>nil</code> path. That is, 
+  <code>http://a/</code>
+    is parsed with a <code>nil</code> path and 
+    printed as <code>http://a</code>. </li>
+  <li id="96">Escaped characters that are not reserved are not escaped 
+    upon printing. For example, 
+    <code>"foob%61r"</code> is parsed into 
+    <code>"foobar"</code>
+    and appears as <code>"foobar"</code> 
+    when the URI is printed.
+  </li>
+</ul>
+
+<p id="97">
+The variable <a href="variables/uri/s_strict-parse_s.htm"><code>*strict-parse*</code></a> controls how strictly the
+parser observes syntax rules (many websites violate these rules and so
+will not parse when they are strictly observed).
+</p>
+
+<hr><hr><h2 id="98"><a name="interning-uris-1">4.0 Interning URIs</a></h2>
+
+<p id="99">
+This section describes how to intern URIs. Interning is not
+mandatory. URIs can be used perfectly well without interning
+them. 
+</p>
+
+<p id="100">
+Interned URIs in Allegro are like symbols. That is, a string
+representing a URI, when parsed and interned, will always yield an
+<strong>eq</strong> object. For example: 
+</p>
+
+<pre id="101">
+(eq (intern-uri "http://franz.com") 
+    (intern-uri "http://franz.com")) 
+</pre>
+
+<p id="102">
+is always true. (Two strings with identical contents may or may not be
+<strong>eq</strong> in Common Lisp, note.) 
+</p>
+
+<p id="103">
+The functions associated with interning are:
+</p>
+<ul>
+
+<li id="104">
+<a href="operators/uri/make-uri-space.htm"><b>make-uri-space</b></a>
+<p id="105"><b>Arguments: </b><i>
+</i>&amp;key <i>size</i><i>
+</i></p>
+<p id="106">
+Make a new hash-table object to contain interned URIs.
+</p>
+</li>
+
+<li id="107">
+<a href="operators/uri/uri-space.htm"><b>uri-space</b></a>
+<p id="108"><b>Arguments: </b><i>
+</i></p>
+<p id="109">
+Return the object into which URIs are currently being interned.
+</p>
+</li>
+
+<li id="110">
+<a href="operators/uri/uri_eq.htm"><b>uri=</b></a>
+<p id="111"><b>Arguments: </b><i>
+uri1 uri2
+</i></p>
+<p id="112">
+Returns true if <i>uri1</i> and
+<i>uri2</i> are equivalent. 
+</p>
+</li>
+
+<li id="113">
+<a href="operators/uri/intern-uri.htm"><b>intern-uri</b></a>
+<p id="114"><b>Arguments: </b><i>
+uri-name </i> &amp;optional <i>uri-space</i><i>
+</i></p>
+<p id="115">
+Intern the uri object specified in the uri-space specified. Methods
+exist for strings and uri objects.
+</p>
+</li>
+
+<li id="116">
+<a href="operators/uri/unintern-uri.htm"><b>unintern-uri</b></a>
+<p id="117"><b>Arguments: </b><i>
+uri </i> &amp;optional <i>uri-space</i><i>
+</i></p>
+<p id="118">
+Unintern the uri object specified or all uri objects (in
+<i>uri-space</i> if specified) if
+<i>uri</i> is <code>t</code>.
+</p>
+</li>
+
+<li id="119">
+<a href="operators/uri/do-all-uris.htm"><b>do-all-uris</b></a>
+<p id="120"><b>Arguments: </b><i>
+(var </i> &amp;optional <i>uri-space result</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+<p id="121">
+Bind <i>var</i> to all currently defined uris (in
+<i>uri-space</i> if specified) and evaluate
+<i>body</i>.
+</p>
+</li>
+
+</ul>
+
+<hr><hr><h2 id="122"><a name="acl-implementation-1">5.0 Allegro CL implementation notes</a></h2>
+
+<ol>
+  <li id="123">The following are true: <br>
+    <code>(uri= (parse-uri "http://franz.com/")</code> <br>
+         &nbsp;
+          &nbsp; 
+          <code>(parse-uri "http://franz.com"))</code> 
+          <br>
+    <code>(eq (intern-uri "http://franz.com/")</code> 
+      <br>&nbsp;&nbsp;
+      <code>(intern-uri "http://franz.com"))</code><br>
+    </li>
+  <li id="124">The following is true: <br>
+    <code>(eq (intern-uri "http://franz.com:80/foo/bar.htm")</code> 
+    <br>
+    &nbsp;
+    &nbsp;
+    <code>(intern-uri "http://franz.com/foo/bar.htm"))</code><br>
+    (I.e. specifying the default port is the same as specifying no port at all. This is
+    specific in RFC2396.) 
+  </li>
+  <li id="125">The <em>scheme</em> and <em>authority</em> are case-insensitive. In Allegro CL, the
+    scheme is a keyword that appears in the normal case for the Lisp in which you are
+    executing. 
+  </li>
+  <li id="126"><code>#u"..."</code> is shorthand for 
+  <code>(parse-uri "...")</code> but if an existing 
+  <code>#u</code> dispatch macro definition exists, it will 
+  not be overridden. 
+  </li>
+  <li id="127">The interaction between setting the scheme, host, port, path, query, and fragment slots
+    of URI objects, in conjunction with interning URIs will have very bad and unpredictable
+    results. 
+  </li>
+  <li id="128">The printable representation of URIs is cached, for efficiency. This caching is undone
+    when the above slots are changed. That is, when you create a URI the printed
+    representation is cached. When you change one of the above mentioned slots, the printed
+    representation is cleared and calculated when the URI is next printed. For example: </li>
+</ol>
+
+<pre id="129">
+user(10): (setq u #u&quot;http://foo.bar.com/foo/bar&quot;) 
+#&lt;uri http://foo.bar.com/foo/bar&gt; 
+user(11): (setf (net.uri:uri-host u) &quot;foo.com&quot;) 
+&quot;foo.com&quot; 
+user(12): u 
+#&lt;uri http://foo.com/foo/bar&gt; 
+user(13): 
+</pre>
+
+<p id="130">This allows URIs behavior to follow the principle of least surprise. </p>
+
+<hr><hr><h2 id="131"><a name="examples-1">6.0 Examples</a></h2>
+
+<pre id="132">
+uri(10): (use-package :net.uri)
+t
+uri(11): (parse-uri &quot;foo&quot;)
+#&lt;uri foo&gt;
+uri(12): #u&quot;foo&quot;
+#&lt;uri foo&gt;
+uri(13): (setq base (intern-uri &quot;http://franz.com/foo/bar/&quot;))
+#&lt;uri http://franz.com/foo/bar/&gt;
+uri(14): (merge-uris (parse-uri &quot;foo.htm&quot;) base)
+#&lt;uri http://franz.com/foo/bar/foo.htm&gt;
+uri(15): (merge-uris (parse-uri &quot;?foo&quot;) base)
+#&lt;uri http://franz.com/foo/bar/?foo&gt;
+uri(16): (setq base (intern-uri &quot;http://franz.com/foo/bar/baz.htm&quot;))
+#&lt;uri http://franz.com/foo/bar/baz.htm&gt;
+uri(17): (merge-uris (parse-uri &quot;foo.htm&quot;) base)
+#&lt;uri http://franz.com/foo/bar/foo.htm&gt;
+uri(18): (merge-uris #u&quot;?foo&quot; base)
+#&lt;uri http://franz.com/foo/bar/?foo&gt;
+uri(19): (describe #u&quot;http://franz.com&quot;)
+#&lt;uri http://franz.com&gt; is an instance of #&lt;standard-class net.uri:uri&gt;:
+ The following slots have :instance allocation:
+  scheme        :http
+  host          &quot;franz.com&quot;
+  port          nil
+  path          nil
+  query         nil
+  fragment      nil
+  plist         nil
+  escaped       nil
+  string        &quot;http://franz.com&quot;
+  parsed-path   nil
+  hashcode      nil
+uri(20): (describe #u&quot;http://franz.com/&quot;)
+#&lt;uri http://franz.com&gt; is an instance of #&lt;standard-class net.uri:uri&gt;:
+ The following slots have :instance allocation:
+  scheme        :http
+  host          &quot;franz.com&quot;
+  port          nil
+  path          nil
+  query         nil
+  fragment      nil
+  plist         nil
+  escaped       nil
+  string        &quot;http://franz.com&quot;
+  parsed-path   nil
+  hashcode      nil
+uri(21): #u&quot;foobar#baz%23xxx&quot;
+#&lt;uri foobar#baz#xxx&gt;
+</pre>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/uri.htm">9.0 version</a></td></tr></table></html>

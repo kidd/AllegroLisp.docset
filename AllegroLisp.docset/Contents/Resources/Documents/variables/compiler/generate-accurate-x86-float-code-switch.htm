@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>generate-accurate-x86-float-code-switch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: compiler</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/generate-accurate-x86-float-code-switch.htm">9.0 version</a></td></tr></table><h2 id="2">generate-accurate-x86-float-code-switch</h2>
+
+<p id="3">As with most compiler switch variables, the value of this variable
+can be <code>t</code>, <code>nil</code>, or a
+function object that accepts five arguments and returns <code>t</code> or <code>nil</code>. The arguments
+passed to the function will be the values of the safety, space, speed,
+debug, and compilation-speed optimization qualities, in that order. <code>nil</code> is equivalent to a function that always returns
+<code>nil</code> and <code>t</code> to a
+function that always returns <code>t</code>.  When the
+value is a function and we say <code>t</code> (or true) or
+<code>nil</code> (or false) in the text below, we mean
+that the function returns, respectively, <code>t</code> or
+<code>nil</code>.
+</p>
+<p id="4">
+This switch affects platforms using 32-bit x86 processors only. These
+processors can do fast floating-point calculations in 80-bit mode
+which, if intermingled with 32-bit or 64-bit mode calculations can
+produce different results in the lower bits from run to run, unless
+certain flags are set. If this switch is true, those flags are set,
+but there is a fairly significant computation speed hit if they
+are. If you want fast computations and are willing to accept lack of
+repeatability in the lower bits (that is, possibly slightly different
+answers from run to run), you can compile with this switch false (as
+it is when speed is 3 and safety 0). If you want the same answer every
+run, ensure that this switch is <code>nil</code>.
+</p>
+<p id="5">
+We should note that floating-point operations are inherently
+inaccurate in the lowest bits, so it terms of usefulness of the
+results, this switch make little or no difference. Also, you may get
+(on any platform) different answers in the lowest bits from run to run
+if calculations are done in different orders (as might happen if
+multiprocessing is used and parts of the calculation is done by
+different processes which may run in different orders from run to
+run). If a calculation is unstable (matrix inversion, for example,
+when the determinant is close to zero), which means that a small
+change in input results in a much larger change in output, you may see
+noticeable differences in results when this switch is false, but that
+is in fact a symptom of the unstable nature of the inputs resulting in
+untrustworthy results.
+</p>
+<p id="6">
+If it can be guarateed that the floating point operations are of the
+same size within a given code segment, the accuracy should not suffer
+even when this switch returns <code>nil</code>.  However,
+for the best guarante of accuracy, at speed cost, this switch should
+return true.
+</p>
+<p id="7">
+Initially true if speed is 3 and safety is 0.
+</p>
+
+<p id="8">
+See <a href="../../compiling.htm">compiling.htm</a> for
+information on the compiler.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/generate-accurate-x86-float-code-switch.htm">9.0 version</a></td></tr></table></body></html>

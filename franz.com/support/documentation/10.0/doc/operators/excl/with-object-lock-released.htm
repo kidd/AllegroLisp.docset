@@ -1,0 +1,35 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-object-lock-released</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-object-lock-released.htm">9.0 version</a></td></tr></table><h2 id="2">with-object-lock-released</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(object) </i> &amp;body <i>body</i><i>
+</i></p>
+
+
+
+<p id="4">
+This macro can only appear lexically inside the body of
+a <a href="with-locked-object.htm"><b>with-locked-object</b></a>
+macro. The locked object must be specified as
+the <b><i>object</i></b> argument. The lock obtained in
+the immediately enclosing
+<a href="with-locked-object.htm"><b>with-locked-object</b></a> macro is
+released, body is executed, and then the lock is reobtained.  When the
+enclosing <a href="with-locked-object.htm"><b>with-locked-object</b></a>
+macro specifies a non-smp value, the <a href="with-object-lock-released.htm"><b>with-object-lock-released</b></a> cooperates to
+manipulate the corresponding state. This macro isn't allowed in a
+non-smp lisp if the enclosing lock form
+designates <code>:atomically</code> as the non-smp strategy.
+<a href="with-object-lock-released.htm"><b>with-object-lock-released</b></a> is rarely
+used, and is never actually needed; there are alternate ways of
+achieving the same thing that are usually clearer.
+</p>
+
+<p id="5">
+See <a href="../../smp.htm">smp.htm</a>
+and <a href="../../multiprocessing.htm">multiprocessing.htm</a> for more information on
+this macro and on multiprocessing.
+</p>
+
+<hr><p id="6"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-object-lock-released.htm">9.0 version</a></td></tr></table></body></html>

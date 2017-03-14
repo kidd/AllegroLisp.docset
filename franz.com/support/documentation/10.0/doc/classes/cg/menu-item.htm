@@ -1,0 +1,135 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>menu-item</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/menu-item.htm">9.0 version</a></td></tr></table><h2 id="2">menu-item</h2>
+
+<p id="3">
+The class of menu-item objects.  A menu-item is created by calling
+<a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>,
+specifying the menu-item class or some subclass of it. 
+</p>
+<p id="4">
+Here is a list
+of the properties of a menu-item; each can be specified at creation
+time by passing the corresponding keyword initarg to 
+<a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>:
+</p>
+<ul>
+<li id="5">
+<a href="../../operators/cg/n/name.htm"><b>name</b></a>: a symbol
+naming this menu-item, which could be used later with <a href="../../operators/cg/f/find-named-object.htm"><b>find-named-object</b></a> to find
+the menu-item from its name.
+</li>
+<li id="6">
+<a href="../../operators/cg/t/title.htm"><b>title</b></a>: a string
+to display on the menu for this item. Place a tilde (~) in the string
+before a particular character to use that character as a menu access
+key, which will appear underlined in the menu. Alternately, the title
+may be a <a href="pixmap.htm"><code>pixmap</code></a> object (or pixmap handle) in
+order to display an image rather than a string in the menu.
+</li>
+<li id="7">
+<a href="../../operators/cg/v/value.htm"><b>value</b></a>: an
+arbitrary value to be processed when this menu-item is chosen. When
+the menu-item is chosen, this value is passed to <a href="../../operators/cg/h/handle-menu-selection.htm"><b>handle-menu-selection</b></a>. Unless an
+application overrides the default <a href="../../operators/cg/h/handle-menu-selection.htm"><b>handle-menu-selection</b></a> method
+(typically not necessary), the default method simply passes the value
+to the <a href="../../operators/cg/o/on-click.htm"><b>on-click</b></a>
+function of the menu that this menu-item is on. The default <a href="../../operators/cg/o/on-click.htm"><b>on-click</b></a> function,
+<a href="../../operators/cg/d/default-menu-on-click.htm"><b>default-menu-on-click</b></a>, simply
+returns the value. This default <a href="../../operators/cg/o/on-click.htm"><b>on-click</b></a> function is often suitable
+for a pop-up-menu, causing this menu-item value to be returned from
+the call to <a href="../../operators/cg/p/pop-up-menu.htm"><b>pop-up-menu</b></a>. For a pull-down-menu,
+the menu should always be given some other <a href="../../operators/cg/o/on-click.htm"><b>on-click</b></a> function that performs the
+command indicated by this menu-item value (because the application
+will not be able to capture the value returned by <a href="../../operators/cg/d/default-menu-on-click.htm"><b>default-menu-on-click</b></a> and therefore
+the default function effectively does nothing).
+</li>
+<li id="8">
+<a href="../../operators/cg/e/event-synonym.htm"><b>event-synonym</b></a>: a
+symbol or list of symbols denoting the keyboard shortcut for this
+menu-item. When this menu-item is on a menu-bar, the user can invoke
+the menu-item by typing the event-synonym in the window that the
+menu-bar is on.  See <a href="../../operators/cg/e/event-synonym.htm"><b>event-synonym</b></a> for examples.
+</li>
+<li id="9">
+<a href="../../operators/cg/h/help-string.htm"><b>help-string</b></a>: an
+arbitrary string to explain what this menu-item does.  Built-in
+<a href="../../operators/cg/m/menu-item-highlighted.htm"><b>menu-item-highlighted</b></a> methods will
+show this string in the status-bar of the window that owns the menu
+when the user highlights this menu-item. (For a pop-up menu, this
+window is the one that was passed as the stream argument to the
+function <a href="../../operators/cg/p/pop-up-menu.htm"><b>pop-up-menu</b></a>, if any.)
+</li>
+<li id="10">
+<a href="../../operators/cg/c/cluster.htm"><b>cluster</b></a>: an
+arbitrary symbol to place this menu-item in a group with other
+contiguous items on the same menu that specify the same cluster value.
+The item will display a dot when selected, and selecting one item in
+the cluster deselects the others.
+</li>
+<li id="11">
+<a href="../../operators/cg/a/allow-during-modality.htm"><b>allow-during-modality</b></a>: 
+if true, then the event-synonym of the
+menu-item may still be used to invoke the item when there is a modal
+dialog present.  The default is <code>nil</code>.
+</li>
+<li id="12">
+<a href="../../operators/cg/a/available.htm"><b>available</b></a>: if
+<code>nil</code>, then the menu-item will be grayed out and
+unavailable to the user. The default is true.
+</li>
+<li id="13">
+<a href="../../operators/cg/s/selected.htm"><b>selected</b></a>: if
+true, then the menu-item will display a check mark, or a dot if it is
+in a cluster. The default is <code>nil</code>.
+</li>
+<li id="14">
+<a href="../../operators/cg/c/checkable.htm"><b>checkable</b></a>: on GTK, this must
+be true in order to use the <a href="../../operators/cg/s/selected.htm"><b>selected</b></a> property to display check
+marks. On Windows it has no effect.
+</li>
+
+<li id="15">
+<a href="../../operators/cg/u/unchecked-pixmap.htm"><b>unchecked-pixmap</b></a>: either a
+pixmap to be displayed on the left side of the menu-item when the item
+is not checked, or <code>nil</code> to display no pixmap.
+The default is <code>nil</code>.  Used only on the Windows
+platform.
+</li>
+<li id="16">
+<a href="../../operators/cg/c/checked-pixmap.htm"><b>checked-pixmap</b></a>: either a
+pixmap to be displayed on the left side of the menu-item when the item
+is checked, or <code>nil</code> to display a default check
+mark pixmap. The default is <code>nil</code>. Used only
+on the Windows platform.
+</li>
+
+</ul>
+<p id="17">
+Here is a typical menu-item creation form:
+</p>
+<pre id="18">
+(make-instance 'menu-item
+  :name :help
+  :title "~Help"
+  :value 'show-help
+  :help-string "Shows help on the selected thing."
+  :event-synonym 'vk-f1)
+</pre>
+<p id="19">
+A menu-item may be added to a menu when the menu is created by calling
+<a href="../../operators/cg/o/open-menu.htm"><b>open-menu</b></a>, or
+added later by calling <a href="../../operators/cg/a/add-to-menu.htm"><b>add-to-menu</b></a>.
+</p>
+<p id="20">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+<p id="21">
+See also the <a href="../../cg/ide-ug/ide_user_guide_7.htm">menu
+chapter</a> in the <a href="../../cg/ide-ug/ide_user_guide_1.htm">IDE User
+Guide</a>.
+</p>
+
+<hr><p id="22"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/menu-item.htm">9.0 version</a></td></tr></table></body></html>

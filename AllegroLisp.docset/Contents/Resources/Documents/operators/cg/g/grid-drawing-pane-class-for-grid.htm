@@ -1,0 +1,69 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>grid-drawing-pane-class-for-grid</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/grid-drawing-pane-class-for-grid.htm">9.0 version</a></td></tr></table><h2 id="2">grid-drawing-pane-class-for-grid</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-widget
+</i></p>
+
+<p id="4">
+This method returns the name of the <a href="../../../classes/cg/grid-drawing-pane.htm"><code>grid-drawing-pane</code></a> class that a
+<a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>
+should instantiate for the drawing area of the grid. This method may
+be useful in unusual cases where the widget-windows of a grid-widget
+need to be subclassed.
+</p>
+<p id="5">
+Every dialog-item instance that is placed onto a parent window has an
+associated <a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a> or <a href="../../../classes/cg/lisp-widget-window.htm"><code>lisp-widget-window</code></a>
+instance for the actual window that appears on the screen for the
+dialog-item. In atypical cases where it is necessary to subclass a
+<a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a>
+class along with a dialog-item class, a <a href="../w/widget-device.htm"><b>widget-device</b></a> method is written to
+tell the dialog-item subclass which <a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a> or <a href="../../../classes/cg/lisp-widget-window.htm"><code>lisp-widget-window</code></a>
+subclass to
+instantiate automatically.
+</p>
+<p id="6">
+A <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>
+is a special case in that it has an additional associated
+widget-window. This window is a child of the main widget-window and
+contains the entire grid body except for the border at the outside
+edge of the grid. If this window needs to be subclassed as well, then
+a <a href="../g/grid-drawing-pane-class-for-grid.htm"><b>grid-drawing-pane-class-for-grid</b></a>
+method should be written to tell the grid-widget subclass which
+<a href="../../../classes/cg/grid-drawing-pane.htm"><code>grid-drawing-pane</code></a> subclass to use,
+just as the <a href="../w/widget-device.htm"><b>widget-device</b></a> method tells it which
+<a href="../../../classes/cg/grid-top-pane.htm"><code>grid-top-pane</code></a>
+subclass to use. The method should take a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> instance as its only
+argument and return the name of a subclass of <a href="../../../classes/cg/grid-drawing-pane.htm"><code>grid-drawing-pane</code></a>.
+</p>
+<p id="7">
+There should be no need to subclass a grid-widget's widget-window
+classes in typical applications that add <a href="../c/cell-click.htm"><b>cell-click</b></a>, <a href="../c/cell-key-down.htm"><b>cell-key-down</b></a>, and <a href="../d/draw-cell.htm"><b>draw-cell</b></a> methods to
+handle events and drawing on a grid. But if that API is not sufficient
+and it is necessary to write methods for a grid on lower-level generic
+functions such as <a href="../m/mouse-left-down.htm"><b>mouse-left-down</b></a> or <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a>, then
+the <a href="../../../classes/cg/grid-drawing-pane.htm"><code>grid-drawing-pane</code></a> class may be
+subclassed to provide a class on which to specialize these methods.
+</p>
+<p id="8">
+The function <a href="../g/grid-drawing-pane.htm"><b>grid-drawing-pane</b></a> (called on the
+main widget-window of a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>) returns the
+grid-drawing-pane just as the function <a href="../w/window.htm"><b>window</b></a> (called on a dialog-item)
+returns the main widget-window.
+</p>
+<p id="9">
+Here is the default method:
+</p>
+<pre id="10">
+(defmethod grid-drawing-pane-class-for-grid (grid-widget)
+  (declare (ignore grid-widget))
+  'grid-drawing-pane)
+</pre>
+
+
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/grid-drawing-pane-class-for-grid.htm">9.0 version</a></td></tr></table></body></html>

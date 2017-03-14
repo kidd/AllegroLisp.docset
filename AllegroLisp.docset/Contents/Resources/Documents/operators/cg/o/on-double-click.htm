@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>on-double-click</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-double-click.htm">9.0 version</a></td></tr></table><h2 id="2">on-double-click</h2>
+
+<p id="3"><b>Arguments: </b><i>
+dialog-item
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../o/on-double-click.htm"><b>on-double-click</b></a> event property of
+<i>dialog-item</i>. The value of the <a href="../o/on-double-click.htm"><b>on-double-click</b></a> property should be
+a function object or a function name (a symbol naming a
+function). This function is called when the left mouse button is
+double-clicked while the mouse cursor is over
+<i>dialog-item</i>. This function should accept two
+arguments, the dialog holding dialog-item and dialog-item itself. The
+value may be <code>nil</code> if no function need be run.
+</p>
+<p id="5">
+The value may also be the special keyword
+<code>:push-again</code>.  This value causes the second click of
+a double-click to call the <a href="../o/on-change.htm"><b>on-change</b></a> function of the control,
+if any. Since the first click of a double-click <b>always</b> calls
+the <a href="../o/on-change.htm"><b>on-change</b></a>
+function (if any), this special value means that every click of a
+rapid series of clicks will call the <a href="../o/on-change.htm"><b>on-change</b></a> function.  By contrast,
+when <a href="../o/on-double-click.htm"><b>on-double-click</b></a> is <code>nil</code>, nothing is done on the second click of a
+double-click. This default behavior prevents the user from
+accidentally calling the <a href="../o/on-change.htm"><b>on-change</b></a> function twice on an
+accidental double-click, and so <code>:push-again</code> must be
+specified explicitly when rapid-fire clicking to invoke the <a href="../o/on-change.htm"><b>on-change</b></a> function for
+every click is desired instead. (A small limitation of
+<code>:push-again</code> is that the control will not visibly
+depress a second time for the second click of a double-click, despite
+the name.)
+</p>
+<p id="6">
+Consider a use of <a href="../o/on-change.htm"><b>on-change</b></a> to change the value
+displayed in a static text widget. If only two values are possible,
+suppressing an immediate second click (as is done when <a href="../o/on-double-click.htm"><b>on-double-click</b></a> is
+<code>nil</code>) may be useful as the second click is
+probably unintended. But if <a href="../o/on-change.htm"><b>on-change</b></a> cycles through a longer
+list of values, rapid multiple clicks are likely intentional and the
+<code>:push-again</code> for <a href="../o/on-double-click.htm"><b>on-double-click</b></a> would be
+appropriate.
+</p>
+
+
+<p id="7">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics.
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-double-click.htm">9.0 version</a></td></tr></table></body></html>

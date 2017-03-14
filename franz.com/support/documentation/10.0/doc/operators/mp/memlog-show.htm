@@ -1,0 +1,69 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>memlog-show</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">memlog-show</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>format thread stop start wait log</i><i>
+</i></p>
+
+<p id="4">
+Print the contents of the current memory log
+to <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>.
+The printing is always done from a copy of the current log. The value
+is returned is the copy from which the output was printed.
+</p>
+<p id="5">
+If the <b><i>log</i></b> argument is not supplied, call
+<a href="memlog-copy.htm"><b>memlog-copy</b></a> with the supplied
+<i>stop</i>, <i>start</i>,
+and <i>wait</i> arguments. If
+the <i>log</i> argument is specified, it must be a
+memory-log instance. In that case <a href="memlog-copy.htm"><b>memlog-copy</b></a> is not called; the output is derived
+from the supplied log.
+</p>
+<p id="6">
+If the <b><i>thread</i></b> argument is supplied it may
+be an integer thread index or a string or symbol. Only the entries
+pertaining to the specified thread are printed. A string or symbol is
+matched to the start of a process name, ignoring case.
+</p>
+<p id="7">
+The <b><i>format</i></b> argument specifies a format for
+the output; the default is <code>:default</code>. The allowed
+values are:
+</p>
+<ul>
+<li id="8">
+<code>:raw</code> -- print all the components of an entry on one
+line with the <code>~S</code> format directive for each.
+</li>
+<li id="9">
+<code>:default</code> -- print a moderately readable form of
+each entry.
+</li>
+<li id="10">
+<code>:logfmt</code> -- print the leading elements of the entry
+in the <code>:default</code> format.  Examine elements after the
+fourth and treat a string containing <code>~</code> as a format
+string to use on the remaining parts of the entry.
+</li>
+<li id="11">
+<code>a string</code> -- treat the string as a format string
+applied to the log entry to return a string for an output line.
+</li>
+<li id="12">
+<code>other</code> -- apply other to the current log entry.
+</li>
+</ul>
+<p id="13">
+See <a href="../../smp.htm#memlog-1">Memlog: A Facility for
+Minimally Intrusive Monitoring of Complex Application
+Behavior</a> in <a href="../../smp.htm">smp.htm</a> for more information.
+</p>
+<p id="14">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

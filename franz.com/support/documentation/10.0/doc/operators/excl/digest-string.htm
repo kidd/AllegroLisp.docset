@@ -1,0 +1,72 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>digest-string</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/digest-string.htm">9.0 version</a></td></tr></table><h2 id="2">digest-string</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name string start end external-format return foreign
+</i></p>
+
+<p id="4">
+You may need to evaluate <code>(require :digest)</code> to load
+the digest code before calling this function.
+</p>
+<p id="5">
+Using <a href="digest-init.htm"><b>digest-init</b></a> (which
+creates a context), <a href="digest-update.htm"><b>digest-update</b></a> (which updates the context with the
+argument string), and <a href="digest-final.htm"><b>digest-final</b></a> (which calculates the hash of the
+resulting context), this function computes the hash for
+<i>string</i>.
+</p>
+<p id="6">
+<b><i>name</i></b> can be one of the symbols md2, md4,
+md5, sha1, sha224, sha256, sha384, sha512, and rmd160, specifying the type of
+hashing.
+</p>
+<p id="7">
+The <b><i>start</i></b>
+and <b><i>end</i></b> arguments specify the portion of
+the string to be considered and the
+<i>external-format</i> argument specifies the external
+hashing of the string that will be used to update the context. 
+</p>
+<p id="8">
+To use the entire string, specify 0 for <i>start</i>
+and <code>nil</code> (or <code>(length
+string)</code>). 
+</p>
+<p id="9">
+You can use :default as the value
+of <i>external-format</i> to use to the default external
+format. These arguments, along with
+<i>string</i>, are passed to <a href="digest-update.htm"><b>digest-update</b></a>.
+</p>
+<p id="10">
+The format of the result, just as for <a href="digest-final.htm"><b>digest-final</b></a>, is determined by the return keyword
+argument. The possible values are <code>:integer</code>,
+<code>:usb8</code>, and <code>:hex</code>. See <a href="digest-final.htm"><b>digest-final</b></a> for information on these
+values and the corresponding formats of the returned value.
+</p>
+<p id="11">
+If <b><i>foreign</i></b> is
+non-<code>nil</code>, then <i>string</i>
+must (despite the argument name) be an integer address in foreign
+memory (such as what would be passed to
+<a href="../system/memref.htm"><b>sys:memref</b></a>) and the
+bytes contained at that address are used as the input to the digest
+function.
+</p>
+<pre id="12">
+cl-user(4): (digest-string 'md5 "foo" 0 nil :default :integer nil)  
+229609063533823256041787889330700985560
+cl-user(5): (digest-string 'md5 "foo" 0 nil :default :usb8 nil)
+#(172 189 24 219 76 194 248 92 237 239 ...)
+cl-user(6): 
+</pre>
+
+
+<p id="13">
+See <a href="../../miscellaneous.htm#md5-1">MD5, SHA*, HMAC,
+RC4, and other message digest support</a>
+in <a href="../../miscellaneous.htm">miscellaneous.htm</a>.
+</p>
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/digest-string.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,71 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*gc-after-hook*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_gc-after-hook_s.htm">9.0 version</a></td></tr></table><h2 id="2">*gc-after-hook*</h2>
+
+<p id="3">
+If the gsgc switch <code>:hook-after-gc</code> is
+true, then the value of this symbol, if
+true, will be funcall'ed immediately after a scavenge.
+Thus the value should be a function that takes five arguments: 
+</p>
+
+<ol>
+  <li id="4">a boolean which will be true if the gc just completed was a global gc, </li>
+  <li id="5">a fixnum equal to the number of bytes copied to newspace, </li>
+  <li id="6">a fixnum equal to the number of bytes copied to oldspace, </li>
+  <li id="7">a fixnum which is the efficiency as a percentage (see Note 1 just below), </li>
+  <li id="8">and a fixnum which is the number of bytes that still must be allocated (see Note 2 just
+    below).</li>
+</ol>
+
+<p id="9"><strong>Note 1</strong>: Efficiency is the ratio of non-gc cpu time
+to total cpu time. </p>
+
+<p id="10"><strong>Note 2</strong>: Garbage collections usually happen because
+an object must be allocated but there is not enough free space to do
+so. The fifth argument gives the size of not-yet-allocated
+objects.</p>
+
+<p id="11">
+The initial value of this variable is a function that implements
+the global gc behavior described in <a href="../../gc.htm#global-gc-1">Global garbage collection</a> in
+<a href="../../gc.htm">gc.htm</a> and in the description of <a href="s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a>. The
+function is named by the internal symbol
+<code>excl::default-gc-after-hook</code>.  If you wish to change
+the value of this variable and preserve the global gc behavior
+described below, set the value of this switch to something like the
+following (note the use of a feature to prevent recursion if this code
+is run twice):
+</p>
+
+<pre id="12">
+;; This form should be placed in a location (such as a file)
+;; where it can be compiled.
+;; The inital value of excl:*gc-after-hook* is a function named by
+;; the symbol excl::default-gc-after-hook but we bind the value
+;; to allow for an already modified function whose behavior
+;; is being preserved.
+(let ((continuation excl:*gc-after-hook*))
+  (if (null (excl:featurep :my-gc-after-hook-added))
+      (progn
+        (push :my-gc-after-hook-added *features*)
+        (setq excl:*gc-after-hook*
+            #'(lambda (global new old efficiency to-be-allocated)
+                ; ... code to do what you want after a gc ....
+                (when continuation
+                  (funcall continuation global 
+                           new old efficiency to-be-allocated))
+                   ; ... more of your code if desired 
+                   )
+       ))))
+</pre>
+
+<p id="13">
+See also <a href="../../gc.htm">gc.htm</a> for general information on
+garbage collection Allegro CL, including information on gsgc 
+switches and parameters. See section 
+<a href="../../gc.htm#global-gc-1">Global garbage collection</a> 
+in that document for information on global garbage collection.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_gc-after-hook_s.htm">9.0 version</a></td></tr></table></body></html>

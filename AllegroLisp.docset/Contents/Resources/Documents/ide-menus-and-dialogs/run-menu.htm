@@ -1,0 +1,251 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>run-menu</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Menu</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/run-menu.htm">9.0 version</a></td></tr></table><h2 id="2">Run Menu</h2>
+
+<p id="3">
+The Run Menu displays commands for testing forms and projects and for
+using tools that affect or report on how a program runs. The commands
+on the menu are:
+</p>
+
+<ul><li id="4"><b><a name="run-project">Run Project</a></b> -- 
+Run the current project by calling the project Init Function. The
+default project init function creates and displays the main form.
+<p id="5">
+When you run a project (as opposed to running a single form with
+<a href="run-menu.htm#run-form">Run
+Form</a>), the windows of the project are created in their own
+window hierarchy (or hierarchies), completely separate from IDE window
+hierarchy. This is done so that running the project from the IDE will
+emulate the eventual standalone application as closely as possible for
+more complete debugging.
+</p>
+<p id="6">
+But this also means that IDE keyboard shortcuts are not available
+while the running project windows are selected, and the entire running
+project may get buried behind the IDE, since the whole IDE is always
+either in front of or in back of the entire running project. You can
+switch between the running project and the IDE as you would between
+two applications, by using the Windows Task Bar or the Alt-Tab
+gesture.
+</p>
+<p id="7">
+The behavior is different when running a single form (with the <a href="run-menu.htm#run-form">Run
+Form</a> command). In that case, the running window will be owned
+by the invisible IDE owner window, and therefore it can be
+intermingled among the various IDE windows and you can still use IDE
+keyboard shortcuts and so on.  If you run a project when it is already
+running, the current running instance is first halted (and its windows
+are closed) and then the project is run again from scratch.
+</p>
+</li></ul>
+
+
+
+<ul><li id="8"><b><a name="run-form">Run Form</a></b> -- 
+Run the currently-selected form; that is, create and display the
+window associated with the currently-selected form.
+<p id="9">
+When you run a form, the running window for the form is owned by the
+invisible IDE owner window. Therefore, the running window behaves as
+if it were part of the IDE. That is, the window may be intermingled
+among the various IDE windows, and the IDE keyboard shortcuts may
+still be used. This is done so that the IDE is still conveniently
+available while quickly testing single forms.
+</p>
+<p id="10">
+This behavior is different from the behavior when running the whole
+project by choosing the <a href="run-menu.htm#run-project">Run Project</a> menu command or clicking the
+Run button on the Toolbar. When a project is run, the project's
+windows are created in their own hierarchy completely separate from
+the IDE, so that the running project will emulate the eventual
+standalone application as nearly as possible for more complete
+debugging.
+</p>
+<p id="11">
+If you run a form which is already running, the current running
+window is first closed, and then it is created and run again from
+scratch.
+</p>
+</li></ul>
+
+<ul><li id="12"><b><a name="stop">Stop</a></b> -- 
+Stops the running form or project and removes the active windows built
+from forms.
+</li></ul>
+
+
+
+<ul><li id="13"><b><a name="interrupt">Interrupt</a></b> -- 
+Tries to interrupt current computation. It may be what needs to be
+interrupted prevents the <a href="run-menu.htm">Run</a> menu from displaying. The keyboard
+equivalent is the Pause key and pressing it may perform the interrupt.
+</li></ul>
+
+
+<ul><li id="14"><b><a name="run-project-w-rt">Run Project with Runtime Analysis</a></b> -- 
+Like <a href="run-menu.htm#run-project">Run Project</a>, with additional behavior to
+perform a runtime analysis of the run.  This command wraps a call
+to <a href="../operators/prof/with-profiling.htm"><b>with-profiling</b></a> around the
+running of the project, and will analyze only the process of the
+running project. When the project run exits (typically by closing the
+project's main window), it will also automatically display the new
+analysis in the <a href="runtime-analyzer-results-dialog.htm">Runtime Analyzer
+Results</a> dialog. The Runtime Analyzer is described
+in <a href="../runtime-analyzer.htm">runtime-analyzer.htm</a>.
+</li></ul>
+
+
+
+
+<ul><li id="15"><b><a name="trace">Trace</a></b> -- 
+Starts tracing the currently selected symbol.
+</li></ul>
+
+
+
+<ul><li id="16"><b><a name="untrace">Untrace</a></b> -- 
+Stops tracing of the selected symbol.
+</li></ul>
+
+
+
+<ul><li id="17"><b><a name="untrace-all">Untrace All</a></b> -- 
+Stops all tracing.
+</li></ul>
+
+
+
+<ul><li id="18"><b><a name="retrace">Retrace</a></b> -- 
+This command on the <a href="run-menu.htm">Run</a> menu causes functions that were being
+traced when <a href="run-menu.htm#untrace-all">Run | Untrace All</a> was chosen to again be
+traced. Also, if choosing <a href="run-menu.htm#untrace">Run | Untrace</a> resulted in
+nothing being traced, Retrace causes the last object traced to be
+traced again.
+</li></ul>
+
+
+
+<ul><li id="19"><b><a name="trace-status">Trace Status</a></b> -- 
+Prints information about what is being traced to the status bar.
+</li></ul>
+
+
+
+<ul><li id="20"><b><a name="trace-dialog">Trace Dialog</a></b> -- 
+Displays the <a href="trace-dialog.htm">Trace
+Dialog</a>.
+</li></ul>
+
+
+
+
+
+<ul><li id="21"><b><a name="set-breakpoint">Set Breakpoint</a></b> -- : add a breakpoint at the top of the selected
+function or method, if any, as with the
+top-level <a href="../tpl-commands/break.htm"><b>:break</b></a> command. This is
+typically used to set up stepping with the <a href="stepper-dialog.htm">Stepper Dialog</a>.
+<p id="22">
+If the selected object is the name of a generic function, then a
+pop-up menu will appear asking which method to breakpoint; the special
+<b>All</b> choice will breakpoint all methods of the generic
+function.
+</p>
+<p id="23">
+If the <a href="stepper-dialog.htm">Stepper
+Dialog</a> is currently selected, and the <b>Definition Pane</b>
+has the keyboard focus and is highlighting a selected form, then the
+breakpoint will be set on the selected form inside the function being
+stepped through. The selected form is the one under the mouse if any,
+and otherwise the form at which the stepper is stopped.
+</p>
+
+</li></ul>
+<ul><li id="24"><b><a name="remove-breakpoint">Remove Breakpoint</a></b> -- : remove the breakpoint at the top of the
+selected function or method, if any. (Or the breakpoint on the
+selected form in the <a href="stepper-dialog.htm">Stepper
+Dialog</a> as with <b>Set Breakpoint</b>
+above.)
+</li></ul>
+<ul><li id="25"><b><a name="remove-all-breakpoints">Remove All Breakpoints</a></b> -- 
+Remove all currently-defined breakpoints.
+</li></ul>
+<ul><li id="26"><b><a name="break-status">Break Status</a></b> -- : print a list of the currently breakpointed
+functions to the listener.
+</li></ul>
+<ul><li id="27"><b><a name="stepper-dialog">Stepper Dialog</a></b> -- : display the <a href="stepper-dialog.htm">Stepper Dialog</a> for stepping
+incrementally through the source code of compiled application
+functions and methods, stopping at breakpoints.
+</li></ul>
+
+<ul><li id="28"><b><a name="show-def-stepper-dialog">Show Definition in Stepper Dialog</a></b> -- : displays the source
+code of the selected function or method in
+the <a href="stepper-dialog.htm">Stepper
+Dialog</a>, if it has been compiled for source-level debugging
+(see <a href="../debugging.htm#source-step-1">The source
+stepper</a> in <a href="../debugging.htm">debugging.htm</a>). You can then
+set breakpoints inside the definition, without breakpointing the
+entrance to and exit from the function as the <b>Set Breakpoint</b>
+command does.
+<p id="29">
+In the editor when no text is selected, the definition that will be
+used will be the one that the text cursor is currently inside, and the
+stepper dialog will scroll the editor's text cursor position into
+view.  Otherwise if a function object can be derived from the selected
+object in the selected IDE window, then its definition will be used.
+</p>
+</li></ul>
+
+
+
+
+<ul><li id="30"><b><a name="runtime-analyzer-control">Runtime Analyzer Control</a></b> -- 
+Displays a submenu with the following choices:
+<ul>
+<li id="31">
+<b>Start/Resume Sampling</b>: if no runtime analysis has been started, start
+data collection. If an analysis is being run but data collection is suspended
+(with <b>Suspend Sampling</b>), resume data collection.
+</li>
+<li id="32">
+<b>Suspend Sampling</b>: suspends data collection until <b>Start/Resume
+Sampling</b> is clicked.
+</li>
+<li id="33">
+<b>Stop</b>: stops data collection. After clicking this
+command, runtime analysis data is ready for analysis. Starting
+sampling again will destroy current data.
+</li>
+<li id="34">
+<b>Runtime Analyzer Status</b>: prints information about the runtime
+analyzer (whether sampling is going on, etc.) to the status bar of
+the Project Window.
+</li>
+</ul>
+</li></ul>
+
+<ul><li id="35"><b><a name="runtime-analyzer-control-dialog">Runtime Analyzer Control Dialog</a></b> --  Displays the
+<a href="runtime-analyzer-control-dialog.htm">Runtime Analyzer Control
+dialog</a>, which provides tools for controlling the runtime
+analyzer.
+</li></ul>
+
+<ul><li id="36"><b><a name="runtime-analyzer-results-dialog">Runtime Analyzer Results Dialog</a></b> --  Displays the
+<a href="runtime-analyzer-results-dialog.htm">Runtime Analyzer Results
+dialog</a>, which displays information about runtime analysis
+data.
+</li></ul>
+
+
+<ul><li id="37"><b><a name="prioritize-ide-response">Prioritize IDE Response</a></b> --  When checked, the IDE is more
+responsive to user gestures while user code is being evaluated, but
+responsivess of other applications may be reduced in certain cases,
+such as glitches in music playback during a dragging operation in the
+IDE on Windows.  See <a href="../operators/ide/ide-priority.htm"><b>ide:ide-priority</b></a> for more information.
+</li></ul>
+
+
+
+
+
+<hr><p id="38"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/run-menu.htm">9.0 version</a></td></tr></table></body></html>

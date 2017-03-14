@@ -1,0 +1,34 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>funcall-menu-item-with-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/funcall-menu-item-with-window.htm">9.0 version</a></td></tr></table><h2 id="2">funcall-menu-item-with-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+menu menu-item window-or-screen
+</i></p>
+
+<p id="4">
+Funcalls the value of the <i>menu-item</i> with the
+window on which the menu was invoked
+(<i>window-or-screen</i>) as the single argument. If the
+window is a <a href="../../../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a> window,
+then the child pane is passed instead. Here is the definition of
+<a href="../f/funcall-menu-item-with-window.htm"><b>funcall-menu-item-with-window</b></a>:
+</p>
+<pre id="5">
+(defmethod funcall-menu-item-with-window 
+             ((menu menu)(menu-item menu-item) window-or-screen)
+  (funcall (value menu-item)
+           (or (frame-child stream) window-or-screen)))
+</pre>
+<p id="6">
+This function and <a href="../f/funcall-menu-item.htm"><b>funcall-menu-item</b></a> are typical
+values of the <a href="../o/on-click.htm"><b>on-click</b></a> property of a menu. On
+<a href="../../../classes/cg/rich-edit-dialog.htm"><code>rich-edit-dialog</code></a>s, <a href="../f/funcall-menu-item-with-rich-edit.htm"><b>funcall-menu-item-with-rich-edit</b></a> may
+also be used.
+</p>
+
+
+
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/funcall-menu-item-with-window.htm">9.0 version</a></td></tr></table></body></html>

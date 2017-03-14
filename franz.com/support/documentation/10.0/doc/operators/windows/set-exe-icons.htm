@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-exe-icons</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: windows</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/set-exe-icons.htm">9.0 version</a></td></tr></table><h2 id="2">set-exe-icons</h2>
+
+<p id="3"><b>Arguments: </b><i>
+existing-exe new-exe icon-name icon-file
+</i></p>
+
+<p id="4">
+This function is useful for replacing the application icon inside an
+executable file for delivery.  It copies the executable at
+<i>existing-exe</i> to the path specified by
+<i>new-exe</i>, replacing the embedded icon resource
+whose name is <i>icon-name</i> with the icon from
+<i>icon-file</i>.
+</p>
+<p id="5">
+The newer function <a href="set-exe-icons-nt.htm"><b>set-exe-icons-nt</b></a> is preferable to this one if
+you are on the NT branch of Windows (which includes win2000 and XP).
+</p>
+<p id="6">
+<i>existing-exe</i> should be a pathname or path
+namestring that specifies the .exe executable file whose application
+icon is to be replaced.
+</p>
+<p id="7">
+<i>new-exe</i> should be a pathname or path namestring
+at which to create a copy of <i>existing-exe</i> with
+the replacement icon.  (<i>existing-exe</i> is not
+modified.)
+</p>
+<p id="8">
+<i>icon-name</i> should be the name of the icon resource
+to be replaced.  In an Allegro CL executable file (either a
+development lisp or a generated application), the application icon is
+named "ACLICON".  This is the icon that will appear in the Windows
+taskbar and alt-tab window when the application is running, and in the
+<b>File Explorer</b> and <b>Start Menu</b> to represent the .exe file.
+</p>
+<p id="9">
+<i>icon-file</i> should be a pathname or path namestring
+that specifies a .ico icon file.  The file should contain either one
+or two images, where each one is 4 bits-per-pixel and either 32 by 32
+or 16 by 16 pixels large.  The newer function <a href="set-exe-icons-nt.htm"><b>set-exe-icons-nt</b></a> does not have this restriction,
+though it works only on the NT branch of Windows. That function is
+also more robust and is therefore preferable when running NT.
+</p>
+<p id="10">
+The following example would copy myapp.exe to temp.exe, replacing the
+Franz icon in temp.exe with the custom icon defined in myicon.ico.
+</p>
+
+<pre id="11">
+(win:set-exe-icons "c:/foo/myapp.exe" "c:/foo/temp.exe"
+                   "ACLICON" "c:/foo/myicon.ico")
+</pre>
+
+<p id="12">
+See the description of the <i>icon-file</i> keyword
+argument to <a href="../excl/generate-application.htm"><b>generate-application</b></a>, described in
+<a href="../../delivery.htm">delivery.htm</a> for more information on setting the
+icon for an application on Windows. Either this function of the
+related <a href="set-exe-icons-nt.htm"><b>win:set-exe-icons-nt</b></a> function (as
+appropriate for the operating system) will be called. See also <a href="set-application-icon.htm"><b>win:set-application-icon</b></a>.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/set-exe-icons.htm">9.0 version</a></td></tr></table></body></html>

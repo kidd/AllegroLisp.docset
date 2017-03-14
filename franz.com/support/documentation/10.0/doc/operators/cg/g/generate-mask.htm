@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>generate-mask</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/generate-mask.htm">9.0 version</a></td></tr></table><h2 id="2">generate-mask</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pixmap transparent-pixel-value
+</i></p>
+
+<p id="4">
+Automatically creates a mask for <i>pixmap</i> that
+causes the pixmap to be transparent wherever
+<i>transparent-pixel-value</i> occurred in the pixmap's
+<a href="../c/contents.htm"><b>contents</b></a>.  The
+created mask texture is returned, and is set to be the <a href="../m/mask.htm"><b>mask</b></a> property of the pixmap.
+</p>
+<p id="5">
+<i>pixmap</i> should be the pixmap to be given a mask.
+See <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a> for an overview of
+pixmap functionality.
+</p>
+
+
+<p id="6">
+<i>transparent-pixel-value</i> should be a non-negative
+integer or <code>nil</code>.  Any pixel in the <a href="../c/contents.htm"><b>contents</b></a> of the pixmap that has this
+value will become transparent.  This is done by setting the mask's
+pixel value to one and the main image's pixel value to zero, just as
+you would need to do if you constructed the pixmap's <a href="../m/mask-contents.htm"><b>mask-contents</b></a> yourself.
+</p>
+<p id="7">
+If <i>transparent-pixel-value</i> is not zero, this
+means that the existing main <a href="../t/texture.htm"><b>texture</b></a> of the pixmap will be modified by this
+function.  In any case, the pixmap will be given a new mask, and any
+mask that the pixmap had will be removed from the pixmap.
+</p>
+<p id="8">
+If the <i>transparent-pixel-value</i> argument is
+<code>nil</code>, the value of the upper-left
+pixel of the pixmap is taken as the value to make transparent.
+</p>
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/generate-mask.htm">9.0 version</a></td></tr></table></body></html>

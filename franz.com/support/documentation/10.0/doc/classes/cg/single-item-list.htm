@@ -1,0 +1,115 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>single-item-list</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/single-item-list.htm">9.0 version</a></td></tr></table><h2 id="2">single-item-list</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of the <a href="single-item-list.htm"><code>single-item-list</code></a> control. <a href="multi-item-list.htm"><code>multi-item-list</code></a> and
+<a href="single-item-list.htm"><code>single-item-list</code></a> are together
+called <i>item-list</i> widgets.
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+An instance of the <a href="single-item-list.htm"><code>single-item-list</code></a> class. A list box
+highlighting a single item in its window. The list is navigable from
+the keyboard via the arrow keys. HOME and END keys take users to the
+top and bottom of the list, respectively.
+</p>
+<p id="7">
+The <a href="../../operators/cg/v/value.htm"><b>value</b></a> field
+is set to the item selected by the user, and is shown highlighted in
+the list. If no item is highlighted, the value field is set to <code>nil</code>.  The items may be any type of object, though for
+some item types the on-change-test of the widget may need to be
+changed to a function that will return true for equivalent objects of
+that type.
+</p>
+<p id="8">
+The <a href="../../operators/cg/r/range.htm"><b>range</b></a>
+property holds the list of items to be displayed; list items appear in
+the order you enter them in the range. The items may be any type of
+object, though for some item types the <a href="../../operators/cg/o/on-change-test.htm"><b>on-change-test</b></a> of the widget may
+need to be changed to a function that will return true for equivalent
+objects of that type.
+</p>
+
+<p id="9">
+The entire range may be set either by passing the :range initarg when
+calling <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>
+to create the widget, or later by calling <a href="../../operators/cg/r/range.htm"><b>(setf range)</b></a>.
+Incremental changes to the range may be made by calling the functions
+<a href="../../operators/cg/l/list-widget-add-item.htm"><b>list-widget-add-item</b></a>, <a href="../../operators/cg/l/list-widget-remove-item.htm"><b>list-widget-remove-item</b></a>,
+<a href="../../operators/cg/l/list-widget-replace-item.htm"><b>list-widget-replace-item</b></a>, and
+<a href="../../operators/cg/l/list-widget-move-item.htm"><b>list-widget-move-item</b></a>.
+</p>
+<p id="10">
+An application should not destructively modify a list that it has
+passed as a :range initarg or to <a href="../../operators/cg/r/range.htm"><b>(setf range)</b></a> for an
+item-list widget, because the widget retains this list object to
+determine which values are actually new when <a href="../../operators/cg/r/range.htm"><b>(setf range)</b></a> is called
+again on the widget.  To make small changes to the range, the
+incremental functions mentioned above may be used to avoid consing a
+new list to pass to <a href="../../operators/cg/r/range.htm"><b>(setf range)</b></a>.
+</p>
+<h3 id="11">
+Adding a single-item-list control to your form
+</h3>
+<p id="12">
+Click the single-item-list tool on the Component toolbar. Move the
+mouse cursor to the part of the form where you want to place the
+control, and click again. The control will appear with colored
+resizing handles.
+</p>
+<h3 id="13">
+Resizing and moving the control
+</h3>
+<p id="14">
+Controls can only be resized and moved on forms during the design
+stage; the size and location of everything is fixed on a running form.
+</p>
+<p id="15">
+Resize the control by clicking the mouse cursor and dragging one of
+the handles to the new size-point. Release the mouse key when you are
+satisfied with the new size. Note: resizing the single item list
+won't mean proportional changes in the size of the characters inside
+the list. Change the <a href="../../operators/cg/f/font.htm"><b>font</b></a> property if you want to change
+the size of the actual characters displayed.
+</p>
+<p id="16">
+Move the control by clicking anywhere on it except a resizing handle
+and dragging it to a new location on the form. Release the mouse key
+when you are ready to place the control.
+</p>
+<h3 id="17">
+Scrollbars
+</h3>
+<p id="18">
+This control will show a horizontal scrollbar only if its <a href="../../operators/cg/m/multi-column-p.htm"><b>multi-column-p</b></a> property
+is true (and the multiple columns extend beyond the width of the
+control).  If a horizontal scrollbar is needed on a <a href="single-item-list.htm"><code>single-item-list</code></a> that
+does not use multiple columns, an <a href="outline.htm"><code>outline</code></a> control could be used
+instead, using only top-level items in the range and turning off the
+<a href="../../operators/cg/d/draw-icons.htm"><b>draw-icons</b></a>
+property to simulate an item-list.
+</p>
+<p id="19">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="20">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/single-item-list.htm">9.0 version</a></td></tr></table></body></html>

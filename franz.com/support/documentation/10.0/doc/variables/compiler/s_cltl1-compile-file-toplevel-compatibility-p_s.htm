@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*cltl1-compile-file-toplevel-compatibility-p*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: compiler</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/s_cltl1-compile-file-toplevel-compatibility-p_s.htm">9.0 version</a></td></tr></table><h2 id="2">*cltl1-compile-file-toplevel-compatibility-p*</h2>
+
+<p id="3">If the value of this variable is true, CLtL-1 compile-time-too
+behavior will be used when compiling a file. That means that top-level
+forms calling the functions listed below need not be wrapped in an
+appropriate <strong>eval-when</strong> form in order for them to have
+effect while a file is being compiled. If the value is the symbol
+<code>warn</code> (which is the initial value), a warning will be
+printed whenever a form is encountered where CLtL-1 compile-time-too
+behavior is used. (Note: it is likely that complex files will generate
+many warnings.) If the value is <code>nil</code>, ANSI
+compile-time-too behavior is used. We recommend that you modify all
+files to conform to ANSI behavior as soon as possible. </p>
+
+<p id="4">By compile-time-too behavior, we refer to the effect of certain
+top-level forms in a file being compiled. In CLtL-1, top-level forms
+which were calling the functions listed below were treated as if they
+were wrapped in an </p>
+
+<pre id="5">(eval-when (compile)) </pre>
+
+<p id="6">form. That behavior has been changed in the new standard and you
+must wrap such forms in appropriate <a href="../../../ansicl/dictentr/eval-whe.htm"><b>eval-when</b></a> forms if they are to have effect while
+a file is being compiled. The affected functions are: </p>
+
+<ul>
+<li id="7"><a href="../../../ansicl/dictentr/proclaim.htm"><b>proclaim</b></a></li>
+<li id="8"><a href="../../../ansicl/dictentr/make-pac.htm"><b>make-package</b></a></li>
+<li id="9"><a href="../../../ansicl/dictentr/shadow.htm"><b>shadow</b></a></li>
+<li id="10"><a href="../../../ansicl/dictentr/shadowin.htm"><b>shadowing-import</b></a></li>
+<li id="11"><a href="../../../ansicl/dictentr/import.htm"><b>import</b></a></li>
+<li id="12"><a href="../../../ansicl/dictentr/export.htm"><b>export</b></a></li>
+<li id="13"><a href="../../../ansicl/dictentr/unexport.htm"><b>unexport</b></a></li>
+<li id="14"><a href="../../../ansicl/dictentr/use-pack.htm"><b>use-package</b></a></li>
+<li id="15"><a href="../../../ansicl/dictentr/unuse-pa.htm"><b>unuse-package</b></a></li>
+<li id="16"><a href="../../../ansicl/dictentr/provider.htm"><b>require</b></a></li>
+</ul>
+
+<p id="17">
+See <a href="../../compiling.htm">compiling.htm</a> for
+information on the compiler.
+</p>
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/s_cltl1-compile-file-toplevel-compatibility-p_s.htm">9.0 version</a></td></tr></table></body></html>

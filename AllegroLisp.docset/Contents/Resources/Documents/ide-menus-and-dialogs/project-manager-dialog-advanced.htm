@@ -1,0 +1,158 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>project-manager-dialog-advanced</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog Tab</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/project-manager-dialog-advanced.htm">9.0 version</a></td></tr></table><h2 id="2">Project Manager Advanced Tab</h2>
+
+
+<p id="3"><img src="../pictures/pm-ad.jpg"></p>
+
+
+<p id="4">
+The Advanced Tab of the <a href="project-manager-dialog.htm">Project Manager Dialog</a> displays
+certain advanced options for the application associated with the
+project. The options and controls are:
+</p>
+<ul>
+<li id="5">
+
+<b>Deliver a Runtime Bundle</b>: Specifies whether the
+<i>runtime-bundle</i> argument to <a href="../operators/excl/generate-application.htm"><b>generate-application</b></a> should be specified true
+(checked) or not (unchecked). When that argument is true, a
+runtime-suitable bundle file (containing modules permitted in a
+runtime image but not loaded into the image as built) will be included
+in the distribution directory. See <a href="../delivery.htm#including-modules-2">Including all desired modules</a> in
+<a href="../delivery.htm">delivery.htm</a> for more information. See also <a href="../operators/ide/build-flags.htm"><b>build-flags</b></a>.
+
+</li>
+<li id="6">
+
+<b>Purify</b>: Specifies whether to move strings and code vectors that
+would otherwise be in the generated .dxl image file into a separate
+.pll library file, which is sharable by multiple lisp
+applications. (Checking this box is equivalent to specifying the
+<i>purify</i> argument to <a href="../operators/excl/generate-application.htm"><b>generate-application</b></a> true.) See also <a href="../operators/ide/build-flags.htm"><b>build-flags</b></a>.
+
+</li>
+<li id="7">
+<b>Autoload warning</b>: If checked, the autoload warning dialog will
+be displayed when a project build is complete. If unchecked, it will
+not be displayed. (Not displayed it facilitates batch processing.)
+See <a href="../operators/ide/autoload-warning.htm"><b>autoload-warning</b></a>.
+</li>
+
+<li id="8">
+<b>Run With Console</b>: whether the standalone application should
+have a console window whose read-eval-print loop is always active.
+See <a href="../operators/cg/r/run-with-console.htm"><b>cg:run-with-console</b></a>.
+</li>
+
+<li id="9">
+<b>For US Government Use</b>: check this if the application will be
+supplied to the US Government or someone working for the US Government
+(and the application is in connection with that person's work). If
+this box is checked, the copyright notice will include language that
+protects the rights of software vendors (the application developer and
+Franz Inc.) when supplying the US Government. That is the only effect
+of selecting this option. Note that it is not necessary to select this
+option when supplying a government of any country other than the
+United States or supplying a state or local government in the United
+States. See also <a href="../operators/ide/build-flags.htm"><b>build-flags</b></a>.
+
+</li>
+
+<li id="10">
+
+<b>Old Space</b>: specifies the size of the initial oldspace in the
+application. The oldspace will grow automatically as needed but
+specifying a suitable value can improve garbage collection
+performance. See <a href="../gc.htm">gc.htm</a> for more
+information on oldspace size and garbage collection. See <a href="../operators/ide/old-space-size.htm"><b>old-space-size</b></a>.
+
+</li>
+<li id="11">
+
+<b>New Space</b>: specifies the size of the initial newspace in the
+application. The newspace will grow automatically as needed but
+specifying a suitable value can improve garbage collection
+performance. See <a href="../gc.htm">gc.htm</a> for more
+information on newspace size and garbage collection. See <a href="../operators/ide/new-space-size.htm"><b>new-space-size</b></a>.
+
+</li>
+
+<li id="12">
+<b>Command Line Arguments</b>: specifies default command line arguments
+(such as +c -foo) that will be passed to the generated executable
+automatically; see <a href="../operators/ide/default-command-line-arguments.htm"><b>default-command-line-arguments</b></a>.
+<p id="13">
+As described below, a project will prepend either
+<code>+cx</code> or <code>+c</code> to these options
+internally, and so it is generally not necessary to specify a
+<code>c</code> option explicitly here.
+</p>
+<p id="14">
+The initial value for a new project includes the <code>+M</code>
+flag (to ensure that the standalone application fully exits when it
+attempts to exit with a non-zero exit code after an error), and also
+<code>+t</code>&nbsp; <b>Console for Debugging</b> (as
+a suggested title for the Console window, in case it were to be
+included with a delivered application).  These flags are recommended
+for CG applications, though you may wish to add additional flags.
+</p>
+<p id="15">
+In addition to the command line arguments specified explicitly in this
+widget, either the <code>+cx</code> or <code>+c</code>
+flag will be added internally by the project system.  If <b>Enable
+Debugging of Runtime Errors</b> is selected on the <a href="project-manager-dialog-build.htm">Build</a>
+tab, then <code>+cx</code> will be added to include the console
+window in the application; it will be hidden but may be exposed for
+debugging.  If <b>Enable Debugging of Runtime Errors</b> has been
+unselected (as you would typically do before delivering an
+application), then <code>+c</code> is passed to exclude the
+console window entirely from the application; this will also suppress
+the console's tray icon.
+</p>
+<p id="16">
+See <a href="../startup.htm#command-line-args-1">Command line
+arguments</a> and its subsections in
+<a href="../startup.htm">startup.htm</a> for a table of standard command-line
+options.
+</p>
+</li>
+<li id="17">
+<b>Additional Build-Lisp-Image Arguments</b>: specifies the values of
+any needed arguments to <a href="../operators/excl/generate-application.htm"><b>generate-application</b></a> or <a href="../operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> that are not covered by more
+specific project properties. The values entered here will form the
+plist that is the value of the <a href="../operators/ide/additional-build-lisp-image-arguments.htm"><b>additional-build-lisp-image-arguments</b></a> property
+of the project.  Text should be entered into this widget as this plist
+would print, except without the surrounding parentheses; for example:
+<pre id="18">
+:read-init-files nil :c-heap-size #x400000
+</pre>
+</li>
+
+<li id="19">
+<b>Default Error Handler for Delivery</b>: specifies the value of the
+<a href="../operators/cg/d/default-error-handler-for-delivery.htm"><b>default-error-handler-for-delivery</b></a>
+property of the current project. The value should be the name of a
+function that accepts a single argument, which will be a condition
+object. This function will be called in the standalone application for
+any otherwise unhandled errors if the <b>Enable Debugging of Runtime
+Errors</b> option has been disabled on the Build tab for final
+delivery. It is a good idea to include a package qualifier on the
+function name when entering it here, and the qualifier will continue
+to be displayed here in the future.
+</li>
+
+</ul>
+
+
+
+<p id="20">
+See the general description of the 
+<a href="project-manager-dialog.htm">Project Manager Dialog</a> for
+details of the toolbar buttons.
+</p>
+
+
+
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/project-manager-dialog-advanced.htm">9.0 version</a></td></tr></table></body></html>

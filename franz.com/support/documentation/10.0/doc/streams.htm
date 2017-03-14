@@ -1,0 +1,3623 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Streams in Allegro CL</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/streams.htm">9.0 version</a></td></tr></table><h1 id="2">Streams in Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#simple-stream-intro-1">1.0 Simple-stream introduction</a><br><a href="#simple-stream-background-1">2.0 Simple-stream background</a><br>&nbsp;&nbsp;&nbsp;<a href="#gray-stream-problems-2">2.1 Problems with Gray streams</a><br>&nbsp;&nbsp;&nbsp;<a href="#new-hierarchy-2">2.2 A new stream hierarchy</a><br><a href="#model-1">3.0 The programming model</a><br>&nbsp;&nbsp;&nbsp;<a href="#getting-a-ss-2">3.1 How to get a simple-stream and how to get a Gray stream</a><br>&nbsp;&nbsp;&nbsp;<a href="#trivial-dispatch-2">3.2 Trivial Stream Dispatch</a><br>&nbsp;&nbsp;&nbsp;<a href="#ss-description-2">3.3 Simple-stream Description</a><br><a href="#device-level-functionality-1">4.0 Device Level Functionality</a><br>&nbsp;&nbsp;&nbsp;<a href="#device-interface-2">4.1 Device Interface</a><br><a href="#extended-and-cl-funs-1">5.0 Implementation of Standard Interface Functionality for Simple-Streams</a><br>&nbsp;&nbsp;&nbsp;<a href="#cl-funs-2">5.1 Implementation of Common Lisp Functions for simple-streams</a><br>&nbsp;&nbsp;&nbsp;<a href="#ex-interface-funs-2">5.2 Extended Interface Functionality</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#block-non-block-3">5.2.1 Blocking behavior in simple-streams</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#endian-swap-3">5.2.2 The endian-swap keyword argument to read-vector and write-vector</a><br>&nbsp;&nbsp;&nbsp;<a href="#force-finish-output-2">5.3 Force-output and finish-output policy</a><br><a href="#higher-level-1">6.0 Higher Level functions</a><br><a href="#ss-class-hierarchy-1">7.0 Simple-stream Class Hierarchy</a><br><a href="#implementation-strategies-1">8.0 Implementation Strategies</a><br><a href="#control-chars-1">9.0 Control-character Processing</a><br><a href="#device-writing-1">10.0 Device-writing Tips</a><br>&nbsp;&nbsp;&nbsp;<a href="#defining-new-classes-2">10.1 Defining new stream classes</a><br>&nbsp;&nbsp;&nbsp;<a href="#tips-for-device-open-2">10.2 Device-open</a><br>&nbsp;&nbsp;&nbsp;<a href="#from-scratch-do-2">10.3 From-scratch device-open</a><br>&nbsp;&nbsp;&nbsp;<a href="#device-helpers-2">10.4 Implementation Helpers for device-read and device-write</a><br>&nbsp;&nbsp;&nbsp;<a href="#stream-imp-other-2">10.5 Other Stream Implementation Functions and Macros</a><br>&nbsp;&nbsp;&nbsp;<a href="#stream-line-column-charpos-2">10.6 Details of stream-line-column and charpos</a><br><a href="#simple-stream-hierarchy-illus-1">11.0 The simple-stream class hierarchy illustrated</a><br><a href="#encapsulating-streams-1">12.0 Encapsulating Streams</a><br>&nbsp;&nbsp;&nbsp;<a href="#encapsulation-terminology-2">12.1 Encapsulation terminology</a><br>&nbsp;&nbsp;&nbsp;<a href="#encapsulation-strategy-2">12.2 Strategy descriptions necessary for encapsulation</a><br>&nbsp;&nbsp;&nbsp;<a href="#octet-char-connections-2">12.3 Valid connections between octet-oriented and character-oriented streams</a><br>&nbsp;&nbsp;&nbsp;<a href="#encapsulation-examples-2">12.4 Examples of stream encapsulations</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#encap-example-rot13b-2">12.4.1 Rot13b: An Example of Bidirectional Stream Encapsulation</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#encap-example-base64-2">12.4.2 Base64: an example of binary stream encapsulation</a><br>&nbsp;&nbsp;&nbsp;<a href="#encap-composing-formats-2">12.5 Encapsulating composing external-formats</a><br><a href="#built-in-methods-1">Appendix A. Built-in stream methods and their uses</a><br>&nbsp;&nbsp;&nbsp;<a href="#print-object-stream-method-2">Appendix A.1. The print-object built-in stream method</a><br><a href="#peek-byte-1">Appendix B. peek-byte and unread-byte</a><br><p id="4">
+The Allegro CL streams model uses simple-streams, which formally have
+no element-type but act in general as if they have element type
+<code>(unsigned-byte 8)</code>. The implementation is described
+in this document.  An older stream implementation called <i>Gray
+streams</i> is still supported. It is described in
+<a href="gray-streams.htm">gray-streams.htm</a>
+</p><p id="5">
+A simple-stream is created whenever a file is opened
+(with <a href="../ansicl/dictentr/open.htm"><b>open</b></a>) without an
+element-type specified. If <a href="../ansicl/dictentr/open.htm"><b>open</b></a> is called with
+an <i>element-type</i> specified, a Gray stream is
+created, except for string output streams, as noted next.
+</p><p id="6">
+String output streams are always simple-streams even though both
+<a href="../ansicl/dictentr/make-st0.htm"><b>make-string-output-stream</b></a> and
+<a href="../ansicl/dictentr/with-out.htm"><b>with-output-to-string</b></a> accept
+an <i>element-type</i> keyword argument. Both operators
+create simple-streams regardless of whether a value is specified for
+the <i>element-type</i> keyword argument or not.
+</p><p id="7">
+The transition from Gray streams to simple-streams should be easy and
+transparent unless you have done extensive stream customization.
+</p><p id="8">
+It is unlikely that users who are not concerned with stream details
+will have to concern themselves with this document. Common stream
+usages, such as opening files for reading and writing, will simply
+work as expected. 
+</p><p id="9">
+Symbols naming stream functionality that are not standard Common Lisp
+symbols are generally in the <code>:excl</code> package.
+</p><hr><hr><h2 id="10"><a name="simple-stream-intro-1">1.0 Simple-stream introduction</a></h2>
+
+<p id="11">
+The standard Allegro CL stream implementation uses
+<em>simple-stream</em>s. Also supported are Gray streams (see
+<a href="gray-streams.htm">gray-streams.htm</a>.  Both kinds of stream may
+co-exist in a lisp, and compatibility is maintained for the standard
+Common Lisp streams interface, the Gray streams implementation
+maintains its compatibility with previous Gray versions with minimal
+source intervention when they have been used.
+</p>
+
+<p id="12">
+The Allegro CL simple-stream is the next generation evolving from the
+stream of the same name in Common Graphics (the windowing systems used
+by Allegro CL on Windows). The Common Graphics simple-stream was
+created as a basis for window-based input and output.  The new
+generation of simple-stream is designed to include this window-based
+I/O and at the same time to retain the speed always expected for
+non-window based streams. It is also designed to promote further
+advances in technology requirements such as International Character
+sets and server-based I/O. 
+</p>
+
+<hr><hr><h2 id="13"><a name="simple-stream-background-1">2.0 Simple-stream background</a></h2>
+
+<p id="14">
+We felt a new stream implementation was needed because of problems we
+found with the Gray stream design. In this section, we describe these
+problems and describe the new implementation.
+</p>
+
+<hr><h2 id="15"><a name="gray-stream-problems-2">2.1 Problems with Gray streams</a></h2>
+
+<ol>
+  <li id="16">Gray streams distinguish input and output directions per class, 
+    forcing combination and
+    mixins in order to model the 3 different modes (input only, 
+    output only, and input/output)
+    for various stream classes. </li>
+  <li id="17">Gray streams, in accordance with CL, distinguish streams by 
+    element-type. We have found
+    this to be an unfortunate limitation, since it makes it 
+    hard to transfer varying-width
+    elements in the same stream. Allegro CL 5.0.1 introduced 
+    bivalent streams, which allow
+    both varying-width elements and character elements to be transferred. 
+    This was a step in
+    the right direction, and enables web servers to be written more 
+    easily and efficiently. </li>
+  <li id="18">Gray streams methods, which define the specific streams 
+    implementation, are defined
+    immediately below the level of the CL streams interface, 
+    which causes a couple of
+    problems: <ol>
+      <li id="19">The CLOS dispatch is performed at a higher 
+        level than is necessary, thus creating
+        inefficient instruction execution paths that are not 
+        easily optimizable.</li>
+      <li id="20">The implementation interface of Gray streams, which 
+        is specified using CLOS, overlaps in
+        its behavior, thus causing confusion as to what 
+        specializations are needed. For example,
+        the obvious implementation for 
+        <a href="operators/excl/stream-read-char-no-hang.htm"><b>stream-read-char-no-hang</b></a> 
+        is to call 
+        <a href="operators/excl/stream-read-char.htm"><b>stream-read-char</b></a>
+        after a call to 
+        <a href="operators/excl/stream-listen.htm"><b>stream-listen</b></a>. 
+        However, since subclassing a stream can
+        result in a version which does not perform this 
+        listen/read combination, further
+        subclassing is not possible without having the 
+        source to this version, since it is
+        otherwise not possible to know whether to define a method for 
+        <a href="operators/excl/stream-read-char-no-hang.htm"><b>stream-read-char-no-hang</b></a>,
+        or for 
+        <a href="operators/excl/stream-read-char.htm"><b>stream-read-char</b></a> and 
+        <a href="operators/excl/stream-listen.htm"><b>stream-listen</b></a>, or perhaps
+        for all three, in which case it would be unknown which 
+        code would be actually executed. </li>
+    </ol>
+  </li>
+  <li id="21">Gray streams force the duplication of a large amount of code, 
+      for the implementation of
+    the basic functionalities such as 
+    <a href="operators/excl/stream-read-char.htm"><b>stream-read-char</b></a>. In a sense, 
+    this is
+    due to the fact that the implementation level is too high, and 
+    this forces the duplication
+    of effort in the implementation. </li>
+</ol>
+
+
+
+<hr><h2 id="22"><a name="new-hierarchy-2">2.2 A new stream hierarchy</a></h2>
+
+<p id="23">
+A new class hierarchy of streams with a base-class of 
+<a href="classes/excl/simple-stream.htm"><code>simple-stream</code></a> 
+removes the problems inherent
+in Gray streams. Simple-streams are more efficient, and are simpler in
+concept, making it easier to extend the streams interface by
+object-oriented means. 
+</p>
+
+<p id="24">
+A major simplification in the simple-stream hierarchy over Gray
+streams is the collapsing of many class distinctions into one:
+</p>
+
+<ul>
+  <li id="25">Gray streams distinguish input and output directions per class, 
+    whereas simple-streams
+    make this distinction with flags. </li>
+  <li id="26">Gray streams distinguish streams by element-type. 
+    Simple-streams have no element-type,
+    but (with the exception of string streams) always act as if 
+    transferring octets (8-bit bytes). </li>
+</ul>
+
+<p id="27">
+The Gray streams class hierarchy distinguishes between different kinds
+of stream usage. The simple-stream hierarchy distinguishes between
+different kinds of external I/O device or pseudo-device. 
+</p>
+
+<p id="28">
+This device-level interface is CLOS oriented, but is at a much lower
+level than the Gray streams implementation level, making it much more
+efficient in both execution speed and in space. 
+</p>
+
+
+
+<hr><hr><h2 id="29"><a name="model-1">3.0 The programming model</a></h2>
+
+<hr><h2 id="30"><a name="getting-a-ss-2">3.1 How to get a simple-stream and how to get a Gray stream</a></h2>
+
+<p id="31">
+The Gray streams implementation is supported along with simple
+streams. Programs using customized Gray streams will, therefore,
+continue to work as in earlier releases with only minor
+changes. (Users of Gray streams must ensure, as described below, that
+calls to <a href="../ansicl/dictentr/open.htm"><b>open</b></a> have the
+element-type keyword argument specified -- if it is unspecified, give
+it the value <code>character</code>. Users must also be careful
+not to assume a stream they did not create is a Gray stream, and that
+can be done using synonym streams or by loading a compatibility
+package, again as described below in this section. Gray streams are
+described in <a href="gray-streams.htm">gray-streams.htm</a>.)
+</p>
+
+<p id="32">
+The normal mechanism used to specify a simple-stream is to call
+<a href="../ansicl/dictentr/open.htm"><b>open</b></a> (and thus any callers of
+<a href="../ansicl/dictentr/open.htm"><b>open</b></a>, such as 
+<a href="../ansicl/dictentr/with-op0.htm"><b>with-open-file</b></a>)
+to open the stream without specifying the element-type. This will
+cause a simple-stream to be created, instead of a Gray stream. A Gray
+stream will be created if an element-type argument of any kind is
+given to the <a href="../ansicl/dictentr/open.htm"><b>open</b></a> call. 
+</p>
+
+<p id="33">
+A potential problem arises when legacy code requiring Gray streams
+calls <a href="../ansicl/dictentr/open.htm"><b>open</b></a> with no
+<em>element-type</em> argument. Under CL specification this kind of
+open causes the element-type to default to
+<code>character</code>. All CL functionality will be compatible
+between Gray streams and simple-streams, but if the user was counting
+on specific Gray stream functionality in character streams, then the
+<a href="../ansicl/dictentr/open.htm"><b>open</b></a> call must be changed to
+include <code>:element-type 'character</code> as arguments,
+which will force a Gray stream.
+</p>
+
+<p id="34">
+Another problem arises when Gray streams application code assumes that
+the stream it is handed is a Gray stream, and thus tries to call
+<strong><em>stream-</em></strong> methods on it. (Allegro CL names the
+Gray streams CLOS substrate
+<strong>stream-<em>[cl-function-name]</em></strong>,
+e.g. <strong>stream-read-char</strong> for
+<strong>read-char</strong>.) Allegro CL with the new stream
+implementation solves this problem by defining its synonym-stream
+implementation as a Gray stream, but in such a way that all calls via
+the synonym-stream-symbol are non-Gray-specific. For example, a call
+to <strong>stream-read-char</strong> to a synonym-stream will result
+in a call to <strong>read-char</strong> on the
+synonym-stream-symbol. This is slightly slower than dispatching on
+<strong>stream-read-char</strong>, but it does provide for
+compatibility with legacy code. A programmer who doesn't want to
+rewrite a subsystem to use simple-streams can simply ensure that any
+stream passed to that subsystem is a synonym stream. 
+</p>
+
+<p id="35">
+If the stream being manipulated is one that is not easily wrapped as a
+synonym-stream, (e.g. *terminal-io*) a second approach is provided in
+the form of the module <code>:gray-compat</code>. This module
+contains methods on simple-streams for generic functions normally
+associated with Gray streams. If, for example, the call
+</p>
+
+<pre id="36">
+(stream-read-char *standard-input*) 
+</pre>
+
+<p id="37">
+exists in legacy code, then requiring the
+<code>:gray-compat</code> module (by evaluating
+<code>(require :gray-compat)</code>) defines a method on
+<strong>stream-read-char</strong> for simple-streams, which simply
+wraps some argument and return-value processing around a call to
+<strong>read-char</strong>. This again is slower than calling
+<strong>read-char</strong> directly, but provides compatibility for
+legacy code.
+</p>
+
+
+
+<hr><h2 id="38"><a name="trivial-dispatch-2">3.2 Trivial Stream Dispatch</a></h2>
+
+<p id="39">
+CL stream-functions <a href="../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a>,
+<a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a>, <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a>, etc.,
+all distinguish in a trivial manner whether the stream is a Gray or
+simple stream.  If a Gray stream is detected, the associated Gray
+generic function is called for the stream, so that for example,
+<a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> calls <a href="operators/excl/stream-read-char.htm"><b>stream-read-char</b></a>,
+<a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a> calls
+<a href="operators/excl/stream-write-char.htm"><b>stream-write-char</b></a>, etc. However, if the stream is
+determined to be a simple-stream, then the specified lower level
+functionality for the function is called, which may involve calls to
+specific device-level functionality. This is described in section 
+<a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a> below. 
+</p>
+
+<p id="40">
+Note that this trivial dispatch does not use any CLOS dispatch
+mechanism, and the functionality that is called for a simple-stream
+may be inlined in the function. Thus, for example, all
+<a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a> operations for a simple-stream are
+performed without any function calls, unless the buffer fills up and
+<a href="operators/excl/device-write.htm"><b>device-write</b></a> must be called.
+</p>
+
+
+
+<hr><h2 id="41"><a name="ss-description-2">3.3 Simple-stream Description</a></h2>
+
+<p id="42">
+A simple-stream has no specific element-type associated with
+it. Instead, the fundamental unit of transfer for a simple stream that
+is not a string stream is the octet (an 8-bit byte), and all transfers
+are made at the lowest level with respect to octets. It is up to the
+implementation to decide how to optimize data transfers for particular
+situations where data paths are either wider or narrower than 8
+bits. 
+</p>
+
+<p id="43">
+A simple-stream is always buffered. Whereas support is provided for
+buffering for CL and Gray streams, buffering is not explicitly
+required in these stream specifications.  However, the explicit
+requirement that simple-streams are buffered allow a simpler and
+potentially more efficient model. Note that there is no direct
+interface to simple-stream buffers. The buffering layer resides just
+below the CL interface level, and the device layer is just below the
+buffering layer.
+</p>
+<p id="44">
+In the following diagram, we show the function call hierarchy (top to
+bottom, as higher level units have function calls to lower level
+units, eventually reaching the lowest layer, which is the device
+layer) and the data flow (output from Lisp left to right, input to
+Lisp right to left).
+</p>
+
+<pre id="45">
+          ---------&gt;   output direction   ---------&gt;
+
+          &lt;=========   input direction    &lt;=========
+                                                                    functional
+     User Level              Strategy Level         Device-level      call
+                        |                      |                    hierarchy
+  --------------------                                                  |
+ |  CL functionality  | |                      |                        |
+  --------------------                                                  |
+   |    |         |     |                      |                        v
+   |    |          -------------------------------------              
+   |    |               |                      |         |            
+   |    |                                                v            
+   |    |               |                      |  ------------------- 
+   |    |                                        | Control-character |
+   |    |               |                      | |   processing      |
+   |    |                                         ------------------- 
+   |    |               |                      |    |    |   |        
+   |    |                           .---------------     |   |        
+   |    |               |           v          |         |   |        
+   |    |                  ------------------            |   |        
+   |    |               | | external-format  | |         |   |        
+   |    |                 |   processing     |           |   |        
+   |    |               |  ------------------  |         |   |        
+   |    |                        |                       |   |        
+   |     -------------------.    |    .------------------    |        
+   |                    |   v    v    v        |             |        
+   |                       ---------------                   |        
+   |                    | |   Buffering   |    |             |        
+   |                       ---------------                   |        
+   |                    |        |             |             |        
+   |                              -----------------------.   |        
+    --------------------------------------------------.  |   |        
+                        |                      |      v  v   v        
+                                                  -----------------   
+                        |                      | |   Device layer  |  
+                                                  -----------------   
+</pre>
+
+<p id="46">
+String streams bypass the external-format (that is, External File
+Format, as defined in Common Lisp) processing, since their
+destinations are not really external. 
+</p>
+
+<p id="47">
+Programmers will work with simple-streams at various levels, wearing
+one of three different hats at any one time:
+</p>
+
+<ol>
+  <li id="48">As an applications programmer (or as a user), who calls the standard 
+    interface
+    functionality (including standard Common Lisp and related functions 
+    described in <a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a> below).</li>
+  <li id="49">As a device-level programmer, who extends the stream interface by 
+    writing device-level
+    methods for subclassed streams.</li>
+  <li id="50">As a strategy-level programmer, who implements the standard 
+    interface functionality
+    (which calls the device-level functionality). Strategy is an 
+    advanced level and most
+    programmers will not need to program at this level (using instead, 
+    the tools already
+    provided). Strategy is discussed in this document but explicit 
+    strategy-level programming
+    rules and tips are outside its scope.</li>
+</ol>
+
+<p id="51">
+There is also a set of functions provided which aid in the
+implementation of the device layer, and which at the same time are
+themselves User Level functions. These functions allow the design of
+encapsulating streams, where the encapsulating stream's device level
+becomes the encapsulated stream's user level. These functions are
+discussed in <a href="#device-helpers-2">Section 10.4 Implementation Helpers for device-read and device-write</a>.
+</p>
+
+<p id="52">
+The intended interaction by the user or applications programmer is to
+work above the buffer level. The user does so by calling standard CL
+functions. The device-level programmer may define new classes and
+device-level methods for "drivers" (we are using the word
+analogously to device drivers that are implemented in operating
+systems), but even then it is not intended that the user call the
+device-level methods directly. But note that it is possible to call
+device-level methods if all of the rules are followed.  The
+strategy-level programmer may design an alternate API that calls the
+device-level, but it must conform to the requirements that allow the
+device-level to work properly. The intended role of the API is that it
+is a thin layer which manipulates its buffer and thus deals with the
+device layer as little as possible. Such API's are intended to be very
+fast.
+</p>
+
+
+
+<hr><hr><h2 id="53"><a name="device-level-functionality-1">4.0 Device Level Functionality</a></h2>
+
+<p id="54">
+The device level is called that because it provides an underlying
+implementation that can be specialized to suit particular kinds of
+stream connections, in a similar manner to a device driver in an
+operating system. 
+</p>
+
+<p id="55">
+Only simple-streams provide a device layer; Gray streams do not. The
+device layer puts the object implementation of a simple-stream at a
+lower level than the object layer of Gray streams. 
+</p>
+
+<p id="56">The goals of the device layer are: 
+</p>
+
+<ul>
+  <li id="57">to be used with buffering at higher levels </li>
+  <li id="58">to provide a small functional interface that has no overlap </li>
+  <li id="59">to use methods that are called as few times as possible (a call to the device interface
+    should be thought of as a call to the operating-system, and thus expensive, so the number
+    of such calls must be minimized). </li>
+  <li id="60">to use fast method dispatch like the current Allegro CL 
+     Gray streams implementation. </li>
+  <li id="61">to allow encapsulating streams by allowing streams to implement 
+     device level functionality. </li>
+</ul>
+
+<p id="62">
+The device layer is <em>not</em> intended to be called directly,
+except by strategies for higher-level API interfaces that conform to
+strategy rules. Such APIs should be very lightweight and fast so that
+there is no need or temptation to call the device-layer
+directly. Creators of such higher-level APIs must be especially
+careful to understand the buffering issues involved, including those
+described in <a href="operators/excl/device-read.htm"><b>device-read</b></a> and 
+<a href="operators/excl/device-write.htm"><b>device-write</b></a>. 
+</p>
+
+<p id="63">
+Note that the device layer can implement whatever kind of
+connection it is set up to do. Usually this means that it
+will talk directly to a file handle or file descriptor number.
+However, the connection can be made to a stream of a different
+type instead of directly to an operating-system level file.
+By this means, Java style stream encapsulations can be created
+by the device-level programmer.
+</p>
+
+<p id="64">
+Such encapsulation functionality is done automatically by some
+functions provided as implementation helpers (see
+<a href="#device-helpers-2">Section 10.4 Implementation Helpers for device-read and device-write</a>).
+</p>
+
+<hr><h2 id="65"><a name="device-interface-2">4.1 Device Interface</a></h2>
+
+<p id="66">
+Simple-streams are normally opened with <a href="operators/excl/device-open.htm"><b>device-open</b></a> and closed with <a href="operators/excl/device-close.htm"><b>device-close</b></a>. <a href="operators/excl/device-buffer-length.htm"><b>device-buffer-length</b></a> returns the desired
+length of buffers to be allocated for the stream, if any. <a href="operators/excl/device-file-position.htm"><b>device-file-position</b></a> returns a
+positive integer that is the current octet (8-bit byte) position of
+the device represented by its argument stream.  <a href="operators/excl/device-file-length.htm"><b>device-file-length</b></a> returns the number of
+octets (8-bit bytes) in the argument stream if possible.
+</p>
+
+<p id="67">
+<a href="operators/excl/device-read.htm"><b>device-read</b></a> fills a buffer
+(if possible) with data from its argument stream.  <a href="operators/excl/device-clear-input.htm"><b>device-clear-input</b></a> clears any pending input on
+the device connected to its argument stream.  <a href="operators/excl/device-write.htm"><b>device-write</b></a> writes from the buffer to the
+argument stream. <a href="operators/excl/device-clear-output.htm"><b>device-clear-output</b></a> clears pending output.
+</p>
+<p id="68">
+A method that doesn't fall under the strict buffer-unaware read-write
+device methods is <a href="operators/excl/device-finish-record.htm"><b>device-finish-record</b></a>. Unlike <a href="operators/excl/device-read.htm"><b>device-read</b></a> and <a href="operators/excl/device-write.htm"><b>device-write</b></a>, that method may manipulate
+stream slots, allocate new work spaces, or call out recursively to
+higher level stream functions. The intention here is to separate the
+pure fill and flush aspect of device-read and device-write from the
+more complex aspects of mapping and record-orientation. 
+</p>
+<p id="69">
+The one exception to the buffer-unaware separation in <a href="operators/excl/device-read.htm"><b>device-read</b></a> and <a href="operators/excl/device-write.htm"><b>device-write</b></a> is when they receive a null
+buffer argument from the strategy layer, and their
+<i>start</i> and <i>end</i> arguments are
+not the same. This will occur if the buffer that would have been
+passed is the actual buffer of the stream. 
+</p>
+<p id="70">
+Under this circumstance the device-read/device-write method has a
+little leeway; it must assume that the null buffer argument refers to
+the appropriate buffer in the actual stream, and must retrieve that
+argument for use. However, it is free to detach and/or replace the
+buffer with another of the same size. Also, in the case of <a href="operators/excl/device-read.htm"><b>device-read</b></a>, the length of the
+buffer must be used as the <i>end</i> argument, which
+will also be <code>nil</code> if the buffer argument is
+<code>nil</code> (unless <i>end</i> is also
+eql to <i>start</i>). This flagging of the stream's
+buffer enables <a href="operators/excl/device-read.htm"><b>device-read</b></a>
+and <a href="operators/excl/device-write.htm"><b>device-write</b></a> methods to
+be written that perform advanced buffer-management and asynchronous
+read-write operations.
+</p>
+
+
+
+
+<hr><hr><h2 id="71"><a name="extended-and-cl-funs-1">5.0 Implementation of Standard Interface Functionality for Simple-Streams</a></h2>
+
+<p id="72">
+The <a href="#cl-funs-2">first subsection</a>
+describes the implementation of standard Common Lisp functions that
+deal with streams. Note that the behavior is usually different for
+Gray streams (where the CL function usually calls an
+Allegro-CL-specific associated generic functions) and for
+simple-streams (on which the CL function usually operates directly).
+</p>
+<p id="73">
+The <a href="#ex-interface-funs-2">second
+subsection</a> describes additional functions that operate
+on streams, but are specific to Allegro CL.
+</p>
+
+<hr><h2 id="74"><a name="cl-funs-2">5.1 Implementation of Common Lisp Functions for simple-streams</a></h2>
+
+<p id="75">
+Given the device interface, we can now describe how standard Common
+Lisp functions and some related Allegro CL functions are implemented
+in terms of these driver functions. Because the intention of this
+section is to provide implementation information, but not to describe
+how to use the functions, usage details such as argument lists are not
+provided.
+</p>
+
+<hr>
+<hr><h3 id="76"><a name="open-op-bookmarkxx"></a>open</h3><h3 id="77">Function</h3><h4 id="78">Package: common-lisp</h4>
+
+<p id="79">
+See <a href="../ansicl/dictentr/open.htm"><b>open</b></a> for the ANSI description.
+</p>
+<p id="80">
+For both Gray and simple streams, <a href="../ansicl/dictentr/open.htm"><b>open</b></a> effectively turns into a call to <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> of a stream
+class. Additionally, for simple-streams, a <a href="../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> after method calls <a href="operators/excl/device-open.htm"><b>device-open</b></a> to actually establish
+the connection with the external device or file. If the <a href="operators/excl/device-open.htm"><b>device-open</b></a> call then fails and thus
+returns <code>nil</code>, then <a href="operators/excl/device-close.htm"><b>device-close</b></a> is called immediately with a true
+abort argument.
+</p>
+<p id="81">
+A call to <a href="../ansicl/dictentr/open.htm"><b>open</b></a> creates a
+simple-stream when the <i>element-type</i> keyword
+argument is not specified. A Gray
+stream is created when the <i>element-type</i> keyword
+argument is specified.
+</p>
+<p id="82">
+<a href="../ansicl/dictentr/open.htm"><b>open</b></a> has an
+&allow-other-keys specification, and an &rest argument. This
+&rest argument forms the basis of the
+<a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> initargs when it is called via
+<a href="../ansicl/dictentr/apply.htm"><b>apply</b></a>.
+</p>
+<p id="83">
+A special case exists for an <a href="../ansicl/dictentr/open.htm"><b>open</b></a> with
+<code>:direction :probe</code>: this case is not a normal open
+and does not actually result in a connection of any kind being
+made. Instead, <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> is called to make an
+instance of <code>probe-simple-stream</code>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="84"><a name="close-op-bookmarkxx"></a>close</h3><h3 id="85">Generic Function</h3><h4 id="86">Package: common-lisp</h4>
+
+<p id="87">
+See <a href="../ansicl/dictentr/close.htm"><b>close</b></a> for the ANSI description.
+</p>
+<p id="88">
+The Gray stream system in Allegro CL implements <a href="../ansicl/dictentr/close.htm"><b>close</b></a> as a generic function, which is perfectly
+legal according to CL, which defines <a href="../ansicl/dictentr/close.htm"><b>close</b></a> as a function (i.e. a generic function is
+indeed a function). However, a generic function implies a
+specialization capability that does not exist for simple-streams;
+simple-stream specializations should be on <a href="operators/excl/device-close.htm"><b>device-close</b></a>. Besides Gray streams, <a href="../ansicl/dictentr/close.htm"><b>close</b></a> can be specialized on streams
+that are neither Gray or simple-streams. One example of this is
+Allegro CL's passive socket connection. Because of this, <a href="../ansicl/dictentr/close.htm"><b>close</b></a> remains a generic function, but
+for simple streams is treated as if non-generic, that is
+simple-streams should not specialize on close, but should specialize
+on <a href="operators/excl/device-close.htm"><b>device-close</b></a> instead. The
+method for simple-streams simply calls <a href="operators/excl/device-close.htm"><b>device-close</b></a> precisely once, and a method for
+fundamental stream (the top-level Gray stream class) breaks the
+connection and sets a closed-flag in the stream.
+</p>
+
+<p id="89">
+If the <i>abort</i> keyword argument is true, any
+buffers are cleared without being flushed. If
+<i>abort</i> is false, then any unflushed buffers are
+forced out to the device before closing.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="90"><a name="read-byte-op-bookmarkxx"></a>read-byte</h3><h3 id="91">Generic Function</h3><h4 id="92">Package: common-lisp</h4>
+
+<p id="93">
+See <a href="../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a> for the ANSI description.
+</p>
+<p id="94">
+For a Gray stream, <a href="../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a> calls
+<a href="operators/excl/stream-read-byte.htm"><b>stream-read-byte</b></a>. 
+</p>
+<p id="95">Otherwise: If the stream's buffer is empty, an attempt is made to
+fill the buffer by calling <a href="operators/excl/device-read.htm"><b>device-read</b></a> with the <em>blocking</em>
+argument set to true. If <a href="operators/excl/device-read.htm"><b>device-read</b></a> returns -1, then we are at eof;
+either eof-value is returned or else an end-of-file error occurs.
+</p>
+<p id="96">
+If the stream's buffer is now not empty, the next octet (8-bit byte)
+is extracted from the buffer and returned.
+</p>
+<p id="97">
+This is a blocking function. See
+<a href="#block-non-block-3">Section 5.2.1 Blocking behavior in simple-streams</a>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="98"><a name="read-char-op-bookmarkxx"></a>read-char</h3><h3 id="99">Function</h3><h4 id="100">Package: common-lisp</h4>
+
+
+<p id="101">
+See <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> for the ANSI description.
+</p>
+<p id="102">
+For a Gray stream, <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> calls 
+<a href="operators/excl/stream-read-char.htm"><b>stream-read-char</b></a>. 
+</p>
+<p id="103">Otherwise: 
+The external format is called to accumulate (as if using
+<a href="../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a>) as many octets (8-bit bytes) as is
+necessary to form a character. If an end-of-file is generated by any
+of the read-bytes, eof processing is done depending on the eof
+arguments.
+</p>
+<p id="104">
+If the character that results is a control character (one whose
+<a href="../ansicl/dictentr/char-co0.htm"><b>char-code</b></a> is less
+than 32) and the control-in table has a function for that character,
+then it is a function with two arguments (the stream and the
+character) which is called to interpret the control character at this
+time. If the control-in function returns, it returns either a
+character which is processed normally, or <code>nil</code>, which is interpreted as an eof and eof
+processing is done. Note that the control-in handler must not try to
+do any reading from the stream at all; the intention for the
+control-in handler is to translate an already-received character to
+another, or to perform an operation and return a character. For
+ligatures and other multiple-character inputs, a composing
+external-format should be used or created, or else an encapsulation
+created for such translations.
+</p>
+<p id="105">
+If we got this far, the character length is recorded for
+<a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> and the character is returned.
+</p>
+<p id="106">
+Note that if eof occurs while reading a character, the actions taken
+by <b>read-char</b> depend on the external-format. The default action,
+and by far the most common, is to do eof processing. However, the
+external format may decide to return a character (saved from a
+previous read-char) or to generate an error.
+</p>
+<p id="107">
+This is a blocking function. See
+<a href="#block-non-block-3">Section 5.2.1 Blocking behavior in simple-streams</a>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="108"><a name="unread-char-op-bookmarkxx"></a>unread-char</h3><h3 id="109">Function</h3><h4 id="110">Package: common-lisp</h4>
+
+<p id="111">
+See <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> for the ANSI description.
+</p>
+<p id="112">
+For a Gray stream, <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> calls 
+<a href="operators/excl/stream-unread-char.htm"><b>stream-unread-char</b></a>.
+</p>
+<p id="113">
+Otherwise: if the unread-char character-length is set, then place the
+buffer and file position back to that and unset the unread-char
+length. Error if the unread-char character-length is not set.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="114"><a name="read-char-no-hang-op-bookmarkxx"></a>read-char-no-hang</h3><h3 id="115">Function</h3><h4 id="116">Package: common-lisp</h4>
+
+<p id="117">
+See <a href="../ansicl/dictentr/read-ch0.htm"><b>read-char-no-hang</b></a> for the ANSI description.
+</p>
+<p id="118">
+For a Gray stream, <a href="../ansicl/dictentr/read-ch0.htm"><b>read-char-no-hang</b></a> calls 
+<a href="operators/excl/stream-read-char-no-hang.htm"><b>stream-read-char-no-hang</b></a>.
+</p>
+<p id="119">Otherwise: 
+The external format is called to accumulate (as if using
+<strong>excl::read-byte-no-hang</strong>) as many octets (8-bit bytes)
+as is necessary to form a character. If an end-of-file is generated by
+any of the byte reads, eof processing is done depending on the eof
+arguments.
+</p>
+<p id="120">
+If the character is a control character (one whose
+<a href="../ansicl/dictentr/char-co0.htm"><b>char-code</b></a> is less
+than 32) and the stream-class specifies
+interpretation of such characters, it is performed at this time, which
+may include eof-processing for a control-D.
+</p>
+<p id="121">
+If we got this far, the character length is recorded for unread-char
+and the character is returned.
+</p>
+<p id="122">
+Note that if it is not possible to complete the build of the character,
+the actions taken by <b>read-char-no-hang</b> depend on the situation:
+</p>
+<ul>
+<li id="123">
+If there is no data currently available, Enough octets are unread to
+put the stream into a similar state as it was before the operation was
+started, and <code>nil</code> is returned. (similar
+means that the buffer may have been read during this operation, but
+that the pointers are set so that the next octet read will be the same
+as the first octet read for this operation).
+</li>
+<li id="124">
+If an eof condition exists, it is up to the external-format to decide
+whether or not to do normal eof processing, generate an error, or return
+a character. The default action, and by far the most common, is to
+do eof processing.
+</li>
+</ul>
+<p id="125">
+This is a non-blocking function. See
+<a href="#block-non-block-3">Section 5.2.1 Blocking behavior in simple-streams</a>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="126"><a name="peek-char-op-bookmarkxx"></a>peek-char</h3><h3 id="127">Function</h3><h4 id="128">Package: common-lisp</h4>
+
+<p id="129">
+See <a href="../ansicl/dictentr/peek-cha.htm"><b>peek-char</b></a> for the ANSI description.
+</p>
+<p id="130">
+For a Gray stream, <a href="../ansicl/dictentr/peek-cha.htm"><b>peek-char</b></a> calls <a href="operators/excl/stream-peek-char.htm"><b>stream-peek-char</b></a>. Otherwise: a
+<a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> equivalent is done, followed by an
+<a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="131"><a name="listen-op-bookmarkxx"></a>listen</h3><h3 id="132">Function</h3><h4 id="133">Package: common-lisp</h4>
+
+
+<p id="134">
+See <a href="../ansicl/dictentr/listen.htm"><b>listen</b></a> for the ANSI description.
+</p>
+<p id="135">
+An extra second optional argument, <i>width</i>, is
+added to <a href="../ansicl/dictentr/listen.htm"><b>listen</b></a> (the first
+optional argument is the specified <i>stream</i>
+argument). <i>width</i> specifies the number of octets
+to read before returning true, or the value
+<code>character</code>. Currently, any other value than 1 will
+be treated as if it were specified as 'character.
+</p>
+<p id="136">
+For a Gray stream, <a href="../ansicl/dictentr/listen.htm"><b>listen</b></a> calls 
+<a href="operators/excl/stream-listen.htm"><b>stream-listen</b></a>.
+</p>
+<p id="137">Otherwise: If a character-oriented <a href="../ansicl/dictentr/listen.htm"><b>listen</b></a> is specified
+(i.e. <i>width</i> is <code>character</code>),
+then an attempt is made to build the complete character, as if with
+<a href="../ansicl/dictentr/read-ch0.htm"><b>read-char-no-hang</b></a>. If
+successful, the equivalent of an <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> is then done and true is returned;
+otherwise <code>nil</code> is returned.  If 1 octet is
+being listened for, then if the buffer is not empty, true is
+returned. Otherwise <a href="operators/excl/device-read.htm"><b>device-read</b></a> is called with a null
+<i>blocking</i> argument. If that returns 0, then
+<code>nil</code> is returned, otherwise true is returned.
+</p>
+<p id="138">
+If the added optional argument is 1 or not specified, only
+an octet (8-bit byte) is looked for, otherwise external-format
+processing is used to attempt to build a character in a non-blocking
+way; if it is determined that the character can definitely be built,
+then t is returned. However, the state of the stream is left in such a
+way that an <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> can be
+done even after the listen (as is appropriate).
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="139"><a name="read-line-op-bookmarkxx"></a>read-line</h3><h3 id="140">Function</h3><h4 id="141">Package: common-lisp</h4>
+
+<p id="142">
+See <a href="../ansicl/dictentr/read-lin.htm"><b>read-line</b></a> for the ANSI description.
+</p>
+<p id="143">
+For a Gray stream, <a href="../ansicl/dictentr/read-lin.htm"><b>read-line</b></a> calls <a href="operators/excl/stream-read-line.htm"><b>stream-read-line</b></a> and processes the return
+values according to eof-error-p processing.
+</p>
+<p id="144">Otherwise: 
+String buffers are allocated as necessary and
+<a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> equivalent is performed until either a
+#\Newline or eof is seen. A new string is allocated of the proper
+length and filled with the copied data from the temporary buffer(s)
+and then returned along with the missing newline flag. 
+</p> 
+<p id="145">
+Note:
+The <a href="../ansicl/dictentr/read-lin.htm"><b>read-line</b></a> functionality can be optimized in the
+following way: A string buffer is allocated (this first one presumably
+on the stack) and <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> equivalent is performed
+until the next #\Newline or eof is seen (or until the buffer is full,
+at which time new buffers are allocated as necessary). A new string of
+the proper length is then constructed and filled with the copied data
+from the temporary buffer(s) and then returned along with the missing
+newline flag. 
+</p>
+
+<h3 id="146">
+Space-efficient variants of read-line
+</h3>
+
+<p id="147">
+The functions <a href="operators/excl/read-line-into.htm"><b>read-line-into</b></a> and
+<a href="operators/excl/simple-stream-read-line.htm"><b>simple-stream-read-line</b></a> are
+similar to read-line but also take result string arguments to the the
+line which is read, thereby causing little or no consing.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="148"><a name="read-sequence-op-bookmarkxx"></a>read-sequence</h3><h3 id="149">Function</h3><h4 id="150">Package: common-lisp</h4>
+
+<p id="151"><b>Arguments: </b><i>
+sequence stream </i>&amp;key <i>start end partial-fill</i><i>
+</i></p>
+
+<p id="152">
+See <a href="../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a> for the ANSI
+description. <b>Note</b> that Allegro CL uses the additional
+<i>partial-fill</i> keyword argument, which is not
+specified in ANSI CL.
+</p>
+<p id="153">
+For a Gray stream, <a href="../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a> calls <a href="operators/excl/stream-read-sequence.htm"><b>stream-read-sequence</b></a>.
+</p>
+<p id="154">
+Otherwise: If the sequence is a string, then for every element of the
+string, a <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> equivalent
+is performed. Following the last read-character, the unread-char
+length is set (instead of at every character read). If
+<i>partial-fill</i> is true, then a <a href="../ansicl/dictentr/read-ch0.htm"><b>read-char-no-hang</b></a> equivalent is used instead of
+<a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a>, after the first
+character is read with <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a>.
+</p>
+<p id="155">
+If the sequence is an octet vector (i.e. a vector of
+<code>(signed-byte 8)</code> or <code>(unsigned-byte
+8)</code> elements), then the equivalent of <a href="operators/excl/read-vector.htm"><b>read-vector</b></a> is performed (but possibly
+blocking if <i>partial-fill</i> is false - see
+discussion below).
+</p>
+<p id="156">
+Any other sequence type generates an error (for a simple-stream). 
+</p>
+<h3 id="157">The partial-fill keyword argument</h3>
+<p id="158">
+This argument controls the blocking behavior. See
+<a href="#block-non-block-3">Section 5.2.1 Blocking behavior in simple-streams</a> for a general
+discussion of blocking.
+</p>
+<p id="159">
+This argument controls the behavior when there are not enough objects
+(of whatever is being read) on <i>stream</i> to fill the
+sequence passed as the first argument (at least as far as
+<i>end</i>, if given) and no EOF is seen. The ANSI
+specification for <b>read-sequence</b> requires it to block until
+the sequence is filled or an EOF is seen. In the Allegro CL
+implementation, the ANSI behavior (blocking) is observed if
+<i>partial-fill</i> is <code>nil</code>
+(the default).
+</p>
+<p id="160">
+If <i>partial-fill</i> is true, however,
+<b>read-sequence</b> will block for the first element, but will not
+block for any elements after the first, and so may return prior to the
+request being completed. 
+</p>
+<p id="161">
+In all cases, <b>read-sequence</b> returns the index
+in the sequence of the next element not read.
+</p>
+
+
+<hr>
+
+<hr>
+<hr><h3 id="162"><a name="clear-input-op-bookmarkxx"></a>clear-input</h3><h3 id="163">Function</h3><h4 id="164">Package: common-lisp</h4>
+
+<p id="165">
+See <a href="../ansicl/dictentr/clear-in.htm"><b>clear-input</b></a> for the ANSI description.
+</p>
+<p id="166">
+For a Gray stream, <a href="../ansicl/dictentr/clear-in.htm"><b>clear-input</b></a>
+calls <a href="operators/excl/stream-clear-input.htm"><b>stream-clear-input</b></a>. Otherwise: if there is any
+input buffering in the stream, it is thrown away. Then <a href="operators/excl/device-clear-input.htm"><b>device-clear-input</b></a> is called. An
+additional optional <i>buffer-only</i> argument is added
+above and beyond the ANSI CL spec which allows only the buffer to be
+cleared, without necessarily performing any other operations on
+encapsulations of the stream.  This argument is passed to <a href="operators/excl/device-clear-input.htm"><b>device-clear-input</b></a>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="167"><a name="write-byte-op-bookmarkxx"></a>write-byte</h3><h3 id="168">Function</h3><h4 id="169">Package: common-lisp</h4>
+
+
+<p id="170">
+See <a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a> for the ANSI description.
+</p>
+<p id="171">
+For a Gray stream, <a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a> calls <a href="operators/excl/stream-write-byte.htm"><b>stream-write-byte</b></a>.
+</p>
+<p id="172">Otherwise: 
+If the buffer is full, device-write is called to first write the buffer
+out, so that the buffer is made empty.  An octet (8-bit byte) is expected
+as input. It is now stored into the stream's (non-full) buffer.
+</p>
+<p id="173">
+This is the lowest level functionality in the output portion of the CL
+API functions. Higher level functions which may call this function
+are: <a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a>, <a href="../ansicl/dictentr/write-se.htm"><b>write-sequence</b></a>,
+<a href="operators/excl/write-vector.htm"><b>write-vector</b></a>. Whether or not
+these functions actually call <a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a>, call an internal but similar
+function, or expand all of <a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a>'s functionality
+inline is not specified.
+</p>
+<p id="174">
+This is a blocking function. See
+<a href="#block-non-block-3">Section 5.2.1 Blocking behavior in simple-streams</a>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="175"><a name="write-char-op-bookmarkxx"></a>write-char</h3><h3 id="176">Function</h3><h4 id="177">Package: common-lisp</h4>
+
+<p id="178">
+See <a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a> for the ANSI description.
+</p>
+<p id="179">
+For a Gray stream, <a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a> calls <a href="operators/excl/stream-write-char.htm"><b>stream-write-char</b></a>.
+</p>
+<p id="180">
+Otherwise: If the character to be output is a control character (one
+whose <a href="../ansicl/dictentr/char-co0.htm"><b>char-code</b></a> is less than
+32), the control-out table is consulted for a control-out function for
+that character. If one exists it is assumed to be a function of two
+arguments (the stream and the character), and is called for
+device-level processing. If the control-out function exists and
+returns non-nil, then no further action is taken for this character
+since it was handled successfully in the control-out function. If the
+control-out function does not exist or exists and returns <code>nil</code>, then normal processing continues for that
+character. Normal processing means that the character is treated as
+itself, to be sent uninterpreted to the stream.
+</p>
+<p id="181">
+The external-format functionality currently in effect is called for
+the character, which may result in any number of octets (8-bit bytes)
+being generated. These octets are then treated as if
+<a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a> were called for each one, in the order
+they were received from the external-format processing.
+</p>
+<p id="182">
+This is a blocking function. See
+<a href="#block-non-block-3">Section 5.2.1 Blocking behavior in simple-streams</a>.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="183"><a name="write-string-op-bookmarkxx"></a>write-string</h3><h3 id="184">Function</h3><h4 id="185">Package: common-lisp</h4>
+
+<p id="186">
+See <a href="../ansicl/dictentr/write-st.htm"><b>write-string</b></a> for the ANSI description.
+</p>
+<p id="187">
+For a Gray stream, <a href="../ansicl/dictentr/write-st.htm"><b>write-string</b></a> calls <a href="operators/excl/stream-write-string.htm"><b>stream-write-string</b></a>.
+</p>
+<p id="188">Otherwise: 
+For each character in the specified range in the string, the
+equivalent of a <a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a> is performed. 
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="189"><a name="write-sequence-op-bookmarkxx"></a>write-sequence</h3><h3 id="190">Function</h3><h4 id="191">Package: common-lisp</h4>
+
+<p id="192">
+See <a href="../ansicl/dictentr/write-se.htm"><b>write-sequence</b></a> for the ANSI description.
+</p>
+<p id="193">
+For a Gray stream, <a href="../ansicl/dictentr/write-se.htm"><b>write-sequence</b></a> calls 
+<a href="operators/excl/stream-write-sequence.htm"><b>stream-write-sequence</b></a>.
+</p>
+<p id="194">
+Otherwise: 
+If the sequence is a string, then the equivalent of
+<a href="../ansicl/dictentr/write-st.htm"><b>write-string</b></a> is performed.
+</p>
+<p id="195">
+If the sequence is an octet vector (i.e. a vector of (signed-byte 8)
+or (unsigned-byte 8) elements), then the equivalent of <a href="operators/excl/write-vector.htm"><b>write-vector</b></a> is performed. Any other
+sequence type generates an error (for a simple-stream).
+</p>
+<p id="196">
+This is a blocking function. See
+<a href="#block-non-block-3">Section 5.2.1 Blocking behavior in simple-streams</a>.
+</p>
+
+<hr>
+<hr>
+
+
+<hr><h3 id="197"><a name="terpri-op-bookmarkxx"></a>terpri</h3><h3 id="198">Function</h3><h4 id="199">Package: common-lisp</h4>
+
+<p id="200">
+See <a href="../ansicl/dictentr/terprifr.htm"><b>terpri</b></a> for the ANSI description.
+</p>
+<p id="201">
+For a Gray stream, <a href="../ansicl/dictentr/terprifr.htm"><b>terpri</b></a> calls <a href="operators/excl/stream-terpri.htm"><b>stream-terpri</b></a>. Otherwise: the equivalent of a
+<a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a> of #\Newline is performed.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="202"><a name="fresh-line-op-bookmarkxx"></a>fresh-line</h3><h3 id="203">Function</h3><h4 id="204">Package: common-lisp</h4>
+
+
+<p id="205">
+See <a href="../ansicl/dictentr/terprifr.htm"><b>fresh-line</b></a> for the ANSI description.
+</p>
+<p id="206">
+For a Gray stream, <a href="../ansicl/dictentr/terprifr.htm"><b>fresh-line</b></a>
+calls <a href="operators/excl/stream-fresh-line.htm"><b>stream-fresh-line</b></a>. Otherwise: if the stream
+can be determined to be at the start of a line, then nothing is done
+and <code>nil</code> is returned, otherwise the equivalent
+of a <a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a> of #\Newline
+is performed.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="207"><a name="finish-output-op-bookmarkxx"></a>finish-output</h3><h3 id="208">Function</h3><h4 id="209">Package: common-lisp</h4>
+
+<p id="210">
+See <a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> for the ANSI description.
+</p>
+<p id="211">For a Gray stream, <a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> calls <a href="operators/excl/stream-finish-output.htm"><b>stream-finish-output</b></a>. Otherwise: if
+there is any output in the stream's output buffer, is is written via
+<a href="operators/excl/device-write.htm"><b>device-write</b></a> with a non-nil
+<em>blocking</em> argument.
+</p>
+<p id="212">
+Note that since Allegro CL does not queue writes, and since <a href="operators/excl/device-write.htm"><b>device-write</b></a> calls are not required
+to write all of the requested bytes, the current implementation of
+<a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> loops on <a href="operators/excl/device-write.htm"><b>device-write</b></a> calls until all of the
+unprocessed data are transferred.
+</p>
+
+<p id="213">
+See <a href="#force-finish-output-2">Section 5.3 Force-output and finish-output policy</a> for a
+discussion of <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a>/<a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> policy in Allegro CL.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="214"><a name="force-output-op-bookmarkxx"></a>force-output</h3><h3 id="215">Function</h3><h4 id="216">Package: common-lisp</h4>
+
+<p id="217">
+See <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> for the ANSI description.
+</p>
+<p id="218">
+For a Gray stream, <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> calls <a href="operators/excl/stream-force-output.htm"><b>stream-force-output</b></a>. Otherwise: if there is
+any output in the stream's output buffer, is is written via <a href="operators/excl/device-write.htm"><b>device-write</b></a> with a
+<em>blocking</em> argument of <code>nil</code>.
+</p>
+<p id="219">
+Note that since Allegro CL does not queue writes, and since <a href="operators/excl/device-write.htm"><b>device-write</b></a> calls are not required
+to write all of the requested bytes, the current implementation of
+<a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> is
+similar to <a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a>, in
+that it loops on <a href="operators/excl/device-write.htm"><b>device-write</b></a> calls until all of the
+unprocessed data are transferred.
+</p>
+<p id="220">
+See <a href="#force-finish-output-2">Section 5.3 Force-output and finish-output policy</a> for a
+discussion of <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a>/<a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> policy in Allegro CL.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="221"><a name="clear-output-op-bookmarkxx"></a>clear-output</h3><h3 id="222">Function</h3><h4 id="223">Package: common-lisp</h4>
+
+<p id="224">
+See <a href="../ansicl/dictentr/finish-o.htm"><b>clear-output</b></a> for the ANSI description.
+</p>
+<p id="225">
+For a Gray stream, <a href="../ansicl/dictentr/finish-o.htm"><b>clear-output</b></a> calls <a href="operators/excl/stream-clear-output.htm"><b>stream-clear-output</b></a>.  Otherwise: the
+stream's output buffer is cleared and <a href="operators/excl/device-clear-output.htm"><b>device-clear-output</b></a> is called on the
+stream.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="226"><a name="file-position-op-bookmarkxx"></a>file-position</h3><h3 id="227">Function</h3><h4 id="228">Package: common-lisp</h4>
+
+<p id="229">
+See <a href="../ansicl/dictentr/file-pos.htm"><b>file-position</b></a> for the ANSI description.
+</p>
+<p id="230">
+For a Gray stream, <a href="../ansicl/dictentr/file-pos.htm"><b>file-position</b></a> calls 
+<code>excl::stream-file-position</code>.
+</p>
+<p id="231">Otherwise:
+For simple-streams that are not string simple-streams, file-positions
+are always specified as a number of octets (8-bit bytes). For string
+simple-streams, file-positions are specified as number of characters.
+</p>
+<p id="232">
+If the position-spec argument is not given, the file position is
+calculated, possibly involving a call to <a href="operators/excl/device-file-position.htm"><b>device-file-position</b></a>, and returned. Note that
+the file position may be precached in the stream, and <a href="operators/excl/device-file-position.htm"><b>device-file-position</b></a> may have been
+called by some other CL functions.
+</p>
+<p id="233">
+If the position-spec argument is given, then the new file position is
+calculated and stored. This may involve a call to <strong>(setf
+device-file-position)</strong>, if the position is outside of the
+buffer range.
+</p>
+
+<hr>
+<hr>
+<hr><h3 id="234"><a name="stream-element-type-op-bookmarkxx"></a>stream-element-type</h3><h3 id="235">Function</h3><h4 id="236">Package: common-lisp</h4>
+
+<p id="237">
+See <a href="../ansicl/dictentr/stream-2.htm"><b>stream-element-type</b></a> for the ANSI description.
+</p>
+<p id="238">
+For a Gray stream, <a href="../ansicl/dictentr/stream-2.htm"><b>stream-element-type</b></a> returns the
+appropriate value.
+</p>
+<p id="239">
+For a simple-stream, <a href="../ansicl/dictentr/stream-2.htm"><b>stream-element-type</b></a> always
+returns <code>(unsigned-byte 8)</code>.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="240"><a name="ex-interface-funs-2">5.2 Extended Interface Functionality</a></h2>
+
+<p id="241">
+These additional functions are provided in Allegro CL for operating on
+streams. Each is described on its own documentation page.
+</p>
+
+<ul>
+<li id="242">
+<a href="operators/excl/read-vector.htm"><b>read-vector</b></a>. See also
+<a href="#endian-swap-3">Section 5.2.2 The endian-swap keyword argument to read-vector and write-vector</a>.
+</li>
+<li id="243">
+<a href="operators/excl/write-vector.htm"><b>write-vector</b></a>. See also
+<a href="#endian-swap-3">Section 5.2.2 The endian-swap keyword argument to read-vector and write-vector</a>.
+</li>
+<li id="244">
+<a href="operators/excl/make-buffer-input-stream.htm"><b>make-buffer-input-stream</b></a>.
+</li>
+<li id="245">
+<a href="operators/excl/make-buffer-output-stream.htm"><b>make-buffer-output-stream</b></a>.
+</li>
+<li id="246">
+<a href="operators/excl/with-input-from-buffer.htm"><b>with-input-from-buffer</b></a>.
+</li>
+<li id="247">
+<a href="operators/excl/with-output-to-buffer.htm"><b>with-output-to-buffer</b></a>.
+</li>
+</ul>
+
+<hr><h2 id="248"><a name="block-non-block-3">5.2.1 Blocking behavior in simple-streams</a></h2>
+
+<p id="249">
+There are three modes of blocking behavior when writing items in a
+sequence to a stream or filling a sequence with items read from a
+stream. The issue is what to do when (for writing) the entire sequence
+cannot be written and (for reading) the entire sequence cannot be
+filled, but no EOF is encountered. (By `the entire sequence', we mean
+that part specified by <i>start</i> and
+<i>end</i> if those are supplied.) Here are the modes
+and a description of what happens in that mode if the whole operation
+does not complete and no EOF is encountered.
+</p>
+<ol>
+<li id="250">
+<b>Blocking mode</b>: the system blocks (waits or hangs) until
+the operation can be completed.
+</li>
+<li id="251">
+<b>Blocking/Non-Blocking (B/NB) mode</b>: the system only blocks on
+the first element of the sequence: if it cannot be written or read,
+the system blocks. If the first element is successfully written or
+read, and a subsequent element cannot be written or read, the function
+doing the writing/reading returns, typically with the return value(s)
+indicating exactly what was accomplished.
+</li>
+<li id="252">
+<b>Non-Blocking mode</b>: the system never blocks. If an element
+cannot be written or read, the function doing the writing/reading
+returns, typically with the return value(s) indicating exactly what
+was accomplished. (<a href="../ansicl/dictentr/read-ch0.htm"><b>read-char-no-hang</b></a> is an example of
+a non-blocking reading function.)
+</li>
+</ol>
+<p id="253">
+Here is the blocking behavior of the various ANSI CL and Allegro CL
+functions having to do with writing and reading sequences and
+individual items.
+</p>
+<ul>
+<li id="254">
+<a href="../ansicl/dictentr/read-cha.htm"><b>cl:read-char</b></a>: blocking. See
+the discussion in <a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>.
+</li>
+<li id="255">
+<a href="../ansicl/dictentr/write-ch.htm"><b>cl:write-char</b></a>: blocking. See
+the discussion in <a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>.
+</li>
+<li id="256">
+<a href="../ansicl/dictentr/read-byt.htm"><b>cl:read-byte</b></a>: blocking. See
+the discussion in <a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>.
+</li>
+<li id="257">
+<a href="../ansicl/dictentr/write-by.htm"><b>cl:write-byte</b></a>: blocking. See
+the discussion in <a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>.
+</li>
+<li id="258">
+<a href="../ansicl/dictentr/read-ch0.htm"><b>cl:read-char-no-hang</b></a>:
+non-blocking. See the discussion in
+<a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>.
+</li>
+<li id="259">
+<a href="../ansicl/dictentr/write-se.htm"><b>cl:write-sequence</b></a>:
+blocking. See the discussion in
+<a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>.
+</li>
+<li id="260">
+<a href="../ansicl/dictentr/read-seq.htm"><b>cl:read-sequence</b></a>: behavior is
+controlled by the non-standard <i>partial-fill</i>
+argument. If <i>partial-fill</i> is <code>nil</code>, cl:read-sequence is blocking. If
+<i>partial-fill</i> is non-<code>nil</code>
+cl:read-sequence is B/NB. See the discussion in
+<a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>.
+</li>
+<li id="261">
+<a href="operators/excl/write-octets.htm"><b>write-octets</b></a>: after the
+existing contents of the buffer are cleared (the function will block
+until this is done), B/NB if its <i>blocking</i>
+argument is true, non-blocking if its <i>blocking</i>
+argument is <code>nil</code>.
+</li>
+<li id="262">
+<a href="operators/excl/read-octets.htm"><b>read-octets</b></a>: B/NB if its
+<i>blocking</i> argument is true, non-blocking if its
+<i>blocking</i> argument is <code>nil</code>.
+</li>
+<li id="263">
+<a href="operators/excl/write-vector.htm"><b>write-vector</b></a>: after the
+existing contents of the buffer are cleared (the function will block
+until this is done), this function is B/NB.
+</li>
+<li id="264">
+<a href="operators/excl/read-vector.htm"><b>read-vector</b></a>: B/NB.
+</li>
+<li id="265">
+<a href="operators/excl/device-write.htm"><b>device-write</b></a>: after the
+existing contents of the buffer are cleared (the function will block
+until this is done), B/NB if its <i>blocking</i>
+argument is true, non-blocking if its <i>blocking</i>
+argument is <code>nil</code>.
+</li>
+<li id="266">
+<a href="operators/excl/device-read.htm"><b>device-read</b></a>: B/NB if its
+<i>blocking</i> argument is true, non-blocking if its
+<i>blocking</i> argument is <code>nil</code>.
+</li>
+</ul>
+
+<p id="267">
+Note on putting a B/NB function in a loop: the result can be blocking
+behavior until as many characters are written or read as there are
+iterations of the loop. B/NB behavior guarantees that one element at
+least is written or read (or the system blocks until that happens). In
+a loop, with each pass guaranteeing one element, you can guarantee as
+many elements as desired.
+</p>
+
+
+
+
+<hr><h2 id="268"><a name="endian-swap-3">5.2.2 The endian-swap keyword argument to read-vector and write-vector</a></h2>
+
+<p id="269">
+The <em>endian-swap</em> keyword argument to <a href="operators/excl/read-vector.htm"><b>read-vector</b></a> and <a href="operators/excl/write-vector.htm"><b>write-vector</b></a> allows the byte-ordering to be
+controlled so as to allow big-endian and little-endian machines to
+communicate with each other. Each version of Allegro CL has either
+<code>:big-endian</code> or <code>:little-endian</code> on
+its <code>*features*</code> list to identify it
+appropriately. The <em>endian-swap</em> argument is effective only in
+reads into and writes from vectors that are not strings, and is
+silently ignored if given when a string is being passed to <a href="operators/excl/read-vector.htm"><b>read-vector</b></a> or
+<a href="operators/excl/write-vector.htm"><b>write-vector</b></a>.
+</p>
+
+<p id="270">
+There are three kinds of values that can be given to the
+<em>endian-swap</em> argument:
+</p>
+
+<ul>
+  <li id="271">A number, which designates a value to <a href="../ansicl/dictentr/logandlo.htm"><b>logxor</b></a> 
+    into the byte index of the vector being accessed. See the table and 
+    discussion below for more information</li>
+  <li id="272">The values <code>:byte-8</code>, <code>:byte-16</code>,
+    <code>:byte-32</code>, <code>:byte-64</code>, or 
+    <code>:byte-128</code> to indicate the width of the element 
+    whose bytes to
+    reverse. For example, <code>:byte-16</code> swaps every pair of 
+    bytes,
+    and <code>:byte-32</code> swaps every group of 4 bytes. 
+    Note that <code>:byte-8</code> does nothing to the byte-ordering, 
+    and is included only
+    for symmetry.</li>
+  <li id="273">The value <code>:network-order</code>. This value does nothing on
+    big-endian machines, and on little-endian machines, causes bytes to be 
+    swapped based on
+    the element-size of the vector being read into or written from. 
+    For example, a
+    double-float vector, which has an element width of 64 bits, 
+    is swapped on a <code>:byte-64</code> basis on a little-endian 
+    machine.</li>
+</ul>
+
+<p id="274">
+The byte-swapping mechanism relies on the fact that objects are always
+aligned on 8 or 16 byte boundaries, depending on whether the lisp is a
+32-bit or 64-bit lisp. Therefore, it is inadvisable to specify a
+numeric value of greater than 7 (in a 32-bit lisp) or 15 (in a 64-bit
+lisp).
+</p>
+
+<p id="275">
+The byte swapping mechanism is in fact implemented by performing a
+<a href="../ansicl/dictentr/logandlo.htm"><b>logxor</b></a> on the current index of the next byte to get
+out of the vector. The resultant <strong>xor</strong>'ed index is used
+as the true byte index into the array. No attempt is made to ensure
+that the index is valid (within range): it is the user's
+responsibility to ensure that. This is always ensured if the
+endian-swap specification matches the element width of the vector
+(e.g. an <code>(unsigned-byte 16)</code> vector is
+given an <em>endian-swap</em> value of <code>:byte-16</code>, 
+or a double-float vector is given an endian-swap
+value of <code>:byte-64</code>).
+</p>
+
+<p id="276">
+The following table shows how the bytes actually appear after
+swapping. Since the swapping is symmetrical, it can be used in either
+direction, for both reading and writing.  Given the natural byte order
+of bytes A, B, C, D, E, F, G, H to start, the table shows the byte
+order of the resultant bytes for some example cases:
+</p>
+
+<pre id="277">
+name           value           order
+
+:byte-8           0    A  B  C  D  E  F  G  H
+:byte-16          1    B  A  D  C  F  E  H  G
+  ----            2    C  D  A  B  G  H  E  F
+:byte-32          3    D  C  B  A  H  G  F  E
+  ----            4    E  F  G  H  A  B  C  D
+  ----            5    F  E  H  G  B  A  D  C
+  ----            6    G  H  E  F  C  D  A  B
+:byte-64          7    H  G  F  E  D  C  B  A
+                  ...
+</pre>
+
+
+
+
+
+
+
+<hr><h2 id="278"><a name="force-finish-output-2">5.3 Force-output and finish-output policy</a></h2>
+
+<p id="279">
+There is no explicit requirement by the ANSI CL Spec for an
+implementation to provide <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> or <a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> calls automatically; the
+programmer is always responsible for providing enough of these calls
+to ensure that output is seen at its final destination in a timely
+manner.  However, it is also counter to good stream optimization
+techniques to call <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> or <a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a>; the positive effects of buffering
+are reduced when flushed by these functions.
+</p>
+<p id="280">
+Allegro CL provides minimal <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> calls when certain operations are
+performed, especially on interactive streams.  But not all operations
+cause <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> calls.  It
+might be confusing to observe that <a href="../ansicl/dictentr/write-st.htm"><b>write-line</b></a> will flush the output to an
+interactive stream, but that <a href="../ansicl/dictentr/write-st.htm"><b>write-string</b></a> will not do so.  The division is
+simple, though, and can be explained easily.
+</p>
+<h4 id="281">
+Interactive Streams:
+</h4>
+
+<p id="282">
+An interactive stream is specifically defined in Allegro CL as one for
+which <a href="../ansicl/dictentr/interact.htm"><b>interactive-stream-p</b></a>
+returns true. In Allegro CL <a href="../ansicl/dictentr/interact.htm"><b>interactive-stream-p</b></a> is <a href="../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'able, so any stream can in fact be
+interactive. Usually, it makes most sense to set this attribute on a
+stream that will act as a listener.
+</p>
+
+<h4 id="283">
+Interactive force-output:
+</h4>
+
+<p id="284">
+An interactive force-output is an operation that calls <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> on a stream if and only
+if the stream is interactive. If the stream is not interactive, no
+force output is done.
+</p>
+
+<h4 id="285">
+Output-forcing activity:
+</h4>
+
+<p id="286">
+Allegro CL attempts to <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> as seldom as possible for minimal
+acceptable buffer-flushing but with maximal buffer performance.
+</p>
+
+<ul>
+<li id="287">
+In functions described in <a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>,
+generally no <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a>
+operations are done.  This excludes <a href="../ansicl/dictentr/close.htm"><b>close</b></a>, which by virtue of the <a href="operators/excl/device-close.htm"><b>device-close</b></a> after method performs a <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> if the
+<i>abort</i> argument is false. It also obviously
+excludes <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> and
+<a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a>, which start or
+perform the buffer flushing explicitly.
+</li>
+<li id="288">
+All functions listed in <a href="#higher-level-1">Section 6.0 Higher Level functions</a>
+will perform an interactive <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a>, that is, <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> will be called if and only if the
+stream is interactive, after the outermost such function is finished.
+If recursive printing is done using <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> methods, no flushing is done unless
+explicitly requested, except when the outermost <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method is done (or when the
+higher-level caller of <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> has finished).
+</li>
+<li id="289">
+Whenever <a href="../ansicl/dictentr/format.htm"><b>format</b></a>
+is called on an interactive-stream, a <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> is performed after the format
+string is processed.
+</li>
+<li id="290">
+Some top-level functions which aid the read-eval-print-loop
+functionality will call <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> regardless of whether the stream is
+interactive or not (usually it is the case that the stream is
+interactive).
+</li>
+</ul>
+<p id="291">
+No other calls to <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> are guaranteed by
+Allegro CL, although such <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> calls might be inserted when
+deemed necessary.  However, the general guideline that Allegro CL
+follows is that in most cases a redundant <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> call is not
+good, and is thus usually avoided.
+</p>
+
+
+
+<hr><hr><h2 id="292"><a name="higher-level-1">6.0 Higher Level functions</a></h2>
+
+<p id="293">
+These functions are all written as if they call lower level CL
+functions, and do not necessarily call device-level functionality
+directly. 
+</p>
+
+<ul>
+<li id="294">
+<a href="../ansicl/dictentr/format.htm"><b>format</b></a>
+</li>
+<li id="295">
+<a href="../ansicl/dictentr/writepri.htm"><b>pprint</b></a>
+</li>
+<li id="296">
+<a href="../ansicl/dictentr/writepri.htm"><b>prin1</b></a>
+</li>
+<li id="297">
+<a href="../ansicl/dictentr/write-to.htm"><b>prin1-to-string</b></a>
+</li>
+<li id="298">
+<a href="../ansicl/dictentr/writepri.htm"><b>princ</b></a>
+</li>
+<li id="299">
+<a href="../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a>
+</li>
+<li id="300">
+<a href="../ansicl/dictentr/writepri.htm"><b>print</b></a>
+</li>
+<li id="301">
+<a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a>
+</li>
+<li id="302">
+<a href="../ansicl/dictentr/readread.htm"><b>read</b></a>
+</li>
+<li id="303">
+<a href="../ansicl/dictentr/read-del.htm"><b>read-delimited-list</b></a>
+</li>
+<li id="304">
+<a href="../ansicl/dictentr/read-fro.htm"><b>read-from-string</b></a>
+</li>
+<li id="305">
+<a href="../ansicl/dictentr/readread.htm"><b>read-preserving-whitespace</b></a>
+</li>
+<li id="306">
+<a href="../ansicl/dictentr/writepri.htm"><b>write</b></a>
+</li>
+<li id="307">
+<a href="../ansicl/dictentr/write-st.htm"><b>write-line</b></a>
+</li>
+<li id="308">
+<a href="../ansicl/dictentr/write-to.htm"><b>write-to-string</b></a>
+</li>
+</ul>
+
+<hr><hr><h2 id="309"><a name="ss-class-hierarchy-1">7.0 Simple-stream Class Hierarchy</a></h2>
+
+<p id="310">
+The class hierarchy for streams starts with <code>stream</code>
+at the head, and implementations which include other stream classes
+such as Gray streams will place those stream classes as subclasses of
+<code>stream</code>. In Allegro CL, the only subclasses of
+<code>stream</code> are <code>simple-stream</code> and
+<code>fundamental-stream</code>.
+<code>fundamental-stream</code> denotes a Gray stream.
+</p>
+
+<p id="311">
+The <code>simple-stream</code> class hierarchy is divided into
+three fundamental simple-stream classes (which in turn have subclasses
+not listed in the diagram), based on the kinds of buffering they do:
+</p>
+
+<pre id="312">
+          --&gt; fundamental-stream ...
+         |      (Gray streams)
+         |
+stream --+
+         |                     --&gt; single-channel-simple-stream ...
+         |                    | 
+          --&gt; simple-stream --+--&gt; dual-channel-simple-stream ...
+                              | 
+                               --&gt; string-simple-stream ...
+</pre>
+
+<p id="313">
+These simple-stream subclasses cannot be mixed. They are intended to
+implement three styles of input/output in fundamentally different
+ways.
+</p>
+
+<p id="314">
+<a href="classes/excl/single-channel-simple-stream.htm"><code>single-channel-simple-stream</code></a><br>
+<a href="classes/excl/dual-channel-simple-stream.htm"><code>dual-channel-simple-stream</code></a><br>
+<a href="classes/excl/string-simple-stream.htm"><code>string-simple-stream</code></a>
+</p>
+
+<hr><hr><h2 id="315"><a name="implementation-strategies-1">8.0 Implementation Strategies</a></h2>
+
+<p id="316">
+The basic behavior of the Common Lisp functions is described in
+<a href="#cl-funs-2">Section 5.1 Implementation of Common Lisp Functions for simple-streams</a>. That description should be
+taken on an as-if basis, which means that the specific functions
+described may not actually be called at all, or else they might be
+implemented using compiler-macros to call lower-level functions after
+type inferencing proofs have been established (in other words, the
+implementation works as if it was implemented as described). However,
+the device-level interface does not have this freedom; those methods
+applicable for the stream class <em>must</em> be called in the way
+specified. This is to guarantee to the device-writer that methods that
+are written for a particular purpose will indeed be called.
+</p>
+
+<p id="317">
+However, the selection of methods to call when appropriate depends on
+the strategy used. Listed below are various sets of functions that are
+called for various stream types.
+</p>
+
+<ul>
+  <li id="318">All streams: <a href="operators/excl/device-buffer-length.htm"><b>device-buffer-length</b></a>, 
+    <a href="operators/excl/device-clear-input.htm"><b>device-clear-input</b></a>, 
+    <a href="operators/excl/device-close.htm"><b>device-close</b></a>,
+    <a href="operators/excl/device-open.htm"><b>device-open</b></a> </li>
+  <li id="319">Single-channel: 
+     <a href="operators/excl/device-clear-output.htm"><b>device-clear-output</b></a>, 
+     <a href="operators/excl/device-file-length.htm"><b>device-file-length</b></a>, 
+     <a href="operators/excl/device-file-position.htm"><b>device-file-position</b></a>
+  </li>
+  <li id="320">Direct: 
+      <a href="operators/excl/device-write.htm"><b>device-write</b></a>
+    (for synchronizing memory)</li>
+  <li id="321">Non-mapped: <a href="operators/excl/device-read.htm"><b>device-read</b></a>, 
+   <a href="operators/excl/device-write.htm"><b>device-write</b></a>
+  </li>
+  <li id="322">Dual-channel: <a href="operators/excl/device-clear-output.htm"><b>device-clear-output</b></a>, 
+      <a href="operators/excl/device-finish-record.htm"><b>device-finish-record</b></a> 
+      (input only), 
+    <a href="operators/excl/device-read.htm"><b>device-read</b></a>, 
+    <a href="operators/excl/device-write.htm"><b>device-write</b></a> </li>
+  <li id="323">String: <a href="operators/excl/device-file-length.htm"><b>device-file-length</b></a>, 
+    <a href="operators/excl/device-file-position.htm"><b>device-file-position</b></a>,
+    <a href="operators/excl/device-finish-record.htm"><b>device-finish-record</b></a> 
+    (output only), 
+    <a href="operators/excl/device-read.htm"><b>device-read</b></a>, 
+    <a href="operators/excl/device-write.htm"><b>device-write</b></a> </li>
+  <li id="324">Composing: 
+      <a href="operators/excl/device-clear-output.htm"><b>device-clear-output</b></a>, 
+      <a href="operators/excl/device-file-length.htm"><b>device-file-length</b></a>, 
+      <a href="operators/excl/device-file-position.htm"><b>device-file-position</b></a>
+  </li>
+</ul>
+
+<hr><hr><h2 id="325"><a name="control-chars-1">9.0 Control-character Processing</a></h2>
+
+<p id="326">
+Whenever a control character (one whose <a href="../ansicl/dictentr/char-co0.htm"><b>char-code</b></a> is less than 32) is seen when reading
+or writing on a stream, a decision must be made as to what to do with
+these characters. In a "raw" environment, the characters are
+processed as themselves; when writing they are inserted into the
+buffer (possibly after translation to octet form) and when reading
+they are simply returned as Lisp characters (possibly after having
+been assembled from octet form). In a "cooked" environment,
+at least some control characters turn into instructions at the device
+level, and are not inserted into or extracted from the stream as
+characters.
+</p>
+
+<p id="327">
+An example of this is <a href="../ansicl/dictentr/terprifr.htm"><b>terpri</b></a>, which is simply a
+<a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a> of a #\Newline. On a terminal stream, a
+<a href="../ansicl/dictentr/terprifr.htm"><b>terpri</b></a> simply sends the #\Newline as a character
+(though its sending may require a column indicator in the stream to be
+set to 0 as well). However, a window stream should not see a #\Newline
+at the device-level, instead the action should be to "move the
+cursor down one line and to the far left side of the
+window". 
+</p>
+
+<p id="328">
+The simple-streams design allows for both of these kinds of
+action. Each stream has two slots, a <em>control-in</em> slot and a
+<em>control-out</em> slot, which may contain tables of functions that
+are consulted when the character being read or written is determined
+to be a control character. The actions taken are as follows: 
+</p>
+
+<blockquote>
+  <ul>
+    <li id="329">If the control-out table has a function entry for the 
+      control-character being written,
+      that function is called with two arguments: the stream 
+      and the character. The control-out
+      function should perform whatever work that it is required 
+      to do, and return non-nil,
+      meaning that it is finished processing that character, or 
+      else <code>nil</code>, which means that the
+      normal character processing action is taken which inserts 
+      the character into the stream. </li>
+    <li id="330">If the control-in table has a function entry for 
+     the control-character that has just
+      been read out of the stream, that function is called with 
+      two arguments: the stream and
+      the character. The required actions are taken, and the 
+      function returns a new character to
+      substitute (or the old character), or it may return 
+      <code>nil</code> 
+      to indicate end-of-file. Note that the control-in handler must 
+      not try to do any reading from the stream at all; the intention 
+      for the control-in handler is to translate an already-received 
+      character to another, or to perform an operation and return a 
+      character. For ligatures and other multiple-character inputs, 
+      a composing external-format should be used or created, or else 
+      an encapsulation created for such translations.
+    </li>
+  </ul>
+</blockquote>
+
+<p id="331">
+Control-tables are built with <a href="operators/excl/make-control-table.htm"><b>make-control-table</b></a> and are stored into the
+appropriate control-in or control-out slots by <a href="operators/excl/device-open.htm"><b>device-open</b></a>. The following standard control
+handlers and tables are examples of such but are not intended for
+programmer use.
+</p>
+
+<ul>
+<li id="332">
+<a href="operators/excl/std-dc-newline-in-handler.htm"><b>std-dc-newline-in-handler</b></a>:
+takes a stream and a character as arguments and returns the character
+argument, after side-effecting the stream.
+</li>
+<li id="333">
+<a href="operators/excl/std-newline-out-handler.htm"><b>std-newline-out-handler</b></a>:
+takes a stream and a character as arguments and returns <code>nil</code> (indicating that further character processing
+should be done) while side-effecting a slot of the stream.
+</li>
+<li id="334">
+<a href="operators/excl/std-tab-out-handler.htm"><b>std-tab-out-handler</b></a>:
+takes a stream and a character as arguments and returns <code>nil</code> (indicating that further character processing
+should be done) while side-effecting a slot of the stream.
+</li>
+<li id="335">
+<a href="variables/excl/s_std-control-out-table_s.htm"><code>*std-control-out-table*</code></a>: value is a
+control-table which contains <a href="operators/excl/std-newline-out-handler.htm"><b>std-newline-out-handler</b></a> and <a href="operators/excl/std-tab-out-handler.htm"><b>std-tab-out-handler</b></a> in their
+appropriate locations.  Users must not modify this table.
+</li>
+<li id="336">
+<a href="variables/excl/s_terminal-control-in-table_s.htm"><code>*terminal-control-in-table*</code></a>: value is a
+control-table which contains <a href="operators/excl/std-dc-newline-in-handler.htm"><b>std-dc-newline-in-handler</b></a> in its appropriate
+locations. Users must not modify this table.
+</li>
+</ul>
+
+<hr><hr><h2 id="337"><a name="device-writing-1">10.0 Device-writing Tips</a></h2>
+
+<p id="338">
+This section gives some tips for device-writing. It is not
+comprehensive, and some of the functions and macros it refers to may
+or may not be documented. The section is Allegro CL specific, but may
+be taken as a guide for other implementations as well. 
+</p>
+
+<hr><h2 id="339"><a name="defining-new-classes-2">10.1 Defining new stream classes</a></h2>
+
+<p id="340">
+New stream classes may be created which subclass existing classes. If
+the superclass chosen is a currently instantiable class, such as
+terminal-simple-stream, file-simple-stream, etc., then the device
+methods may be used as they are, or they may be called by
+<strong>call-next-method</strong> by the more specialized method. If
+the superclass chosen is one of the three major streams
+(single-channel-simple-stream, dual-channel-simple-stream, or
+string-simple-stream) then much of the device functionality will have
+to be written from scratch. There may be some methods that exist to
+provide defaults (for example, the default <a href="operators/excl/device-buffer-length.htm"><b>device-buffer-length</b></a> method specializes on
+simple-stream to provide a default for all simple-streams). Other
+methods, such as <a href="operators/excl/device-open.htm"><b>device-open</b></a>, have no appropriate default
+action, and are thus not supplied. 
+</p>
+
+<p id="341">
+To define a new stream class in Allegro CL, the <em>iodefs</em> module
+must be required to provide some defining macros. The class may be
+then defined using <a href="operators/excl/def-stream-class.htm"><b>def-stream-class</b></a>:
+</p>
+
+<pre id="342">
+(require :iodefs) 
+
+(def-stream-class blarg (terminal-simple-stream) 
+  ((slot1 :initform nil) 
+   (slot2 :initform nil :accessor blarg-slot1)) 
+  (:default-initargs :input-handle 
+        (error "blarg stream must have a :input-handle arg"))) 
+</pre>
+
+
+
+<hr><h2 id="343"><a name="tips-for-device-open-2">10.2 Device-open</a></h2>
+
+<p id="344">
+Each primary method to <a href="operators/excl/device-open.htm"><b>device-open</b></a> returns a stream that is fully
+connected to its device; it can perform all operations intended on
+that device. When a primary method performs a
+<strong>call-next-method</strong> to do a <a href="operators/excl/device-open.htm"><b>device-open</b></a> on a less-specific device, that
+functionality is complete when the <strong>call-next-method</strong>
+returns. </p>
+
+<p id="345">
+For example, suppose a <em>whiz-bang</em> is a type of file which has
+a header line associated with it, to be internalized and then ignored
+as data. The <em>whiz-bang</em> stream might be defined as
+</p>
+
+<pre id="346">
+(def-stream-class whiz-bang 
+                 (file-simple-stream) 
+  ((header :initform nil :accessor whiz-bang-header))) 
+</pre>
+
+<p id="347">
+The <a href="operators/excl/device-open.htm"><b>device-open</b></a> for
+<em>whiz-bang</em> might call the primary-method for the file, and
+then do its own work afterward: </p>
+
+<pre id="348">
+(defmethod device-open ((stream whiz-bang) slot-names initargs) 
+  (declare (ignore initargs slot-names)) 
+  (let ((success (call-next-method))) 
+    (when success ;; read and internalize the header 
+       (setf (whiz-bang-header stream) (read-line stream)) 
+     t))) 
+</pre>
+
+<p id="349"><strong>Note that</strong>: </p>
+
+<ol>
+<li id="350">
+The stream is fully operational as a file-simple-stream after the
+<strong>call-next-method</strong>, unless it returns <code>nil</code>, which indicates that the <a href="operators/excl/device-open.htm"><b>device-open</b></a> failed. File operations may thus
+be performed on the stream.
+</li>
+<li id="351">
+Whiz-bang operations may be performed on the stream after successful
+return from <a href="operators/excl/device-open.htm"><b>device-open</b></a> at
+this level. Presumably this might include querying the
+whiz-bang-header slot for its content or for a print-method.
+</li>
+<li id="352">
+Before, around, and after methods should not be used to perform
+initializations that might be used by any more-specific device in its
+<a href="operators/excl/device-open.htm"><b>device-open</b></a> call.
+</li>
+</ol>
+
+
+
+<hr><h2 id="353"><a name="from-scratch-do-2">10.3 From-scratch device-open</a></h2>
+
+<p id="354">
+A <a href="operators/excl/device-open.htm"><b>device-open</b></a> that does not
+<strong>call-next-method</strong> must perform the following:
+</p>
+
+<ol>
+<li id="355">
+It must make the connection with its device, 
+perhaps using an operating system call or
+other low-level mechanism. This includes setting the input-handle and/or 
+output-handle slot, if
+appropriate.
+</li>
+<li id="356">
+It must install the buffer(s) into the stream. Any buffers to be
+installed are obtained either by finding them in the options list or
+by allocating them after calling <a href="operators/excl/device-buffer-length.htm"><b>device-buffer-length</b></a> to determine what length
+of buffer to allocate. Buffers that already exist in a resourced
+stream may be reused, if appropriate. For dual-channel streams doing
+output, the <code>max-out-pos</code> slot must be initialized.
+</li>
+<li id="357">
+It must install, if appropriate, any control-tables that will be used by the
+stream (see <a href="#control-chars-1">Section 9.0 Control-character Processing</a>).
+</li>
+<li id="358">
+It must set the instance flags as appropriate. 
+The instance flags byte is not the same
+as the flags slot in the stream. The instance-flags 
+can only be seen by inspecting the
+stream in "raw" mode (see <a href="inspector.htm">inspector.htm</a>
+for
+information on raw mode). The flag bits are accessed 
+very quickly to determine what kind
+of stream it is: gray or simple, single/dual/string, 
+input and/or output, and possibly xp
+(i.e. pretty-printing string). A stream that does not 
+have these flags set will not be <a href="../ansicl/dictentr/streamp.htm"><b>streamp</b></a>,
+even if it is of stream class. The 
+<a href="operators/excl/add-stream-instance-flags.htm"><b>add-stream-instance-flags</b></a> 
+macro is provided to add appropriate flag bits. The actual 
+format of the flags is not discussed in this document.
+</li>
+<li id="359">
+It must ensure that the external-format encapsulation shape of the
+stream is consistent by calling <a href="operators/excl/compose-encapsulating-streams.htm"><b>compose-encapsulating-streams</b></a>.  This step is
+not needed for string streams, or if <a href="../ansicl/dictentr/stream-1.htm"><b>(setf stream-external-format)</b></a>
+is used to perform step #6.
+</li>
+<li id="360">
+It must set the external-format, based on the options
+given. Non-generic functions provided are <a href="operators/excl/install-single-channel-character-strategy.htm"><b>install-single-channel-character-strategy</b></a>,
+<a href="operators/excl/install-dual-channel-character-strategy.htm"><b>install-dual-channel-character-strategy</b></a>,
+<a href="operators/excl/install-string-input-character-strategy.htm"><b>install-string-input-character-strategy</b></a>, and
+<a href="operators/excl/install-string-output-character-strategy.htm"><b>install-string-output-character-strategy</b></a>. (The
+deprecated <a href="operators/excl/install-string-character-strategy.htm"><b>install-string-character-strategy</b></a> also does
+this.) <a href="../ansicl/dictentr/stream-1.htm"><b>(setf stream-external-format)</b></a>
+may be used to accomplish this in a generic way. If the non-generic
+approach is used, then <code>(sm excl::melded-stream
+stream)</code> should be passed into these functions, instead of
+the stream (see <a href="operators/excl/sm.htm"><b>sm</b></a>). The
+encapsulation shape assurance in step #5 will guarantee that the
+melded-stream slot holds the correct stream, even if there is no
+encapsulation (and thus the melded-stream of the stream is itself).
+</li>
+</ol>
+
+
+
+
+<hr><h2 id="361"><a name="device-helpers-2">10.4 Implementation Helpers for device-read and device-write</a></h2>
+
+<p id="362">
+The following two sets of functions allow <a href="operators/excl/device-read.htm"><b>device-read</b></a> and <a href="operators/excl/device-write.htm"><b>device-write</b></a> methods to be implemented. 
+</p>
+<p id="363">
+Note that the supplied <a href="operators/excl/device-read.htm"><b>device-read</b></a> and <a href="operators/excl/device-write.htm"><b>device-write</b></a> functions do not generate errors
+themselves, but pass them back to the higher level for
+processing. This allows <a href="operators/excl/read-octets.htm"><b>read-octets</b></a> and <a href="operators/excl/write-octets.htm"><b>write-octets</b></a> to pass errors back as well, as
+the implementation of a higher level (encapsulating) 
+<a href="operators/excl/device-read.htm"><b>device-read</b></a> and <a href="operators/excl/device-write.htm"><b>device-write</b></a>.
+</p>
+<p id="364">
+The first group of functions do only minimal checking on their
+arguments. Further, they act as implementation helpers for device
+level methods and their behaviors are thus not intuitive except at the
+device level. For those reasons, they should never be used at any
+level other than the device-level.
+</p>
+<ul>
+<li id="365"><a href="operators/excl/read-octets.htm"><b>read-octets</b></a></li>
+<li id="366"><a href="operators/excl/write-octets.htm"><b>write-octets</b></a></li>
+<li id="367"><a href="operators/excl/write-all-octets.htm"><b>write-all-octets</b></a></li>
+</ul>
+<p id="368">
+The second group of functions can be called at any level.
+</p>
+<ul>
+<li id="369"><a href="operators/excl/read-no-hang-p.htm"><b>read-no-hang-p</b></a></li>
+<li id="370"><a href="operators/excl/write-no-hang-p.htm"><b>write-no-hang-p</b></a></li>
+</ul>
+
+
+
+
+<hr><h2 id="371"><a name="stream-imp-other-2">10.5 Other Stream Implementation Functions and Macros</a></h2>
+
+<p id="372">
+The following operators are named by symbols exported from the
+<code>excl</code> package. They are loaded with
+</p>
+<pre id="373">
+(require :iodefs)
+</pre>
+
+<p id="374">
+They are intended for implementing device-level functionality and
+should not be used except for that purpose.
+</p>
+
+<ul>
+<li id="375">
+<a href="operators/excl/add-stream-instance-flags.htm"><b>add-stream-instance-flags</b></a>
+</li>
+<li id="376">
+<a href="operators/excl/compose-encapsulating-streams.htm"><b>compose-encapsulating-streams</b></a>
+</li>
+<li id="377">
+<a href="operators/excl/def-stream-class.htm"><b>def-stream-class</b></a>
+</li>
+<li id="378">
+<a href="operators/excl/funcall-stm-handler.htm"><b>funcall-stm-handler</b></a>
+</li>
+<li id="379">
+<a href="operators/excl/funcall-stm-handler-2.htm"><b>funcall-stm-handler-2</b></a>
+</li>
+<li id="380">
+<a href="operators/excl/remove-stream-instance-flags.htm"><b>remove-stream-instance-flags</b></a>
+</li>
+<li id="381">
+<a href="operators/excl/with-stream-class.htm"><b>with-stream-class</b></a>
+</li>
+<li id="382">
+<a href="operators/excl/sm.htm"><b>sm</b></a>
+</li>
+<li id="383">
+<a href="operators/excl/install-dual-channel-character-strategy.htm"><b>install-dual-channel-character-strategy</b></a>
+</li>
+<li id="384">
+<a href="operators/excl/install-single-channel-character-strategy.htm"><b>install-single-channel-character-strategy</b></a>
+</li>
+<li id="385">
+<a href="operators/excl/install-string-input-character-strategy.htm"><b>install-string-input-character-strategy</b></a>
+</li>
+<li id="386">
+<a href="operators/excl/install-string-output-character-strategy.htm"><b>install-string-output-character-strategy</b></a>
+</li>
+<li id="387">
+<a href="operators/excl/install-string-character-strategy.htm"><b>install-string-character-strategy</b></a> (use is
+deprecated in favor of the previous two functions)
+</li>
+
+</ul>
+
+
+<hr><h2 id="388"><a name="stream-line-column-charpos-2">10.6 Details of stream-line-column and charpos</a></h2>
+
+<p id="389">
+A charpos slot exists in every simple-stream.  Accessors are
+implemented for this slot via <a href="operators/excl/stream-line-column.htm"><b>stream-line-column</b></a> (which is setfable) and
+the initarg normally sets the slot to 0.
+</p>
+<p id="390">
+The intention of this slot is for use as a column indicator, when possible.
+When the slot is <code>nil</code>, the column is unknown.
+</p>
+<p id="391">
+When the charpos slot is non-<code>nil</code>, character
+output functionalities have the effect of incrementing <a href="operators/excl/charpos.htm"><b>charpos</b></a>. In many streams, a newline
+control-out handler will reset the <a href="operators/excl/charpos.htm"><b>charpos</b></a> to 0.  It is always set to <code>nil</code> when non-character write operations are performed
+on the stream.
+</p>
+<p id="392">
+Streams that need to support pretty printing must support an accurate
+<a href="operators/excl/charpos.htm"><b>charpos</b></a> in order to generate
+correct pretty output. Most streams have control-out handlers which
+keep <a href="operators/excl/charpos.htm"><b>charpos</b></a> accurate when
+newlines and/or tabs are processed.
+</p>
+<p id="393">
+For fastest write operations, charpos should be set to <code>nil</code> by <a href="operators/excl/device-open.htm"><b>device-open</b></a>, and no
+control-out handlers which set charpos should be installed into the
+stream (otherwise the writing of (for example) a newline will cause
+charpos counting to resume).
+</p>
+
+
+
+<hr><hr><h2 id="394"><a name="simple-stream-hierarchy-illus-1">11.0 The simple-stream class hierarchy illustrated</a></h2>
+
+<p id="395">
+The following diagram shows the simple-stream hierarchy, somewhat
+simplified.  To read this listing, note that it is in a simple tree
+structure.  Every node has a list of subclasses immediately indented
+two spaces to the right and below it. Nodes with the labels <i>sN</i>
+(that is, s1, s2, etc., for streams), <i>ssN</i> (that is, ss1, ss2,
+etc., for simple-streams), or <i>gN</i> (that is, g1, g2,
+etc., for gray streams) are nodes with multiple inheritance, with
+class names defined somewhere below their first usage. Nodes with
+labels followed by class names provide the actual definition of those
+labels.  Class names marked by (A) are autoloadable classes.
+</p>
+<p id="396">
+The Gray stream hierarchy is also illustrated.
+</p>
+<p id="397">
+Only streams named by exported symbols are included.
+</p>
+<p id="398">
+For simple-streams, the <a href="operators/excl/device-open.htm"><b>device-open</b></a> options are listed for each class
+which is normally instantiatable. Simple-stream classes which do not
+have <a href="operators/excl/device-open.htm"><b>device-open</b></a> options
+listed should not normally be subclassed. The
+<code>[simple-open-options]</code> are listed at the bottom of
+the diagram.
+</p>
+
+<pre id="399">
+;;;   The Simple Stream Hierarchy
+
+<a href="../ansicl/dictentr/stream.htm"><code>stream</code></a>
+  ;; major mixins for dpAns:
+  <a href="../ansicl/dictentr/file-str.htm"><code>file-stream</code></a>
+    s1
+    s2   
+  <a href="../ansicl/dictentr/string-s.htm"><code>string-stream</code></a>
+    s3
+    s4
+  ;; Simple-streams:
+  <a href="classes/excl/simple-stream.htm"><code>simple-stream</code></a>
+    <a href="classes/excl/probe-simple-stream.htm"><code>probe-simple-stream</code></a>                    options: filename
+    <a href="classes/excl/single-channel-simple-stream.htm"><code>single-channel-simple-stream</code></a>
+      <a href="classes/excl/direct-simple-stream.htm"><code>direct-simple-stream</code></a>
+        <a href="classes/excl/buffer-input-simple-stream.htm"><code>buffer-input-simple-stream</code></a>         options: buffer external-format start end
+        <a href="classes/excl/buffer-output-simple-stream.htm"><code>buffer-output-simple-stream</code></a>        options: buffer external-format
+        ss1
+      <a href="classes/excl/null-simple-stream.htm"><code>null-simple-stream</code></a>                   options: external-format
+      s1 <a href="classes/excl/file-simple-stream.htm"><code>file-simple-stream</code></a>                options: [simple-open-options]  [filename is required]
+        ss1 <a href="classes/excl/mapped-file-simple-stream.htm"><code>mapped-file-simple-stream</code></a> (A)  options: [simple-open-options, release-handle]  [filename is required]
+    <a href="classes/excl/dual-channel-simple-stream.htm"><code>dual-channel-simple-stream</code></a>
+      <a href="classes/excl/terminal-simple-stream.htm"><code>terminal-simple-stream</code></a>               options: [simple-open-options]
+      <a href="classes/excl/socket-simple-stream.htm"><code>socket-simple-stream</code></a>                 options: [simple-open-options]
+      <a href="classes/excl/socket-base-simple-stream.htm"><code>socket-base-simple-stream</code></a>            options: [simple-open-options]
+      excl::hiper-simple-stream
+    s3 <a href="classes/excl/string-simple-stream.htm"><code>string-simple-stream</code></a>
+      <a href="classes/excl/composing-stream.htm"><code>composing-stream</code></a>                     options: [none]
+      <a href="classes/excl/string-input-simple-stream.htm"><code>string-input-simple-stream</code></a>           options: string start end
+        ss2
+      <a href="classes/excl/string-output-simple-stream.htm"><code>string-output-simple-stream</code></a>          options: (string (make-string (device-buffer-length stream)))
+        <a href="classes/excl/fill-pointer-output-simple-stream.htm"><code>fill-pointer-output-simple-stream</code></a>  options: (string (error ...))
+        excl::limited-string-output-simple-stream
+        <a href="classes/excl/xp-simple-stream.htm"><code>xp-simple-stream</code></a>                   options [none]
+        <a href="classes/excl/annotation-output-simple-stream.htm"><code>annotation-output-simple-stream</code></a>
+        ss2 <a href="classes/excl/bidirectional-character-encapsulating-stream.htm"><code>bidirectional-character-encapsulating-stream</code></a>  options: (base-stream (error ...))
+  ;; Gray streams:
+  <a href="classes/excl/fundamental-stream.htm"><code>fundamental-stream</code></a> (A)
+    <a href="classes/excl/fundamental-input-stream.htm"><code>fundamental-input-stream</code></a> (A)
+      g1
+      g3
+      g13
+    <a href="classes/excl/fundamental-output-stream.htm"><code>fundamental-output-stream</code></a> (A)
+      g2
+      g4
+      g14
+    <a href="classes/excl/fundamental-character-stream.htm"><code>fundamental-character-stream</code></a> (A)
+      g1 <a href="classes/excl/fundamental-character-input-stream.htm"><code>fundamental-character-input-stream</code></a> (A)
+        g4a
+        g7
+        g16
+        g25
+        g26
+        g28
+        g29
+        g30
+        g31
+      g2 <a href="classes/excl/fundamental-character-output-stream.htm"><code>fundamental-character-output-stream</code></a> (A)
+        g4a
+        g8
+        g17
+        g22
+        g26
+        g27
+        g28
+        g29 <a href="../ansicl/dictentr/echo-str.htm"><code>echo-stream</code></a> (A)
+        g30
+        g32
+    <a href="classes/excl/fundamental-binary-stream.htm"><code>fundamental-binary-stream</code></a> (A)
+      g3 <a href="classes/excl/fundamental-binary-input-stream.htm"><code>fundamental-binary-input-stream</code></a> (A)
+        g4a
+        g10
+        g19
+        g26
+        g28
+        g30
+        g31 <a href="../ansicl/dictentr/concaten.htm"><code>concatenated-stream</code></a>
+      g4 <a href="classes/excl/fundamental-binary-output-stream.htm"><code>fundamental-binary-output-stream</code></a> (A)
+        g4a excl::null-stream (A)
+        g11
+        g20
+        g26 excl::bdbv-socket-stream (A)
+        g28 <a href="../ansicl/dictentr/synonym-.htm"><code>synonym-stream</code></a> (A)
+        g30 <a href="../ansicl/dictentr/two-way-.htm"><code>two-way-stream</code></a> (A)
+        g32 <a href="../ansicl/dictentr/broadcas.htm"><code>broadcast-stream</code></a> (A)
+      excl::binary-socket-stream (A)
+        g10
+        g11
+    excl::socket-stream (A)
+      g5 excl::input-socket-stream (A)
+        g7 <a href="classes/excl/input-terminal-stream.htm"><code>input-terminal-stream</code></a> (A)
+          g9
+        g10 <a href="classes/excl/input-binary-socket-stream.htm"><code>input-binary-socket-stream</code></a> (A)
+          g12
+      g6 excl::output-socket-stream (A)
+        g8 <a href="classes/excl/output-terminal-stream.htm"><code>output-terminal-stream</code></a> (A)
+          g9 <a href="classes/excl/bidirectional-terminal-stream.htm"><code>bidirectional-terminal-stream</code></a> (A)
+        g11 <a href="classes/excl/output-binary-socket-stream.htm"><code>output-binary-socket-stream</code></a> (A)
+          g12 <a href="classes/excl/bidirectional-binary-socket-stream.htm"><code>bidirectional-binary-socket-stream</code></a> (A)
+      excl::terminal-stream (A)
+    s2 excl::file-gray-stream (A)
+      g13 excl::input-file-stream (A)
+        g15
+        g16 excl::character-input-file-stream (A)
+          g18
+        g19 excl::binary-input-file-stream (A)
+          g21
+      g14 excl::output-file-stream (A)
+        g15 excl::bidirectional-file-stream (A)
+          g18
+          g21
+        g17 excl::character-output-file-stream (A)
+          g18 excl::character-bidirectional-file-stream (A)
+        g20 excl::binary-output-file-stream (A)
+          g21 excl::binary-bidirectional-file-stream (A)
+    s4 excl::string-gray-stream (A)
+      g22 excl::string-output-stream (A)
+        g23
+        g24 ??
+        excl::stream-output-stream-circular
+      g24 excl::fill-pointer-output-stream (A)
+      g25 excl::string-input-stream (A)
+    excl::annotation-encapsulation-mixin (A)
+      g23 excl::string-output-with-encapsulated-annotation-stream (A)
+      g27 excl::xp-stream (A)
+
+;;  simple-open-options:
+
+   filename
+   (direction :input)
+   if-exists
+   if-does-not-exist
+   external-format -- always defaults to :default
+   input-handle (see <a href="operators/excl/device-open.htm"><b>device-open</b></a>)
+   output-handle (see <a href="operators/excl/device-open.htm"><b>device-open</b></a>)
+   mapped (see <a href="operators/excl/device-open.htm"><b>device-open</b></a>)
+   fn-in (same as input-handle, for compatibility only)
+   fn-out (same as output-handle, for compatibility only)
+</pre>
+<hr><hr><h2 id="400"><a name="encapsulating-streams-1">12.0 Encapsulating Streams</a></h2>
+
+
+<p id="401">
+Much of this document, <i>streams.htm</i>, discusses
+CLOS techniques for customizing streams. Allegro CL supports another
+way to customize streams: encapsulation.  Encapsulation is a kind of
+filtering approach; data flows through various streams which have been
+attached end-to-end, and those data are processed and possibly
+transformed at each stream stage. Encapsulation is a more modular
+approach. Each component stream can be simpler and, therefore, more
+widely applicable.
+</p>
+
+<p id="402">
+Both encapsulation and CLOS specialization techniques are compatible with
+each other, and can be used in combination to greatly enhance the data
+processing capabilities in Allegro CL.
+</p>
+
+<p id="403">
+In the following subsections we describe stream encapsulation and provide
+some examples.
+</p>
+
+<hr><h2 id="404"><a name="encapsulation-terminology-2">12.1 Encapsulation terminology</a></h2>
+
+<p id="405">
+We define the terms used in this section:
+</p>
+
+<ul>
+<li id="406">
+<b>Encapsulation</b>, <b>encapsulator</b>, <b>encapsulate</b>,
+<b>encapsulatee</b>: An <b>encapsulation</b> is the attachment of more
+than one stream of any class in a chain, beginning with the i/o device
+and ending with the program. A stream X is said to <b>encapsulate</b> a
+stream Y when stream Y appears as stream X's input-handle or
+output-handle. In this case, stream X is the <b>encapsulator</b> and stream
+Y is the <b>encapsulated</b> stream or the <b>encapsulatee</b>.
+</li>
+<li id="407">
+<b>Input direction</b> and <b>output direction</b>: The <b>input
+direction</b> has data moving from the i/o device to the program.  The
+<b>output direction</b> has data moving from the program to the i/o
+device. These are obvious definitions, but are needed as reminders of
+the definitions of inner and outer, given next, which may be less
+intuitive.
+</li>
+<li id="408">
+<b>Inner</b> and <b>outer</b>: The <b>inner</b>most encapsulator is
+the stream which is closest to the program. The <b>outer</b>most
+encapsulator is the stream which encapsulates the closest stream to
+the i/o device (note that the closest stream to the i/o device is not
+an encapsulator). This naming may seem counterintuitive, since an
+encapsulator is inside (inner with respect to) the stream it
+encapsulates. Normal usage would have an encapsulator outside its
+encapsulatee, but viewing the whole process, inner more usefully
+describes closer to the program and further from the i/o device.
+</li>
+</ul>
+
+
+
+<hr><h2 id="409"><a name="encapsulation-strategy-2">12.2 Strategy descriptions necessary for encapsulation</a></h2>
+
+<p id="410">
+There are several slots in Allegro CL simple-streams which must be
+exposed in order for encapsulations to be allowed.  The names of these
+slots are not (typically) exported. Here we describe those slots
+here, and their accessors, if they are defined.
+</p>
+<p id="411">
+<code>excl::input-handle</code>,
+<code>excl::output-handle</code>: These slots hold either fixnum
+values representing operating system file numbers, or else streams
+which are the encapsulated stream, or else <code>nil</code>.  The handle slot for each direction must match
+the capability of the stream; i.e. if a stream is not open for input,
+input-handle must be <code>nil</code>.  If the stream
+changes states while open, the handles must follow that state; e.g. if
+one direction of a socket stream is shut down, that corresponding
+handle must be set to <code>nil</code>.  Accessors
+<b>excl::stream-input-handle</b> and <b>excl::stream-output-handle
+are</b> provided for these slots.
+</p>
+<p id="412">
+<code>excl::melded-stream</code>,
+<code>excl::melding-base</code>: These slots always hold
+streams, and allow for the special encapsulation style of composing
+external-formats.  See
+<a href="#encap-composing-formats-2">Section 12.5 Encapsulating composing external-formats</a> for further
+explanations.
+</p>
+<p id="413">
+<code>excl::buffer</code>, <code>excl::out-buffer</code>:
+These are the buffer slots.  The out-buffer slot is used when two
+buffers might be used, to hold output data.  The buffer slot is not
+called <i>in-buffer</i> because it sometimes acts as a bidirectional
+buffer; when there is only one buffer in the stream the buffer slot is
+the one that is used.  The exception to this rule is for <a href="classes/excl/string-output-simple-stream.htm"><code>string-output-simple-stream</code></a> which
+does use out-buffer.  This allows streams to be subclassed on both
+<a href="classes/excl/string-input-simple-stream.htm"><code>string-input-simple-stream</code></a> and <a href="classes/excl/string-output-simple-stream.htm"><code>string-output-simple-stream</code></a>,
+without the stratagies clashing for the two directions.  No accessors
+are exported for these slots.
+</p>
+<p id="414">
+<code>excl::buffer-ptr</code>,
+<code>excl::max-out-pos</code>: These are the buffer maximums.
+When a device-read returns a number of octets read, the strategy
+usually adds the value to the start value it gave to <a href="operators/excl/device-read.htm"><b>device-read</b></a> and sets buffer-ptr to that value.
+And for a dual-channel stream, max-out-pos is usually set at <a href="operators/excl/device-open.htm"><b>device-open</b></a> time to the
+length of the buffer.
+</p>
+<p id="415">
+There are a couple of differences between
+<code>buffer-ptr</code> and <code>max-out-pos</code>,
+which might suggest the reason for the different names given them:
+</p>
+<ul>
+<li id="416">
+<code>max-out-pos</code> is usually set once, and not touched
+again.  <code>buffer-ptr</code> is generally set before and/or
+after a <a href="operators/excl/device-read.htm"><b>device-read</b></a>.
+</li>
+<li id="417">
+<code>max-out-pos</code> always holds one greater than the
+current maximum index, whereas <code>buffer-ptr</code> might hold
+a -1 (representing an eof).
+</li>
+</ul>
+
+<p id="418">
+<code>excl::buffpos</code>, <code>excl::outpos</code>:
+These slots hold indices into buffer and out-buffer vectors,
+respectively.  Ignoring overflows for the moment, the basic <a href="../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a> operation consists simply of
+doing an aref of the buffer at buffpos position, followed by an
+increment of buffpos.  Likewise, the basic write-byte operation (on a
+dual-channel stream) consists of a <a href="../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of the <a href="../ansicl/dictentr/aref.htm"><b>aref</b></a> of out-buffer at out-pos,
+followed by an increment of out-pos.
+</p>
+<p id="419">
+[Note: <code>excl::buffer</code>,
+<code>excl::buffpos</code>, and
+<code>excl::buffer-ptr</code> are defined for all
+simple-streams. <code>excl::out-buffer</code>,
+<code>excl::outpos</code>, and
+<code>excl::max-out-pos</code> are only defined for streams
+for which it makes sense, i.e. dual-channel and string-output
+simple-streams.]
+</p>
+<p id="420">
+To make the octet and character strategy work as efficiently as
+possible, the buffpos/buffer-ptr and out-pos/max-out-pos pairs
+must always retain numeric values, and if there is any data
+remaining in buffer to be read or if there is any room in
+out-buffer for writing, the position slot will be less than the
+max slot.  The complete basic strategy for reading and writing
+an octet takes advantage of this fact to provide a single-test
+instruction sequence for determining if the next character can
+be read (for which the answer should normally be "yes").  Thus,
+for example, a template for strategy to read an octet has the
+following form (in unoptimized lisp pseudocode):
+</p>
+<pre id="421">
+ (when (&gt;= (sm buffpos stream) (sm buffer-ptr stream))
+   ;; Buffer needs filling
+   [various operations which may include device-read])
+ (prog1
+     (aref (sm buffer stream) (sm buffpos stream))
+   (incf (sm buffpos stream)))
+</pre>
+<p id="422">
+<code>excl::last-char-read-size</code>,
+<code>excl::encapsulated-char-read-size</code>: These two slots
+determine how much of the octet buffer constitutes a character for the
+purposes of unreading that character, and how much to copy back of the
+buffer contents to the beginning of the buffer before reading (via
+<a href="operators/excl/device-read.htm"><b>device-read</b></a>) into
+the rest of the buffer. These slots always hold numeric values, and
+are reset to 0 by many synchronizing operations.
+</p>
+
+<h3 id="423">The strategy function slots</h3>
+
+<p id="424">
+The slots listed below hold character-strategy functions, which can be
+built in any way desired, but which conform to the requirements of
+their respective functionality descriptions.  Allegro CL internally uses the <a href="operators/excl/char-to-octets.htm"><b>char-to-octets</b></a> and <a href="operators/excl/octets-to-char.htm"><b>octets-to-char</b></a> macros to incorporate
+external-format processing as part of the stream's character-strategy
+functionality.
+</p>
+<h4 id="425">excl::j-listen</h4>
+<p id="426">
+Holds a function which expects one
+argument which is the stream.  The function returns <code>nil</code> if a <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> would hang, and non-<code>nil</code> if <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> would not hang.  Note that the name
+<i>j-listen</i> does not imply Common Lisp functionality, which tends
+to be inconsistent in its definition for listening, especially in the
+face of multi-octet characters.  Instead,
+<b>j-listen</b> is precisely defined to determine
+whether a complete character can be read by <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> (or if an error or an EOF might occur)
+and would probably better have been named <i>j-no-hang-p</i> instead.
+This also implies that in a multibyte character situation where only
+part of the character has become available, the
+<b>j-listen</b> function must return <code>nil</code> even if some of the octets were readable.
+</p>
+<p id="427">
+The <b>j-listen</b> function must always leave the stream
+in the same state as it started, including the unread-char
+character-length, so that an <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> could be performed
+after a listen.
+</p>
+<h4 id="428">excl::j-read-char</h4>
+<p id="429">
+Holds a function which receives
+the following arguments: <i>stream eof-error-p eof-value
+blocking</i>.
+</p>
+<p id="430">
+The <i>stream</i>, <i>eof-error-p</i>, and
+<i>eof-value</i> arguments have the same semantics of
+similarly named arguments to <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a>.  The <i>blocking</i>
+argument determines whether the operation may block; a <code>nil</code> value causes the equivalent behavior as <a href="../ansicl/dictentr/read-ch0.htm"><b>read-char-no-hang</b></a>, and a non-<code>nil</code> value causes <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> behavior.  Either enough
+octets are read to be converted to a character, or a character is
+read, and returned.
+</p>
+<h4 id="431">excl::j-write-char</h4>
+<p id="432">
+Holds a function which receives
+the following arguments: <i>character stream</i>.
+</p>
+<p id="433">
+The <i>character</i> and <i>stream</i>
+arguments have the same semantics as similarly named arguments to
+<a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a>.  The
+<b>j-write-char</b> function is always assumed to be
+a blocking write (i.e. if writing cannot be done temporarily due to
+resource limitations, the function will wait for the resources to
+become freed). The character is written to the stream's buffer, after
+being converted to octets via the external-format, if the stream is
+octet-oriented. The character is returned from the function.
+</p>
+<h4 id="434">excl::j-read-chars</h4>
+<p id="435">
+Holds a function which receives
+the following arguments: <i>stream string search start end
+blocking</i>.
+</p>
+<p id="436">
+The <i>stream</i>, <i>start</i>, and
+<i>end</i> arguments have similar semantics as similarly
+named arguments to <a href="../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a>.  The <i>string</i>
+argument can be any string, and is the string which will be filled
+with the characters formed either by reading the next character, or by
+reading of octets and converting to characters via the external format
+of the stream.
+</p>
+<p id="437">
+If <i>search</i> is <code>nil</code>, then
+only as many characters as can be read are in fact read, and 1 plus
+the index of the last character read is returned as the only
+value. (This document used to say the number of characters
+read was returned, but that was incorrect.) 
+</p>
+<p id="438">
+If <i>search</i> is given, it should be a character.  As
+each character is read, it is compared to the search value. If the
+character read doesn't match, it is transferred to the string, but if
+it matches, the reading stops with the matching character being
+consumed but not transferred to the string. At that time, the index of
+the next character to read is returned as the first value, and the
+second value returned is based on the success of the search; the three
+possible second values are <code>nil</code> (search
+character was not found), <code>t</code> (search character
+found), or :eof (end-of-file encountered). (This document used
+to say the number of characters transferred was returned, but that was
+incorrect.) 
+</p>
+<p id="439">
+The <i>blocking</i> argument determines what kind of
+blocking to perform.  A value of <code>nil</code> causes
+no blocking.  A value of <code>t</code> causes blocking to
+always occur, and the operation will either complete or get an error.
+A value of :bnb causes blocking for the first character, but
+non-blocking for subsequent characters.
+</p>
+<h4 id="440">excl::j-write-chars</h4>
+<p id="441">
+Holds a function which
+receives the following arguments: <i>string stream start
+end</i>.
+</p>
+<p id="442">
+The <i>stream</i>, <i>start</i>, and
+<i>end</i> arguments have similar semantics as similarly
+named arguments to <a href="../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a>.  The <i>string</i>
+argument can be any string, and is the string from which characters
+will be supplied to either be written through the stream or to be
+converted via the external-format of the stream and then stored as
+octets into the stream's buffer.
+</p>
+<p id="443">
+The <b>j-write-chars</b> function is always a blocking operation, and
+will always complete before returning or will error.
+</p>
+<h4 id="444">excl::j-unread-char</h4>
+<p id="445">
+Holds a function which
+receives the following arguments: <i>stream relaxed</i>.
+</p>
+<p id="446">
+The <i>stream</i> argument has similar semantics as the
+stream argument to unread-char.  The <i>relaxed</i>
+argument allows the unread to be performed without error, even if the
+last-char-read-size is 0.  Normally, the only time that this will be
+necessary is when a hard or soft eof has been encountered during a
+multi-character composition, in which case the eof must be unread.
+</p>
+<p id="447">
+The <b>j-unread-char</b> function backs up one character in the stream.
+If the stream is an encapsulator, then this may mean backing up
+several characters in the stream it encapsulates.
+</p>
+<p id="448">
+For an octet-based stream, the last-char-read-size of the stream
+will determine how many octets to back up in the buffer in order
+to unread the character.  That slot is set in one of two ways:
+</p>
+<ul>
+<li id="449">
+it is incremented during the building of a character.
+</li>
+<li id="450">
+it is set by an encapsulating stream which has read one or more
+characters in order to compose a character at a higher level.
+</li>
+</ul>
+<p id="451">
+The protocols for setting and incrementing this slot ensure that
+the two methods do not conflict with each other.
+</p>
+<p id="452">
+Note that there is no character argument to this <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> implementation.  Due to the
+buffering of Allegro CL streams, and due to the difficulty in
+specifying an eof condition as a unique character (for the puroposes
+of unreading) the Allegro CL implementation of <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> does not actually use the character
+argument, but instead checks it for validity and then ignores it,
+because the character is always available in the stream's buffer.
+</p>
+<h4 id="453">excl::j-read-byte</h4>
+<p id="454">
+Holds a function which receives
+the following arguments: <i>stream eof-error-p eof-value</i>.
+</p>
+<p id="455">
+The <i>stream</i>, <i>eof-error-p</i>, and
+<i>eof-value</i> arguments have the same semantics of
+similarly named arguments to <a href="../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a>.  Either enough
+octets are read to be converted to a byte, or a byte is
+read, and returned.
+</p>
+<p id="456">
+<b>excl::j-read-byte</b> is not really a character strategy. It was
+added after the other slots (in release 7.0) in order to handle
+bivalent encapsulating streams, which may not have a buffer associated
+with them.
+</p>
+<h4 id="457">excl::j-write-byte</h4>
+<p id="458">
+Holds a function which receives
+the following arguments: <i>byte stream</i>.
+</p>
+<p id="459">
+The <i>byte</i> and <i>stream</i>
+arguments have the same semantics as similarly named arguments to
+<a href="../ansicl/dictentr/write-by.htm"><b>write-byte</b></a>.  The
+<b>j-write-byte</b> function is always assumed to be
+a blocking write (i.e. if writing cannot be done temporarily due to
+resource limitations, the function will wait for the resources to
+become freed).  The byte is written to the stream's buffer, after
+being converted to octets, if the stream is
+octet-oriented. The byte is returned from the function.
+</p>
+<p id="460">
+The <b>j-write-byte</b> function is always a blocking operation, and
+will always complete before returning or will error.
+</p>
+<p id="461">
+<b>excl::j-write-byte</b> is not really a character strategy. It was
+added after the other slots (in release 7.0) in order to handle
+bivalent encapsulating streams, which may not have a buffer associated
+with them.
+</p>
+
+
+
+
+<hr><h2 id="462"><a name="octet-char-connections-2">12.3 Valid connections between octet-oriented and character-oriented streams</a></h2>
+
+<p id="463">
+Both <a href="classes/excl/single-channel-simple-stream.htm"><code>single-channel-simple-stream</code></a>s and <a href="classes/excl/dual-channel-simple-stream.htm"><code>dual-channel-simple-stream</code></a>s are
+octet-oriented, that is, they employ octet buffers internally.  String
+streams are character-oriented streams, which means that their
+internal buffers are strings.  Various implications can be made from
+these definitions, and these implications affect how encapsulations
+can be made:
+</p>
+
+<ul>
+<li id="464">
+An octet-oriented stream can read or write both binary data and
+character data, but a character oriented stream cannot read or write
+binary data.  So, in effect, <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> works on an octet-oriented stream (via
+the stream's installed character strategy) but <a href="../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a> does not work on a string
+</li>
+<li id="465">
+A character-oriented stream is never attached to an external device.
+This is because a Lisp string has internal representations that are
+not necessarily translatable to external foreign string formats.
+</li>
+<li id="466">
+The previous implication further implies that a character-oriented
+stream generally does not use an external-format.  The external-format
+slot of the stream exists in a <a href="../ansicl/dictentr/string-s.htm"><code>string-stream</code></a>, but is not used for
+any of the defined character-strategies; the point of string streams
+is to bypass overhead needed to transform characters into octets and
+back again.
+</li>
+</ul>
+
+<p id="467">
+Encapsulations can be set up in a couple of ways.  If we label
+character-oriented streams with the letter <b>C</b>, and octet-oriented
+streams with the letter <b>O</b>, then the following kinds of encapsulation
+configurations can be done:
+</p>
+<pre id="468">
+Simple unencapsulated string stream:
+
+  prog - <b>C</b> - string
+
+Simple unencapsulated octet stream, externally connected:
+
+  prog - <b>O</b> - i/o
+
+Simple unencapsulated octet stream, internally connected:
+
+  prog - <b>O</b> - octet-buffer
+
+Encapsulations on internally connected string streams:
+
+  prog - <b>C</b> - <b>C</b> - ... - <b>C</b> - string
+
+Encapsulations on internally connected octet streams:
+
+  prog - <b>C</b> - <b>C</b> - ... - <b>C</b> - <b>O</b> - ... - <b>O</b> - buffer
+
+Encapsulations on externally connected octet streams:
+
+  prog - <b>C</b> - <b>C</b> - ... - <b>C</b> - <b>O</b> - ... - <b>O</b> - i/o
+</pre>
+<p id="469">
+In other words, a character oriented stream may encapsulate any
+kind of stream, and an octet-oriented stream may be encapsulated
+by any kind of stream, but an octet-oriented stream cannot
+encapsulate a character-oriented stream.
+</p>
+
+
+
+<hr><h2 id="470"><a name="encapsulation-examples-2">12.4 Examples of stream encapsulations</a></h2>
+
+<p id="471">
+Three examples are provided, which show how to encapsulate streams in
+different styles.  (Only two of the examples are fully worked out.)
+The first shows a string-stream which uses two buffers and which thus
+allows bidirectional communication on dual-channel encapsulatees.  The
+second is a single-buffer string stream which nevertheless allows
+bidirectional data to and from a single-channel stream like a file.
+The third example demonstrates an octet-based encapsulator, and it
+also demonstrated the ability to pick off bits in a stream and divide
+or combine them for presentation as octets in a stream at a higher
+level.
+</p>
+<p id="472">
+All of these examples share some common features:
+</p>
+<ul>
+<li id="473">
+The code is set in the :user package.  In real user-defined
+encapsulations, any package can be created and used for the
+implementation.  Do not use the :excl package, since that is
+our Allegro CL implementation package.
+</li>
+<li id="474">
+The :iodefs module is needed at compile-time, to define several of the
+macros used in the code. Note that since it is a
+compile-time require, the module is not necessary for normal runtime.
+However, you can load the module by evaluating
+<code>(require :iodefs)</code>.
+</li>
+<li id="475">
+The encapsulatee is specified by the :base-stream argument.  That
+choice of name is arbitrary. The base-stream is obtained from the
+options argument to each <a href="operators/excl/device-open.htm"><b>device-open</b></a> method.  It is up to <a href="operators/excl/device-open.htm"><b>device-open</b></a> to do any keyword
+checking that it wants to do.  In the examples, the existance of the
+base-stream keyword it the only thing checked; any other keywords are
+ignored, as if by :allow-other-keys.
+</li>
+<li id="476">
+The setting of one or both handle slots to the base-stream is what
+establishes the connection to the "device" (in this case, another
+stream).  Because the encapsulatee is an open stream, the connection
+made by the setting of handles is what satisfies <a href="operators/excl/device-open.htm"><b>device-open</b></a>'s requirement to establish the
+connection.
+</li>
+<li id="477">
+One common error that a device-level programmer might make is to
+forget to return a non-<code>nil</code> value from the
+<a href="operators/excl/device-open.htm"><b>device-open</b></a> method.  This
+will always result in a closed stream, since the shared-initialize
+:after method on simple-streams always calls <a href="operators/excl/device-close.htm"><b>device-close</b></a> if the <a href="operators/excl/device-open.htm"><b>device-open</b></a> method returns <code>nil</code>.
+</li>
+</ul>
+
+
+
+<hr><h2 id="478"><a name="encap-example-rot13b-2">12.4.1 Rot13b: An Example of Bidirectional Stream Encapsulation</a></h2>
+
+
+
+<p id="479">
+Rot13 is a simple translation technique used many times to shield
+internet readers from potentially offensive text.  The simple rule
+is that alphabetic characters are shifted by exactly 13 characters
+in the alphabet, whichever way is possible.  Because there are exactly
+26 characters in the English alphabet, two such shifts will reproduce
+the original result.  Thus the original text is easy to get, but it
+takes a conscious act on the part of the reader to read such text.
+</p>
+<p id="480">
+This encapsulation example uses a bidirectional string stream with
+two buffers, and is intended to encapsulate another dual-buffer
+stream (either another encapsulating dual-buffer string stream or a
+dual-channel stream).
+</p>
+<p id="481">
+First, an example run:
+</p>
+<pre id="482">
+cl-user(1): :cl examples/streams/rot13b
+; Fast loading examples/streams/rot13b.fasl
+cl-user(2): (setq xxx (make-instance 
+                       'rot13-bidirectional-stream :base-stream *terminal-io*))
+#&lt;rot13-bidirectional-stream &quot;^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@&quot; @ #x716fa842&gt;
+cl-user(3): (format xxx &quot;hello&quot;)
+uryyb
+nil
+cl-user(4): (format xxx &quot;uryyb&quot;)
+hello
+nil
+cl-user(5): (read-line xxx)
+The quick brown fox jumped over the lazy dog.
+&quot;Gur dhvpx oebja sbk whzcrq bire gur ynml qbt.&quot;
+nil
+cl-user(6): (read-line xxx)
+Gur dhvpx oebja sbk whzcrq bire gur ynml qbt.
+&quot;The quick brown fox jumped over the lazy dog.&quot;
+nil
+cl-user(7): 
+</pre>
+<p id="483">
+Note that the encapsulated stream being used above is <a href="../ansicl/dictentr/terminal.htm"><code>*terminal-io*</code></a>, which is the same
+as <a href="../ansicl/dictentr/debug-io.htm"><code>*standard-input*</code></a> in
+this example transcript.  This naturally causes the listener to wait
+after each <code>(read-line xxx)</code> for the input, just as a
+<code>(read-line *terminal-io*)</code> or else a
+<code>(read-line *standard-input*)</code> would do the same
+thing.  Such behavior would not be seen if the stream being
+encapsulated were a socket or some other terminal stream.
+</p>
+
+<h3 id="484">
+Source code and discussion
+</h3>
+
+<p id="485">
+The source code is available in <i>[Allegro
+directory]/examples/streams/rot13b.cl</i>. The important
+definitions are described below:
+</p>
+<p id="486">
+The class definition for <code>rot13-bidirectional-stream</code>
+has the new (in 8.0) <a href="classes/excl/bidirectional-character-encapsulating-stream.htm"><code>bidirectional-character-encapsulating-stream</code></a>
+as its superclass. A bidirectional stream has both the input and the
+output slots necessary for dual-buffer operation, and thus that the
+standard string strategy functions will work.  No other new slots are
+necessary in this class.
+</p>
+
+<h3 id="487">
+Device-read and device-write:
+</h3>
+
+<p id="488">
+The code defines a <a href="operators/excl/device-read.htm"><b>device-read</b></a> method to read the test to be
+tranformed and a <a href="operators/excl/device-read.htm"><b>device-read</b></a>
+method to write it out. Note that because this is a string-stream, it
+will not be dealing with external-formats and <a href="../ansicl/dictentr/stream-1.htm"><b>stream-external-format</b></a> will return :default.
+</p>
+
+<h3 id="489">rotate-char:</h3>
+
+<p id="490">
+This is the basic workhorse routine for rot13.  The input character is
+rotated within the alphabet if it is an alphabetic character, and
+left alone otherwise.  Due to the nature of the rot13 algorithm,
+given any character char, <code>(rotate-char (rotate-char
+char))</code> will always return char.
+</p>
+
+
+
+
+
+
+<hr><h2 id="491"><a name="encap-example-base64-2">12.4.2 Base64: an example of binary stream encapsulation</a></h2>
+
+<p id="492">
+Base64 encoding is part of the MIME specification as rfc1521 (see <a href="http://www.faqs.org/rfcs/rfc1521.html">http://www.faqs.org/rfcs/rfc1521.html</a>). It
+uses a limited character set to textually encode data of any kind,
+even if the transmission line has as few as six bits in width.  This
+contributes to the universal usability of base64.  This encoding is
+definitely not a compression technique; in fact data are expanded by
+33% when decoded.
+</p>
+<p id="493">
+This encapsulation example demonstrates the capability of simple-streams
+to work with sub-octet sizes, and for encapsulations to pass character
+data through octet streams.  The example only implements the decoder
+on the input side of the stream.  An encoder/write side could easily be
+written as well, but would complicate the example.
+</p>
+<p id="494">
+First, an example run:
+</p>
+<pre id="495">
+;;  Assume the file country.txt exists with the following contents:
+cl-user(1): (shell &quot;cat country.txt&quot;)
+Now is the time
+for all good people
+to come to the aid
+of their country.
+0
+cl-user(2): (shell &quot;mpack -o country.mime -s test country.txt&quot;)
+0
+cl-user(3): (shell &quot;cat country.mime&quot;)
+Message-ID: &lt;27716.1004255130@killer&gt;
+Mime-Version: 1.0
+Subject: test
+Content-Type: multipart/mixed; boundary=&quot;-&quot;
+
+This is a MIME encoded message.  Decode it with &quot;munpack&quot;
+or any other MIME reading software.  Mpack/munpack is available
+via anonymous FTP in ftp.andrew.cmu.edu:pub/mpack/
+---
+Content-Type: application/octet-stream; name=&quot;country.txt&quot;
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename=&quot;country.txt&quot;
+Content-MD5: 9wLn2T6WejxfbCKZsS6ALw==
+
+Tm93IGlzIHRoZSB0aW1lCmZvciBhbGwgZ29vZCBwZW9wbGUKdG8gY29tZSB0byB0aGUgYWlk
+Cm9mIHRoZWlyIGNvdW50cnkuCg==
+
+-----
+0
+cl-user(4): :cl examples/streams/base64
+; Fast loading examples/streams/base64.fasl
+cl-user(5): (setq yyy (open &quot;country.mime&quot;))
+#&lt;file-simple-stream #p&quot;country.mime&quot; for input pos 0 @ #x716fd2fa&gt;
+cl-user(6): (setq xxx (make-instance 'base64-reader-stream :base-stream yyy))
+#&lt;base64-reader-stream
+   for input fd #&lt;file-simple-stream #p&quot;country.mime&quot; for input pos 0&gt;
+  @ #x716ff572&gt;
+cl-user(7): (read-line xxx)
+&quot;Now is the time&quot;
+nil
+cl-user(8): (read-line xxx)
+&quot;for all good people&quot;
+nil
+cl-user(9): (read-line xxx)
+&quot;to come to the aid&quot;
+nil
+cl-user(10): (read-line xxx)
+&quot;of their country.&quot;
+nil
+cl-user(11): (read-line xxx)
+Error: eof encountered on stream
+       #&lt;base64-reader-stream
+          for input fd #&lt;file-simple-stream
+                         #p&quot;country.mime&quot; for input pos 585&gt;
+         @ #x716ff572&gt;
+  [condition type: end-of-file]
+
+Restart actions (select using :continue):
+ 0: Return to Top Level (an &quot;abort&quot; restart).
+ 1: Abort entirely from this process.
+[1] cl-user(12): 
+</pre>
+
+<p id="496">
+The algorithm of this encapsulator is a simplistic one; decoding
+doesn't start until just after the first blank line after a line
+which starts "Content-Transfer-Encoding: base64".  Decoding stops
+again when a line starts with a space or a dash.
+</p>
+
+<h3 id="497">Source code and explanation:</h3>
+
+
+<p id="498">
+<i>[Allegro
+directory]/examples/streams/base64.cl</i>. The important
+definitions are described below:
+</p>
+<p id="499">
+The class definition for <code>base64-reader-stream</code> adds
+four new slots, two are used for unconverted raw data, and two are
+used to prime the stream to start decoding the base64. The raw-data
+slot will contain a small string, and the raw-count slot tracks how
+much of this string has been moved to the stream's buffer. The primed
+slot will be set to either <code>nil</code> (for unprimed)
+or 'primed, which means that the priming string has been seen, or
+'ready, which means that the blank line after the priming string has
+already been seen.
+</p>
+
+<h3 id="500">
+Device-open:
+</h3>
+
+
+<p id="501">
+The <a href="operators/excl/device-open.htm"><b>device-open</b></a> method
+follows the standard from-scratch style, as described in
+<a href="#from-scratch-do-2">Section 10.3 From-scratch device-open</a>. In addition, the
+four new slots for this class are initialized to a starting point, and
+with a raw string that will be used.
+</p>
+
+<h3 id="502">
+Device-buffer-length:
+</h3>
+
+
+<p id="503">
+The <a href="operators/excl/device-buffer-length.htm"><b>device-buffer-length</b></a>
+method defined for this stream class allows a smaller raw string
+buffer to be used, since rfc1521 limits the length of a valid line to
+76 characters.
+</p>
+
+<h3 id="504">
+*base64-decode*:
+</h3>
+
+
+<p id="505">
+This variable holds a table, built argorithmically, which allows the
+conversion from base64 characters to their respective 6-bit codes.
+</p>
+
+<h3 id="506">
+Device-read:
+</h3>
+
+
+<p id="507">
+The <a href="operators/excl/device-read.htm"><b>device-read</b></a> method
+returns as much converted data as possible, up to the requested
+amount. Portions of unconverted raw data are retrieved by calling
+<b>get-some-raw-data</b>, and if successful, an algorithm is performed to
+decode that raw data - each 4 octet set of unconverted data is changed
+to 3 octets of converted data.  Any extra octets modulo 4 that have
+been read are moved to the beginning of the raw buffer and are not
+decoded until any further reads obtain the full 4-octet package.
+</p>
+
+<h3 id="508">
+get-some-raw-data:
+</h3>
+
+
+<p id="509">
+This function calls <b>j-read-chars</b> to get as much data as possible,
+up to the count (but not more than the raw-buffer size).  It loops
+until it can't read anymore, or until it has filled at least some
+data into the raw-data buffer.
+</p>
+<p id="510">
+Any data that don't represent the actual base64 text are discarded.
+This is done via a state machine, which must be primed and triggered
+before the buffer is actually filled.  The primed slot is normally
+<code>nil</code> when no base64 encoding is being done,
+and is primed to the value 'primed by the function <b>prime-it</b>
+(described below).  Once the stream is primed, a blank line is needed
+to actually trigger the state machine and to put it into 'ready state,
+after which the buffer can be filled.  Once the state is ready,
+characters are read into the raw-buffer until either a #\Newline is
+encountered, or until the state is changed again to <code>nil</code> by the occurrence either of another blank line or
+a dash character ( #\- )
+</p>
+<p id="511">
+The state remains unchanged from call to call, in case no data (or even no
+header) are read.
+</p>
+
+<h3 id="512">
+prime-it:
+</h3>
+
+
+<p id="513">
+This function's purpose is to match arbitrary input to the string
+"Content-Transfer-Encoding: base64".  Such matching can be done one
+character at a time or from multiple characters, using the
+prime-count slot which keeps track of the current number of matched
+characters from previous calls.  New data in the buffer argument
+always starts at the 0th element.
+</p>
+
+<p id="514">
+As it exists, the base64 example is a toy only.  There are a number
+of things that might be done to make it less of a toy:
+</p>
+
+<ul>
+<li id="515">
+It should better parse headers, and not pass over non-base64
+encodings (when other encodings are encountered, errors should be
+generated).  Currently, the string "Content-Transfer-Encoding: base64"
+is the only thing that primes the stream for parsing. 
+</li>
+<li id="516">
+It should make attempts to convert partial groupings of 4 octets, if
+possible.  If only two octets are read out of the 4 octets required
+for a 3-octet result, at least one result octet should be decodable.
+Also, if 3 of the 4 octets are read, 2 result octets should be
+decodable.  As it currently stands, this stream class waits until all
+4 octets are read before decoding them, and will thus cause <a href="../ansicl/dictentr/listen.htm"><b>listen</b></a> to return <code>nil</code> in such a circumstance, even though at least one
+of the result octets should have been decodable.
+</li>
+<li id="517">
+The <a href="../ansicl/dictentr/file-pos.htm"><b>file-position</b></a> method
+and its <a href="../ansicl/dictentr/setfpset.htm"><b>setf</b></a> method is
+not specialized on this stream class.  It is not clear how <a href="../ansicl/dictentr/file-pos.htm"><b>file-position</b></a> should be
+defined. One simplistic approach is to treat the <a href="../ansicl/dictentr/file-pos.htm"><b>file-position</b></a> as transparent;
+the <a href="operators/excl/device-file-position.htm"><b>device-file-position</b></a> simply returns the
+<a href="../ansicl/dictentr/file-pos.htm"><b>file-position</b></a> of the
+encapsulatee.  However, <a href="../ansicl/dictentr/file-pos.htm"><b>(setf file-position)</b></a> would pose a
+problem for the priming state of the stream, since it would not be
+known whether or not the new position is somewhere in the base64 data,
+or in header or other non-base64 areas.
+</li>
+</ul>
+
+
+
+
+
+<hr><h2 id="518"><a name="encap-composing-formats-2">12.5 Encapsulating composing external-formats</a></h2>
+
+<p id="519">
+It is possible to create composed external-formats using encapsulating
+streams. (See <a href="iacl.htm#composed-efs-3">Composed
+External-Formats</a> in <a href="iacl.htm">iacl.htm</a> for a
+description of composed external-formats.) Encapsulated-based composed
+external-formats operate by melding two or more streams together. This
+is as opposed to macro-based composed external-formats, which operate
+by combining the composer and composee external-format conversion
+macros to create a single new external-format conversion
+macro. Macro-based composed external-formats are defined using <a href="operators/excl/compose-external-formats.htm"><b>compose-external-formats</b></a>.  At this
+time, functions similar to <a href="operators/excl/compose-external-formats.htm"><b>compose-external-formats</b></a> which define
+encapsulated-based composed external-formats are not available, but
+are planned for future Allegro CL releases.
+</p>
+<p id="520">
+Allegro CL includes an encapsulated-based composing
+external-format for translating Ascii return/linefeed octet codes into
+Common Lisp #\Newline characters. This external-format is called
+<b>:e-crlf</b>. Its implementation is described in detail in this
+section.
+</p>
+<p id="521">
+<a href="operators/excl/find-external-format.htm"><b>find-external-format</b></a>
+accepts a two-element
+list argument. The first element names an encapsulated-based composer
+external-format, and the second element names an external-format. Note
+that the second element itself can be a list, thus recursively
+denoting an inner composition.
+</p>
+<p id="522">
+Thus, <code>(find-external-format '(:e-crlf </code><code>&nbsp;</code><code>
+</code><code><i>:foo-base-ef</i></code><code>))</code> returns an encapsulated-based
+external-format which is the same as the
+<code><i>:foo-base-ef</i></code> external-format except that the
+Common Lisp #\Newline character is converted to Ascii return/linefeed
+codes and vice-versa. (Such external-formats are useful/necessary for
+text files native to DOS/Windows which use the two Ascii octet
+codes to terminate lines.)
+</p>
+<p id="523">
+Because a stream's external-format can be switched dynamically, the style of stream
+encapsulation for external-formats is much different than the normal encapsulation style
+of attaching a stream handle. One reason for the difference is normal encapsulations can
+cause identity confusion. If stream xxx is opened and then encapsulated by stream yyy,
+then any variables that once referred to xxx would have to be changed to refer to yyy
+instead. If a user does
+</p>
+<pre id="524">
+(setf (stream-external-format xxx)
+      (find-external-format '(:e-crlf &nbsp;<i>:foo-base-ef</i>)))
+</pre>
+<p id="525">
+or, equivalently,
+</p>
+<pre id="526">
+(setf (stream-external-format xxx)
+      '(:e-crlf &nbsp;<i>:foo-base-ef</i>))
+</pre>
+<p id="527">
+then the identity and class of the stream which xxx holds must not change.
+</p>
+
+
+<p id="528">
+The melded-stream slot contains the next stream in a composition
+instead of the handle slots in external-format encapsulation. And
+besides that slot, the melding-base slot always contains the base
+stream of the composition (which is the stream that retains its
+identity no matter what the composition looks like).
+</p>
+
+<h3 id="529">Composed External-Format Description:</h3>
+
+<h4 id="530">Composing stream class:</h4>
+
+<p id="531">
+The <a href="classes/excl/composing-stream.htm"><code>composing-stream</code></a>
+class is introduced to implement the external-format composition.  It
+has <a href="../ansicl/dictentr/string-s.htm"><code>string-stream</code></a> as
+superclass, and has no extra slots.  An exception to the general rule
+that all streams are buffered, composing-streams are not buffered
+themselves, but read and write one character at a time; A
+specialization on a <a href="classes/excl/composing-stream.htm"><code>composing-stream</code></a> might have tables to work
+with, such as translation tables, in the same way that encapsulating
+streams use them, but any buffering is done vicariously through its
+base stream.
+</p>
+
+<h4 id="532">
+Straw encapsulation model:</h4>
+
+<p id="533">
+It is easiest to explain the intricacies of the composing-external-format model by
+demonstrating what the model would have looked like if the identity problem had not in
+fact been a problem. Note that this entire section below is for demonstration purposes
+only, and does not describe the actual composition structure.
+</p>
+<p id="534">
+A composing-external-format like <code>(:e-crlf
+</code><code>&nbsp;</code><code><i>:foo-base-ef</i></code><code>)</code> would have been
+represented as two streams - a composing-external-format stream, whose
+melded-stream and melding-base both contain the base stream. The
+composing-external-format stream would contain the composing
+external-format character strategy functions (in this case, for
+example, the j-read-char slot would contain #'crlf-read-char) and the
+base stream would contain its own strategy functions.
+</p>
+
+
+
+<p id="535">
+Reading a character would consist of funcall'ing the j-read-char
+function of the composing-stream.  That function, crlf-read-char,
+would read and/or unread individual characters from the melded-stream
+(i.e. the file stream) by funcalling the j-read-char and j-unread-char
+functions of that stream as appropriate, and by then combining those
+characters (this composing-external-format will combine #\Return
+followed by #\Linefeed into a single #\Newline character). The
+j-read-char functions of the file stream would get its characters in
+the usual way, by operating on its own buffer (and possibly thus
+calling one of the device functions).
+</p>
+
+
+
+<p id="536">
+Although Allegro CL includes only two composing-formats,
+<code>:e-crlf</code>; and the less commonly used
+<code>:e-crcrlf</code> (see <a href="iacl.htm#newline-1">#\newline discussion</a> in
+<a href="iacl.htm">iacl.htm</a> for more about the crcrlf
+external-format), it is possible that new composing-formats will be
+defined in the future. For example, if some kind of ligature combining
+external-format called, say, <code>:e-ligature</code> were
+created (though such a external-format currently does not exist) then
+it could be combined with others via 
+</p>
+<pre id="537">
+ (setf (stream-external-format xxx) '(:e-crlf (:e-ligature &nbsp;<i>:foo-base-ef</i>)))
+</pre>
+<p id="538">
+In our hypothetical architecture, we would have set this up as three
+streams; if xxx is the stream with the
+<code><i>:foo-base-ef</i></code> strategies and the buffer, and
+yyy is the composing stream with crlf strategies, and if zzz is the
+composing stream with the (hypothetical) ligature strategies, then the
+above setf would attach the streams as follows:
+</p>
+<pre id="539">
+  yyy -&gt; zzz -&gt; xxx
+</pre>
+<p id="540">
+where the arrow represents the connection made by the melded-stream slot.  A
+read-char on yyy would funcall yyy's j-read-char, which would combine
+characters obtained by calling j-read-char on its melded-stream zzz, which
+in turn would return characters formed by combining or expanding ligatures
+recognized by reading characters from its melded-stream xxx, which finally
+obtains its characters from its buffer (filling it if necessary).
+</p>
+
+<h4 id="541">
+Actual encapsulation model:</h4>
+
+<p id="542">
+In reality, the above straw model using a hypothetical architecture
+will not work, because the setting of external-formats should never
+change the identity of a stream.  The above hypothetical architecture
+requires that the <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a> pass yyy as the stream, but identity
+requirements need xxx to be the stream to be passed to <a href="../ansicl/dictentr/read-cha.htm"><b>read-char</b></a>.  Thus, the real
+model is somewhat convoluted; if we still keep our hypothetical
+<code>:e-ligature</code> external-format, then if
+</p>
+<pre id="543">
+ (setf (stream-external-format xxx) '(:e-crlf (:e-ligature &nbsp;<i>:foo-base-ef</i>)))
+</pre>
+<p id="544">
+is done, with xxx as the same base stream as before, and if we then say
+</p>
+<pre id="545">
+ (with-stream-class (stream)
+    (setq yyy (sm melded-stream xxx))
+    (setq zzz (sm melded-stream yyy)))
+</pre>
+<p id="546">
+then the following picture would apply:
+</p>
+<pre id="547">
+ xxx -&gt; yyy -&gt; zzz
+</pre>
+
+<ol>
+<li id="548">
+xxx will still have a <a href="classes/excl/file-simple-stream.htm"><code>file-simple-stream</code></a> whose melding-base is
+itself, and whose melded-stream is yyy.  Also, xxx's
+character-strategy slots will be filled with
+<code>:e-crlf</code> strategies
+(e.g. <code>#'excl::crlf-read-char</code>, etc.)
+</li>
+<li id="549">
+yyy will be the crlf composing-stream, whose melding-base will be xxx
+and whose melded-stream will be zzz.  Its character-strategy functions
+will be whatever were defined for the ligature external-format
+(presumably named something like <b>ligature-read-char</b>, etc).
+</li>
+<li id="550">
+zzz will be the (still hypothetical) ligature composing-stream,
+whose melding-base will be xxx and whose melded-stream will also be
+xxx.  It's character-strategy will be the strategy from the
+file-simple-streams [in this case the read-char strategy is
+<code>#'(efft sc-read-char </code><code>&nbsp;</code><code><i>:foo-base-ef</i></code><code>)</code>].
+</li>
+</ol>
+
+<p id="551">
+Finally, xxx's external-format slot will contain the results of
+</p>
+<pre id="552">
+(find-external-format '(:e-crlf (:e-ligature &nbsp;<i>:foo-base-ef</i>)))
+</pre>
+<p id="553">
+and yyy's external-format slot will contain the results of
+</p>
+<pre id="554">
+(find-external-format '(:e-ligature &nbsp;<i>:foo-base-ef</i>))
+</pre>
+<p id="555">
+and zzz's external-format slot will contain the results of
+</p>
+<pre id="556">
+  (find-external-format &nbsp;<i>:foo-base-ef</i>)
+</pre>
+<p id="557">
+The rotation of the strategy functions implies that all strategy
+functions must be aware of the rotation and must consider where the
+respective slots are in these cycles; all external-format related
+slots (such as those for holding last character octet size and
+external-format state information) are in the current stream, whereas
+stream-related slots (such as buffers, pointers, etc) are in the
+melded-stream (the next stream down in the cycle). Highest-level
+functionlity such as <b>dribble</b>, control-handlers, etc, always remain in
+the base stream.
+</p>
+<p id="558">
+Note also that since this  kind of "melding" encapsulation is in
+a different direction than regular encapsulation, the handles of
+the base-stream are not modified and point to the next "real"
+encapsulation outward.
+</p>
+<p id="559">
+So all strategies everywhere take an indirection
+through the melded-stream slot, to get to the next stream down for its
+real operation.  A standard pattern of coding in use is
+shown in this example:
+</p>
+<pre id="560">
+(defun crlf-read-char (e-stream eof-error-p eof-value block)
+    (with-stream-class (stream e-stream)
+       (let ((stream (sm melded-stream e-stream))
+    ...
+</pre>
+<p id="561">
+So in fact the j-read-char in xxx is going to have xxx as e-stream,
+and yyy as stream.
+</p>
+<p id="562">
+As an example, consider the crlf algorithm:
+</p>
+<ol>
+<li id="563">
+Read a char
+</li>
+<li id="564">
+Then
+<ol>
+<li id="565">
+If the character is not #\Return, return the char and done.
+</li>
+<li id="566">
+If eof was encountered, perform the requested eof processing.
+</li>
+</ol>
+</li>
+<li id="567">
+Char is #\Return; read char (call it char2).
+</li>
+<li id="568">
+Then
+<ol>
+<li id="569">
+If char2 is eof, then return char.
+</li>
+<li id="570">
+If char2 is #\Linefeed, return #\Newline
+</li>
+</ol>
+</li>
+<li id="571">
+Char is #\Return, but char2 is something else.  unread-char without
+disturbing the ability to unread the #\Return.
+</li>
+<li id="572">
+Return char, which is #\Return.
+</li>
+</ol>
+
+<p id="573">
+The crlf-read-char strategy does this by calling j-read-char and
+j-unread-char on stream (rather than on e-stream).  Note that if there is
+a third stage, yyy's strategies will be ligature strategies, but will
+end up operating by calling j-read-char on zzz, which are in fact the
+base-stream strategies.  Now, remembering that all strategies take the
+indirection, the base-stream strategies will take the melded-stream slot
+of zzz which is xxx, which has the buffers which these strategies
+expect.
+</p>
+
+
+
+<hr><hr><h2 id="574"><a name="built-in-methods-1">Appendix A: Built-in stream methods and their uses</a></h2>
+
+<p id="575">
+There are built-in methods for stream classes. Some are described in
+the following subsections.
+</p>
+
+<hr><h2 id="576"><a name="print-object-stream-method-2">Appendix A.1 The print-object built-in stream method</a></h2>
+
+<p id="577">
+The <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a>
+method affects all Common Lisp objects, and streams are no different.
+Of the two kinds of streams, Gray and Simple, the simple-streams usage
+of print-object is the most involved.
+</p>
+<p id="578">
+Some of the general items that might be printed in a stream
+print-object method are listed by name in each individual description,
+and might be:
+</p>
+<ol>
+<li id="579">
+<b>printing status</b>: if the stream has been manufactured
+specifically for printing through another stream, then &quot;printing for
+&lt;name&gt;&quot; is printed, where &lt;name&gt; is the name of the stream
+for which this stream is gathering output. A pretty-printing (i.e. an
+xp) stream is an example of a printing stream.
+</li>
+<li id="580">
+<b>open status</b>: if the file is open, no special status is printed,
+but if the file is only open for input or output, or else is closed,
+that status is included in the printing of the stream.
+</li>
+<li id="581">
+<b>position</b>: if file-position information is appropriate (even if
+the stream does not represent an actual file) then &quot;pos: &lt;n&gt;&quot; is
+printed where &lt;n&gt; is a file position.
+</li>
+</ol>
+
+<p id="582">
+The action of the method on different stream classes is an follows:
+</p>
+<ul>
+<li id="583">
+<b>Gray streams</b> (see <a href="gray-streams.htm">gray-streams.htm</a>: most
+Gray streams use the default <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method, which prints the
+class of the stream (unreadably, with its address identity). For
+streams which are also instances
+of <code>excl::file-gray-stream</code>
+or <code>excl::socket-stream</code>, the general items (listed
+above -- printing status, open status and position) are also printed.
+</li>
+<li id="584">
+<b>Simple-streams</b>: there is a method on <a href="classes/excl/simple-stream.htm"><code>simple-stream</code></a> which is the default
+simple-stream method; it prints the stream unreadably with the text
+"[not completely built]". This method should always be overridden; its
+presence indicates a missing <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method on the
+simple-stream class. Most simple-streams have their own print-object
+methods, which will only include the "[not completely built]" text if
+the stream does not yet have the correct state after
+the <a href="operators/excl/device-open.htm"><b>device-open</b></a> method has
+fully completed its tasks.  If there is not a print-object method for
+that simple-stream class, however, this default method indicates that
+the stream is not (and will never be) completely built - it represents
+a design error in the simple-stream class.
+</li>
+</ul>
+<p id="585">
+The three major subclasses of <a href="classes/excl/simple-stream.htm"><code>simple-stream</code></a> treat print-object
+slightly differently:
+</p>
+<ul>
+<li id="586">
+<b><a href="classes/excl/dual-channel-simple-stream.htm"><code>dual-channel-simple-stream</code></a></b>: this class is
+listed first because it has a <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method directly on it; no
+print-object methods need be provided for subclasses of dual-channel
+simple-streams. This print-object method prints the relevant general
+items listed above: printing status and open status (position is
+never printed in a dual-channel stream because dual-channel streams
+don't tend to have positions). In addition, if the stream has an
+input or output handle (or both) they are printed as &quot;fd:
+&lt;handle(s)&gt;&quot; where &lt;handle(s)&gt; is one or both handles
+separated by /.
+</li>
+<li id="587">
+<b><a href="classes/excl/single-channel-simple-stream.htm"><code>single-channel-simple-stream</code></a></b>: because
+single-channel streams are so diverse, there is not one style of
+printing that can handle all situations, so of the
+single-channel-simple-streams listed
+in <a href="#simple-stream-hierarchy-illus-1">Section 11.0 The simple-stream class hierarchy illustrated</a>,
+only the following (and their subclasses) have <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> methods; if subclassing on
+any other single-channel stream is desired, a <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method may need to be
+provided as part of the stream implementation:
+<ul>
+<li id="588">
+<b><a href="classes/excl/file-simple-stream.htm"><code>file-simple-stream</code></a></b>:
+this method provides the general items: printing status, open status,
+position, as well as the filename and "mapped" if the file is a mapped
+file.
+</li>
+<li id="589">
+<a href="classes/excl/direct-simple-stream.htm"><code>direct-simple-stream</code></a>:
+those direct-simple-streams which are not also mapped-files tend to be
+buffer streams. The <a href="../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method for these streams
+is simplistic, providing only printing-status and position if
+applicable.  More complex direct simple-streams should provide their
+own print-object methods.
+</li>
+</ul>
+</li>
+<li id="590">
+<b><a href="classes/excl/probe-simple-stream.htm"><code>probe-simple-stream</code></a></b>: although this class
+is a subclass of <a href="classes/excl/file-simple-stream.htm"><code>file-simple-stream</code></a>, it only prints the
+filename.
+</li>
+<li id="591">
+<b><a href="classes/excl/string-simple-stream.htm"><code>string-simple-stream</code></a></b>: although it might
+seem that <a href="classes/excl/string-simple-stream.htm"><code>string-simple-stream</code></a>s should be consistent,
+they are not; the class is the only class which provides completely
+transparent transfer of characters between the API and the device. So
+only those streams which are listed below (and their subclasses) have
+print-object methods:
+<ul>
+<li id="592">
+<b><a href="classes/excl/string-input-simple-stream.htm"><code>string-input-simple-stream</code></a></b>: provides only
+the position general item (of the general items listed above). In
+addition, a sample of the current contents of the string buffer is
+printed as a string; if the string is 15 characters or longer, ... is
+printed at the end.
+</li>
+<li id="593">
+<a href="classes/excl/string-output-simple-stream.htm"><code>string-output-simple-stream</code></a>: provides only the
+position general item (of the general items listed above). In
+addition, the printing status general item is provided, but instead of
+showing an underlying handle, the actual string being built is shown,
+with elipses for strings 15 characters or more.
+</li>
+<li id="594">
+<b><a href="classes/excl/composing-stream.htm"><code>composing-stream</code></a></b>:
+provides only the position general item (of the general items listed
+above). Also, if the stream has a handle it prints &quot;encapsulated by
+&lt;encapsulator&gt;&quot; where &lt;encapsulator&gt; is the stream
+encapsulating this one. Also, if the encapsulating stream is a file or
+socket, the name is included.
+</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+<hr><hr><h2 id="595"><a name="peek-byte-1">Appendix B: peek-byte and unread-byte</a></h2>
+
+<p id="596">
+Ever since the inception of simple-streams, there has been a small
+need for the capability to unread individual octets from a stream.
+When the Ansi CL spec was being develped around 1990, multi-octet
+characters were a relatively new concept, and so Common Lisp still
+held to the concept that the charater was the basic unit of data
+transfer, and that the "byte" was a variable size.  But nowadays, the
+roles have reversed, and we tend to use the term "octet" (8-bit byte)
+to refer to what most people think of as bytes, and characters have
+become the larger unit, sometimes taking 3, 4, or even more octets to
+encode in various encoding systems, which are handled in Allegro CL by
+external-formats.
+</p>
+<p id="597">
+We have always had the <a href="../ansicl/dictentr/peek-cha.htm"><b>peek-char</b></a> and <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> functions, and because there is at
+least one external-format (named :latin1-base, also nicknamed :octets)
+which upon reading draws a one-to-one correspondence between
+characters and octets, so that <a href="../ansicl/dictentr/peek-cha.htm"><b>peek-char</b></a> and <a href="../ansicl/dictentr/unread-c.htm"><b>unread-char</b></a> can be used indirectly to peek at
+and unread bytes.  However, in situations where external-formats other
+than :latin1-base are being used by default, this poses the
+inconvenience of having to switch external-formats to latin1-base and
+then back again every time it is desired to unread a single octet.  So
+these two functions are provided which act on octets only and which do
+not require an external-format change:
+</p>
+<ul>
+<li id="598">
+<a href="operators/excl/peek-byte.htm"><b>peek-byte</b></a>
+</li>
+<li id="599">
+<a href="operators/excl/unread-byte.htm"><b>unread-byte</b></a>
+</li>
+</ul>
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/streams.htm">9.0 version</a></td></tr></table></html>

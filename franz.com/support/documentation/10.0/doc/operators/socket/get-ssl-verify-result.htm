@@ -1,0 +1,306 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>get-ssl-verify-result</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: socket</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/get-ssl-verify-result.htm">9.0 version</a></td></tr></table><h2 id="2">get-ssl-verify-result</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+
+
+
+<p id="4">
+<a href="get-ssl-verify-result.htm"><b>get-ssl-verify-result</b></a>
+returns information about the success or failure of peer certificate
+verification.  
+</p>
+<p id="5">
+<b><i>stream</i></b> must be an SSL client or server
+stream (such as is created by <a href="make-ssl-server-stream.htm"><b>make-ssl-server-stream</b></a> and <a href="make-ssl-client-stream.htm"><b>make-ssl-client-stream</b></a>).
+</p>
+<p id="6">
+<a href="get-ssl-verify-result.htm"><b>get-ssl-verify-result</b></a>
+returns two values.  The first value is a numeric code indicating the
+status of verification.  0 indicates successful verification.  The
+second value is a string with a text representation of the status.
+</p>
+<p id="7">
+Note, if SSL handshake has not yet been performed, or if the peer did
+not provide a certificate, this function returns an OK status.
+</p>
+<p id="8">
+The possible return values are shown in the following information
+copied from the OpenSSL documentation. The numeric value (0, 2, 3, 4,
+etc.) is the first returned value and the string is the second. The
+string does not include the capitalized and underscored
+descriptor. Additional information not included in the returned string
+is included in this list. Thus, when the peer certificate verification
+is sucessful, <b>0</b> and <b>"ok"</b> are returned. X509_V_OK and
+'the operation was successful.' are not part of the string.
+</p>
+<ul>
+<li id="9">
+
+0 X509_V_OK: "ok" the operation was successful.
+
+</li>
+<li id="10">
+
+2 X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT: unable to get issuer
+certificate" the issuer certificate could not be found:
+this occurs if the issuer certificate of an untrusted
+certificate cannot be found.
+
+</li>
+<li id="11">
+
+3 X509_V_ERR_UNABLE_TO_GET_CRL "unable to get certificate CRL"
+the CRL of a certificate could not be found. Unused.
+
+</li>
+<li id="12">
+
+4 X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE: "unable to decrypt certificate's signature" the certificate signature could not be decrypted. This means that
+the actual signature value could not be determined rather than it
+not matching the expected value, this is only meaningful for RSA
+keys.
+
+</li>
+<li id="13">
+
+
+5 X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE: "unable to decrypt CRL's
+signature"
+the CRL signature could not be decrypted: this means that the
+actual signature value could not be determined rather than it not
+matching the expected value. Unused.
+
+</li>
+<li id="14">
+
+
+6 X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY: "unable to decode
+issuer public key"
+the public key in the certificate SubjectPublicKeyInfo
+could not be read.
+
+</li>
+<li id="15">
+
+
+7 X509_V_ERR_CERT_SIGNATURE_FAILURE: "certificate signature failure"
+the signature of the certificate is invalid.
+
+</li>
+<li id="16">
+
+
+8 X509_V_ERR_CRL_SIGNATURE_FAILURE: "CRL signature failure"
+the signature of the certificate is invalid. Unused.
+
+</li>
+<li id="17">
+
+
+9 X509_V_ERR_CERT_NOT_YET_VALID: "certificate is not yet valid"
+the certificate is not yet valid: the notBefore date is after the
+current time.
+
+</li>
+<li id="18">
+
+
+10 X509_V_ERR_CERT_HAS_EXPIRED: "certificate has expired"
+the certificate has expired: that is the notAfter date is before
+the current time.
+
+</li>
+<li id="19">
+
+
+11 X509_V_ERR_CRL_NOT_YET_VALID: "CRL is not yet valid"
+the CRL is not yet valid. Unused.
+
+</li>
+<li id="20">
+
+
+12 X509_V_ERR_CRL_HAS_EXPIRED: "CRL has expired"
+the CRL has expired. Unused.
+
+</li>
+<li id="21">
+
+
+13 X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD: "format error in certificate's notBefore field"
+the certificate notBefore field contains an invalid time.
+
+</li>
+<li id="22">
+
+
+14 X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD: "format error in certificate's notAfter field"
+the certificate notAfter field contains an invalid time.
+
+</li>
+<li id="23">
+
+
+15 X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD: "format error in CRL's
+lastUpdate field"
+the CRL lastUpdate field contains an invalid time. Unused.
+
+</li>
+<li id="24">
+
+
+16 X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD: "format error in CRL's
+nextUpdate field"
+the CRL nextUpdate field contains an invalid time. Unused.
+
+</li>
+<li id="25">
+
+
+17 X509_V_ERR_OUT_OF_MEM: "out of memory"
+an error occurred trying to allocate memory. This should never happen.
+
+</li>
+<li id="26">
+
+
+18 X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT: "self signed certificate"
+the passed certificate is self signed and the same certificate cannot
+be found in the list of trusted certificates.
+
+</li>
+<li id="27">
+
+
+19 X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN: "self signed certificate in
+certificate chain"
+the certificate chain could be built up using the untrusted cer-
+tificates but the root could not be found locally.
+
+</li>
+<li id="28">
+
+
+20 X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY: "unable to get local
+issuer certificate"
+the issuer certificate of a locally looked up certificate
+could not
+be found. This normally means the list of trusted certificates is
+not complete.
+
+</li>
+<li id="29">
+
+
+21 X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE: "unable to verify the
+first certificate"
+no signatures could be verified because the chain contains only one
+certificate and it is not self signed.
+
+</li>
+<li id="30">
+
+
+22 X509_V_ERR_CERT_CHAIN_TOO_LONG: "certificate chain too long"
+the certificate chain length is greater than the supplied maximum
+depth. Unused.
+
+</li>
+<li id="31">
+
+
+23 X509_V_ERR_CERT_REVOKED: "certificate revoked"
+the certificate has been revoked. Unused.
+
+</li>
+<li id="32">
+
+
+24 X509_V_ERR_INVALID_CA: "invalid CA certificate"
+a CA certificate is invalid. Either it is not a CA or its exten-
+sions are not consistent with the supplied purpose.
+
+</li>
+<li id="33">
+
+
+25 X509_V_ERR_PATH_LENGTH_EXCEEDED: "path length constraint exceeded"
+the basicConstraints pathlength parameter has been exceeded.
+
+</li>
+<li id="34">
+
+
+26 X509_V_ERR_INVALID_PURPOSE: "unsupported certificate purpose"
+the supplied certificate cannot be used for the specified purpose.
+
+</li>
+<li id="35">
+
+
+27 X509_V_ERR_CERT_UNTRUSTED: "certificate not trusted"
+the root CA is not marked as trusted for the specified purpose.
+
+</li>
+<li id="36">
+
+
+28 X509_V_ERR_CERT_REJECTED: "certificate rejected"
+the root CA is marked to reject the specified purpose.
+
+</li>
+<li id="37">
+
+
+29 X509_V_ERR_SUBJECT_ISSUER_MISMATCH: "subject issuer mismatch"
+the current candidate issuer certificate was rejected because its
+subject name did not match the issuer name of the current certifi-
+cate. Only displayed when the -issuer_checks option is set.
+
+</li>
+<li id="38">
+
+
+30 X509_V_ERR_AKID_SKID_MISMATCH: "authority and subject key identifier
+mismatch"
+the current candidate issuer certificate was rejected because its
+subject key identifier was present and did not match the authority
+key identifier current certificate. Only displayed when the
+-issuer_checks option is set.
+
+</li>
+<li id="39">
+
+31 X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH: "authority and issuer serial
+number mismatch"
+the current candidate issuer certificate was rejected because its
+issuer name and serial number was present and did not match the
+authority key identifier of the current certificate. Only displayed
+when the -issuer_checks option is set.
+
+</li>
+<li id="40">
+
+32 X509_V_ERR_KEYUSAGE_NO_CERTSIGN: key usage does not include
+certificate signing" the current candidate issuer certificate was
+rejected because its keyUsage extension does not permit certificate
+signing.
+
+</li>
+<li id="41">
+
+50 X509_V_ERR_APPLICATION_VERIFICATION: "application verification failure"
+an application specific error. Unused.
+
+</li>
+</ul>
+
+<p id="42">
+See <a href="../../socket.htm">socket.htm</a>.
+</p>
+
+<hr><p id="43"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/get-ssl-verify-result.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,88 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>file-contents</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/file-contents.htm">9.0 version</a></td></tr></table><h2 id="2">file-contents</h2>
+
+<p id="3"><b>Arguments: </b><i>filespec </i> &amp;rest <i>open-arguments</i></p>
+
+<p id="4">
+This function returns a vector containing the contents of the file
+specified by
+<i>filespec</i>. <i>filespec</i> may be a
+pathname, a string naming a file, or a stream open to a file.
+</p>
+<p id="5">
+The <i>open-arguments</i> arguments are the same as the
+arguments to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a>, except the
+<i>direction</i> keyword argument is ignored and the
+<i>if-does-not-exist</i> keyword argument defaults
+unconditionally to <code>nil</code> (recall that in calls
+to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a>, the default for
+<i>if-does-not-exist</i> depends on the values of other
+arguments).
+</p>
+
+<p id="6">
+The <i>element-type</i> argument to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> specifies the type of
+vector that will be created (which will be <a href="../../../ansicl/dictentr/upgraded.htm"><b>upgraded-array-element-type</b></a> applied to the
+specified element-type). If <i>element-type</i> is not
+specified, it defaults to <code>character</code> and the result
+is a string. For a byte array containing the file contents, specify
+<code>(unsigned-byte 8)</code>. Basically, the function is
+intended for element-types <code>character</code> and
+<code>(unsigned-byte 8)</code>. Specifying other element types
+will work but may produce an unspecialized array (element-type t)
+which would not be suitable as data when setf'ing this function.
+</p>
+<p id="7">
+If <a href="file-contents.htm"><b>file-contents</b></a> is being
+called to simply hold the contents of a file, for example for later
+writing out, then <i>element-type</i> should be
+<code>(unsigned-byte 8)</code> rather than
+<code>character</code>. Using <code>character</code>
+involves an external-format overhead, and you have to be sure to
+specify the same external-format when writing the file as was used
+when reading the file. <code>(unsigned-byte 8)</code> avoids
+both problems. Note further when using <code>character</code>:
+if you don't specify an external-format (as the value of the
+<i>external-format</i> to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> included among
+<i>open-arguments</i>) when calling <a href="file-contents.htm"><b>file-contents</b></a>, then the default
+external-format (which comes from the current <a href="../../variables/excl/s_locale_s.htm"><code>*locale*</code></a> setting) may not correctly represent
+all characters.
+</p>
+
+<p id="8">
+The behavior if the file specified by <i>filespec</i>
+does not exist is determined by the
+<i>if-does-not-exist</i> argument (to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> and thus to this
+function). For this function, that argument defaults to <code>nil</code> so <code>nil</code> is returned if the file does not exist and
+<i>if-does-not-exist</i> is unspecified.
+</p>
+
+<p id="9">
+This function is <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'able. The setf function has
+argument list
+</p>
+<p id="10"><b>Arguments: </b><i>vector pathname
+</i> &amp;rest <i>open-arguments</i></p>
+
+<p id="11">
+The standard setf form is, of course:
+</p>
+
+<pre id="12">
+(setf (file-contents pathname) vector)
+</pre>
+
+<p id="13">
+The setf function also accepts keyword/value pairs suitable to be
+passed to the function <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a>, but <i>direction</i> and
+<i>element-type</i> are not accepted. The
+<i>element-type</i> passed to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> is the <a href="../../../ansicl/dictentr/array-el.htm"><b>array-element-type</b></a> of
+<i>vector</i>. <b>Warning:</b> if the element-type of
+the vector is not suitable as an element-type for <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a>, the call to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> will
+fail. <code>t</code> is not suitable as an element-type to
+<a href="../../../ansicl/dictentr/open.htm"><b>open</b></a>. <code>character</code> and
+<code>(unsigned-byte 8)</code> are both, of course, suitable.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/file-contents.htm">9.0 version</a></td></tr></table></body></html>

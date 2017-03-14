@@ -1,0 +1,141 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>lispval-storage-type</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/lispval-storage-type.htm">9.0 version</a></td></tr></table><h2 id="2">lispval-storage-type</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object </i> &amp;optional <i>type</i><i>
+</i></p>
+
+<p id="4">
+Returns information about storage classifications or of the
+storage-classification of an object.
+</p>
+<p id="5">
+If <i>type</i> is not given, then the object's storage
+attributes are examined, and the most specific description of these
+attributes is returned in the form of a keyword.  The possible
+keywords are:
+</p>
+
+<ol>
+<li id="6">
+<code>:immediate</code>, which means the object is not
+referenced with a pointer (fixnums, e.g.)
+</li>
+<li id="7">
+<code>:static</code>, which means the object is stored in an
+area which is not garbage collected.
+</li> 
+<li id="8">
+<code>:tenured</code>, which means the object is stored in
+oldspace (also called tenured space).
+</li>
+<li id="9">
+<code>:new</code>,
+which means the object is stored in newspace but will, if it survives,
+eventually be tenured.
+</li>
+<li id="10">
+<code>:panified</code>, which means that the object is stored 
+in newspace and will never be tenured. (The name comes from 
+Peter Pan, who never grew old.) See the note just below.
+</li>
+<li id="11">
+<code>:weak</code>, which means the object is in newspace, will
+not be tenured, and is a weak vector.
+</li>
+<li id="12">
+<code>:finalized</code>, which means that the object is a
+finalization.
+</li>
+<li id="13">
+<code>:weak-key-non-panified</code>, which means that the object
+is a weak-key vector in newspace, but may be tenured (after which it
+will no longer be weak).
+</li>
+<li id="14">
+<code>:weak-key-panified</code>, which means that the object is
+a weak-key vector in newspace which will not be tenured.
+</li>
+</ol>
+
+<p id="15">
+<b>Note on :panified objects:</b> Only system-created objects can have
+storage type <code>:panified</code> but sometimes these objects are
+created as a consequnce of user action. The key vector of a weak-keys
+hashtable is typically a <code>:panified</code> object, though this
+can be controlled. See <a href="../../implementation.htm#cl-make-hash-table-2">cl:make-hash-table</a> in
+<a href="../../implementation.htm">implementation.htm</a>.
+</p>
+
+<p id="16">
+<i>type</i> can be <code>:all</code> or one of the
+storage types keywords in the list above.
+</p>
+<p id="17">
+If <i>type</i> is <code>:all</code>, a list of
+possible storage types is returned (and the
+<i>object</i> argument is ignored). Thus, when
+<i>type</i> is <code>:all</code>, the call is for
+information about the current implementation of <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a>, which may be
+modified in a patch subsequent to the release.
+</p>
+<p id="18">
+If <i>type</i> is a storage type, <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a> returns true
+or <code>nil</code> as the storage type of
+<i>object</i> matches or does not match
+<i>type</i>. Here <i>match</i> means `is of that storage
+type', not `is <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a>
+to the value returned by <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a> when
+<i>type</i> is not specified'. If <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a> returns
+<code>:weak</code> when type is not specified, it will return
+true when <i>type</i> is <code>:weak</code> and
+when <i>type</i> is <code>:new</code>.
+</p>
+<p id="19">
+See <a href="../../gc.htm">gc.htm</a> for a discussion of where Lisp objects
+are stored. <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a> replaces the
+now deprecated <a href="pointer-storage-type.htm"><b>pointer-storage-type</b></a>.
+</p>
+
+
+<h3 id="20">Example</h3>
+
+<pre id="21">
+;; A 1-d static array has storage type :STATIC
+;; (2-d and higher dimension
+;; static arrays have headers that are Lisp objects so they will have
+;; storage type :NEW or :TENURED, but their data vectors
+;; (available via INSPECT) 
+;; will have storage type :STATIC):
+CL-USER(24): (sys:lispval-storage-type 
+               (make-array 3 :allocation :static
+                           :element-type 'fixnum :initial-element 2))
+:STATIC
+;; Fixnums are immediates:
+CL-USER(25): (sys:lispval-storage-type 22)
+:IMMEDIATE
+;; Most Lisp objects start in new space:
+CL-USER(26): (setq a (cons 1 2))
+(1 . 2)
+CL-USER(27): (sys:lispval-storage-type a)
+:NEW
+;; And after surviving several scavenges, they typically
+;; move to oldspace:
+CL-USER(28): (gc) (gc) (gc) (gc) (gc)
+CL-USER(29): (sys:lispval-storage-type a)
+:TENURED
+
+;;  Here we show the use of the TYPE argument:
+CL-USER(30): (setq a (make-array 10 :weak t))
+#(NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL)
+CL-USER(31): (sys:lispval-storage-type a)
+:WEAK
+CL-USER(32): (sys:lispval-storage-type a :new)
+T
+CL-USER(5): (sys:lispval-storage-type a :weak)
+T
+CL-USER(6): 
+</pre>
+
+<hr><p id="22"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/lispval-storage-type.htm">9.0 version</a></td></tr></table></body></html>

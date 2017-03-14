@@ -1,0 +1,58 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>base64-decode-stream</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/base64-decode-stream.htm">9.0 version</a></td></tr></table><h2 id="2">base64-decode-stream</h2>
+
+<p id="3"><b>Arguments: </b><i>
+instream outstream </i>&amp;key <i>count</i> (<i>error-p</i> t)<i>
+</i></p>
+
+
+
+<p id="4">
+<a href="base64-decode-stream.htm"><b>base64-decode-stream</b></a> reads
+bytes from <b><i>instream</i></b>, does base64 decoding
+on them, and writes the decoded bytes to
+<b><i>outstream</i></b>. Non-base64 characters are
+ignored.  Invalid base64 encodings will result in an error being
+generated.  <i>instream</i> is read until base64
+terminating characters are seen or until end-of-file. If end-of-file
+is seen at an improper place (such as in the middle of a base64 chunk)
+an error will be generated.
+</p>
+<p id="5">
+If the <b><i>count</i></b> keyword argument is supplied,
+it must be an integer indicating the maximum number of bytes to read
+from <i>instream</i>.  If <i>count</i> is
+not supplied, or is <code>nil</code> (the default), the
+<i>instream</i> will be read until base64 terminating
+bytes are seen, or until end-of-file.
+</p>
+<p id="6">
+If the <b><i>error-p</i></b> keyword argument is true
+(the default), then errors during base64 decoding (such as unexpected
+end of input, or invalid encodings) will result in an error being
+generated. If <i>error-p</i> is <code>nil</code>, base64 decoding will simply stop processing and
+return.
+</p>
+
+<p id="7">
+<b>Notes</b>: <i>instream</i> must be a stream capable
+of being read in an octet-oriented manner (i.e, it must be a stream
+for which <a href="../../../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a> will
+succeed). In particular, <i>instream</i> cannot be a
+string stream.  Likewise, <i>outstream</i> must be a
+stream capable of being written in an octet-oriented manner.
+</p>
+
+<p id="8">
+See <a href="../../miscellaneous.htm#base64-1">Base64
+Support</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a> for
+information on Base64 and Base64 support in Allegro CL.
+</p>
+
+
+<p id="9">
+See also: <a href="base64-encode-stream.htm"><b>base64-encode-stream</b></a> documentation.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/base64-decode-stream.htm">9.0 version</a></td></tr></table></body></html>

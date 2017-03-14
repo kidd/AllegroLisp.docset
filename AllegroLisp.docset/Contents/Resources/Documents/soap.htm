@@ -1,0 +1,5000 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>A SOAP 1.1 API for Allegro CL</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/soap.htm">9.0 version</a></td></tr></table><h1 id="2">A SOAP 1.1 API for Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#pref-1">1.0 Preface</a><br><a href="#intro-1">2.0 Introduction</a><br><a href="#simple-ex-1">3.0 A Simple Client Example</a><br><a href="#components-1">4.0 Components of the API</a><br><a href="#elem-def-1">5.0 Element Definition</a><br><a href="#type-def-1">6.0 Type Definition</a><br>&nbsp;&nbsp;&nbsp;<a href="#built-in-schema-types-2">6.1 Built-in Schema Types</a><br><a href="#client-call-1">7.0 Making a Client Call</a><br><a href="#soap-server-comp-1">8.0 SOAP Server Components</a><br>&nbsp;&nbsp;&nbsp;<a href="#soap-server-2">8.1 The SOAP Network Server</a><br>&nbsp;&nbsp;&nbsp;<a href="#exporting-methods-2">8.2 Exporting Methods</a><br>&nbsp;&nbsp;&nbsp;<a href="#controllinbg-access-2">8.3 Controlling Access to Methods</a><br>&nbsp;&nbsp;&nbsp;<a href="#defining-soap-methods-2">8.4 Defining SOAP Methods</a><br><a href="#programming-notes-1">9.0 Programming Notes</a><br>&nbsp;&nbsp;&nbsp;<a href="#multiple-threads-2">9.1 Multiple Threads</a><br>&nbsp;&nbsp;&nbsp;<a href="#connector-classes-2">9.2 Connector Class Hierarchy</a><br>&nbsp;&nbsp;&nbsp;<a href="#things-go-wrong-2">9.3 When things go wrong - debugging SOAP interfaces</a><br>&nbsp;&nbsp;&nbsp;<a href="#i18n-issues-2">9.4 I18N Issues</a><br><a href="#wsdl-support-1">10.0 WSDL Support</a><br>&nbsp;&nbsp;&nbsp;<a href="#wsdl-limitations-2">10.1 Limitations in WSDL support</a><br>&nbsp;&nbsp;&nbsp;<a href="#wsdl-funs-vars-2">10.2 WSDL Functions and Variables</a><br>&nbsp;&nbsp;&nbsp;<a href="#name-pack-2">10.3 Namespaces and Packages</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#name-pack-3">10.3.1 Some important namespaces and packages</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#namespace-defs-3">10.3.2 Namespace Definition Operators</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#namespace-deduce-3">10.3.3 Deducing the namespaces used in a WSDL file</a><br>&nbsp;&nbsp;&nbsp;<a href="#mapping-soap-to-clos-2">10.4 Mapping SOAP Structures to CLOS classes</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#generated-classes-3">10.4.1 Generated Classes</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#generated-accessors-3">10.4.2 Generated Accessors</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#generated-constructors-etc-3">10.4.3 Generated Constructors, Decoders, and Encoders</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#call-wrapper-3">10.4.4 Call Wrapper Methods</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#map-soap-to-lisp-3">10.4.5 Mapping SOAP Names to Lisp Names</a><br>&nbsp;&nbsp;&nbsp;<a href="#client-from-wsdl-2">10.5 How to generate a SOAP client interface from a WSDL definition</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#client-from-wsdl-3">10.5.1 Combining Several WSDL Definitions in one Lisp Image</a><br>&nbsp;&nbsp;&nbsp;<a href="#custom-generated-code-2">10.6  Customizing Generated Code</a><br><a href="#headers-1">11.0 Headers</a><br><a href="#faults-errors-1">12.0 Faults and Errors</a><br><a href="#index-1">13.0 Index</a><br><hr><hr><h2 id="4"><a name="pref-1">1.0 Preface</a></h2>
+
+<p id="5">
+<b>An update released in late February, 2006</b>, makes minor changes
+and corrections to the update to 7.0 made earlier in the month and to
+the SOAP released with 8.0. One documentation correction should be
+noted: the default for the <b>:nillable</b> option (to operators like
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>) is
+<code>:ignore</code> (making it compatible with earlier
+versions). The earlier documentation update incorrectly said the
+default was <code>:accept</code>.
+</p>
+
+
+
+<p id="6">
+This document describes an implementation of the Allegro CL SOAP
+API. There are still pieces of the Allegro CL/SOAP implementation to
+be completed. These will be released when they are ready.
+</p>
+
+<ul>
+<li id="7">
+The implementation is incomplete in a few areas.  Missing features do
+not indicate a decision to not support, but should be reported since
+we may have failed to note the omission.
+</li>
+<li id="8">
+The specifications are believed to be stable but may change as
+implementation proceeds and feedback is incorporated. (This means that
+the Final release may not be backward compatible with this one.)
+</li>
+</ul>
+
+<p id="9">
+The Implementation Plan for the Allegro/SOAP API is as follows.
+</p>
+<ul>
+<li id="10">
+Client API with built-in data types (described in this document)
+</li>
+<li id="11">
+Server API with built-in data types (described in this document)
+</li>
+<li id="12">
+WSDL 1.1 support (described in this document)
+</li>
+<li id="13">
+WSDL generation (described in this document)
+</li>
+<li id="14">
+Event-driven (SAX-like) API (to be implemented)
+</li>
+<li id="15">
+SOAP 1.2 (to be implemented)
+</li>
+<li id="16">
+WSDL 1.2 (to be implemented)
+</li>
+</ul>
+
+<hr><hr><h2 id="17"><a name="intro-1">2.0 Introduction</a></h2>
+
+<p id="18">
+The Allegro CL SOAP module requires the SAX parser (:sax) and the
+AllegroServe (:aserve) modules. These modules are loaded automatically
+when the SOAP module is loaded.
+</p>
+<p id="19">
+You load the SOAP API into a running lisp with the following
+call to <b>require</b>:
+</p>
+<pre id="20">
+(require :soap)
+</pre>
+
+<p id="21">
+All the symbols in the SOAP API are exported from the
+<code>net.xmp.soap</code> package.
+</p>
+<p id="22">
+There is a SOAP client example in
+<i>examples/soap/soapex.cl</i>. There is a SOAP server
+example in <i>examples/soap/soapval1.cl</i>.
+</p>
+<p id="23">
+The letters xmp stand for XML Message Protocol.  The XMP component
+implements a separately documented API that is used as a basis for the
+SOAP implementation and for other XML-based message protocols such as
+XMLRPC.
+</p>
+<p id="24">
+Users may find it more convenient to try the SOAP examples in a Modern
+(case-sensitive) Allegro CL image. Since case in SOAP symbols is
+significant, SOAP symbols typically have mixed case print
+names. Modern mode handles mixed case names without special effort. If
+you use an ANSI (case-insensitive) Allegro CL image, SOAP symbols need
+to be wrapped in vertical bar escapes (as is done in the Simple
+Example just below) in order to preserve their mixed-case print names.
+</p>
+<p id="25">
+There is another example in the file <b><i>[Allegro
+directory]/examples/soap/bignum-server.cl</i></b>.
+</p>
+
+
+<hr><hr><h2 id="26"><a name="simple-ex-1">3.0 A Simple Client Example</a></h2>
+
+
+<p id="27">
+This simple example shows how to access a public SOAP server that 
+returns currency conversion rates. (See also the file
+<i>examples/soap/soapex.cl</i>.)
+</p>
+<p id="28">
+This example accesses an external public SOAP server which was available at
+the time this document was written.  This specific example may not
+produce the described result at other times and places.
+</p>
+<p id="29">
+The symbols in the "urn:xmethods-CurrencyExchange" namespace are
+exported from a Lisp package created for this purpose.
+</p>
+<pre id="30">
+
+(require :soap)
+(use-package :net.xmp.soap)
+
+;;  This form ensures that XSD is a nickname of the NET.XMP.SCHEMA
+;;  package:
+(defpackage :net.xmp.schema (:use) (:nicknames :xs :xsd))
+
+(defpackage :conv (:use) (:export "getRate"))
+</pre>
+
+<p id="31">
+We define a function to send the message and decode the reply: 
+</p>
+<pre id="32">
+(defun convert (&optional (country1 "Canada") (country2 "USA"))
+  (let ((conn (soap-message-client 
+         :lisp-package :keyword
+                :url "http://services.xmethods.net:80/soap")))
+    (call-soap-method
+     conn
+     '(:element
+       conv:|getRate|
+       (:complex (:seq (:element "country1" xsd:|string|)
+                       (:element "country2" xsd:|string|)
+                       )
+                :action ""
+                :namespaces
+                (nil (:conv "tns" "urn:xmethods-CurrencyExchange"))
+                ))
+     :|country1| country1 :|country2| country2
+     )))
+</pre>
+
+<p id="33">
+The main element of the message is defined (in line) as a complex type
+composed of a sequence of two elements "country1" and "country2".  The
+content of each of these elements is declared to be a string.  The
+information needed to create the element definitions must be obtained
+from the server documentation, often in the form of a WSDL file.
+</p>
+<p id="34">
+We try the function (we got the response indicated when this example
+was run but this is an external service and it may not work as
+indicated when you try it, either because of a temporary glitch or a
+permanent problem or change):
+</p>
+<pre id="35">
+cl-user(4): <b>(convert)</b>
+(conv::getRateResponse (:Result 0.8188))
+nil
+</pre>
+
+
+<p id="36">
+The result message is returned as a nested list of association lists
+where element name is the key and element content is the value.
+</p>
+
+<hr><hr><h2 id="37"><a name="components-1">4.0 Components of the API</a></h2>
+
+<p id="38">
+The client API encodes Lisp data into a SOAP message and transmits the
+encoded HTTP message to the server.  The reply from the server is
+another HTTP message that is decoded into Lisp data returned to the
+caller. SOAP messages may be exchanges with the HTTP protocol, or with
+the HTTPS protocol when SSL security is needed.  We use the term
+<i>HTTP protocol</i> in this document to refer to both.
+</p>
+<p id="39">
+The server API defines Lisp functions that are called when specified
+messages are sent to the server. The messages arrive as encoded HTTP
+text and the value returned by the function is sent as an encoded HTTP
+reply message.
+</p>
+<p id="40">
+The XML elements in both outgoing and incoming messages 
+must be defined in order to specify the required
+encoding and decoding behaviors.
+</p>
+
+<hr><hr><h2 id="41"><a name="elem-def-1">5.0 Element Definition</a></h2>
+
+<p id="42">
+An element definition specifies how an element should be encoded in a
+message to a server and how it can be decoded in a reply message.
+</p>
+<p id="43">
+An element definition can appear as a component in a Lisp list structure that
+describes a compound XML element:
+</p>
+<pre id="44">
+element-def -&gt; (:element elt-name-spec type-spec [:nillable t])
+</pre>
+
+<p id="45">
+The <code>nillable</code> option, when non-<code>nil</code>, adds the <b>"xsd:nillable='true'"</b> attribute
+to the element.
+</p>
+<p id="46">
+An element definition can also be created with a call to <a href="soap.htm#define-soap-element-op-bookmarkxx"><b>define-soap-element</b></a>:
+</p>
+
+<hr><h3 id="47"><a name="define-soap-element-op-bookmarkxx"></a>define-soap-element</h3><h3 id="48">Generic Function</h3><h4 id="49">Package: net.xmp.soap</h4>
+
+<p id="50"><b>Arguments: </b><i>
+conn elt-name-spec type-spec </i> &amp;rest <i>def-options</i><i> </i>&amp;key  (<i>redef</i> :warn)<i> nillable</i><i>  &amp;allow-other-keys
+</i></p>
+
+
+
+<p id="51">
+After a call to <a href="soap.htm#define-soap-element-op-bookmarkxx"><b>define-soap-element</b></a>, any of the names
+listed in the <i>elt-name-spec</i> may be used to denote
+the defined element.
+</p>
+<p id="52">
+The <i>conn</i> argument may be <code>nil</code> but can also be used to define behavior specific
+to a particular class of connections.
+</p>
+<p id="53">
+The <i>elt-name-spec</i> argument specifies one or more
+names by which the element can be identified. It is described below.
+</p>
+<p id="54">
+The <i>type-spec</i> argument may be the name of a
+separately defined SOAP type, the name of a built-in SOAP type or an
+anonymous type definition as defined in the next section.  When
+<i>type-spec</i> is <code>nil</code>, the
+named definition is removed.
+</p>
+<p id="55">
+The <i>redef</i> option controls the behavior when a
+definition already exists. The possible values are:
+</p>
+<ul>
+<li id="56">
+<code>nil</code> - silently replace the existing definition
+</li>
+<li id="57">
+<code>:warn</code> - print a warning if a definition exists and
+is not equal to the new definition
+</li>
+<li id="58">
+<code>t</code> - signal an error (instead of a warning)
+</li>
+</ul>
+<p id="59">
+The <i>nillable</i> option, when non-<code>nil</code>, marks the element as nillable.  When an element
+is nillable, instances of the element may appear in a document with an
+empty content and a property <b>"xsi:nil='true'"</b> - in this case,
+treat the element as if it were not there.
+</p>
+<p id="60">
+When the element definition is output to a WSDL Schema definition, the
+element is tagged with the attribute <b>"xsd:nillable='true'"</b>.
+</p>
+<p id="61">
+Additional keyword arguments are saved as options in the element
+definition.
+</p>
+
+<hr>
+
+<p id="62">
+An <code>elt-name-spec</code> is defined as follows:
+</p>
+
+<pre id="63">
+elt-name-spec -&gt; symbol | string 
+              -&gt; ( { symbol | string | (:any-case string) }... )
+</pre>
+
+<p id="64">
+When a SOAP message is created, the first (or only) name in
+<code>elt-name-spec</code> determines the name included in the
+message. The components of an <code>elt-name-spec</code> are:
+</p>
+
+<pre id="65">
+string --&gt; unqualified QName
+symbol --&gt; 1. If the symbol-package of the symbol has been 
+                 associated with a namespace
+	        AND
+	         the namespace is included in the current context,
+	        THEN
+	         the qualified QName is included in the message.
+	  2. OTHERWISE the symbol name is included as an unqualified QName.
+(:any-case string) --&gt; treated like string above
+</pre>
+
+<p id="66">
+When a SOAP message is decoded, any one of the names in the
+<code>elt-name-spec</code> is accepted as a name for this
+element.
+</p>
+
+<pre id="67">
+string --&gt; accept any string= QName in any namespace
+symbol --&gt; accept the EQ symbol
+(:any-case string) --&gt; accept any string-equal QName in any namespace
+</pre>
+
+<hr><hr><h2 id="68"><a name="type-def-1">6.0 Type Definition</a></h2>
+
+<p id="69">
+A type definition specifies the structure, content and attributes of
+an XML element.  A type definition also specifies the encoding from
+Lisp to XML and the decoding from XML to Lisp.
+</p>
+<p id="70">
+A type definition can appear as a component in a Lisp list structure that
+describes a compound XML element:
+</p>
+<pre id="71">
+type-def -&gt; (:simple simple-type-spec simple-option... )
+         -&gt; (:array type-spec array-option... )
+         -&gt; (:complex complex-def complex-option... )
+</pre>
+<p id="72">
+A type definition can also be created with a call to <a href="soap.htm#define-soap-type-op-bookmarkxx"><b>define-soap-type</b></a>:
+</p>
+
+<hr><h3 id="73"><a name="define-soap-type-op-bookmarkxx"></a>define-soap-type</h3><h3 id="74">Function</h3><h4 id="75">Package: net.xmp.soap</h4>
+
+<p id="76"><b>Arguments: </b><i>
+conn name type-def </i>&amp;key  (<i>redef</i> :warn)<i> 
+ &amp;allow-other-keys
+</i></p>
+
+
+
+
+<p id="77">
+Once defined, a type name may be used in other element or type
+definitions. When <i>type-def</i> is <code>nil</code>, the named definition is removed.
+</p>
+<p id="78">
+Additional keyword arguments are saved as options in the element
+definition.
+</p>
+
+<hr>
+
+<pre id="79">
+simple-type-spec -&gt; nil | type-name
+       type-spec -&gt; type-name | type-def 
+
+ complex-def -&gt; (collector complex-part ...)
+   collector -&gt; :seq    ;; zero or one of each part in specified sequence
+             -&gt; :seq*   ;; zero or more of each part in specified sequence
+             -&gt; :seq+   ;; one or more of each part in specified sequence
+             -&gt; :seq1   ;; exactly one of each part in specified sequence
+             -&gt; :set    ;; zero or one of each part in any sequence
+             -&gt; :set*  
+             -&gt; :set+  
+             -&gt; :set1  
+             -&gt; :or     ;; exactly one of the parts
+</pre>
+
+<p id="80">
+The components of :seq :seq* :seq1 and :seq+ must be ordered as specified.
+</p>
+<p id="81">
+The components of :set :set* :set1 and :set+ may appear in any order.
+</p>
+<p id="82">
+When a complex element is encoded, the sub-elements are always encoded
+in the order listed in the definition.
+</p>
+
+<pre id="83">
+complex-part -&gt; element-spec | complex-def
+element-spec -&gt; element-name | (:any} | element-def
+</pre>
+<p id="84">
+When a complex-part denotes a sequence of elements
+the sequence is spliced into the sequence containing
+the complex-part.
+</p>
+<p id="85">
+Sub-element definitions enter only through an element-def
+with a :complex or :array type-def.
+</p>
+
+<h4 id="86">
+Options on :complex type-def:
+</h4>
+
+<ul>
+<li id="87">
+<code>:action string</code> - this option is needed on the
+top-level element of a message to specify the content of the
+SOAPAction HTTP header in the request to the server.
+</li>
+</ul>
+
+
+<h4 id="88">
+Options on any type-def:
+</h4>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>Option Name</strong></td>
+<td WIDTH="25%" VALIGN="TOP"><strong>Possible Values</strong></td>
+<td WIDTH="50%" VALIGN="TOP"><strong>Description</strong></td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:namespaces</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+The name of a namespace map or a list containing an explicit namespace
+map.
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+This option may be present on any element. The default-urn is encoded
+as the "xmlns=" attribute in the element and the other components are
+encoded as "xmlns:prefix=" attributes.
+Namespace definitions are inherited by nested sub-elements, and obey
+the namespace scoping and masking conventions of XML.
+<p id="89">
+Symbols in the specified Lisp packages are encoded as qualified QName
+strings with the appropriate prefix.
+</p>
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:attributes</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+A property list
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+This option may be
+present on any element. When present, this option is encoded as a
+sequence of attributes "property-name=property-value".
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:must-understand</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+nil or non-nil
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+This option is
+recognized only on the type-def of a top-level element sent as a
+Header element in a message. If non-<code>nil</code> then
+a "mustUnderstand" attribute with value "1" is included. If <code>nil</code>, then a "mustUnderstand" attribute with value "0"
+is included.
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:encoding</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+URLlist
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+A string consisting of one or
+more URLs separated by spaces. Sent as the
+<code>SOAP-ENV:encodingStyle</code> attribute in the element.
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:computed-attributes</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+function-name
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+The named
+function is called with two arguments <code>(conn
+element-name)</code> and is expected to return a property-list of
+the form <code>(attr-name value ...)</code> to be added to the
+attributes of the element.
+<p id="90">
+When encoding a mesage sent with <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>, the function
+is called in the dynamic environment of the call to 
+<a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>.
+When encoding a message returned from a server method, there is no 
+dynamic environment relevant to the application. When encoding a 
+message with <a href="soap.htm#soap-encode-object-op-bookmarkxx"><b>soap-encode-object</b></a>, the function is called in the 
+dynamic environment of the call to <a href="soap.htm#soap-encode-object-op-bookmarkxx"><b>soap-encode-object</b></a>.
+(Use <a href="soap.htm#soap-encode-object-op-bookmarkxx"><b>soap-encode-object</b></a>
+when computing a method return 
+if dynamic environment is relevant.)
+</p>
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:send-type</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+<code>nil</code>, <code>t</code>, or a string
+or symbol that names a Schema type
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+This option may be present on any element.  A non-<code>nil</code> value specifie that the "xsi:type" attribute
+should be added to the element instance in the SOAP message.
+<p id="91">
+If the value of the :send-type option is <code>t</code>,
+then the type of the element must be a named type; the name of the
+element type is sent as the value of the "xsi:type" attribute.
+</p>
+<p id="92">
+If the value of the :send-type option is a string or a symbol other
+than <code>t</code>, then the value of the option is sent
+as the value of the "xsi:type" attribute.
+</p>
+<p id="93">
+If the value of the :send-type option is <code>nil</code>,
+then the "xsi:type" attribute is omitted from the outgoing message.
+</p>
+<p id="94">
+If the option is not specified, then the behavior is controlled by the value
+of the :send-type initarg to
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a> or
+<a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a>.
+</p>
+</td>
+</tr>
+
+</table>
+
+
+
+<h4 id="95">
+Options on :array type-def:
+</h4>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>Option Name</strong></td>
+<td WIDTH="25%" VALIGN="TOP"><strong>Possible Values</strong></td>
+<td WIDTH="50%" VALIGN="TOP"><strong>Description</strong></td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:length</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+A single integer or a list of integers
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+This option specifies the dimensions of an array. A single integer
+denotes a 1-dimensional array of that length. A list of n integers
+denotes an n-dimensional array.
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:send-atype</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+A type name or a string of the form "type[]" or "type[15,17]".
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+Send a
+<code>enc:|arrayType|</code> attribute with
+<code>type-name</code> as the value.
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:send-asize</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+<code>nil</code>, a number, some other value, <code>t</code>
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+If non-<code>nil</code>, include an array size in
+arrayType. If the value is a number, send that number. If value is another
+non-<code>nil</code> value, then the length of the data
+determines the actual dimension sent in the message. If this
+option is non-<code>nil</code>, then the
+<code>:send-atype</code> option must not include any dimension
+values, i.e. in a form such as "type[15,17]". A list of integers
+should send that list as dimensions but that is NOT IMPLEMENTED.
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><strong>:array-item</strong></td>
+<td WIDTH="25%" VALIGN="TOP">
+A list like <code>([array-item-prop-name array-item-prop-val]
+...)</code>
+</td>
+<td WIDTH="50%" VALIGN="TOP">
+This option provides additional detail about how an
+array should be encoded. The possibilities for
+<code>array-item-prop-name</code> and
+<code>array-item-prop-val</code> are:
+<pre id="96">
+array-item-prop-name:   array-item-prop-val:
+
+   :element                element-spec
+   :send-type              boolean
+   :attributes             property-list
+
+   :argument               arg-spec
+                    
+                             This option specifies how array 
+                             elements are passed to the encoding 
+                             functions.  The argument is a list 
+                             of element data items as follows:
+
+                             arg-spec:              data item:
+
+                             :element-and-arg       (element-spec data)
+                             :type-and-arg          (type-spec data)
+                             :attributes-and-arg    (property-list data)
+                             :arg-only              data
+                             nil                    data
+</pre>
+</td>
+</tr>
+</table>
+
+
+
+<hr><h2 id="97"><a name="built-in-schema-types-2">6.1 Built-in Schema Types</a></h2>
+
+
+<p id="98">
+The package qualifier <code>xsd</code> is a nickname for the
+<code>net.xml.schema</code> package. You must have evaluated
+<code>(defpackage :net.xmp.schema (:use) (:nicknames :xs
+:xsd))</code> in order for the nickname to be valid. Otherwise,
+replace <code>xsd</code> with <code>net.xmp.schema</code>
+in the lists below.
+</p>
+<p id="99">
+The package qualifier <code>enc</code> is a nickname for the
+net.xml.soap.encoding package. You must have evaluated
+<code>(defpackage :net.xmp.soap.encoding (:use) (:nicknames
+:enc))</code> in order for the nickname to be valid. Otherwise,
+replace <code>enc</code> with
+<code>net.xmp.soap.encoding</code> in the lists below.
+</p>
+
+<p id="100">
+The following Schema and SOAP Encoding types have definitions built into
+the SOAP module.
+</p>
+<pre id="101">
+         Schema and
+        SOAP Encoding        Decoded to            Encoded from
+           Type              Lisp type              Lisp type 
+
+      enc:|QName| 
+      xsd:|QName|              symbol                  symbol
+
+     enc:|decimal|
+     xsd:|decimal|         integer or ratio            number
+
+       enc:|long|
+       xsd:|long|              integer                 number in range
+
+  enc:|unsignedLong|
+  xsd:|unsignedLong|           integer                 number in range
+
+       enc:|int|
+       xsd:|int|               integer                 number in range
+
+   enc:|unsignedInt|
+   xsd:|unsignedInt|           integer                 number in range
+
+     enc:|integer|
+     xsd:|integer|             integer                 number
+
+  enc:|nonPositiveInteger|
+  xsd:|nonPositiveInteger|     integer                 number in range
+
+  enc:|nonNegativeInteger|
+  xsd:|nonNegativeInteger|     integer                 number in range
+
+  enc:|negativeInteger|
+  xsd:|negativeInteger|        integer                 number in range
+
+  enc:|positiveInteger|
+  xsd:|positiveInteger|        integer                 number in range
+
+       enc:|short|
+       xsd:|short|             integer                 number in range
+
+       enc:|byte| 
+       xsd:|byte|              integer                 number in range
+
+  enc:|unsignedShort|
+  xsd:|unsignedShort|          integer                 number in range
+
+  enc:|unsignedByte|
+  xsd:|unsignedByte|           integer                 number in range
+
+   enc:|boolean|
+   xsd:|boolean|              t or nil                    any
+
+      enc:|float| 
+      xsd:|float|             double-float                 number
+
+      enc:|double| 
+      xsd:|double|            double-float                 number
+
+    enc:|base64|
+   enc:|base64Binary|
+   xsd:|base64Binary|          string                      string
+</pre>
+
+<p id="102">
+All the following types are decoded to a Lisp string and any Lisp
+value is encoded to a string in the outgoing message:
+</p>
+<pre id="103">
+  enc:|string| enc:|duration| enc:|dateTime| enc:|time| enc:|date|
+  enc:|gYearMonth| enc:|gYear| enc:|gMonthDay| enc:|gDay|
+  enc:|gMonth| enc:|anyURI| enc:|NOTATION| enc:|token|
+  enc:|language| enc:|IDREFS| enc:|ENTITIES| enc:|NMTOKEN|
+  enc:|NMTOKENS| enc:|Name| enc:|NCName| enc:|ID| enc:|IDREF|
+  enc:|ENTITY| enc:|normalizedString| xsd:|normalizedString|
+  xsd:|duration| xsd:|dateTime| xsd:|time| xsd:|date|
+  xsd:|gYearMonth| xsd:|gYear| xsd:|gMonthDay| xsd:|gDay|
+  xsd:|gMonth| xsd:|anyURI| xsd:|NOTATION| xsd:|token|
+  xsd:|language| xsd:|Name| xsd:|NMTOKEN| xsd:|NCName|
+  xsd:|NMTOKENS| xsd:|ID| xsd:|IDREF| xsd:|ENTITY| xsd:|IDREFS|
+  xsd:|ENTITIES|
+
+  xsd:|string|
+</pre>
+
+
+
+
+
+<hr><hr><h2 id="104"><a name="client-call-1">7.0 Making a Client Call</a></h2>
+
+<p id="105">
+To make a client call, an application must create a connection
+instance with a call to <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+</p>
+<p id="106">
+A SOAP service available via HTTP is located with a URI that has
+several components:
+</p>
+<ul>
+<li id="107">
+The protocol component is always HTTP
+</li>
+<li id="108">
+The host and port components identify the network location of the server
+</li>
+<li id="109">
+The path component identifies the SOAP server among the services
+reached through the HTTP server (i.e. the same HTTP server may be
+providing web pages from files, messages from servlets, and many other
+web services)
+</li>
+<li id="110">
+In a client call, all these components are specified as part of the
+server URI.  In a server definition, the host is frequently
+unspecified, the port may be specified in the :start argument list,
+and the path is specified separately in the :start argument list.
+</li>
+</ul>
+<p id="111">
+A SOAP service that requires HTTPS is simply accessed with a URL that
+starts with "https://".
+</p>
+<p id="112">
+Within the HTTP request that carries the SOAP message there are HTTP
+headers that can be treated as attributes of the HTTP request.  The
+<code>soapAction</code> header may be used by a specific SOAP
+server to recognize or to dispatch a message.
+</p>
+<p id="113">
+The entire pattern used to identify a SOAP method to be called
+consists of these components:
+</p>
+<ul>
+<li id="114">
+The SOAP method - this is the element name of the main (and only) XML
+element in the SOAP message body element.
+</li>
+<li id="115">
+The soapAction header string
+</li>
+<li id="116">
+The element names of the immediate sub-elements of the SOAP method
+element.
+</li>
+</ul>
+
+<hr><h3 id="117"><a name="soap-message-client-op-bookmarkxx"></a>soap-message-client</h3><h3 id="118">Function</h3><h4 id="119">Package: net.xmp.soap</h4>
+
+<p id="120"><b>Arguments: </b><i>
+</i> &amp;rest <i>options</i><i>
+</i></p>
+
+<p id="121">
+The options (keywords) and their values are (note that a value must be
+supplied for <code>:url</code>):
+</p>
+<ul>
+<li id="122">
+<b><code>:url url-of-soap-server</code></b>: this argument is
+required since there can be no reasonable default.
+</li>
+<li id="123">
+<b><code>:lisp-package package-or-name</code></b>. This option
+specifies the package where unqualified SOAP names are interned as
+Lisp symbols.  The default is <code>net.xmp.soap.none</code>.
+</li>
+<li id="124">
+<b><code>:must-understand flag</code></b>,
+<code>flag</code> can be <code>:strict</code>,
+<code>:warn</code>, or <code>nil</code>. The default
+is <code>:warn</code>.
+</li>
+<li id="125">
+<b><code>:encoding string</code></b>, sent out as encodingStyle
+attribute. URIs separated by spaces, most specific first. The default
+is "http://schemas.xmlsoap.org/soap/encoding/".
+</li>
+<li id="126">
+<b><code>:actor string</code></b>, the default is
+"http://schemas.xmlsoap.org/soap/actor/next".
+</li>
+<li id="127">
+<b><code>:start list</code></b>, a list of additional arguments
+to do-http-request. The following keywords are used by the SOAP module
+internals and should not appear in the <i>start</i>
+argument: <code>:method</code>, <code>:protocol</code>,
+<code>:content-type</code>, <code>:content</code>,
+<code>:user-agent</code>, <code>:headers</code>,
+<code>:external-format</code>. The most likely user addition in
+this argument is <code>:proxy</code> to specify a proxy server.
+</li>
+<li id="128">
+<b><code>:null-element value</code></b>: this argument specifies
+the behavior when the content of an element is specified as <code>nil</code>.
+<i>value</i> can be
+<code>:empty</code>, in which case an empty element is included
+in the message; or <code>:default-value</code> (which is the
+default if no value is specified), in which case an element with a
+default null content is included in the message. For numeric element
+types the default value is zero.
+Other possible values
+are:
+<ul>
+<li id="129">
+<code>:nilled</code>: send an empty element with the attribute
+"xsi:nil='true'"
+</li>
+<li id="130">
+<code>:nilled-or-default</code>: if the element is defined with
+the <i>nillable</i> option <code>t</code>
+then like <code>:nilled</code> otherwise, send an element with a
+default content.
+</li>
+<li id="131">
+<code>:nilled-or-empty</code>: if the element is defined with
+the <i>nillable</i> option <code>t</code>
+then like <code>:nilled</code> otherwise, send an empty element.
+</li>
+<li id="132">
+<code>:nilled-or-none</code>: if the element is defined with
+the <i>nillable</i> option <code>t</code>
+then like <code>:nilled</code> otherwise, send nothing.
+</li>
+<li id="133">
+<code>:none</code>: do not include this element in the message.
+</li>
+</ul>
+</li>
+
+<li id="134">
+<b><code>:empty-element value</code></b>: this argument
+specifies how an empty message element is decoded into a Lisp
+value. If <i>value</i> is
+<code>:default-value</code> (which is the default if no value is
+specified), a suitable Lisp value is returned. For numeric element
+types this value is zero and for string types it is the empty
+string. If <i>value</i> is <code>nil</code>,
+the Lisp value is <code>nil</code>.
+</li>
+<li id="135">
+<b><code>:decode-flag flag</code></b>: the
+<i>flag</i> argument may be <code>:strict</code>,
+<code>:warn</code>, or <code>nil</code>.  When
+<code>:strict</code> is specified, all elements in a reply
+message must be defined, otherwise an error is signaled. When
+<code>:warn</code> is specified, undefined elements are accepted
+with a warning message. When <code>nil</code> is
+specified, all elements are accepted silently. The default is
+<code>:warn</code>.
+</li>
+<li id="136">
+<b><code>:message-dns namespace-map</code></b>: the value of
+this option is a namespace map that is combined with the
+<i>base-dns</i> namespace map to form the full space map
+for each message sent or received through this connection.  The
+default value is <code>nil</code>.  In a typical
+application, the standard SOAP and Schema namespaces are specified in
+the :base-dns option and any additional namespaces specific to the
+application are declared in the :message-dns option.
+</li>
+<li id="137">
+<b><code>:base-dns namespace-map</code></b>: this argument
+specifies the namespace map for the standard and required namespaces.
+The default value is <code>:soap</code>.
+</li>
+<li id="138">
+<b><code>:trim-whitespace t-nil-or-string</code></b>: this
+argument determines the handling of the textual content of a SOAP
+message element.  The value may be <code>nil</code>,
+<code>t</code> (the default), or a string. When <code>nil</code> is specified, then the content is not modified.
+When a string is specified, then any leading or trailing characters
+mentioned in the string are deleted from the element content.  When
+<code>t</code> is specified, the characters #\return #\space
+#\tab #\newline are deleted from the beginning and end of the element
+content.
+</li>
+<li id="139">
+<b><code>:body-form value</code></b>: this argument describes
+the SOAP Body element.
+<p id="140">
+The value <code>:one</code> (the default) specifies that the SOAP
+Body consists of exactly one element. In this case, the value of
+<a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a> is the representation of
+the one and only element in the reply.
+</p>
+<p id="141">
+The value <code>:many</code> specifies that the SOAP body may
+contain any number of elements. In this case, the value of <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a> is a list of all the
+elements in the SOAP body. This value must be specified if the SOAP
+reply message makes use of the multiRef feature.
+</p>
+</li>
+<li id="142">
+<b><code>:nillable value</code></b>: the value of this option
+specifies how element instances with an attribute "xsi:nil='true'"
+are handled. The possible values are:
+<ul>
+<li id="143">
+<code>:ignore</code>: (the default, for compatibility with
+previous versions of the SOAP module) "xsi:nil" attributes are
+ignored.  All elements will appear in the message returned to or
+passed to the application.
+</li>
+<li id="144">
+<code>:accept</code>, if an element appears with a
+"xsi:nil='true'" attribute and an empty content, then the element is
+not included in the message returned to or passed to the application.
+</li>
+<li id="145">
+<code>:strict</code>: the behavior is controlled by the element
+declaration. If the element is declared with a ":nillable t" option,
+then, if the element appears with a "xsi:nil='true'" attribute and an
+empty content, then the element is not included in the message
+returned to or passed to the application.
+</li>
+</ul>
+</li>
+<li id="146">
+<b><code>:send-type t-or-nil-or-other</code></b>: the value of this
+option controls the sending of a "xsi:type" attribute in outgoing SOAP
+messages.  A value of <code>nil</code> suppresses the
+"xsi:type" attribute .  A value of <code>t</code> causes
+an "xsi:type" attribute to be sent for any element with a named type
+definition.  The value of the attribute is the name of the element
+type.
+<p id="147">
+The value of the option may also be a string or a symbol other than
+<code>t</code>; in this case, the value of the option is
+the value of the "xsi:type" attribute sent with any element that does
+not have an explicit :send-type option specified in the element or
+type definition.
+</p>
+</li>
+<li id="148">
+<b>message-init value</b>: this option specifies the storage strategy
+used when collecting SOAP messages. Since the SOAP specification
+requires the message length to be included in the SOAP message header,
+the SOAP module must collect the entire message before sending it.
+Since this may require an indefinite amount of storage, we use an
+adjustable array.
+<p id="149">
+The default setting of 500 starts with an initial array of 500
+characters, extended as needed using the ACL default
+<b>vector-push-extend</b> strategy (ie double the array size).
+</p>
+<p id="150">
+If the <i>message-init</i> argument is specified as a
+positive integer, it specifies a different inital array size, and the
+default extension strategy.
+</p>
+<p id="151">
+If the <i>message-init</i> argument is a list, the first
+element must be a positive integer that specifies the inital array
+size. The second element, if present specifies an array extension
+strategy. A positive integer causes the array to be extended by that
+amount over what is immediately needed.  A real number less than 1.0
+causes growth by the specified fraction over the current size.  A real
+number greater than or equal to 1.0 causes growth by the specified
+ratio.
+</p>
+</li>
+</ul>
+
+<p id="152">
+The following keyword options have defaults which suffice in most
+normal situations, but different values may be specified in special
+situations:
+</p>
+
+<ul>
+<li id="153">
+<b><code>:xml-leader string</code></b> - The default value is
+&quot;xml version='1.0'&quot; This value is inserted in the &quot;&lt;?xml &gt;&quot;
+declaration at the beginning of the SOAP message.
+</li>
+<li id="154">
+<b><code>:xml-encoding value</code></b> - The default is <code>nil</code>. This argument specifies the encoding used for
+the SOAP message. The value may be the name of a Lisp external format,
+or a list of the form <code>(lname ename)</code> where
+<code>lname</code> is the Lisp name of the external format and
+<code>ename</code> is the name that should be shown as the
+encoding name in the &quot;&lt;?xml &gt;&quot; declaration.
+</li>
+<li id="155">
+<b><code>:http-method value</code></b> - The default is
+<code>:post</code>. The other possible value is
+<code>:get</code>. (See the documentation for AllegroServe, in
+<a href="aserve/aserve.html">aserve/aserve.html</a>.)
+</li>
+<li id="156">
+<b><code>:http-protocol value</code></b> - The default is
+<code>:http/1.0</code>. The other possible value is
+<code>:http/1.1</code>.  (See the documentation for
+AllegroServe, in <a href="aserve/aserve.html">aserve/aserve.html</a>.)
+</li>
+<li id="157">
+<b><code>:content-type value</code></b> - The default is
+"text/xml". This value is used as the <code>:content-type</code>
+argument to <b>do-http-request</b>. (See the documentation for
+AllegroServe, in <a href="aserve/aserve.html">aserve/aserve.html</a>.)
+</li>
+<li id="158">
+<b><code>:http-agent value</code></b> - The default is <code>nil</code>. This value is used as the
+<code>:user-agent</code> argument to
+<b>do-http-request</b>. (See the documentation for AllegroServe, in
+<a href="aserve/aserve.html">aserve/aserve.html</a>.)
+</li>
+<li id="159">
+<b><code>:http-host value</code></b> - The default is <code>nil</code>. This value is sent as the "Host" HTTP
+header. (See the documentation for AllegroServe, in <a href="aserve/aserve.html">aserve/aserve.html</a>.)
+</li>
+<li id="160">
+<b><code>:http-headers value</code></b> - The default is <code>nil</code>. This argument specifies any additional HTTP
+headers to be added to the SOAP message.
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="161"><a name="call-soap-method-op-bookmarkxx"></a>call-soap-method</h3><h3 id="162">Generic Function</h3><h4 id="163">Package: net.xmp.soap</h4>
+
+<p id="164"><b>Arguments: </b><i>
+conn method </i> &amp;rest <i>args</i><i>
+</i></p>
+
+<p id="165">
+The <i>conn</i> argument is an instance of
+<code>soap-client-connector</code>.
+</p>
+<p id="166">
+The <i>method</i> argument determines the form of the
+SOAP message, and the remaining arguments (args) supply the data for
+the content of the message.
+</p>
+<p id="167">
+The <i>method</i> argument may be a string or symbol
+that denotes a SOAP element defined with <a href="soap.htm#define-soap-element-op-bookmarkxx"><b>define-soap-element</b></a>. In this case, the
+Schema type of the element determines how the remaining arguments are
+interpreted. The table below shows the possible cases.  The top-level
+element in the message is the element specified in the method
+argument.  The contained sub-elements are built from the remaining
+arguments.
+</p>
+<p id="168">
+The <i>method</i> argument may be a list containing an
+explicit element definition, In this case, again, the type of the
+element determines how the remaining arguments are interpreted.  The
+table below shows the possible cases. The top-level element in the
+message is the element specified in the method argument.  The
+contained sub-elements are built from the remaining arguments.
+</p>
+<p id="169">
+The <i>method</i> argument may also be a symbol that
+denotes a complex SOAP type defined with <a href="soap.htm#define-soap-type-op-bookmarkxx"><b>define-soap-type</b></a>,
+or a list containing an explicit type-def.  In this case, the
+specified type determines how the remaining arguments are interpreted.
+The table below shows the possible cases. The top-level elements in
+the SOAP message are the immediate components of the complex type.
+</p>
+
+<div align="left">
+<table BORDER="1" CELLSPACING="1">
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><p id="170" ALIGN="CENTER">Type in method argument</p></td>
+<td WIDTH="60%" VALIGN="TOP"><p id="171" ALIGN="CENTER">Suitable Lisp Value</p></td>
+</tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>:complex</code></td> <td WIDTH="60%" VALIGN="TOP">name value ...  where each name occurs as a
+top-level element in the complex def. 
+</td>
+</tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>:array</code></td> <td WIDTH="60%" VALIGN="TOP">A sequence of items, each suitable as an
+array element.
+</td>
+</tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>:simple</code></td>
+<td WIDTH="60%" VALIGN="TOP">A single value or a sequence of values.
+</td>
+</tr>
+</table>
+</div>
+<p id="172">
+The outgoing message includes any headers that have been added to the
+connector with <a href="soap.htm#soap-add-header-op-bookmarkxx"><b>soap-add-header</b></a> (described below).
+</p>
+<p id="173">
+The function returns two values, the contents of the SOAP Body
+element, and a list of SOAP Header elements. The form of the body
+contents depends on the value of the <code>:body-form</code>
+option. If the option is <code>:one</code>, then the value is an
+LXML representation of the one and only element in the SOAP Body
+element. If the option is <code>:many</code>, then the value is
+a list of LXML forms that represent all the elements in the SOAP Body
+element.
+</p>
+<p id="174">
+If the call returns a SOAP Fault, then an error of type
+<code>soap-client-fault</code> or
+<code>soap-server-fault</code> is signaled.
+</p>
+
+<h3 id="175">Examples</h3>
+
+<h4 id="176">Example 1</h4>
+
+<p id="177">
+In this example, we call a method with one argument declared
+as a simple element containing a string value.  We use strings for
+all the element names because the server does not expect qualified
+XML names.
+</p>
+<pre id="178">
+(define-soap-element nil "simpleStructReturnTest"
+  '(:complex (:seq (:element "myNumber" (:simple enc:|int|)))))
+</pre>
+<p id="179">
+In the call to <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>, the
+<i>method</i> argument is "simpleStructReturnTest". The
+remaining arguments are "myNumber", the name of the one element in the
+"simpleStructReturnTest" message; and 123, the value or content of the
+element.
+</p>
+
+<h4 id="180">Example 2</h4>
+<p id="181">
+In this example, the SOAP method expects one argument declared as a
+complex element with 3 sub-elements.
+</p>
+<pre id="182">
+;;  This example cannot be simply cut and pasted into a running 
+;;  Lisp because the server for the service is imaginary. 
+;;  Instead, this example is intended to show what
+;;  a call might look like.
+(define-soap-element nil "easyStructTest"
+  '(:complex
+    (:seq
+     (:element
+      "stooges"
+      (:complex
+       (:set
+	(:element "moe" enc:|int|)
+	(:element "larry" enc:|int|)
+	(:element "curly" enc:|int|)))))))
+
+(call-soap-method client "easyStructTest" "stooges" (list "moe" 1 "larry" 2 "curly" 3))
+</pre>
+<p id="183">
+In the call to <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>, the method argument is
+"easyStructTest".  The remaining arguments are "stooges", the name of
+the one element in the "easyStructTest" message; and the list
+<code>(list "moe" 1 "larry" 2 "curly" 3)</code>, the value or
+content of the element. The value in this case is a list because the
+"stooges" element has a complex content that consists of several
+elements. The list provides the names and values of the sub-elements.
+</p>
+<h4 id="184">Example 3</h4>
+<p id="185">
+In this example, the SOAP method expects one argument declared as
+an array of elements.  The Lisp argument corresponding to the
+"myArray" element is a list of strings.  Each string in the list
+is encoded as an array element with the default element name "item".
+</p>
+<pre id="186">
+;;  This example cannot be simply cut and pasted into a running 
+;;  Lisp because the server for the service is imaginary. 
+;;  Instead, this example is intended to show what
+;;  a call might look like.
+(define-soap-element nil "moderateSizeArrayCheck"
+  '(:complex (:seq (:element "myArray" (:array xsd:|string|)))))
+
+(call-soap-method client "myArray" (list "a" "b" "c" "d"))
+</pre>
+<p id="187">
+To specify more precisely the layout of an array we could say
+</p>
+<pre id="188">
+;;  This example cannot be simply cut and pasted into a running 
+;;  Lisp because the server for the service is imaginary. 
+;;  Instead, this example is intended to show what
+;;  a call might look like.
+(define-soap-element nil "moderateSizeArrayCheck"
+  '(:complex (:seq (:element "myArray" (:array xsd:|ur-type|
+                                               :array-item
+                                               (:element "myArrayElement"
+                                                :send-type t
+                                                :argument :type-and-arg))))))
+</pre>
+<p id="189">
+In this case each array element in Lisp must be specified as a list
+where the first element is the SOAP type of the encoding and the
+second is the Lisp value to be encoded.  Each array element will be
+encoded as an element named "myArrayElement" and the type will be
+encoded as a <code>xsd:|type|</code>
+attribute. (<code>xsd</code> is a nickname for the
+<code>net.xml.schema</code> package. You must have evaluated
+<code>(defpackage :net.xml.schema (:use) (:nicknames :xsd
+:xs))</code> for the nickname to be valid. Otherwise replace
+<code>xsd</code> with <code>net.xml.schema</code> in the
+example below.)
+</p>
+<p id="190">
+The <i>method</i> argument in this case is
+"moderateSizeArrayCheck". The remaining arguments are "myArray", the
+name of the one element in the "moderateSizeArrayCheck" message; and
+the list ((:xsd:|string| "a") (xsd:|int| 17)), which represents the
+two array elements. Each element in the list is represented by a list
+of the type and the value of the element.
+</p>
+
+<h4 id="191">Example 4</h4>
+<p id="192">
+If the SOAP message must be composed of several top-level elements, then
+the method argument would be of the form:
+</p>
+<pre id="193">
+  '(:complex (:seq element1 element2 element3))
+</pre>
+<p id="194">
+and the remaining arguments would be
+</p>
+<pre id="195">
+   'element1 data-for-element1 'element2 data-for-element2 
+   'element3 data-for-element3
+</pre>
+<p id="196">
+The format of each of the data arguments is determined by the type of the
+corresponding element.
+</p>
+
+<hr>
+
+<hr><hr><h2 id="197"><a name="soap-server-comp-1">8.0 SOAP Server Components</a></h2>
+
+<p id="198">
+A SOAP server exports methods that may be called from remote clients
+through a network interface.  The network interface in this
+implementation is an AllegroServe HTTP server.  A method is exported
+by specifying a SOAP element pattern and a Lisp function.  When the
+specified message is received by the network server, the Lisp function
+is called.  The arguments to the Lisp function are the decoded
+sub-elements of the message.  The result returned by the Lisp function
+is encoded and sent as the reply message.
+</p>
+
+<hr><h2 id="199"><a name="soap-server-2">8.1 The SOAP Network Server</a></h2>
+
+<p id="200">
+A SOAP network interface is established with a call to <a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a>.
+</p>
+
+<hr><h3 id="201"><a name="soap-message-server-op-bookmarkxx"></a>soap-message-server</h3><h3 id="202">Function</h3><h4 id="203">Package: net.xmp.soap</h4>
+
+<p id="204"><b>Arguments: </b><i>
+</i>&amp;key <i>start enable publish class name service-name url port-name binding-name action lisp-package message-dns base-dns must-understand decode-flag encoding actor trim-whitespace body-form send-type nillable message-init</i><i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="205">
+The function returns an instance of
+<code>soap-server-connector</code>. This instance is an argument
+to most of the other API functions.
+</p>
+<p id="206">
+The arguments are:
+</p>
+<ul>
+<li id="207">
+<b><i>start</i></b>: A list of arguments to pass to the
+function that starts the http server. Currently this is
+<b>net.aserve:start</b> (but may vary).
+</li>
+<li id="208">
+<b><i>enable</i></b>: if <code>nil</code>,
+take no action. If <code>:start</code>, start the default http
+server and enable the SOAP server. If <code>:start-new</code>,
+start a separate http server and enable the SOAP server.  If any other
+non-<code>nil</code> value, enable the SOAP server (this
+option assumes that the http server was started by some other
+means). The default is <code>:start</code>.
+</li>
+<li id="209">
+<b><i>publish</i></b>: A list of arguments passed to the
+function that enables the SOAP server. Currently this is
+<b>net.aserve:publish</b> (but may vary); If the
+<i>path</i> argument is missing, <code>:path
+"/SOAP"</code> is added. The <i>function</i> and
+<i>content-type</i> arguments are not allowed in this
+list.
+</li>
+<li id="210">
+<b><i>class</i></b>: The class of the server instance
+returned by this function. The default is
+<code>soap-aserve-server-string-in-out-connector</code>.
+</li>
+<li id="211">
+<b><i>name</i></b>,
+<b><i>service-name</i></b>, <i>url</i>,
+<b><i>port-name</i></b>,
+<b><i>binding-name</i></b>: these arguments are used
+when writing a WSDL definition file. <i>name</i> should
+be a string or symbol that names the WSDL definition; it defaults to
+"SOAPServer". <i>service-name</i> should be a string or
+symbol that names the service; it defaults to "SSSServiceNNN". url
+should be a string that contains the URL used to reach this service;
+it defaults to "???". <i>port-name</i> should be a
+string or symbol that names the port definition; it defaults to
+"SOAPPortNNN".  <i>binding-name</i> should be a string
+or symbol that names the SOAP binding of the service; it defaults to
+"SOAPBindingNNN".
+</li>
+
+<li id="212">
+<b><i>null-element</i></b>:
+this argument specifies the behavior when the Lisp value of
+an element is <code>nil</code>.
+See the description of the argument of the same name for
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+</li>
+
+<li id="213">
+<b><i>empty-element</i></b>:
+see the description of the argument of the same name
+for
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+</li>
+
+<li id="214">
+<b><i>trim-whitespace</i></b>:
+see the description of the argument of the same name
+for
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+</li>
+<li id="215">
+<b><i>body-form</i></b>: this argument describes the
+SOAP Body element. The value <code>:one</code> (the default)
+specifies that the SOAP Body consists of exactly one element. The
+value <code>:many</code> specifies that the SOAP body may
+contain any number of elements. This value must be specified if the
+SOAP message makes use of the multiRef feature.
+</li>
+<li id="216">
+<b><i>send-type</i></b>: the value of this option
+controls the sending of a "xsi:type" attribute in outgoing SOAP
+messages.  A value of <code>nil</code> suppresses the
+"xsi:type" attribute .  A value of <code>t</code> causes
+an "xsi:type" attribute to be sent for any element with a named type
+definition.  The value of the attribute is the name of the element
+type.
+<p id="217">
+The value of the option may also be a string or a symbol other than
+<code>t</code>; in this case, the value of the option is
+the value of the "xsi:type" attribute sent with any element that does
+not have an explicit :send-type option specified in the element or
+type definition.
+</p>
+</li>
+<li id="218">
+<b><code>:nillable value</code></b>: the value of this option
+specifies how element instances with an attribute "xsi:nil='true'"
+are handled. The possible values are:
+<ul>
+<li id="219">
+<code>:ignore</code>: (the default, for compatibility with
+previous versions of the SOAP module) "xsi:nil" attributes are
+ignored.  All elements will appear in the message returned to or
+passed to the application.
+</li>
+<li id="220">
+<code>:accept</code>, if an element appears with a
+"xsi:nil='true'" attribute and an empty content, then the element is
+not included in the message returned to or passed to the application.
+</li>
+<li id="221">
+<code>:strict</code>: the behavior is controlled by the element
+declaration. If the element is declared with a ":nillable t" option,
+then, if the element appears with a "xsi:nil='true'" attribute and an
+empty content, then the element is not included in the message
+returned to or passed to the application.
+</li>
+</ul>
+</li>
+<li id="222">
+<b>message-init value</b>: this option specifies the storage strategy
+used when collecting SOAP messages. Since the SOAP specification
+requires the message length to be included in the SOAP message header,
+the SOAP module must collect the entire message before sending it.
+Since this may require an indefinite amount of storage, we use an
+adjustable array.
+<p id="223">
+The default setting of 500 starts with an initial array of 500
+characters, extended as needed using the ACL default
+<b>vector-push-extend</b> strategy (ie double the array size).
+</p>
+<p id="224">
+If the <i>message-init</i> argument is specified as a
+positive integer, it specifies a different inital array size, and the
+default extension strategy.
+</p>
+<p id="225">
+If the <i>message-init</i> argument is a list, the first
+element must be a positive integer that specifies the inital array
+size. The second element, if present specifies an array extension
+strategy. A positive integer causes the array to be extended by that
+amount over what is immediately needed.  A real number less than 1.0
+causes growth by the specified fraction over the current size.  A real
+number greater than or equal to 1.0 causes growth by the specified
+ratio.
+</p>
+</li>
+</ul>
+
+<p id="226">
+All other arguments are passed as initargs in a call to <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>.  Arguments
+recognized for the class
+<code>soap-aserve-server-string-in-out-connector</code> include:
+</p>
+
+<ul>
+<li id="227">
+<b><i>action</i></b>: A default value for the string
+that must match the SOAPAction HTTP header in an incoming message. A
+value of <code>nil</code> means that there is no default
+action and action must be specified in each call to <a href="soap.htm#soap-export-method-op-bookmarkxx"><b>soap-export-method</b></a>. A value of
+<code>:none</code> means that the SOAPAction header is ignored.
+</li>
+<li id="228">
+<b><i>lisp-package</i></b>: The Lisp package for
+unqualified names in the incoming messages.
+</li>
+<li id="229">
+<b><i>message-dns</i></b>: The default namespace map for
+namespaces specific to an application (see <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>).
+</li>
+<li id="230">
+<b><i>base-dns</i></b>: The default namespace map for
+the standard and required namespaces (see <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>).
+</li>
+<li id="231">
+<b><i>must-understand</i></b>: The default handling of
+MustUnderstand attributes in incoming messages (see <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>).
+</li>
+<li id="232">
+<b><i>decode-flag</i></b>: The default handling of
+undefined elements in incoming messages (see <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>).
+</li>
+<li id="233">
+<b><i>encoding</i></b>: The encodingStyle attribute sent
+with reply messages (see <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>).
+</li>
+<li id="234">
+<b><i>actor</i></b>: The actor attribute sent with reply
+messages (see <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>).
+</li>
+</ul>
+<p id="235">
+The keyword arguments <i>xml-leader</i>,
+<i>xml-encoding</i>, <i>http-method</i>,
+<i>http-protocol</i>, <i>content-type</i>,
+<i>http-agent</i>, and
+<i>:http-headers</i> are described under <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+</p>
+<p id="236">
+If the SOAP server must use the HTTPS protocol with clients, then the
+<i>start</i> argument must include the
+<code>:ssl</code> and maybe the <code>:ssl-password</code>
+options (see <a href="aserve/aserve.html">aserve/aserve.html</a>).
+</p>
+
+<hr>
+
+<hr><h3 id="237"><a name="enable-soap-server-op-bookmarkxx"></a>enable-soap-server</h3><h3 id="238">Generic Function</h3><h4 id="239">Package: net.xmp.soap</h4>
+
+<p id="240"><b>Arguments: </b><i>
+server
+</i>&amp;key <i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="241">
+This method enables the server to respond to SOAP method calls.
+The HTTP server is not affected by this call.
+</p>
+
+<hr>
+
+<hr><h3 id="242"><a name="disable-soap-server-op-bookmarkxx"></a>disable-soap-server</h3><h3 id="243">Generic Function</h3><h4 id="244">Package: net.xmp.soap</h4>
+
+<p id="245"><b>Arguments: </b><i>
+server
+</i>&amp;key <i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="246">
+This method disables the server for SOAP method calls.
+The HTTP server is not affected by this call.
+</p>
+
+<hr>
+
+<hr><h3 id="247"><a name="start-soap-server-op-bookmarkxx"></a>start-soap-server</h3><h3 id="248">Function</h3><h4 id="249">Package: net.xmp.soap</h4>
+
+<p id="250"><b>Arguments: </b><i>
+server
+</i>&amp;key <i>new start enable</i><i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="251">
+Start the HTTP server for this SOAP server.  If
+<i>new</i> is non-<code>nil</code>, create a
+new HTTP server If <i>start</i> argument is specified,
+it overrides the <i>start</i> argument in call to
+<a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a> If
+<i>enable</i> is non-<code>nil</code>,
+enable the soap server.
+</p>
+<hr>
+
+<hr><h3 id="252"><a name="stop-soap-server-op-bookmarkxx"></a>stop-soap-server</h3><h3 id="253">Function</h3><h4 id="254">Package: net.xmp.soap</h4>
+
+<p id="255"><b>Arguments: </b><i>
+server
+</i>&amp;key <i>disable</i><i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="256">
+Stop the HTTP server for this SOAP server. If
+<i>disable</i> is non-<code>nil</code>
+disable the SOAP server as well.
+</p>
+<hr>
+
+
+
+
+
+<hr><h2 id="257"><a name="exporting-methods-2">8.2 Exporting Methods</a></h2>
+
+<p id="258">
+A method must be exported to make it available to remote clients
+through the network server.
+</p>
+
+<hr><h3 id="259"><a name="soap-export-method-op-bookmarkxx"></a>soap-export-method</h3><h3 id="260">Generic Function</h3><h4 id="261">Package: net.xmp.soap</h4>
+
+<p id="262"><b>Arguments: </b><i>
+conn name signature
+</i>&amp;key <i>lisp-name</i> (<i>enable</i> t)<i> return help action ordered exact</i><i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="263">
+This function defines how a Lisp function will be invoked when a SOAP message
+arrives at the server. The arguments to the Lisp function are the names and 
+content of the sub-elements in the message.
+</p>
+<p id="264">
+The arguments to <a href="soap.htm#soap-export-method-op-bookmarkxx"><b>soap-export-method</b></a> are:
+</p>
+
+<ul>
+<li id="265">
+<i>conn</i>: an instance of the class
+<code>soap-server-connector</code>, typically the
+result of a call to <a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a>.
+</li>
+<li id="266">
+<i>name</i>: a string or symbol that identifies the top
+(and only) element in the SOAP message body. If the name is a string,
+then the incoming message element can be in any namespace or in no
+namespace. If the name is a symbol in a package that has <b>not</b>
+been associated with a namespace, then it is equivalent to the string
+that is the symbol-name of the symbol. If the name is a symbol from a
+package associated with a namespace, then the message element MUST be
+qualified with the specified namespace.
+</li>
+<li id="267">
+<i>signature</i>: a list of element names that must be
+or may be included in the message. The items in the list may be
+strings or symbols that are interpreted using the same rule as the
+name argument.
+</li>
+<li id="268">
+<i>lisp-name</i>: the value can be a symbol naming the
+Lisp function that will be called when the message is accepted; or a
+list. 
+<p id="269">
+If the value is a list, the first element in the list must be
+the name of the Lisp function that implements the method, and the
+remainder of the list must a list of keywords of the same length as
+the signature.
+</p>
+<p id="270">
+When the Lisp function is called from the SOAP server, it will receive
+keyword arguments with keys from the above list. The value of each
+keyword argument will be the element contents corresponding to the
+matching element in the signature.
+</p>
+<p id="271">
+For example, if we export
+</p>
+<pre id="272">
+   (soap-export-method conn "myMethod" '("elt1" "elt2" "elt3")
+                            :lisp-name '(my-lisp-method :k1 :k2 :k3)
+                            :return "myMethodResponse")
+</pre>
+<p id="273">
+then the Lisp function must be defined as
+</p>
+<pre id="274">
+(defun my-lisp-method (&key k1 k2 k3) ...)
+</pre>
+<p id="275">
+When this function is called, keyword argument <i>k</i>1
+will be present if the element with name "elt1" was present in the
+SOAP message, and so on.  This may seem like the long way around the
+barn, but this notation allows the Lisp function to be isolated from
+the variations introduced by namespace-to-package mappings that may be
+outside the control of the Lisp implementation.
+</p>
+</li>
+<li id="276">
+<i>enable</i>: when non-<code>nil</code>,
+the method is enabled immediately. When <code>nil</code>,
+the method must be enabled before it may be called.
+</li>
+<li id="277">
+<i>return</i>: element-name or element-def for the
+result message.
+</li>
+<li id="278">
+<i>help</i>: the value should be a help string (or
+<code>nil</code>).
+</li>
+<li id="279">
+<i>action</i>: This argument specifies the content of
+the HTTP SOAPAction header in the incoming message.
+If omitted, use the action specified in soap-message-server call.
+<br>
+If <code>nil</code>, then ignore SOAPAction header in message.
+<br>
+If <code>:none</code>, then ignore SOAPAction header in message.
+<br>
+If <code>:default</code>, then use the action specified in
+<a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a> call.
+<br>
+If a string or symbol, then the SOAPAction header in message must match.
+</li>
+<li id="280">
+<i>ordered</i>: if non-<code>nil</code>,
+elements in message must be in same order as in signature
+</li>
+<li id="281">
+<i>exact</i>: if non-<code>nil</code>, every
+element in signature must be present in message
+</li>
+</ul>
+
+<hr>
+
+
+
+<hr><h2 id="282"><a name="controllinbg-access-2">8.3 Controlling Access to Methods</a></h2>
+
+<p id="283">
+The Lisp function associated with a SOAP message is called with the
+soap-invoke-method generic function.  The SOAP API includes a method
+specialized on <code>soap-server-connector</code>. This method
+simply calls apply.  Applications can add additional restrictions on
+how and when the function is called by implementing a more specific
+method on a sub-class of <code>soap-server-connector</code>.
+</p>
+
+<hr><h3 id="284"><a name="soap-invoke-method-op-bookmarkxx"></a>soap-invoke-method</h3><h3 id="285">Generic Function</h3><h4 id="286">Package: net.xmp.soap</h4>
+
+<p id="287"><b>Arguments: </b><i>
+server name arg-list
+</i>&amp;key <i>headers</i><i>
+</i></p>
+
+<p id="288">
+This function is called to invoke the Lisp function associated with a
+SOAP message.  The default primary method simply calls <a href="../ansicl/dictentr/apply.htm"><b>apply</b></a>.  User methods can be
+defined for sub-classes of <code>soap-server-connector</code> to
+enforce more restrictive access rules.
+</p>
+<p id="289">
+The <i>server</i> argument is a fresh copy of a
+<code>soap-server-connector</code> instance.  The
+<i>name</i> argument is the name of the Lisp function
+associated with the SOAP message. The <i>arg-list</i>
+argument is a list of arguments for the Lisp function; this is an
+alternating list of element names and element content values.
+</p>
+<p id="290">
+The <i>headers</i> argument is a list of LXML structures
+that represent the SOAP header elements that were included in the
+incoming message. The default method ignores these.
+</p>
+<p id="291">
+This function normally returns one value which is encoded as the
+content of the reply message.  If zero values are returned, then a SOAP
+client fault with fault string "Call refused" is returned as the reply.
+Values other than the first are ignored.
+</p>
+<p id="292">
+An <code>:around</code> method specialized on
+<code>soap-server-connector</code> binds the variable <a href="soap.htm#s_soap-server_s-var-bookmarkxx"><code>*soap-server*</code></a>.  If more specific
+<code>:around</code> methods are defined, the body of these
+methods will not see this binding.
+</p>
+
+<hr>
+
+
+
+
+<hr><h2 id="293"><a name="defining-soap-methods-2">8.4 Defining SOAP Methods</a></h2>
+
+<p id="294">
+The Lisp function defined as the SOAP method body is called with an &rest
+argument that consists of an alternating list of element names and element
+content values.
+</p>
+<p id="295">
+If the element names are Lisp keywords, the function may be defined
+with keyword arguments, otherwise the function must extract argument
+values by some other means such as <a href="../ansicl/dictentr/getf.htm"><b>getf</b></a>.
+</p>
+<p id="296">
+When the incoming SOAP message body consists of multiple elements,
+only the first element is used to dispatch the method call.  A list of
+body elements is obtained with the function <a href="soap.htm#soap-message-body-op-bookmarkxx"><b>soap-message-body</b></a>.
+</p>
+<p id="297">
+If a method needs to return multiple body elements, the method return 
+must be defined by a type-spec or a type-name that defines a sequence
+type. The value returned by the method must be a list of values suitable 
+for encoding into that type.
+</p>
+<p id="298">
+Note that the returned value specified in <a href="soap.htm#soap-export-method-op-bookmarkxx"><b>soap-export-method</b></a>
+may be an element name or a type name. If a type name is intended,
+then there must not be an element defined by the same name.
+</p>
+
+<div align="left">
+<table BORDER="1" CELLSPACING="1">
+  <tr>
+    <td WIDTH="45%" VALIGN="TOP"><p id="299" ALIGN="CENTER">Named element content 
+    in message:</p></td>
+    <td WIDTH="45%" VALIGN="TOP"><p id="300" ALIGN="CENTER">Lisp argument to 
+    method:</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="45%" VALIGN="TOP">simple type</td>
+    <td WIDTH="45%" VALIGN="TOP">corresponding Lisp value
+  </td>
+  </tr>
+  <tr>
+    <td WIDTH="45%" VALIGN="TOP">complex type</td>
+    <td WIDTH="45%" VALIGN="TOP">an association list in which
+    the keys are sub-element names. The function 
+    <a href="soap.htm#soap-sub-element-content-op-bookmarkxx"><b>soap-sub-element-content</b></a> 
+    should be used to extract the content of a sub-element.</td>
+  </tr>
+  <tr>
+    <td WIDTH="45%" VALIGN="TOP">array type</td>
+    <td WIDTH="45%" VALIGN="TOP">a Lisp array of <code>t</code>,
+    each array element is the element <i>content</i> of
+    the array elements in the message</td>
+  </tr>
+
+</table>
+</div>
+
+
+<hr><h3 id="301"><a name="s_soap-server_s-var-bookmarkxx"></a>*soap-server*</h3><h3 id="302">Variable</h3><h4 id="303">Package: net.xmp.soap</h4>
+
+<p id="304">
+During the execution of a SOAP method call, this variable is bound to a copy
+of the server instance that received the message with the method call.
+</p>
+
+<hr>
+
+<hr><h3 id="305"><a name="soap-message-body-op-bookmarkxx"></a>soap-message-body</h3><h3 id="306">Generic Function</h3><h4 id="307">Package: net.xmp.soap</h4>
+
+<p id="308"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="309">
+When <i>conn</i> is an instance of
+<code>soap-connector</code>, this accessor method returns a list
+of all the body elements in the SOAP message.
+</p>
+
+<hr>
+
+<p id="310">
+The following accessor methods return the corresponding components of
+the incoming SOAP message. They take an instance of
+<code>soap-server-connector</code> as their argument.
+</p>
+
+<hr><h3 id="311"><a name="soap-server-message-method-op-bookmarkxx"></a>soap-server-message-method</h3><h3 id="312">Generic Function</h3><h4 id="313">Package: net.xmp.soap</h4>
+
+<p id="314"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="315">
+Accesses the method component of the incoming SOAP message associated
+with <i>conn</i>, which must be a
+<code>soap-server-connector</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="316"><a name="soap-server-message-return-op-bookmarkxx"></a>soap-server-message-return</h3><h3 id="317">Generic Function</h3><h4 id="318">Package: net.xmp.soap</h4>
+
+<p id="319"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="320">
+Accesses the return component of the incoming SOAP message associated
+with <i>conn</i>, which must be a
+<code>soap-server-connector</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="321"><a name="soap-server-message-signature-op-bookmarkxx"></a>soap-server-message-signature</h3><h3 id="322">Generic Function</h3><h4 id="323">Package: net.xmp.soap</h4>
+
+<p id="324"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="325">
+Accesses the signature component of the incoming SOAP message associated
+with <i>conn</i>, which must be a
+<code>soap-server-connector</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="326"><a name="soap-server-message-action-op-bookmarkxx"></a>soap-server-message-action</h3><h3 id="327">Generic Function</h3><h4 id="328">Package: net.xmp.soap</h4>
+
+<p id="329"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="330">
+Accesses the action component of the incoming SOAP message associated
+with <i>conn</i>, which must be a
+<code>soap-server-connector</code>.
+</p>
+
+<hr>
+
+
+
+<h3 id="331">
+Some convenience functions for writing method bodies:
+</h3>
+
+
+<hr><h3 id="332"><a name="soap-sub-element-content-op-bookmarkxx"></a>soap-sub-element-content</h3><h3 id="333">Function</h3><h4 id="334">Package: net.xmp.soap</h4>
+
+<p id="335"><b>Arguments: </b><i>
+element-item  pattern </i> &amp;rest <i>more-patterns</i><i>
+</i></p>
+
+<p id="336">
+Use of this function is deprecated. Use <a href="soap.htm#soap-result-part-op-bookmarkxx"><b>soap-result-part</b></a>
+instead.
+</p>
+<p id="337">
+This function is used to extract the sub-element content from an
+argument to a SOAP method.  The <i>sub-element-name</i>
+must be the name of an immediate sub-element of the argument.
+</p>
+<p id="338">
+If the sub-element is a simple element, the value is a Lisp atom that
+represents the value of the element.  If the sub-element is a complex
+element, the value is a Lisp association list that can be decomposed
+with additional calls to <a href="soap.htm#soap-sub-element-content-op-bookmarkxx"><b>soap-sub-element-content</b></a>.
+</p>
+
+<hr>
+
+<hr><h3 id="339"><a name="soap-alist-to-plist-op-bookmarkxx"></a>soap-alist-to-plist</h3><h3 id="340">Function</h3><h4 id="341">Package: net.xmp.soap</h4>
+
+<p id="342"><b>Arguments: </b><i>
+element-alist </i> &amp;optional <i>recursive</i><i>
+</i></p>
+
+<p id="343">
+Translate an association list into a property list.
+This is useful when turning an argument into a reply.
+</p>
+
+
+<hr>
+
+<hr><h3 id="344"><a name="soap-encode-object-op-bookmarkxx"></a>soap-encode-object</h3><h3 id="345">Generic Function</h3><h4 id="346">Package: net.xmp.soap</h4>
+
+<p id="347"><b>Arguments: </b><i>
+conn name type-spec data
+</i></p>
+
+<p id="348">
+This function returns an instance of soap-element that contains an
+encoded form of the <i>data</i> argument using the
+<i>type-spec</i> to control the encoding. If the
+<i>name</i> argument is the name of an element
+previously defined with <a href="soap.htm#define-soap-element-op-bookmarkxx"><b>define-soap-element</b></a>, then
+<i>type-spec</i> may be <code>nil</code>; in
+that case the definition of the element is used.
+</p>
+<p id="349">
+Once a value is encoded as a soap-element instance, it is not affected
+by other element or type specifications that may be applied to the
+value.  This function may be used to specify the encoding of SOAP
+array elements when a uniform encoding rule cannot be specified.
+</p>
+<p id="350">
+The <i>conn</i> argument may be <code>nil</code> or a soap-connector instance.  If <code>nil</code>, we use the value of <a href="soap.htm#s_soap-server_s-var-bookmarkxx"><code>*soap-server*</code></a>; thus the first
+argument may be <code>nil</code> in the body of a SOAP
+server method.
+</p>
+
+<hr>
+
+<hr><h3 id="351"><a name="soap-version-op-bookmarkxx"></a>soap-version</h3><h3 id="352">Function</h3><h4 id="353">Package: net.xmp.soap</h4>
+
+<p id="354"><b>Arguments: </b><i>
+</i> &amp;optional <i>v1 v2 v3 error-p</i><i>
+</i></p>
+
+<p id="355">
+In its simplest form, with no arguments, this function returns a
+string containing the current version information.
+</p>
+<p id="356">
+If the first argument is <code>t</code> or a stream, the
+version string is written to the stream (<code>t</code>
+indicating <a href="../ansicl/dictentr/terminal.htm"><code>*terminal-io*</code></a>).
+</p>
+<p id="357">
+If the first argument is an integer, the function acts as a predicate
+that compares the integer arguments to the current version.  If
+<i>v2</i> or <i>v3</i> are omitted, they
+default to zero.
+</p>
+<ul>
+<li id="358">
+If the version specified by <i>v1</i>,
+<i>v2</i>, and <i>v3</i> is less than or
+equal to the current version, then the function returns a list
+containing the current version numbers.
+</li>
+<li id="359">
+If the version specified by <i>v1</i>,
+<i>v2</i>, and <i>v3</i> is higher than the
+current version, then, if the <i>error-p</i> argument is
+<code>nil</code> the function returns <code>nil</code>; otherwise, the function signals an error.
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="360"><a name="soap-result-part-op-bookmarkxx"></a>soap-result-part</h3><h3 id="361">Generic Function</h3><h4 id="362">Package: net.xmp.soap</h4>
+
+<p id="363"><b>Arguments: </b><i>
+conn result name </i> &amp;rest <i>more-names</i><i>
+</i></p>
+
+<p id="364">
+When the <i>conn</i> argument is a
+<code>soap-connector</code> instance, the primary method
+extracts the named components from the result returned by <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>.
+</p>
+<p id="365">
+The <i>result</i> argument should be the value returned
+by <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>, an intermediate result
+returned by <a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a>, the list returned by
+<a href="soap.htm#soap-message-body-op-bookmarkxx"><b>soap-message-body</b></a>, or a top-level element
+in the list returned by <a href="soap.htm#soap-message-body-op-bookmarkxx"><b>soap-message-body</b></a>.
+</p>
+<p id="366">
+(See the note in the description of <a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a>
+about the eq'ness of suitable arguments to <a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a>
+and the return value of <a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a>.)
+</p>
+<p id="367">
+<i>name</i> may be <code>nil</code> to
+specify that the top-level element name in result is ignored.  If
+not <code>nil</code>, <i>name</i> must be a
+string or symbol that is matched to the top-level element name in
+result or an integer that simply selects the sub-element by index.
+</p>
+<p id="368">
+<i>more-names</i> may be a list of <code>nil</code>, string, symbol or integer.  Each item in the
+list is matched to the next level of nested sub-structure in result.
+</p>
+<p id="369">
+If the specified sub-element is found, the value returned is the
+sub-element content.  Otherwise, the returned value is <code>nil</code>.
+</p>
+<p id="370">
+If multiRef references need to be followed, <i>conn</i>
+must be the <code>soap-connector</code> instance which received
+the result being examined. The table of reference definitions is saved
+in the <code>soap-connector</code> instance when the SOAP
+message is decoded.
+</p>
+
+<hr>
+
+<hr><h3 id="371"><a name="soap-result-string-op-bookmarkxx"></a>soap-result-string</h3><h3 id="372">Generic Function</h3><h4 id="373">Package: net.xmp.soap</h4>
+
+<p id="374"><b>Arguments: </b><i>
+conn result name </i> &amp;rest <i>more-names</i><i>
+</i></p>
+
+<p id="375">
+Like <a href="soap.htm#soap-result-part-op-bookmarkxx"><b>soap-result-part</b></a>, but returns a single
+string if result is a list of strings.
+</p>
+
+
+<hr>
+
+<hr><h3 id="376"><a name="soap-result-only-op-bookmarkxx"></a>soap-result-only</h3><h3 id="377">Generic Function</h3><h4 id="378">Package: net.xmp.soap</h4>
+
+<p id="379"><b>Arguments: </b><i>
+conn result error-p name </i> &amp;rest <i>more-names</i><i>
+</i></p>
+
+<p id="380">
+Like <a href="soap.htm#soap-result-part-op-bookmarkxx"><b>soap-result-part</b></a>, but behavior is
+controlled by <i>error-p</i> argument if the component
+is not found. The values of <i>error-p</i> can be:
+</p>
+<ul>
+<li id="381">
+<code>:error</code> - signal an error
+</li>
+<li id="382">
+other lisp value  - return this value
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="383"><a name="soap-result-typed-op-bookmarkxx"></a>soap-result-typed</h3><h3 id="384">Generic Function</h3><h4 id="385">Package: net.xmp.soap</h4>
+
+<p id="386"><b>Arguments: </b><i>
+conn result type-spec error-p name </i> &amp;rest <i>more-names</i><i>
+</i></p>
+
+<p id="387">
+Like <a href="soap.htm#soap-result-only-op-bookmarkxx"><b>soap-result-only</b></a>, but additional type
+conversions or tests may be done based on
+<i>type-spec</i> argument.
+</p>
+<p id="388">
+Current implementation looks for <code>xsd:string</code> only.
+</p>
+
+
+<hr>
+
+<hr><h3 id="389"><a name="soap-result-pair-op-bookmarkxx"></a>soap-result-pair</h3><h3 id="390">Generic Function</h3><h4 id="391">Package: net.xmp.soap</h4>
+
+<p id="392"><b>Arguments: </b><i>
+conn result name </i> &amp;rest <i>more-names</i><i>
+</i></p>
+
+<p id="393">
+Like <a href="soap.htm#soap-result-part-op-bookmarkxx"><b>soap-result-part</b></a>, but returns the cons
+that begins with the last named sub-element. This result is a suitable
+argument to <a href="soap.htm#soap-get-attributes-op-bookmarkxx"><b>soap-get-attributes</b></a> and <a href="soap.htm#soap-get-attribute-op-bookmarkxx"><b>soap-get-attribute</b></a>, or subsequent calls
+to <b>soap-result-*</b>.
+</p>
+<p id="394">
+Note that if <b>x</b> is a suitable argument to <a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a>,
+then <code>(eq x (soap-result-pair conn x nil))</code> is always
+true.  Thus to descend into the sub-elements of a result, the
+sub-element is passed as the second name in the argument list.  The
+first name in the list must be <code>nil</code> or the
+name of the element represented by the <i>result</i>
+argument.
+</p>
+
+
+<hr>
+
+<hr><h3 id="395"><a name="soap-get-attributes-op-bookmarkxx"></a>soap-get-attributes</h3><h3 id="396">Generic Function</h3><h4 id="397">Package: net.xmp.soap</h4>
+
+<p id="398"><b>Arguments: </b><i>
+conn pair
+</i></p>
+
+<p id="399">
+<i>pair</i> is a SOAP message element as returned by
+<a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a> or as extracted with
+<a href="soap.htm#soap-message-body-op-bookmarkxx"><b>soap-message-body</b></a> or <a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a>.
+</p>
+<p id="400">
+Value is <code>nil</code> or property list of
+<code>(name value ...)</code> where both name and value are
+strings.
+</p>
+
+<hr>
+
+
+<hr><h3 id="401"><a name="soap-get-attribute-op-bookmarkxx"></a>soap-get-attribute</h3><h3 id="402">Generic Function</h3><h4 id="403">Package: net.xmp.soap</h4>
+
+<p id="404"><b>Arguments: </b><i>
+conn pair name </i> &amp;optional <i>default</i><i>
+</i></p>
+
+<p id="405">
+<i>pair</i> is a SOAP message element as returned by
+<a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a> or as extracted with
+<a href="soap.htm#soap-message-body-op-bookmarkxx"><b>soap-message-body</b></a> or <a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a>.
+</p>
+<p id="406">
+<i>name</i> may be a string to match any attribute
+namespace or a symbol for exact match.
+</p>
+<p id="407">
+Value is <code>nil</code> or value of attribute. If the
+attribute is not found, return the <i>default</i> value.
+</p>
+
+<hr>
+
+ 
+
+<hr><hr><h2 id="408"><a name="programming-notes-1">9.0 Programming Notes</a></h2>
+
+
+<hr><h2 id="409"><a name="multiple-threads-2">9.1 Multiple Threads</a></h2>
+
+<p id="410">
+A client connector instance should be used serially only.
+Only one thread should access the connector for the entire duration 
+of a message round-trip.
+</p>
+<p id="411">
+When a server responds to an incoming message, a copy of the server
+connector instance is cloned for the duration of the message.  The
+variable <a href="soap.htm#s_soap-server_s-var-bookmarkxx"><code>*soap-server*</code></a> is bound in the thread that
+calls the Lisp function exported to handle the message.  Message
+handling programs called by the server must take care to deal with
+shared resources with appropriate interlocks.
+</p>
+
+
+
+<hr><h2 id="412"><a name="connector-classes-2">9.2 Connector Class Hierarchy</a></h2>
+
+<p id="413">
+The complete class hierarchy for sub-classes of
+<code>soap-connector</code> includes all the following classes:
+</p>
+<pre id="414">
+   soap-connector
+
+   soap-client-connector
+   soap-server-connector
+
+   soap-string-out-connector
+   soap-string-in-connector
+   soap-string-in-out-connector
+   
+   soap-client-string-out-connector
+   soap-client-string-in-connector
+   soap-client-string-in-out-connector
+
+   soap-server-string-out-connector
+   soap-server-string-in-connector
+   soap-server-string-in-out-connector
+
+   soap-aserve-connector
+
+   soap-aserve-client-connector
+   soap-aserve-server-connector
+
+   soap-aserve-string-out-connector
+   soap-aserve-string-in-connector
+   soap-aserve-string-in-out-connector
+   
+   soap-aserve-client-string-out-connector
+   soap-aserve-client-string-in-connector
+   soap-aserve-client-string-in-out-connector
+
+   soap-aserve-server-string-out-connector
+   soap-aserve-server-string-in-connector
+   soap-aserve-server-string-in-out-connector
+</pre>
+
+<p id="415">
+Methods in the API and internals methods are specialized on
+the least-specific method in this hierarchy,
+but only the classes 
+</p>
+<pre id="416">
+  soap-aserve-client-string-in-out-connector
+  soap-aserve-server-string-in-out-connector
+</pre>
+
+<p id="417">
+are actually instantiated in an application using this API.
+Thus, in order to provide behavior specific to a given application
+the programmer must create a sub-class of one or both of the above
+classes.
+</p>
+<p id="418">
+The following are accessors for <code>soap-connector</code>.
+Values are used by <a href="soap.htm#encode-wsdl-file-op-bookmarkxx"><b>encode-wsdl-file</b></a>.
+</p>
+
+
+<hr><h3 id="419"><a name="soap-port-name-op-bookmarkxx"></a>soap-port-name</h3><h3 id="420">Generic Function</h3><h4 id="421">Package: net.xmp.soap</h4>
+
+<p id="422"><b>Arguments: </b><i>
+soap-connector
+</i></p>
+
+<p id="423">
+Returns the port name.
+</p>
+
+<hr>
+
+<hr><h3 id="424"><a name="soap-binding-name-op-bookmarkxx"></a>soap-binding-name</h3><h3 id="425">Generic Function</h3><h4 id="426">Package: net.xmp.soap</h4>
+
+<p id="427"><b>Arguments: </b><i>
+soap-connector
+</i></p>
+
+<p id="428">
+Returns the binding name.
+</p>
+
+<hr>
+
+<hr><h3 id="429"><a name="soap-service-name-op-bookmarkxx"></a>soap-service-name</h3><h3 id="430">Generic Function</h3><h4 id="431">Package: net.xmp.soap</h4>
+
+<p id="432"><b>Arguments: </b><i>
+soap-connector
+</i></p>
+
+<p id="433">
+Returns the service name.
+</p>
+
+<hr>
+
+
+
+
+
+
+<hr><h2 id="434"><a name="things-go-wrong-2">9.3 When things go wrong - debugging SOAP interfaces</a></h2>
+
+<p id="435">
+Sometimes, when a connection does not seem to be working, it is useful
+to see the actual XML message strings passed between client and
+server.
+</p>
+<p id="436">
+The variable <a href="soap.htm#s_soap-client-debug_s-var-bookmarkxx"><code>*soap-client-debug*</code></a> can be set to a
+non-<code>nil</code> value to cause a printout of the HTTP
+headers and the XML message text sent by the client. When the reply
+arrives, the HTTP headers and XML message text are printed as well.
+</p>
+<p id="437">
+If the variable is set to <code>:stop</code>, then the message
+is not sent to the server.
+</p>
+<p id="438">
+The variable <a href="soap.htm#s_soap-server-debug_s-var-bookmarkxx"><code>*soap-server-debug*</code></a> can be set to a
+non-<code>nil</code> value to cause a printout of the HTTP
+headers and the XML message text received by the server and sent as a
+reply.
+</p>
+<p id="439">
+The debug flag can also be associated with a single client or server
+connection by using the <i>soap-debug</i> keyword
+initarg in the call to <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a> or <a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a>.
+</p>
+<p id="440">
+If the variables <a href="soap.htm#s_soap-client-debug_s-var-bookmarkxx"><code>*soap-client-debug*</code></a> or <a href="soap.htm#s_soap-server-debug_s-var-bookmarkxx"><code>*soap-server-debug*</code></a> are stack bound, the
+stack bound value takes precedence over the slot or the global value.
+</p>
+<p id="441">
+The formal definitions of these two variables are given below.
+</p>
+
+<p id="442">
+When creating a new SOAP server, it may be helpful to exercise the
+server code with sample data without writing a client program.  There
+are two (internal) functions that may help:
+</p>
+<ul>
+<li id="443">
+<b>net.xmp:xmp-run-one-file</b> (Arguments: <i>server-instance
+message-file</i>): the <i>message-file</i> argument points to a file
+that contains the XML for a SOAP message to the server.  The function
+runs the server for that one message.
+</li>
+<li id="444">
+<b>net.xmp:xmp-server-implementation</b> (Arguments:
+<i>server-instance message</i>): the <i>message</i> argument may be a
+string containing the XML representation of the message, or a stream
+that will supply the XML representation of the message.  The function
+runs the server for that one message.
+</li>
+</ul>
+
+
+<hr><h3 id="445"><a name="s_soap-server-debug_s-var-bookmarkxx"></a>*soap-server-debug*</h3><h3 id="446">Variable</h3><h4 id="447">Package: net.xmp.soap</h4>
+
+<p id="448">
+When non-<code>nil</code>, causes the printing out of the HTTP
+headers and the XML message text received by the server and sent as a
+reply.
+</p>
+
+<hr>
+
+<hr><h3 id="449"><a name="s_soap-client-debug_s-var-bookmarkxx"></a>*soap-client-debug*</h3><h3 id="450">Variable</h3><h4 id="451">Package: net.xmp.soap</h4>
+
+<p id="452">
+When non-<code>nil</code>, causes the printing out of the
+HTTP headers and the XML message text sent by the client. When the
+reply arrives, the HTTP headers and XML message text are printed as
+well.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="453"><a name="i18n-issues-2">9.4 I18N Issues</a></h2>
+
+<p id="454">
+Character encoding is specified with the
+<code>:xml-encoding</code> option to <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a> and <a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a>.
+</p>
+<p id="455">
+The Content-Type is specified with the
+<code>:content-type</code> option to <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a> and <a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a>. The character
+encoding specified in the XML header must be consistent with the
+Content-Type specified in the HTTP header.  Because of the wide range
+of possible encoding and conent types, it is impossible to give
+specific recoomendations for the settings of these parameters.
+</p>
+<p id="456">
+If additional HTTP headers are needed, they can be specified in the
+<code>:http-headers</code> option to <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a> and <a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a>.
+</p>
+
+
+
+
+
+<hr><hr><h2 id="457"><a name="wsdl-support-1">10.0 WSDL Support</a></h2>
+
+<p id="458">
+Many web services are defined in an XML dialect known as WSDL. The
+WSDL definition specifies the element content and data types in the
+SOAP messages received and sent by the service.
+</p>
+<p id="459">
+Given a web service WSDL definition, we can generate the Lisp
+functions and definitions needed to send messages to the service and
+to receive and decode the replies.
+</p>
+<p id="460">
+We can also generate the server interface and skeleton definitions for
+the server methods. The only additional programming needed is to
+supply the body of the server functions.
+</p>
+
+<hr><h2 id="461"><a name="wsdl-limitations-2">10.1 Limitations in WSDL support</a></h2>
+
+<p id="462">
+This early release of WSDL support implements most of the WSDL 1.1
+specification. Any omissions are the result of oversight or for the
+benefit of an earlier release. 
+</p>
+<p id="463">
+The known omissions include: 
+</p>
+
+<ul>
+<li id="464">
+This implementation cannot decode most declarations specified with
+a <code>&lt;restriction&gt;</code> construct. These types are
+translated to <code>(:complex (:seq* (:any)))</code>. This
+translation will accept most input data, but output messages will most
+likely be encoded incorrectly. The affected declarations must be
+modified manually.
+</li>
+<li id="465">
+This implementation ignores <code>soap:header</code> and
+<code>soap:fault</code> entries in a file.
+</li>
+<li id="466">
+This implementation ignores <code>minOccurs</code> and
+<code>maxOccurs</code> attributes
+<ul>
+<li id="467">
+for <code>xs:sequence</code> we assume <code>min=0
+max=Unbounded</code>
+</li>
+<li id="468">
+for <code>xs:all</code> we assume <code>min=0 max=1</code>
+</li>
+<li id="469">
+for <code>xs:choice</code> we assume <code>min=0
+max=1</code>
+</li>
+</ul>
+</li>
+</ul>
+
+
+
+<hr><h2 id="470"><a name="wsdl-funs-vars-2">10.2 WSDL Functions and Variables</a></h2>
+
+<p id="471">
+The packages <code>net.xmp.wsdl</code> and
+<code>net.xmp.wsdl.soap</code> hold the symbols in the WSDL
+namespaces.
+</p>
+
+<hr><h3 id="472"><a name="wsdl-file-connector-class-bookmarkxx"></a>wsdl-file-connector</h3><h3 id="473">Class</h3><h4 id="474">Package: net.xmp.soap</h4>
+
+<p id="475">
+An instance of this class is created when a WSDL file is decoded. 
+</p>
+
+<hr>
+
+<hr><h3 id="476"><a name="wsdl-file-connector-op-bookmarkxx"></a>wsdl-file-connector</h3><h3 id="477">Function</h3><h4 id="478">Package: net.xmp.soap</h4>
+
+<p id="479">
+[Earlier releases of this document incorrently described a function of
+this name. There is no such function.]
+</p>
+
+<hr>
+
+<hr><h3 id="480"><a name="decode-wsdl-file-op-bookmarkxx"></a>decode-wsdl-file</h3><h3 id="481">Function</h3><h4 id="482">Package: net.xmp.soap</h4>
+
+<p id="483"><b>Arguments: </b><i>
+file </i>&amp;key <i>namespaces base lisp-package class init xml-syntax include import verbose</i><i>
+</i></p>
+
+
+
+
+<p id="484">
+This function parses a file containing a WSDL specification and
+returns a <a href="soap.htm#wsdl-file-connector-class-bookmarkxx"><code>wsdl-file-connector</code></a> instance containing
+the parsed data.
+</p>
+<p id="485">
+The <b><i>lisp-package</i></b> argument is a package
+specifier. Unqualified WSDL names will be interned in this package.
+</p>
+<p id="486">
+The <b><i>namespaces</i></b> keyword argument may be
+<code>nil</code>, <code>:decode</code>, or a
+namespace map. The default is <code>:decode</code>.
+</p>
+<p id="487">
+The <b><i>base</i></b> keyword argument may be <code>nil</code> or a namespace map. The default is
+<code>:wsdl1-prefix</code>.
+</p>
+<p id="488">
+If a <b><i>package-name</i></b> occurs as an
+<i>ex-ns-part</i>, any unknown namespaces in the file
+are mapped to this package. Only one <i>package-name</i>
+should occur in the <code>extended-namespace-spec</code>.
+</p>
+<p id="489">
+If the form <code>(:prefix symbol-or-string)</code> occurs as an
+ex-ns-part, each unknown namespace is mapped to a different package
+named "prefixNN". Only one such form should occur in the
+<code>extended-namespace-spec</code>.
+</p>
+<p id="490">
+The <code>ex-ns-tail</code> component specifies how the standard
+namespaces should be identified in the file. If the package-name or
+<code>:prefix</code> forms occur as an
+<code>ex-ns-part</code>, or if the tail is
+<code>:guess</code>, then <a href="soap.htm#decode-wsdl-namespaces-op-bookmarkxx"><b>decode-wsdl-namespaces</b></a> is called.  
+</p>
+<p id="491">
+When the <b><i>namespaces</i></b> keyword argument is
+<code>:decode</code>, <a href="soap.htm#decode-wsdl-namespaces-op-bookmarkxx"><b>decode-wsdl-namespaces</b></a> is called with the
+<i>map</i> argument set to <i>base</i> and
+if the namespaces can be decoded, the resulting namespace map is
+used. Otherwise an error is signaled.
+</p>
+<p id="492">
+The value of the <b><i>class</i></b> argument should be
+the name of a sub-class of <code>wsdl-file-connector</code>. The
+default is <code>wsdl-file-connector</code>.
+</p>
+<p id="493">
+The value of the <b><i>init</i></b> argument should be a
+list of initargs added to the call of <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> of the class.
+</p>
+<p id="494">
+The value of the <b><i>xml-syntax</i></b> keyword
+argument can be <code>:strict</code> or <code>nil</code> (or any other value). A value of
+<code>:strict</code> forces strict interpretation of Schema
+definitions. Any other value relaxes XML Schema syntax to allow many
+ill-formed constructs that we have encountered in published Schema
+definitions. The default is <code>nil</code>.
+</p>
+<p id="495">
+The <b><i>include</i></b> keyword argument specifies how
+XML schema &lt;include&gt; elements should be handled in the WSDL
+Schema.  A value of <code>nil</code> (the default) causes
+&lt;include&gt; elements to be ignored; this behavior may leave many
+types and elements undefined.  A non-<code>nil</code>
+atomic value is assumed to be a function of two arguments: the
+<code>wsdl-file-connector</code> instance, and the value of the
+&quot;schemaLocation&quot; attribute in the &lt;include&gt; element.  If the
+non-<code>nil</code> value is of the form <code>(op
+. rest)</code>, <i>op</i> is assumed to be a function
+of 2+n arguments where the first two arguments are as above, and the
+remaining arguments are the items in rest.  In both cases, the value
+returned by the function must be <code>nil</code> or a
+string.  A <code>nil</code> indicates that the
+&lt;include&gt; element should be ignored.  A string is assumed to be
+the XML content to be parsed as the included Schema.
+</p>
+<p id="496">
+The <b><i>import</i></b> keyword argument specifies how
+XML schema &lt;import&gt; elements should be handled in the WSDL
+Schema. The values and handling are like <i>include</i>.
+</p>
+<p id="497">
+If the value of the <b><i>verbose</i></b> keyword
+argument is non-<code>nil</code>, progress messages are
+printed.  The default is <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="498"><a name="decode-wsdl-string-op-bookmarkxx"></a>decode-wsdl-string</h3><h3 id="499">Function</h3><h4 id="500">Package: net.xmp.soap</h4>
+
+<p id="501"><b>Arguments: </b><i>
+string </i>&amp;key <i>namespaces base lisp-package class init xml-syntax</i><i>
+</i></p>
+
+
+<p id="502">
+This function is like <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a> but the input is from
+the string argument instead of a file.
+</p>
+
+<hr>
+
+
+<hr><h3 id="503"><a name="decode-wsdl-at-uri-op-bookmarkxx"></a>decode-wsdl-at-uri</h3><h3 id="504">Function</h3><h4 id="505">Package: net.xmp.soap</h4>
+
+<p id="506"><b>Arguments: </b><i>
+uri </i>&amp;key <i>namespaces base lisp-package class init xml-syntax</i><i>
+</i></p>
+
+<p id="507">
+This function is like <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a> but the input is from
+the specified uri argument instead of a file.
+</p>
+
+<hr>
+
+
+
+<hr><h3 id="508"><a name="decode-wsdl-source-op-bookmarkxx"></a>decode-wsdl-source</h3><h3 id="509">Function</h3><h4 id="510">Package: net.xmp.soap</h4>
+
+<p id="511"><b>Arguments: </b><i>
+</i>&amp;key <i>uri string file namespaces base lisp-package class init xml-syntax stream</i><i>
+</i></p>
+
+<p id="512">
+This is the most general form of <b>decode-wsdl-*</b> functions. Only
+one of the keyword arguments <i>uri</i>,
+<i>string</i>, <i>file</i>, and
+<i>stream</i> should be specified. The specified
+argument determines the input source.
+</p>
+<p id="513">
+Those arguments are interpreted in this order:
+</p>
+<ol>
+<li id="514">
+If <i>uri</i> is non-<code>nil</code>, the
+data at the URI is retrieved and treated as the WDSL source string.
+</li>
+<li id="515">
+If <i>string</i> is non-<code>nil</code>, it
+is treated as the WDSL source string.
+</li>
+<li id="516">
+If <i>file</i> is non-<code>nil</code>, the
+content of the file is treated as the WDSL source string.
+</li>
+<li id="517">
+If <i>stream</i> is non-<code>nil</code>, it
+is assumed to be positioned at the first character of the WDSL source
+string.
+</li>
+</ol>
+<p id="518">
+If all the source arguments are <code>nil</code>, an error
+is signaled.
+</p>
+
+<p id="519">
+The other keyword arguments are like <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a>
+with the following exception: the value of the
+<i>namespaces</i> argument cannot be
+<code>:decode</code> when the source is a stream. This is
+because when <i>namespaces</i> is
+<code>:decode</code>, the source is parsed twice, once to find
+all the namespace declarations, and again to decode the content. If
+the source is a stream, we do not attempt to reposition the stream;
+therefore only one pass is allowed.
+</p>
+
+
+<hr>
+
+<hr><h3 id="520"><a name="soap-make-fault-op-bookmarkxx"></a>soap-make-fault</h3><h3 id="521">Function</h3><h4 id="522">Package: net.xmp.soap</h4>
+
+<p id="523"><b>Arguments: </b><i>
+server code string </i>&amp;key <i>factor detail sub-code</i><i>
+</i></p>
+
+<p id="524">
+This function creates an encoded fault instance.
+</p>
+<p id="525">
+The <b><i>server</i></b> argument must be an instance of
+a SOAP connector.
+</p>
+<p id="526">
+The <b><i>code</i></b> argument may be a keyword to
+specify one of the pre-defined SOAP Fault codes in the table below, or
+it must be a symbol in a namespace package.
+</p>
+<pre id="527">
+   :server           "SOAP-ENV:Server"
+   :client           "SOAP-ENV:Client"
+   :version-mismatch "SOAP-ENV:VersionMismatch"
+   :must-understand  "SOAP-ENV:MustUnderstand"
+</pre>
+<p id="528">
+The <b><i>sub-code</i></b> if specified it is appended
+to the fault code and separated with a dot.
+</p>
+<p id="529">
+The <b><i>string</i></b> argument is encoded as the
+"faultstring" element content.
+</p>
+<p id="530">
+The <b><i>factor</i></b> argument is encoded as the
+"faultfactor" element content.
+</p>
+<p id="531">
+The <b><i>detail</i></b> argument is encoded as the
+"detail" element content.
+</p>
+<p id="532">
+If a SOAP method implementation throws an encoded fault instance, then the
+SOAP reply message consists of the contained fault message.
+If a SOAP method implementation throws any other value, it is encoded as
+a "Client.LispError" fault.
+</p>
+
+<hr>
+
+
+<hr><h3 id="533"><a name="soap-new-environment-op-bookmarkxx"></a>soap-new-environment</h3><h3 id="534">Function</h3><h4 id="535">Package: net.xmp.soap</h4>
+
+<p id="536"><b>Arguments: </b><i>
+</i></p>
+
+<p id="537">
+This function resets the SOAP environment by removing all
+namespace, namespace map, element and type definitions from
+the Lisp environment and restores the initial definitions
+included in the SOAP module.
+</p>
+
+<hr>
+
+
+
+<hr><h3 id="538"><a name="encode-wsdl-file-op-bookmarkxx"></a>encode-wsdl-file</h3><h3 id="539">Function</h3><h4 id="540">Package: net.xmp.soap</h4>
+
+<p id="541"><b>Arguments: </b><i>file
+</i>&amp;key <i>namespaces base servers target target-package name</i> (<i>if-exists</i> :supersede)<i> types elements use</i><i>
+</i></p>
+
+<p id="542">
+Create a file with WSDL definitions of the specified servers. The
+definitions include exported methods and associated data types.
+</p>
+<p id="543">
+The arguments are: 
+</p>
+
+<ul>
+<li id="544">
+<i>file</i>: string or pathname naming output file
+</li>
+<li id="545">
+<i>namespaces</i>: the value of this argument is a
+namespace map that is combined with the base namespace map to define
+the default namespace map for the WSDL definition.  The default value
+is the list <code>(:net.xmp.wsdl)</code> that specifies the 
+WSDL namespace as the default namespace.
+<p id="546">
+The effective namespace map during the encoding af each service 
+is obtained by combining the namespace map of the service
+with the above default namespace map for the WSDL definition.
+</p>
+</li>
+<li id="547">
+<i>base</i>: the value of this argument is a namespace
+map. The default value is the list <code>(list nil
+:wsdl1-namespaces :all)</code>.
+</li>
+<li id="548">
+<i>servers</i>: a list of soap-message-server instances,
+a single instance, or a list of 2-lists (service-name
+soap-message-server-instance).
+</li>
+<li id="549">
+<i>target</i>: a URI string or a symbol naming a
+package. This argument specifies the target namespace for the entire
+WSDL definition.  The current implementation of the WSDL generator
+assumes that all the top-level message elements are in the same
+namespace.
+<p id="550">
+If this argument is omitted, we use the URI
+<b>"urn:ThisWebServiceNamespace"</b> as the target, and expect all the
+top-level message elements to be in no pre-defined namespace.
+</p>
+<p id="551">
+If this argument is a symbol, it must name a package associated with a
+namespace in the <i>namespaces</i> argument. If the
+argument is a string or a URI instance, and it is not mentioned in the
+<i>namespaces</i> argument, then all top-level message
+elements are assumed to be in this namespace.
+</p>
+<p id="552">
+If a top-level message element is encountered in another namespace, an
+error is signalled (unlesss the <i>target-package</i>
+argument is specified).
+</p>
+</li>
+<li id="553">
+<i>target-package</i>: can be <code>nil</code>, the name of a package, or a package. When this
+argument is non-<code>nil</code>, it serves as a filter
+for messages to be included in the WSDL output. Only messages in the
+specified package are included in the WSDL output.
+</li>
+<li id="554">
+<i>name</i>: the name of the service 
+</li>
+<li id="555">
+<i>if-exists</i>: default is
+<code>:supersede</code>
+</li>
+<li id="556">
+<i>types</i>: a list of type names.  The type
+definitions are added to the types Schema of the WSDL output.
+</li>
+<li id="557">
+<b><i>elements</i></b>: a list of element names.  The
+element definitions are added to the types Schema of the WSDL output.
+</li>
+
+<li id="558">
+<b><i>use</i></b>: this argument spacifies the "use"
+attribute in the generated WSDL. The default value
+is <code>:encoded</code>, to specify that type attributes are
+included in the elements of the outgoing SOAP message. The other
+allowed value is <code>:literal</code>, to specify that type
+attributes are not included.
+</li>
+
+</ul>
+
+<p id="559">
+The <i>types</i> and <i>elements</i>
+arguments may be used to add element and type declarations that are
+not mentioned in any SOAP messages, or with a null services argument
+to generate a WSDL output without any service definitions.
+</p>
+
+<hr>
+
+
+<hr><h3 id="560"><a name="wsdl-service-names-op-bookmarkxx"></a>wsdl-service-names</h3><h3 id="561">Generic Function</h3><h4 id="562">Package: net.xmp.soap</h4>
+
+<p id="563"><b>Arguments: </b><i>
+conn </i> &amp;optional <i>and-ports</i><i>
+</i></p>
+
+<p id="564">
+Returns a list of the names of all the services defined in the wsdl
+file. The order of the names is the order of the definitions in the
+file. If more than one service is defined, the index in the list may
+be used as the service argument to <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a>.
+</p>
+<p id="565">
+The optional <i>and-ports</i> argument determines the
+level of detail included in the returned value. If it is omitted or
+<code>nil</code>, the result will look like
+<code>(service-name ... )</code>. If it is t, the result will
+look like <code>((service-name port-name ...) ... )</code>. If
+it is :verbose, the result will look like <code>((service-name
+(port-name binding url) ...)  ... )</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="566"><a name="make-client-interface-op-bookmarkxx"></a>make-client-interface</h3><h3 id="567">Generic Function</h3><h4 id="568">Package: net.xmp.soap</h4>
+
+<p id="569"><b>Arguments: </b><i>
+conn service destination </i>&amp;key <i>eval</i> (<i>lisp-package</i> :keyword) (<i>file-package</i> :user)<i> empty-element null-element expand-singleton prefix suffix port if-missing-package map compose text-file class-file post-file object-class action message-dns body-form message-method-prefix connect-class built-in-arrays defined-arrays sequence response redef object-access generate-comments op-is-action</i><i>
+</i></p>
+
+
+
+
+<p id="570">
+This function generates a source code file with type definitions,
+element definitions and function definitions derived from the WSDL
+definition in the <i>conn</i> argument. The client
+interface is intended to be a fully functional set of functions to
+access the web service described in the WSDL.
+</p>
+<p id="571">
+Some web service definitions may change over time, and therefore the
+interface code may need to be generated repeatedly. The many
+arguments to <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a> attempt to capture
+all the variations that may be needed to generate usable code so that
+the generated code will require little if any hand modifications.
+</p>
+<p id="572">
+The <b><i>conn</i></b> argument must be a <a href="soap.htm#wsdl-file-connector-class-bookmarkxx"><code>wsdl-file-connector</code></a> instance as returned
+by <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a>.
+</p>
+
+<p id="573">
+The <i>service</i> argument can be
+</p>
+<ul>
+<li id="574">
+<code>nil</code> or omitted, in which case 0 is passed
+(see next entry).
+</li>
+<li id="575">
+an integer: which is interpreted as an index into a list of defined
+services
+</li>
+the keyword <code>:none</code>, in which case service
+definitions are ignored, but any types defined in the
+<b>&lt;wsdl:types&gt;</b> element are translated to Lisp/SOAP type
+definitions.
+<li id="576">
+a string-or-symbol: which is interpreted as the name of defined service 
+</li>
+</ul>
+
+<p id="577">
+The <b><i>destination</i></b> argument can be
+</p>
+<ul>
+<li id="578">
+a stream, which causes output to be sent to that stream
+</li>
+<li id="579">
+<code>nil</code>, which supresses output
+</li>
+<li id="580">
+<code>t</code>, which causes output to be sent to the
+<a href="../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a> stream
+</li>
+<li id="581">
+a string or a pathname, which should specify an output file to receive output
+</li>
+</ul>
+
+<h3 id="582">
+The keyword arguments
+</h3>
+
+<ul>
+<li id="583">
+<b><i>eval</i></b>: the <i>eval</i>
+argument is ignored.
+</li>
+<li id="584">
+<b><i>lisp-package</i></b>:
+this argument specifies the <code>:lisp-package</code> argument
+of the generated call to
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+The default is <code>:keyword</code>.
+</li>
+<li id="585">
+<b><i>empty-element</i></b>
+this argument specifies the <code>:empty-element</code>
+argument of the generated call to
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+</li>
+<li id="586">
+<b><i>null-element</i></b>:
+this argument specifies the <code>:null-element</code>
+argument of the generated
+call to
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.
+Thus, this argument value may be the name of a special variable or a
+function call; if that is the case, the behavior of the generated
+code may be modified at run time by changing the value of the special
+variable or by changing the definition of the called function.
+</li>
+<li id="587">
+<b><i>file-package</i></b>: this argument denotes the package
+for the source file that is generated by this function. The default is
+<code>:user</code>.
+</li>
+<li id="588">
+<b><i>expand-singleton</i></b>: when this argument is <code>nil</code>, each generated client function expects as many
+keyword arguments as there are immediate components in the SOAP
+message.
+<p id="589">
+When the <i>expand-singleton</i> argument is non-<code>nil</code>, and the SOAP message consists of exactly one
+sub-element, the generated client function expects as many keyword
+arguments as there are immediate components in this singleton
+sub-element. SOAP messages are often designed to contain this
+structure, and this feature simplifies the client message function
+arguments.
+</p>
+</li>
+<li id="590">
+<b><i>prefix</i></b>: this argument is the leading component
+of the generated names of client functions. The argument must be a
+string or a symbol. The default is <code>:client-</code>.
+</li>
+<li id="591">
+<b><i>suffix</i></b>: this argument should be one of the
+keywords <code>:index</code>, <code>:message</code>, or
+:compose. The keyword <code>:index</code> denotes names like
+<b>prefix-17</b>. The keyword <code>:message</code> denotes
+names like <b>prefix-SoapMessageName</b>. The keyword
+<code>:compose</code> causes the name translation specified in
+the compose argument to be applied to the message name suffix. The
+default is <code>:index</code>.
+</li>
+<li id="592">
+<b><i>port</i></b>: this argument specifies the port
+binding within a service. The value is a name string or an index. The
+default is 0.
+</li>
+<li id="593">
+<b><i>map</i></b>: this argument should be a keyword
+symbol used as the name of the namespace map generated for the
+interface. The default is <code>:&lt;prefix&gt;namespaces</code>
+where <code>&lt;prefix&gt;</code> is the value of the
+<i>prefix</i> argument.
+</li>
+<li id="594">
+<b><i>compose</i></b>: this argument specifes how names
+from the WSDL definition are translated into Lisp symbols.  By
+default, this translation applies only to symbols generated by the
+<i>object-class</i> option.  If the
+<i>suffix</i> argument is specified as
+<code>:compose</code>, then this option also applies to message
+calling function names. This argument can be any of the following
+values:
+<p id="595">
+<code>:hyphen</code>, <code>:hyphen-if-ok</code> (the
+default), <code>:downcase</code>,
+<code>:downcase-if-ok</code>,
+<code>:capitalize-accessor</code>, or
+<code>:capitalize-all</code>
+</p>
+<p id="596">
+If the value is <code>:hyphen-if-ok</code>
+or <code>:downcase-if-ok</code>, add a hyphen at the case change
+location and downcase or simply downcase but no hyphen (respectively)
+if no apparent case-fold conflicts results. The value
+<code>:hyphen</code> causes a hyphen to be added and downcasing
+unconditionally. The value <code>:downcase</code> causes
+downcasing (but no hyphen) unconditionally.
+</p>
+<p id="597">
+<code>:capitalize-accessor</code> capitalizes accessor roots
+while <code>:capitalize-all</code> capitalizes all roots. Here are some examples:
+</p>
+<pre id="598">
+<b>:compose=:capitalize-accessor</b> reader-prefix slot="get":
+The slot "unitPrice" reader will be "getUnitPrice"
+The decoder for type "itemList" will be "decode-itemList"
+
+<b>:compose=:capitalize-all</b>: 
+The slot "unitPrice" reader will be "GetUnitPrice"
+The decoder for type "itemList" will be "Decode-ItemList"
+</pre>
+<h4 id="599">
+Value of :compose may be a list
+</h4>
+<p id="600">
+The argument may also be a list beginning with one of the above keywords.
+The remainder of the list is a list of exceptions in the following
+format:
+</p>
+<pre id="601">
+(compose-keyword exception ... )
+exception -&gt; string -- a matching input string is kept unchanged
+          -&gt; (string-in string-out) -- an input string matching 
+                                      string-in isr eplaced with string-out
+
+Examples:
+
+  :compose '(:hyphen &quot;oddCap&quot; (&quot;BADcap&quot; &quot;bad-cap&quot;))
+Default translation: &quot;odd-cap&quot; &quot;ba-dcap&quot;
+With above exceptions: &quot;oddCap&quot; &quot;bad-cap&quot;
+</pre>
+</li>
+<li id="602">
+<b><i>text-file</i></b>
+</li>
+<li id="603">
+<b><i>class-file</i></b>
+</li>
+<li id="604">
+<b><i>post-file</i></b>: these three arguments 
+specify where various generated source lines will be written. The
+value of each may be a stream, a pathname, <code>:insert</code>
+(the default for <i>class-file</i> and
+<i>post-file</i>), or <code>nil</code>. The
+value of <i>text-file</i> may also be
+<code>:txt</code>, which is also the default for
+<i>text-file</i>.
+<p id="605">
+The value <code>nil</code> suppresses the output. The
+value <code>:insert</code> inserts the output in the main
+destination output file. A stream or pathname value specifies the file
+where the output is written.
+</p>
+<p id="606">
+The <i>text-file</i> argument specifies where a text
+comment describing the interface will be written.  The value
+<code>:txt</code> (the default) specifies a file with the same
+name as the main destination output file and a file type of "txt".
+</p>
+<p id="607">
+The <i>class-file</i> argument specifies where defclass
+forms and wrapper functions will be written.
+</p>
+<p id="608">
+The <i>post-file</i> argument specifies
+where forms generated by a user wsdl-post-process method will be
+written.
+</p>
+</li>
+<li id="609">
+<b><i>object-class</i></b>: this argument can be <code>nil</code>, a class name, a class, or an instance. The
+specified class must be a sub-class of <a href="soap.htm#soap-object-class-class-bookmarkxx"><code>soap-object-class</code></a>. When this
+option is specified as non-<code>nil</code>, generate code
+to map between SOAP structs and instances. See
+<a href="#mapping-soap-to-clos-2">Section 10.4 Mapping SOAP Structures to CLOS classes</a> for more
+details.
+</li>
+<li id="610">
+<b><i>if-missing-package</i></b>: this argument
+specifies the behavior if a namespace cannot be mapped to a
+package. The value can be <code>:error</code> or
+<code>:warn</code> or a string or a symbol.
+<p id="611">
+If the value of <i>if-missing-package</i> is
+<code>:error</code> or <code>:warn</code> (the default),
+an error or a warning is signaled. When the <code>:warn</code>
+option is chosen, if no warnings are printed, the generated interface
+is complete and correct. If warnings are printed, the generated
+interface file must be hand modified to make it complete and
+functional. It is usually easier to adjust the
+<i>namespaces</i> argument and generate a new interface
+file.
+</p>
+<p id="612">
+If the value of <i>if-missing-package</i> is a string or
+some other symbol, then a package with name "net.xmpns.SSSNN" where
+SSS is the string (or symbol-name) and NN is an index is created and
+used.
+</p>
+<p id="613">
+If no Lisp package has been defined for a namespace, the warning
+"There is no Lisp package defined for namespace ~S" is printed. If a
+Lisp package is not pre-defined in the application, the symbols will
+be interned in a new package for each new incoming message.
+</p>
+</li>
+<li id="614">
+<b><i>action</i></b>: this argument specifies a default
+<code>soapAction</code> header for a generated server.
+</li>
+<li id="615">
+<b><i>message-dns</i></b>: this argument specifies a
+default message-dns option for a generated server.
+</li>
+<li id="616">
+<b><i>body-form</i></b>: this argument specifies the
+body-form option for the generated client or server.
+</li>
+<li id="617">
+<b><i>message-method-prefix</i></b>: when this argument
+is non-<code>nil</code>, a set of wrapper generic
+functions are generated (see
+<a href="#call-wrapper-3">Section 10.4.4 Call Wrapper Methods</a>).
+</li>
+<li id="618">
+<b><i>connect-class</i></b>: this argument specifies the
+connector class used in the generated client or server code. The
+defaults are
+<code>soap-aserve-client-string-in-out-connector</code> and
+<code>soap-aserve-server-string-in-out-connector</code>.
+</li>
+<li id="619">
+<b><i>built-in-arrays</i></b>: this argument specifies
+the behavior for Schema types defined as arrays of built-in types.  If
+the value is <code>:collapse</code>, then the generated code
+replaces the named array type with an explicit array declaration.
+Thus:
+<pre id="620">
+(define-soap-type nil foo '(:array xsd:string))
+
+;; built-in-arrays=nil
+(define-soap-element nil 'bar 'foo)
+     
+;; built-in-arrays=:collapse
+define-soap-element nil 'bar '(:array xsd:string))
+</pre>
+</li>
+<li id="621">
+<b><i>defined-arrays</i></b>: this argument specifies
+the behavior for Schema types defined as arrays of user-defined types.
+If the value is <code>:collapse</code>, then the generated code
+replaces the named array type with an explicit array declaration.
+</li>
+<li id="622">
+<b><i>sequence</i></b>: this argument can specify a less
+restricted interpretation of the Schema &lt;sequence&gt; collection
+definer. The formal Schema definition states that a &lt;sequence&gt;
+is ordered, but some web services seem to ignore this restriction and
+treat &lt;sequence&gt; as unordered. When the value of this argument
+is <code>:set*</code>, then elements that were defined as
+<code>:seq*</code> composites in the WSDL are actually defined
+as <code>:set*</code> in the generated code.
+</li>
+<li id="623">
+<b><i>response</i></b>: the value of this argument may
+be the keywords <code>:string</code> or
+<code>:symbol</code>. The default is <code>:string</code>.
+Normally SOAP response elements are defined without namespace
+qualifiers since both the name and namespace of the top-level response
+element is ignored.  When the value <code>:symbol</code> is
+specified, then the response element is defined in the same package
+and namespace as the SOAP request method name.  This feature may avoid
+some name conflicts if several WSDL definitions are combined in one
+Lisp image. 
+</li>
+<li id="624">
+<b><i>redef</i></b>: the value of this argument controls
+how class definitions are generated when the
+<i>object-class</i> argument is specified.  The default
+value is <code>nil</code>, no action.
+<p id="625">
+A value of <code>:warn</code> causes a warning if a class
+definition is generated but a class definition already exists from a
+source file different from the destination file.
+</p>
+<p id="626">
+A value of <code>:skip</code> causes a generated class
+definition to be omitted if a class definiton already exists from a
+source file different from the destination file.
+</p>
+<p id="627">
+A value of <code>:skip-and-warn</code> causes a generated class
+definition to be omitted if a class definiton already exists from a
+source file different from the destination file but a warning is
+signalled as well.
+</p>
+<p id="628">
+This option is useful if multiple WSDL definitions with duplicate
+elements are combined in one Lisp image.  The option is effective only
+if each WSDL interface is generated and loaded before the next WSDL is
+analyzed.
+</p>
+<p id="629">
+
+</p>
+</li>
+<li id="630">
+<b><i>object-access</i></b>: the value of this argument
+controls the package where object class accessors are generated.  If
+the value is <code>nil</code> (the default), accessors are
+generated in the output file package.  If the value is
+<code>:object-class</code>, then accessors are generated in the
+package of the object class; this is the package associated with the
+namespace of the SOAP Schema type.
+<p id="631">
+When this argument value is <code>:object-class</code>, then
+encoder names are generated without a prefix.
+</p>
+<p id="632">
+
+</p>
+</li>
+
+<li id="633">
+<b><i>generate-comments</i></b>: when this argument is
+non-<code>nil</code>, the generated code file contains
+comments that show where <a href="soap.htm#wsdl-generate-code-op-bookmarkxx"><b>wsdl-generate-code</b></a> is called during code
+generation.  The comments show the arguments to <a href="soap.htm#wsdl-generate-code-op-bookmarkxx"><b>wsdl-generate-code</b></a>
+in each situation.  This output may help in designing application
+specific methods for <a href="soap.htm#wsdl-generate-code-op-bookmarkxx"><b>wsdl-generate-code</b></a>.
+
+</li>
+
+
+<li id="634">
+<b><i>op-is-action</i></b>: when this argument is
+non-<code>nil</code>, the generated client code sends the
+WSDL operation name as the value of the saopAction HTTP header. This
+behavior is necessary when the WSDL is in the document-literal style,
+without a wrapper element. In that case, the SOAP method name is not
+apparent in the SOAP message; the soapAction header is one convention
+for specifying the SOAP method.
+</li>
+
+</ul>
+<p id="635">
+In order to define the generated interface, the generated interface file
+must be compiled and loaded.
+</p>
+<p id="636">
+To review, these arguments control the generated code:
+</p>
+<ul>
+<li id="637">
+<b><i>prefix</i></b>: string or symbol
+</li>
+<li id="638">
+<b><i>suffix</i></b>: <code>:index</code> or
+<code>:message</code>
+</li>
+<li id="639">
+<b><i>map</i></b>: a namespace-map
+</li>
+<li id="640">
+<b><i>action</i></b>: a string (server only)
+</li>
+<li id="641">
+<b><i>message-dns</i></b>: a namespace-map (server only)
+</li>
+<li id="642">
+<b><i>file-package</i></b>: a package or package-name
+</li>
+<li id="643">
+<b><i>expand-singleton</i></b>: a boolean
+</li>
+<li id="644">
+<b><i>body-form</i></b>: <code>:one</code> or
+<code>:many</code>
+</li>
+<li id="645">
+<b><i>object-class</i></b>: <code>nil</code>
+or name of class (subclass of <code>soap-object</code>)
+</li>
+<li id="646">
+<b><i>compose</i></b>: <code>:hyphen</code>,
+<code>:hyphen-if-ok</code>, <code>:downcase</code>,
+<code>:downcase-if-ok</code>, or <code>nil</code>
+</li>
+<li id="647">
+<b><i>message-method-prefix</i></b>: a string or symbol
+</li>
+<li id="648">
+<b><i>connect-class</i></b>: <code>nil</code> or name of class (subclass of
+<code>soap-connector</code>)
+</li>
+<li id="649">
+<b><i>built-in-arrays</i></b>: <code>nil</code> or <code>:collapse</code>
+</li>
+<li id="650">
+<b><i>defined-arrays</i></b>: <code>nil</code> or <code>:collapse</code>
+</li>
+<li id="651">
+<b><i>send-atype</i></b>: a boolean
+</li>
+<li id="652">
+<b><i>send-asize</i></b>: a boolean
+</li>
+<li id="653">
+<b><i>null-element</i></b>: <code>nil</code>
+or <code>:default-value</code> or <code>:empty</code>
+</li>
+<li id="654">
+<b><i>empty-element</i></b>: <code>nil</code> or <code>:default-value</code>
+</li>
+<li id="655">
+<b><i>lisp-package</i></b>: a package or package-name
+</li>
+<li id="656">
+<b><i>sequence</i></b>: <code>nil</code> or
+<code>:set*</code>
+</li>
+</ul>
+
+<h3 id="657">
+Possible name conflicts
+</h3>
+
+<p id="658">
+When generating Lisp code from a WSDL definition, there may be name conflicts
+or possible name conflicts when several different spellings are mapped to the
+same Lisp symbol.  These conflicts are signaled as warnings of the form:
+</p>
+<pre id="659">
+Possible name conflicts: (key (symbol from...)...)
+</pre>
+<p id="660">
+where each <b>from</b> component is a string or a list of strings
+used to derive the name of the symbol.
+</p>
+
+
+<hr>
+
+<hr><h3 id="661"><a name="make-server-interface-op-bookmarkxx"></a>make-server-interface</h3><h3 id="662">Generic Function</h3><h4 id="663">Package: net.xmp.soap</h4>
+
+<p id="664"><b>Arguments: </b><i>
+conn service destination </i>&amp;key <i>eval</i> (<i>lisp-package</i> :keyword) (<i>file-package</i> :user)<i> empty-element null-element expand-singleton prefix suffix action message-dns port if-missing-package map response redef object-access generate-comments</i><i>
+</i></p>
+
+<p id="665">
+This method analyzes the data in the WSDL file to generate type
+definitions and server function skeletons.
+</p>
+<p id="666">
+Most of the arguments are as for <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a>. The
+<b><i>eval</i></b> argument, as in <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a>, is ignored.
+</p>
+<p id="667">
+The <b><i>prefix</i></b> argument is the leading
+component of the generated names of server functions. The argument
+must be a string or a symbol. The default is
+<code>:server-</code>.
+</p>
+<p id="668">
+The <b><i>action</i></b> argument is the default
+<code>soapAction</code> expected for all incoming messages.
+</p>
+<p id="669">
+The <b><i>message-dns</i></b> argument is used to
+initialize the namespace definitions of the server instance.
+</p>
+<p id="670">
+In order to define the generated interface, the generated interface
+file must be compiled and loaded.
+</p>
+
+
+
+<hr>
+
+<hr><h3 id="671"><a name="wsdl-include-file-op-bookmarkxx"></a>wsdl-include-file</h3><h3 id="672">Function</h3><h4 id="673">Package: net.xmp.soap</h4>
+
+<p id="674"><b>Arguments: </b><i>
+conn file-name
+</i></p>
+
+
+
+
+<p id="675">
+This function may be used as the value of the
+<i>import</i> or <i>include</i> keyword
+arguments to <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a>.  The returned value is
+<code>nil</code> or the contents of the specified file.
+</p>
+
+<hr>
+
+<hr><h3 id="676"><a name="wsdl-include-url-op-bookmarkxx"></a>wsdl-include-url</h3><h3 id="677">Function</h3><h4 id="678">Package: net.xmp.soap</h4>
+
+<p id="679"><b>Arguments: </b><i>
+conn url-string
+</i></p>
+
+
+
+
+<p id="680">
+This function may be used as the value of the
+<i>import</i> or <i>include</i> keyword
+arguments to <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a>.  The returned value is
+<code>nil</code> or the contents of the specified url.
+</p>
+<hr>
+
+
+
+<hr><h3 id="681"><a name="soap-sent-string-op-bookmarkxx"></a>soap-sent-string</h3><h3 id="682">Function</h3><h4 id="683">Package: net.xmp.soap</h4>
+
+<p id="684"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="685">
+This function returns a string containing the entire XML message that was
+sent most recently on the specified connection. The value returned by this
+function is only meaningful in a client application, where it contains the
+SOAP message sent to the server. The value is not available in a server
+method because it does not exist until after the method has returned.
+</p>
+
+<hr>
+
+<hr><h3 id="686"><a name="soap-received-string-op-bookmarkxx"></a>soap-received-string</h3><h3 id="687">Function</h3><h4 id="688">Package: net.xmp.soap</h4>
+
+<p id="689"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="690">
+This function returns a string containing the entire XML message that was
+received most recently on the specified connection. In a server method, this
+value is the SOAP message that arrived at the server. In a client function,
+this value is the HTTP response to the SOAP request.
+</p>
+
+<hr>
+
+
+
+
+
+<hr><h2 id="691"><a name="name-pack-2">10.3 Namespaces and Packages</a></h2>
+
+<p id="692">
+The meaning of XML, SOAP, and WSDL texts depends in part on the correct
+identification of various namespaces.
+</p>
+<p id="693">
+XML namespaces are identified by a URI and URIs are considered
+distinct if they differ in any character position.  The SOAP module
+considers two URIs equivalent if they only differ in a final slash
+character.
+</p>
+
+<hr><h2 id="694"><a name="name-pack-3">10.3.1 Some important namespaces and packages</a></h2>
+
+<h3 id="695">
+XML Schema definition namespace
+</h3>
+
+<ul>
+<li id="696">
+The qualifying prefix is usually "xs" or "xsd".
+</li>
+<li id="697">
+The Lisp package is :net.xmp.schema.
+</li>
+<li id="698">
+The URI varies - we have seen
+<pre id="699">
+     "http://www.w3.org/2001/XMLSchema"
+     "http://www.w3.org/2000/10/XMLSchema"
+     "http://www.w3.org/1999/XMLSchema"
+</pre>
+</li>
+</ul>
+
+<h3 id="700">
+XML Schema instance namespace
+</h3>
+
+<ul>
+<li id="701">
+The qualifying prefix is usually "xsi".
+</li>
+<li id="702">
+The Lisp package is :net.xmp.schema-instance.
+</li>
+<li id="703">
+The URI varies - we have seen "http://www.w3.org/2001/XMLSchema-instance" and "http://www.w3.org/2000/10/XMLSchema-instance"
+</li>
+</ul>
+
+<h3 id="704">
+SOAP message envelope namespace:
+</h3>
+<ul>
+<li id="705">
+The qualifying prefix in the SOAP spec is "SOAP-ENV".
+</li>
+<li id="706">
+The Lisp package is :net.xmp.soap.envelope
+</li>
+<li id="707">
+The only URI we have seen is "http://schemas.xmlsoap.org/soap/envelope/"
+</li>
+</ul>
+
+
+<h3 id="708">
+SOAP message encoding namespace
+</h3>
+<ul>
+<li id="709">
+The qualifying prefix in the SOAP spec is "SOAP-ENC".
+</li>
+<li id="710">
+The Lisp package is <code>:net.xmp.soap.encoding</code>.
+</li>
+<li id="711">
+The only URI we have seen is "http://schemas.xmlsoap.org/soap/encoding/"
+</li>
+</ul>
+
+<h3 id="712">
+WSDL definition namespace
+</h3>
+<ul>
+<li id="713">
+The qualifying prefix varies.
+</li>
+<li id="714">
+The Lisp package is <code>:net.xmp.wsdl</code>.
+</li>
+<li id="715">
+The URI in the WSDL 1.1 spec is "http://schemas.xmlsoap.org/wsdl/"
+</li>
+<li id="716">
+The URI in the WSDL 1.2 spec is "http://www.w3.org/2003/06/wsdl"
+</li>
+</ul>
+
+ <h3 id="717">
+WSDL SOAP binding namespace
+</h3>
+
+<ul>
+<li id="718">
+The qualifying prefix varies.
+</li>
+<li id="719">
+The Lisp package is <code>:net.xmp.wsdl.soap</code>.
+</li>
+<li id="720">
+The URI in the WSDL 1.1 spec is
+"http://schemas.xmlsoap.org/wsdl/soap/"
+</li>
+<li id="721">
+The URI in the WSDL 1.2 spec is
+"http://www.w3.org/2003/06/wsdl/soap12"
+</li>
+</ul>
+
+
+
+
+<hr><h2 id="722"><a name="namespace-defs-3">10.3.2 Namespace Definition Operators</a></h2>
+
+<p id="723">
+A <b>namespace declaration</b> is a list of the form <code>(package
+prefix uri)</code>.
+</p>
+<p id="724">
+One package may be linked to several URIs. One URI may be linked to
+several packages.  The most recent definition is the first to be seen
+in a search.  The <i>primary-p</i> argument to various
+operators allows some reordering.
+</p>
+<p id="725">
+One advantage of making a global namespace definition is that the
+package name may be used to denote the mapping.
+Also the entry will be found if :all is in namespace map.
+</p>
+<p id="726">
+Here is a recursive specification of the namespace maps:
+</p> 
+<pre id="727">
+namespace-map -&gt; symbol-name-of-namespace-map |
+                 (default-namespace [namespace-entry]... [namespace-tail])
+default-namespace -&gt; nil        ;; no default specified,
+                                      ;; inherit the current default or continue
+                                      ;;    the search for a default specification
+                   -&gt; &quot;&quot;         ;; the default is to have no default at all
+                                       ;;   blocks any inherited default
+                                       ;;   and stops the search for a default
+                   -&gt; symbol     ;; package name of defined namespace
+                   -&gt; string     ;; search in order
+                                       ;;   1. package name of defined namespace
+                                       ;;   2. uri 
+                   -&gt; uri instance ;; uri
+namespace-entry -&gt; (package-name) | (package-name prefix) |
+		     namespace-declaration | namespace-declaration-instance
+		     symbol-name-of-namespace-map |
+		     :all
+		     :stop
+namespace-tail -&gt; nil | (package nil :any) | (string nil :prefix)
+</pre>
+
+<hr><h3 id="728"><a name="xmp-namespace-map-class-bookmarkxx"></a>xmp-namespace-map</h3><h3 id="729">Class</h3><h4 id="730">Package: net.xmp.soap</h4>
+
+<p id="731">
+The Lisp class of a namespace map object.
+</p>
+
+<hr>
+
+<hr><h3 id="732"><a name="define-namespace-map-op-bookmarkxx"></a>define-namespace-map</h3><h3 id="733">Function</h3><h4 id="734">Package: net.xmp.soap</h4>
+
+<p id="735"><b>Arguments: </b><i>
+name </i> &amp;rest <i>namespace-map-parts</i><i>
+</i></p>
+
+<p id="736">
+This function returns a <a href="soap.htm#xmp-namespace-map-class-bookmarkxx"><code>xmp-namespace-map</code></a> instance. 
+</p>
+<p id="737">
+The <i>name</i> argument may be <code>nil</code>, to define an anonymous namespace map. The
+<i>namespace-map-parts</i> argument may be <code>nil</code> to define an empty namespace map. If the list is
+not <code>nil</code>, it must begin with a default
+namespace specification.  The general format of the list is
+</p>
+<pre id="738">
+  default-namespace [namespace-entry]... [namespace-tail]
+</pre>
+<p id="739">
+Where the <code>default-namespace</code> component may be
+</p>
+<ul>
+<li id="740">
+<code>nil</code> to denote no default.
+</li>
+<li id="741">
+a package defined to represent a namespace.
+</li>
+<li id="742">
+a symbol that names a package defined to represent a namespace.
+</li>
+<li id="743">
+a string that names a package defined to represent a namespace. If the
+string does not name a package, then it is treated as a URI.
+</li>
+<li id="744">
+a URI instance that identifies a namespace.
+</li>
+</ul>
+<p id="745">
+The <code>namespace-entry</code> and
+<code>namespace-tail</code> components are described in
+<a href="#namespace-defs-3">Section 10.3.2 Namespace Definition Operators</a>.
+</p>
+
+<hr>
+
+<h3 id="746">
+Defined namespace-map keywords (read-only):
+</h3>
+<pre id="747">
+ :wsdl-namespaces -&gt;  ( :wsdl1.2 :wsdl1.1 :soap )
+	 This definition recognizes both the WSDL 1.1
+	 and the  WSDL 1.2 namespaces, and uses the WSDL 1.2 
+	 namespaces for output, since they appear first.
+
+ :wsdl1-namespaces -&gt; ( :wsdl1.1 :wsdl1.2 :soap1 )
+	 This definition uses the WSDL 1.1 
+	 namespaces for output, since it appears first.
+
+ :soap -&gt; ( :soap1.2 :soap1.1 :schema )
+ :soap1 -&gt; ( :soap1.1 :soap1.2 :schema )
+
+ :soap1.1
+ :soap1.2  
+ :wsdl1.1  
+ :wsdl1.2
+
+ :schema -&gt; ( :schema2001 :schema1999 )
+ :schema1 -&gt; ( :schema1999 :schema2001 )
+
+ :schema1999 :schema2001 
+
+ :wsdl-combine -&gt;  ( :wsdl-namespaces :all (:wsdl-data nil :any) )
+	 This definition searches the :wsdl-namespaces first,
+	 then any globally declared namespaces.
+	 This definition maps any unmatched namespaces to the
+	 :wsdl-data package.
+
+ :wsdl-keyword -&gt;  ( :wsdl-namespaces :all (:keyword nil :any) )
+	 This definition maps any unmatched namespaces to the
+	 keyword package.
+
+ :wsdl-prefix  -&gt;  ( :wsdl-namespaces :all (&quot;wsdl-&quot; nil :prefix) )
+	 This definition maps each unmatched namespace to a new
+	 package with a name of the form &quot;wsdl-nnn&quot;
+
+ :wsdl1-combine -&gt; ( :wsdl1-namespaces :all (:wsdl-data nil :any) )
+ :wsdl1-keyword -&gt; ( :wsdl1-namespaces :all (:keyword nil :any) )
+ :wsdl1-prefix  -&gt; ( :wsdl1-namespaces :all (&quot;wsdl-&quot; nil :prefix) )
+</pre>
+<p id="748">
+The current namespace environment is defined as the current 
+nesting of namespace declarations. It consists of
+nested :namespaces options and/or xmlns attributes,
+the :message-dns slot specification,
+the :base-dns slot specification,
+and finally the namespace-tail entry.
+</p>
+<p id="749">
+During input decoding, when the server is decoding a request or
+a client is decoding a reply, or when decoding a wsdl file,
+"xmlns" attributes cause a search of the current namespace environment 
+for an exact match on the URI.  If a match cannot be found, an error 
+is signalled.  If a match is found, the XML name is interned in the 
+corresponding Lisp package.
+</p>
+<p id="750">
+During output encoding, when the server is encoding a reply,
+or a client is encoding a request, or when encoding a wsdl file,
+create a top-level xmlns attribute from the first occurrence of each 
+explicit namespace declaration in the namespace environment.
+A symbol in a package present in the current namespace
+environment is encoded as a qualified name.
+</p>
+
+<hr><h3 id="751"><a name="xmp-namespace-declaration-class-bookmarkxx"></a>xmp-namespace-declaration</h3><h3 id="752">Class</h3><h4 id="753">Package: net.xmp.soap</h4>
+
+<p id="754">
+The Lisp class of a namespace declaration object.
+</p>
+
+<hr>
+
+<hr><h3 id="755"><a name="define-namespace-op-bookmarkxx"></a>define-namespace</h3><h3 id="756">Function</h3><h4 id="757">Package: net.xmp.soap</h4>
+
+<p id="758"><b>Arguments: </b><i>
+package prefix uri
+</i> &amp;optional <i>primary-p</i><i>
+</i></p>
+
+<p id="759">
+This function stores a namespace definition that will be used in decoding 
+or encoding SOAP messages.  These definitions are created by explicit calls 
+to this function or by mentions of namespaces in calls to 
+<a href="soap.htm#define-namespace-map-op-bookmarkxx"><b>define-namespace-map</b></a>.
+</p>
+<p id="760">
+If the <i>package</i> and <i>uri</i>
+arguments are specified (that is, given a non-<code>nil</code> value), then a new namespace declaration object
+is created if it does not already exist.
+</p>
+<p id="761">
+If only the <i>package</i> or the
+<i>uri</i> argument is specified (that is, given a
+non-<code>nil</code> value), then find a matching
+namespace declaration object, if one exists.
+</p>
+<p id="762">
+If both <i>package</i> and <i>uri</i> are
+<code>nil</code>, then do nothing and return <code>nil</code>.
+</p>
+<p id="763">
+This function returns a <a href="soap.htm#xmp-namespace-declaration-class-bookmarkxx"><code>xmp-namespace-declaration</code></a> instance or
+<code>nil</code>.
+</p>
+<p id="764">
+The <i>prefix</i> argument is ignored when decoding SOAP
+messages.  When encoding SOAP messages, only namespace definitions
+that have a non-<code>nil</code> prefix are used,
+definitions with a <code>nil</code> prefix are ignored and
+symbols in that package are encoded as unqualified names.  The defined
+prefix is used in the xmlns declaration of the namespace.  The
+prefixes mentioned in a specific XML context must be distinct or an
+error is signaled.
+</p>
+
+<hr>
+
+<hr><h3 id="765"><a name="delete-namespace-op-bookmarkxx"></a>delete-namespace</h3><h3 id="766">Function</h3><h4 id="767">Package: net.xmp.soap</h4>
+
+<p id="768"><b>Arguments: </b><i>
+package prefix uri
+</i></p>
+
+<p id="769">
+This function deletes any namespace declarations matching the
+arguments. Either <i>package</i> or
+<i>uri</i> must be non-<code>nil</code>, or
+no namespaces are deleted. If one is nil while the other is
+non-<code>nil</code>, then all namespaces with the
+non-<code>nil</code> component are deleted, that is, nil
+works as a wildcard when the other component is specified.  Nothing
+will be deleted if only <i>prefix</i> is non-<code>nil</code>.
+</p>
+
+<hr>
+
+<h3 id="770">
+<a name="removed-vars">Namespace variables, no longer supported</a>
+</h3>
+<p id="771">
+In an earlier version, the following variables had namespace
+specifications as values. All these variables are removed and
+namespaces are determined by the namespace operators described above.
+</p>
+<ul>
+<li id="772">
+<code>*soap-namespaces*</code>
+</li>
+<li id="773">
+<code>*wsdl-default-namespaces*</code>
+</li>
+<li id="774">
+<code>*application-namespaces*</code>
+</li>
+<li id="775">
+<code>*soap-namespaces-a*</code>
+</li>
+<li id="776">
+<code>*soap-namespaces-b*</code>
+</li>
+<li id="777">
+<code>*wsdl-1.1-namespaces*</code>
+</li>
+<li id="778">
+<code>*wsdl-1.2-namespaces*</code>
+</li>
+</ul>
+
+
+
+
+<hr><h2 id="779"><a name="namespace-deduce-3">10.3.3 Deducing the namespaces used in a WSDL file</a></h2>
+
+<p id="780">
+The function <a href="soap.htm#decode-wsdl-namespaces-op-bookmarkxx"><b>decode-wsdl-namespaces</b></a> returns
+information about the namespaces mentioned in a WSDL definition and it
+can generate a namespace specification based on some heuristic rules.
+</p>
+
+
+<hr><h3 id="781"><a name="decode-wsdl-namespaces-op-bookmarkxx"></a>decode-wsdl-namespaces</h3><h3 id="782">Function</h3><h4 id="783">Package: net.xmp.soap</h4>
+
+<p id="784"><b>Arguments: </b><i>
+</i>&amp;key <i>file string uri map show</i><i>
+</i></p>
+
+
+
+
+<p id="785">
+This function returns 4 values:
+</p>
+<ol>
+<li id="786">
+A namespace specification acceptable as the :namespaces argument
+</li>
+<li id="787">
+A list of unrecognized URIs
+</li>
+<li id="788">
+A list of missing namespaces
+</li>
+<li id="789">
+A list of ambiguous namespaces
+</li>
+</ol>
+
+<p id="790">
+<b><i>file</i></b> should be a string containing the
+path to a file. <b><i>string</i></b> should be a string
+containing a WSDL definition. <b><i>uri</i></b> should
+be the uri where a WSDL definition may be found. Only one of the above
+arguments should appear.
+</p>
+<p id="791">
+The <b><i>map</i></b> argument specifies a namespace map
+that determines the namespace mapping strategy. The default is
+<code>:wsdl1-prefix</code> defined as <code>(nil
+:wsdl1.1-namespaces :all ("wsdl-" nil :prefix))</code>. This
+definition searches in this order:
+</p>
+<ol>
+<li id="792">
+<code>:wsdl1.1</code>, <code>:wsdl1.2</code>,
+<code>:soap1.1</code>, <code>:soap1.2</code>,
+<code>:schema2001</code>, <code>:schema1999</code>
+</li>
+<li id="793">
+all namespace maps defined with <a href="soap.htm#define-namespace-map-op-bookmarkxx"><b>define-namespace-map</b></a>
+</li>
+<li id="794">
+all namespaces defined with <a href="soap.htm#define-namespace-op-bookmarkxx"><b>define-namespace</b></a>
+unmatched namespaces are assigned to a new package named "wsdl-NNN"
+</li>
+</ol>
+<p id="795">
+If the value of the <i>show</i> keyword argument is
+non-<code>nil</code>, it must be <code>t</code> or a stream. Then a readable version of the
+namespaces is printed to <a href="../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a> (when <code>t</code>) or to the stream.
+</p>
+<p id="796">
+When <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a> is called with a
+<i>namespaces</i> argument of
+<code>:decode</code>, the function <a href="soap.htm#decode-wsdl-namespaces-op-bookmarkxx"><b>decode-wsdl-namespaces</b></a> is called and if
+values 2 3 and 4 are <code>nil</code> the decode operation
+proceeds with the resulting namespace specification. If any of the
+values 2 3 or 4 are non-<code>nil</code>, the function
+signals an error.
+</p>
+
+<hr>
+
+
+
+
+
+<hr><h2 id="797"><a name="mapping-soap-to-clos-2">10.4 Mapping SOAP Structures to CLOS classes</a></h2>
+
+<p id="798">
+When the :object-class argument is specified to <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a>, a set of classes
+are generated from the type and element definitions in the WSDL file.
+Constructor and accessor functions are also generated, as well as
+object-oriented methods for calling SOAP methods.
+</p>
+
+<hr><h3 id="799"><a name="soap-object-class-class-bookmarkxx"></a>soap-object-class</h3><h3 id="800">Class</h3><h4 id="801">Package: net.xmp.soap</h4>
+
+<p id="802">
+Application may define a subclass with different slot values for class
+slots:
+</p>
+<ul>
+<li id="803">
+<b>reader-prefix</b>: default is <code>:soap-get-</code>
+</li>
+<li id="804">
+<b>writer-prefix</b>: default is <code>:soap-set-</code>
+</li>
+</ul>
+
+<hr>
+
+<hr><h2 id="805"><a name="generated-classes-3">10.4.1 Generated Classes</a></h2>
+
+<p id="806">
+Each complex type definition in the WSDL is mapped to a sub-class of
+the user-defined sub-class of <a href="soap.htm#soap-object-class-class-bookmarkxx"><code>soap-object-class</code></a>.  The Lisp
+name of the Schema type is also the name of the corresponding CLOS
+class.
+</p>
+
+
+
+<hr><h2 id="807"><a name="generated-accessors-3">10.4.2 Generated Accessors</a></h2>
+
+<p id="808">
+The slot readers in the generated classes have names of the form
+</p>
+<pre id="809">
+&lt;reader-prefix from object-class&gt;&lt;converted SOAP sub-element name&gt;
+</pre>
+<p id="810">
+The slot writers in the generated classes have names of the form
+</p>
+<pre id="811">
+&lt;writer-prefix from object-class&gt;&lt;converted SOAP sub-element name&gt;
+</pre>
+<p id="812">
+The arguments to the slot writer are the standard CLOS writer
+arguments: <i>new slot value</i>, and
+<i>instance</i>.
+</p>
+
+
+
+<hr><h2 id="813"><a name="generated-constructors-etc-3">10.4.3 Generated Constructors, Decoders, and Encoders</a></h2>
+
+<p id="814">
+<b>new-&lt;converted SOAP type name&gt;</b> is an ordinary function
+with keyword arguments. The keyword argument names are the converted
+sub-element names of the complex type.
+</p>
+<p id="815">
+<b>decode-&lt;converted SOAP type name&gt;</b> is an ordinary function
+of one argument, the value returned by <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>.
+</p>
+<p id="816">
+<b>&lt;prefix&gt;encode</b> is a generic function of one argument
+specialized on the <a href="soap.htm#soap-object-class-class-bookmarkxx"><code>soap-object-class</code></a> of the SOAP complex
+type.
+</p>
+
+
+
+<hr><h2 id="817"><a name="call-wrapper-3">10.4.4 Call Wrapper Methods</a></h2>
+
+<p id="818">
+These wrapper functions are generated when the
+<code>:message-method-prefix</code> option is non-<code>nil</code>.
+</p>
+<pre id="819">
+  &lt;message-method-prefix&gt;&lt;converted SOAP message name&gt;
+</pre>
+<p id="820">
+The method takes positional arguments specialized on the SOAP
+structure classes defined for the corresponding message components.
+</p>
+
+
+
+<hr><h2 id="821"><a name="map-soap-to-lisp-3">10.4.5 Mapping SOAP Names to Lisp Names</a></h2>
+
+<p id="822">
+The conversion of SOAP Schema names to Lisp symbols is controlled by
+the <code>:convert</code> argument to <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a>. Its value can be:
+</p>
+<ul>
+<li id="823">
+<code>nil</code>: the case-sensitive SOAP name is used as
+the Lisp symbol name
+</li>
+<li id="824">
+<code>:hyphen</code>: The SOAP name is hyphenated at case shift
+positions and downcased
+</li>
+<li id="825">
+<code>:hyphen-if-ok</code>: if there are no apparent case
+folding conflicts, the SOAP names are hyphenated and downcased as
+above; otherwise, the case-sensitive SOAP name is used as the Lisp
+symbol name
+</li>
+<li id="826">
+<code>:downcase</code>: the SOAP name is simply downcased.
+</li>
+<li id="827">
+<code>:downcase-if-ok</code>: if there are no apparent case
+folding conflicts, the SOAP names are simply downcased; otherwise, the
+case-sensitive SOAP name is used as the Lisp symbol name
+</li>
+</ul>
+
+
+
+
+
+
+
+<hr><h2 id="828"><a name="client-from-wsdl-2">10.5 How to generate a SOAP client interface from a WSDL definition</a></h2>
+
+<p id="829">
+In this section, we go through the steps needed to generate a client
+interface from a WSDL definition obtained from some outside source.
+We use the files AmazonS3.wsdl and AmazonS3.xsd as examples.  The
+files were obtained from the web but copies are included in the
+Allegro CL distribution in <b><i>examples/soap/</i></b> (included in
+an update released in early September, 2006).
+</p>
+<p id="830">
+(The following steps could be applied to the web version but the
+results may differ if the service definition has changed.)
+</p>
+<p id="831">
+In order to run the example, be sure that the SOAP module is laoded
+and that the :net.xmp.soap is used (otherwise package-qualify the
+symbols as necessary in the example code).
+</p>
+<pre id="832">
+(require :soap)
+(use-package :net.xmp.soap)
+</pre>
+
+<h3 id="833">
+Step 1: Determine the Namespace Requirements
+</h3>
+
+<pre id="834">
+(soap-new-environment)
+(decode-wsdl-namespaces :file "AmazonS3.wsdl" :map nil :show t)
+</pre>
+
+<p id="835">
+The first expression is optional. It may be a good idea to evaluate this
+expression if this example is repeated in the same Lisp invocation or if
+other WSDL files have been tried. The effect is to discard all SOAP 
+definitions and start with a clean environment.
+</p>
+<p id="836">
+The second expressions parses the WSDL file and reports on the
+namespaces mentioned in the file.  The <i>show</i>
+argument prints a readable summary of this information:
+</p>
+<pre id="837">
+     #|
+     Namespace map:
+       (nil 
+        ("net.xmp.wsdl" "wsdl" "http://schemas.xmlsoap.org/wsdl/")
+         ("net.xmp.wsdl.soap" "wsdl-soap"
+          "http://schemas.xmlsoap.org/wsdl/soap/")
+         ("net.xmp.schema" "xsd" "http://www.w3.org/2001/XMLSchema"))
+     Other namespaces:
+         "http://s3.amazonaws.com/doc/2006-03-01/")
+     |#
+</pre>
+
+<p id="838">
+The first section of the output labelled "Namespace map:" lists the 
+namespaces that were recognized and are already mapped to Lisp
+packages because of built-in definitions or previous user definitions.
+</p>
+<p id="839">
+The next section labelled "Other namespaces:" lists the URLs of other
+namespaces mentioned in the WSDL.  These will be mapped to generated
+packages by default, but it is good practice to define a fixed package
+for each namespace.  This makes generated code more readable and
+gives consistent and comparable results from one run to the next.
+</p>
+<p id="840">
+Sometimes additional sections are listed to show ambiguous or unrecognizable
+namespaces.  These situations may indicate an ill-formed WSDL.  In most
+cases, if these sections appear customer service may need to intervene.
+</p>
+
+<h3 id="841">
+Step 2: Define Application Namespaces
+</h3>
+
+<p id="842">
+In this example, there is one namespace specific to this application.
+</p>
+
+<pre id="843">
+(define-namespace :aws "aws" "http://s3.amazonaws.com/doc/2006-03-01/")
+(define-namespace-map :awsmap nil '(:aws))
+</pre>
+
+<p id="844">
+The first expression defines one namespace.
+The second expression defines a namespace map which is used to hold all the
+namespaces in the configuration of an application.
+</p>
+
+<h3 id="845">
+Step 3: Decode the WSDL definition
+</h3>
+
+<pre id="846">
+(setf def 
+    (decode-wsdl-file "AmazonS3.wsdl" :namespaces :awsmap :verbose t))
+</pre>
+
+<p id="847">
+The above expression decodes the WSDL file and returns a wsdl-file-connector
+instance.  We assign this to a variable since it will be needed in subsequent
+expressions.
+</p>
+<pre id="848">
+; schemaLocation=AmazonS3.xsd was not included.
+</pre>
+
+<p id="849">
+The above message indicates that something was not quite right during the
+decoding, but we forge ahead hoping for the best.
+</p>
+
+<h3 id="850">
+Step 4: First Pass at Client Interface
+</h3>
+
+<pre id="851">
+(make-client-interface def 0 t)
+</pre>
+
+<p id="852">
+This expression generates a client definition for the first (zeroth)
+service definition in the previously decoded file.  The generated code
+is directed to <a href="../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>.
+</p>
+<pre id="853">
+Error: Cannot determine message type in (...)
+   - type may be defined in included Schema.
+</pre>
+
+<p id="854">
+But we cannot generate code because there is some missing information.
+</p>
+
+<h3 id="855">
+Step 5: Decode the WSDL definition again
+</h3>
+
+<p id="856">
+The included file appears to be necessary in order to decode and
+analyze the WSDL definition fully.  We need to tell the decoder how
+to find the included text.
+</p>
+<pre id="857">
+(setf def (decode-wsdl-file "AmazonS3.wsdl" :namespaces :awsmap
+                            :verbose t :include 'wsdl-include-file))
+</pre>
+
+<p id="858">
+The above expression specifies the function <a href="soap.htm#wsdl-include-file-op-bookmarkxx"><b>wsdl-include-file</b></a>
+to map the schemaLocation attribute to a file in the local file
+system.
+</p>
+<pre id="859">
+; schemaLocation=AmazonS3.xsd included with wsdl-include-file
+</pre>
+
+<p id="860">
+This time the message confirms that a second Schema was included.
+</p>
+
+<h3 id="861">
+Step 6: Second Pass at Client Interface
+</h3>
+
+<pre id="862">
+(make-client-interface def 0 "a-client.cl")
+</pre>
+
+<p id="863">
+This time, we direct the output of the generated code to a file.
+The returned value is a summary of the generated definitions. 
+</p>
+
+<pre id="864">
+     ((("Output in file:" :key :file) "a-client.cl")
+      (("Defined functions:" :key defun)
+       (client-18 "Send client message ListAllMyBuckets "
+        aws:ListAllMyBuckets)
+       (client-17 "Send client message ListBucket " aws:ListBucket)
+       (client-25 "Send client message DeleteObject " aws:DeleteObject)
+       (client-14 "Send client message PutObjectInline "
+        aws:PutObjectInline)
+       (client-1 "Send client message PutObject " aws:PutObject)
+       (client-12 "Send client message GetObjectExtended "
+        aws:GetObjectExtended)
+       (client-5 "Send client message GetObject " aws:GetObject)
+       (client-9 "Send client message SetBucketAccessControlPolicy "
+        aws:SetBucketAccessControlPolicy)
+       (client-8 "Send client message SetObjectAccessControlPolicy "
+        aws:SetObjectAccessControlPolicy)
+       ...)
+      (("Defined SOAP elements:" :key define-soap-element)
+       aws:ListAllMyBucketsResponse aws:ListAllMyBuckets
+       aws:ListBucketResponse aws:ListBucket aws:DeleteObjectResponse
+       aws:DeleteObject aws:PutObjectInlineResponse aws:PutObjectInline
+       aws:PutObjectResponse ...)
+      (("Defined SOAP types:" :key define-soap-type)
+       aws:ListAllMyBucketsList aws:ListAllMyBucketsResult
+       aws:ListAllMyBucketsEntry aws:ListBucketResult aws:ListEntry
+       aws:PutObjectResult aws:GetObjectResult aws:AccessControlPolicy
+       aws:AccessControlList ...)
+      (("Defined packages:" :key defpackage) :keyword :common-lisp-user :aws
+       #:aws #:common-lisp-user)
+      (("Lisp package of generated file:" :key in-package)
+       #:common-lisp-user)
+      (("Other entries:" :key define-namespace-map) :client-namespaces)
+      (("Other entries:" :key defvar) *client-service-url*))
+</pre>
+
+<h3 id="865">
+Step 7: Try the Interface
+</h3>
+
+<p id="866">
+In order to try the interface, we need to compile and load the generated code.
+</p>
+<pre id="867">
+(load (compile-file "a-client.cl"))
+(setf *soap-client-debug* :stop)
+(client-7 :Bucket "bbb" :AWSAccessKeyId "id" :Timestamp 123)
+</pre>
+
+<p id="868">
+The first expression compiles and loads the generated code.
+It is not necessary to compile, but the compiler does identify
+many problems in code before it is run.
+</p>
+
+<p id="869">
+The second expression informs the SOAP runtime to stop before actually
+sending a message to the server, and print a formatted version of
+the SOAP message for review.
+</p>
+
+<h3 id="870">
+Refine the Interface
+</h3>
+<p id="871">
+At this point, the generated code may be tweaked in various
+ways by generating the code again with additional parameters
+to make-client-interface:
+<ul>
+<li id="872">
+change the names of the client calls with the prefix and suffix
+options
+</li>
+<li id="873">
+generate CLOS classes with the object-class option
+</li>
+<li id="874">
+map mixed-case SOAP names to hyphenated Lispy names
+</li>
+<li id="875">
+adjust packages
+</li>
+</ul>
+</p>
+
+<hr><h2 id="876"><a name="client-from-wsdl-3">10.5.1 Combining Several WSDL Definitions in one Lisp Image</a></h2>
+<p id="877">
+When several WSDL definitions must be combined into one Lisp
+image, there may be several issues that must be resolved before
+a working application is generated:
+</p>
+<p id="878">
+The distinct WSDL definitions may use identical names to denote
+distinct types or methods.  This situation may be corrected by
+decoding the files into distinct Lisp packages and mapping 
+namespaces appropriately.  The prefix and suffix options may 
+also be useful in keeping names distinct.
+</p>
+<p id="879">
+The distinct WSDL definitions may duplicate Schema elements by 
+explicit repetition or by including identical definitions.  The
+:redef argument to make-client-interface provides several 
+strategies for handling this situation.
+</p>
+
+
+
+
+
+
+
+<hr><h2 id="880"><a name="custom-generated-code-2">10.6  Customizing Generated Code</a></h2>
+
+<hr><h3 id="881"><a name="wsdl-generate-code-op-bookmarkxx"></a>wsdl-generate-code</h3><h3 id="882">Generic Function</h3><h4 id="883">Package: net.xmp.soap</h4>
+
+<p id="884"><b>Arguments: </b><i>
+conn mode info op </i> &amp;rest <i>args</i><i>
+</i></p>
+
+<p id="885">
+This method may be used to modify the code generated by <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a> and <a href="soap.htm#make-server-interface-op-bookmarkxx"><b>make-server-interface</b></a>.
+</p>
+<p id="886">
+The default method specialized on <code>(wsdl-file-connector t t
+t)</code> simply emits the cons of <i>op</i> and
+<i>args</i>.
+</p>
+<p id="887">
+If the <i>op</i> argument is null and there is only
+exactly one element in <i>args</i>, then the entire form
+is that single element.
+</p>
+<p id="888">
+The method may return two values when it is called for a top-level form.
+In that case the second value may be
+a string or a list of strings.  The strings are emitted as comments
+before the form.
+</p>
+<p id="889">
+An application may define a sub-class of <a href="soap.htm#wsdl-file-connector-class-bookmarkxx"><code>wsdl-file-connector</code></a> and some more
+specific methods to alter the generated code.  The application class
+is specified in the call to <a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a>.
+</p>
+<p id="890">
+The method is called with the following arguments during code generation:
+</p>
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><strong>mode</strong></td>
+<td WIDTH="20%" VALIGN="TOP"><strong>info</strong></td>
+<td WIDTH="20%" VALIGN="TOP"><strong>operator</strong></td>
+<td WIDTH="40%" VALIGN="TOP"><strong>comments</strong></td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:client </code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defun</b></td>
+<td WIDTH="40%" VALIGN="TOP">client message function</td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:client</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>nil</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>soap-message-client</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:server</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defun</b></td>
+<td WIDTH="40%" VALIGN="TOP">new server function</td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:server</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-body</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defun</b></td>
+<td WIDTH="40%" VALIGN="TOP">method definition skeleton</td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:server</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>nil</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>soap-message-server</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:object-class</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defclass</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:object-new</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defun</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:object-decoder</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defmethod</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:object-encoder</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defmethod</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:object-type</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defclass</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:object-wrapper</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:top-level</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>defmethod</b></td>
+<td WIDTH="40%" VALIGN="TOP"> </td>
+</tr>
+
+<tr>
+<td WIDTH="20%" VALIGN="TOP"><code>:sever</code></td>
+<td WIDTH="20%" VALIGN="TOP"><code>:method-body</code></td>
+<td WIDTH="20%" VALIGN="TOP"><b>---</b></td>
+<td WIDTH="40%" VALIGN="TOP">called to emit default comment 
+"INSERT BODY HERE"
+</td>
+</tr>
+
+</table>
+
+<hr>
+
+
+<hr><h3 id="891"><a name="wsdl-post-process-op-bookmarkxx"></a>wsdl-post-process</h3><h3 id="892">Generic Function</h3><h4 id="893">Package: net.xmp.soap</h4>
+
+<p id="894"><b>Arguments: </b><i>
+conn defs
+</i></p>
+
+<p id="895">
+This function is called after all the types, elements, and message
+functions have been generated, but not yet written to the output file.
+The built-in method is specialized on (t t) and does nothing.
+</p>
+<p id="896">
+The <i>defs</i> argument is a list of items of the form
+<code>(form comment ...)</code>.  The order of the items in the
+list is the order in which the forms will be written into the output
+file.
+</p>
+<p id="897">
+An application may add a primary or an <code>:around</code>
+method to manipulate the definitions or to add additional code to the
+output file.
+</p>
+<p id="898">
+To add a form to the output, call the function: <a href="soap.htm#wsdl-add-form-op-bookmarkxx"><b>wsdl-add-form</b></a> with
+arguments <code>conn form &rest comments</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="899"><a name="wsdl-maybe-conflicts-op-bookmarkxx"></a>wsdl-maybe-conflicts</h3><h3 id="900">Generic Function</h3><h4 id="901">Package: net.xmp.soap</h4>
+
+<p id="902"><b>Arguments: </b><i>
+conn
+</i></p>
+
+<p id="903">
+The value returned by this function is one of the following:
+</p>
+<ul>
+<li id="904">
+:unknown: no information is available
+</li>
+<li id="905">
+<code>nil</code>: no conflicts detected
+</li>
+<li id="906">
+<code>(x y z...)</code>: a list of symbols or strings that
+identify symbols that may cause problems during case-folding.
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="907"><a name="wsdl-add-form-op-bookmarkxx"></a>wsdl-add-form</h3><h3 id="908">Generic Function</h3><h4 id="909">Package: net.xmp.soap</h4>
+
+<p id="910"><b>Arguments: </b><i>
+conn form </i> &amp;rest <i>comments</i><i>
+</i></p>
+
+<p id="911">
+The form is added at the end of the code generated by <a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a> or <a href="soap.htm#make-server-interface-op-bookmarkxx"><b>make-server-interface</b></a>. If comments are
+specified, they must be strings.  Comments are inserted before the
+form in the generated file.
+</p>
+<p id="912">
+Code can only be added at the end of the generated file.  If it is
+necessary to modify code at the beginning of the file, it must be done
+by adding a <a href="soap.htm#wsdl-generate-code-op-bookmarkxx"><b>wsdl-generate-code</b></a> method that modifies
+one of the forms emitted at the beginning of the file.
+</p>
+
+<hr>
+
+
+
+
+
+
+<hr><hr><h2 id="913"><a name="headers-1">11.0 Headers</a></h2>
+
+
+<p id="914">
+If a client message must be sent with one or more SOAP header elements, 
+the elements must be built with <a href="soap.htm#make-soap-header-op-bookmarkxx"><b>make-soap-header</b></a> and saved in the 
+connection instance created with <a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a>.  Every time a SOAP 
+message is sent, the current collection of headers is included in the
+message as a single SOAP Header element.
+</p>
+<p id="915">
+If a SOAP server method must examine the content of SOAP header
+elements when handling a SOAP message, the accessor <a href="soap.htm#soap-message-headers-op-bookmarkxx"><b>soap-message-headers</b></a> may be used to
+extract the list of header elements.
+</p>
+
+
+<hr><h3 id="916"><a name="make-soap-header-op-bookmarkxx"></a>make-soap-header</h3><h3 id="917">Generic Function</h3><h4 id="918">Package: net.xmp.soap</h4>
+
+<p id="919"><b>Arguments: </b><i>
+conn element-spec </i> &amp;rest <i>args</i><i>
+</i></p>
+
+<p id="920">
+The arguments are as for <a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a>, but instead of sending
+a message, this method returns an object of class
+<code>soap-header</code> which contains an encoded
+representation of the header element.
+</p>
+<p id="921">
+If the header element must have a "mustUnderstand" attribute, the attribute
+may be specified as a :must-understand option or included in the :attributes
+option of the element definition.
+</p>
+
+<hr>
+
+<hr><h3 id="922"><a name="soap-add-header-op-bookmarkxx"></a>soap-add-header</h3><h3 id="923">Generic Function</h3><h4 id="924">Package: net.xmp.soap</h4>
+
+<p id="925"><b>Arguments: </b><i>
+conn header </i>&amp;key <i>after before reset</i><i>
+</i></p>
+
+<p id="926">
+The <i>header</i> argument must be an instance of the
+class <code>soap-header</code>.  The method adds the header to
+the list of headers that will be sent with the next message.
+</p>
+<p id="927">
+The <i>before</i> and <i>after</i>
+arguments may be <code>nil</code> or headers previously
+added.
+</p>
+<p id="928">
+If <i>reset</i> is non-<code>nil</code>,
+then any previously added headers are discarded.
+</p>
+
+<hr>
+
+<hr><h3 id="929"><a name="soap-must-understand-op-bookmarkxx"></a>soap-must-understand</h3><h3 id="930">Generic Function</h3><h4 id="931">Package: net.xmp.soap</h4>
+
+<p id="932"><b>Arguments: </b><i>
+conn element-name
+</i></p>
+
+<p id="933">
+When a reply message is decoded, and a "mustUnderstand" attribute with value
+"1" is present, then this method is called.
+</p>
+<p id="934">
+The default method behavior depends on the setting of the
+<code>:must-understand</code> flag in the connection
+instance. The following settings produce the indicated behavior:
+</p>
+<ul>
+<li id="935">
+<code>:warn</code> - print a warning and accept the header
+</li>
+<li id="936">
+<code>nil</code> - accept the header silently 
+</li>
+<li id="937">
+Any other value - signal an error
+</li>
+</ul>
+
+<hr>
+
+
+<hr><h3 id="938"><a name="soap-message-headers-op-bookmarkxx"></a>soap-message-headers</h3><h3 id="939">Generic Function</h3><h4 id="940">Package: net.xmp.soap</h4>
+
+<p id="941"><b>Arguments: </b><i>
+conn 
+</i></p>
+
+<p id="942">
+When <b><i>conn</i></b> is an instance of
+soap-connector, this accessor method returns a list of all the header
+elements in the SOAP message.
+</p>
+
+
+<hr>
+
+
+<hr><hr><h2 id="943"><a name="faults-errors-1">12.0 Faults and Errors</a></h2>
+
+<p id="944">
+All the warnings and errors signalled by the SOAP module are 
+described by the following hierarchy:
+</p>
+
+<pre id="945">
+   xmp-warning hierarchy:
+
+            simple-warning 
+                   xmp-warning  
+                             xmp-syntax
+                             xmp-redefinition
+                             soap-decode-warning
+                                
+   xmp-condition hierarchy: 
+
+            error   
+               xmp-condition
+                     xmp-client-condition
+                         soap-client-error
+                              soap-client-fault
+                     xmp-server-condition
+                         soap-server-error
+                              soap-server-fault
+                     soap-mismatch
+                     soap-must-understand
+</pre>
+<hr><hr><h2 id="946"><a name="index-1">13.0 Index</a></h2>
+
+<ul>
+<li id="947">
+<code>*application-namespaces*</code> (Removed variable, see <a href="#removed-vars">this note</a>)
+</li>
+<li id="948">
+<a href="soap.htm#call-soap-method-op-bookmarkxx"><b>call-soap-method</b></a> (Generic Function)
+</li>
+<li id="949">
+<a href="soap.htm#decode-wsdl-at-uri-op-bookmarkxx"><b>decode-wsdl-at-uri</b></a>
+</li>
+<li id="950">
+<a href="soap.htm#decode-wsdl-file-op-bookmarkxx"><b>decode-wsdl-file</b></a>
+</li>
+<li id="951">
+<a href="soap.htm#decode-wsdl-namespaces-op-bookmarkxx"><b>decode-wsdl-namespaces</b></a>
+</li>
+<li id="952">
+<a href="soap.htm#decode-wsdl-source-op-bookmarkxx"><b>decode-wsdl-source</b></a>
+</li>
+<li id="953">
+<a href="soap.htm#decode-wsdl-string-op-bookmarkxx"><b>decode-wsdl-string</b></a>
+</li>
+<li id="954">
+<a href="soap.htm#define-namespace-op-bookmarkxx"><b>define-namespace</b></a> (Function)
+</li>
+<li id="955">
+<a href="soap.htm#define-namespace-map-op-bookmarkxx"><b>define-namespace-map</b></a> (Function)
+</li>
+<li id="956">
+<a href="soap.htm#define-soap-element-op-bookmarkxx"><b>define-soap-element</b></a> (Generic Function)
+</li>
+<li id="957">
+<a href="soap.htm#define-soap-type-op-bookmarkxx"><b>define-soap-type</b></a> (Function)
+</li>
+<li id="958">
+<a href="soap.htm#define-namespace-map-op-bookmarkxx"><b>define-namespace-map</b></a> (Function)
+</li>
+<li id="959">
+<a href="soap.htm#disable-soap-server-op-bookmarkxx"><b>disable-soap-server</b></a> (Function)
+</li>
+<li id="960">
+<a href="soap.htm#enable-soap-server-op-bookmarkxx"><b>enable-soap-server</b></a> (Function)
+</li>
+<li id="961">
+<a href="soap.htm#encode-wsdl-file-op-bookmarkxx"><b>encode-wsdl-file</b></a> (Function)
+</li>
+<li id="962">
+<a href="soap.htm#make-client-interface-op-bookmarkxx"><b>make-client-interface</b></a>
+</li>
+<li id="963">
+<a href="soap.htm#make-server-interface-op-bookmarkxx"><b>make-server-interface</b></a>
+</li>
+<li id="964">
+<a href="soap.htm#make-soap-header-op-bookmarkxx"><b>make-soap-header</b></a> (Generic Function)
+</li>
+<li id="965">
+<a href="soap.htm#soap-add-header-op-bookmarkxx"><b>soap-add-header</b></a> (Generic Function)
+</li>
+<li id="966">
+<a href="soap.htm#soap-alist-to-plist-op-bookmarkxx"><b>soap-alist-to-plist</b></a> (Function)
+</li>
+<li id="967">
+<a href="soap.htm#soap-binding-name-op-bookmarkxx"><b>soap-binding-name</b></a> (Generic Function)
+</li>
+<li id="968">
+<a href="soap.htm#s_soap-client-debug_s-var-bookmarkxx"><code>*soap-client-debug*</code></a> (Variable)
+</li>
+<li id="969">
+<a href="soap.htm#soap-encode-object-op-bookmarkxx"><b>soap-encode-object</b></a> (Generic Function)
+</li>
+<li id="970">
+<a href="soap.htm#soap-export-method-op-bookmarkxx"><b>soap-export-method</b></a> (Generic Function)
+</li>
+<li id="971">
+<a href="soap.htm#soap-get-attribute-op-bookmarkxx"><b>soap-get-attribute</b></a> (Generic Function)
+</li>
+<li id="972">
+<a href="soap.htm#soap-get-attributes-op-bookmarkxx"><b>soap-get-attributes</b></a> (Generic Function)
+</li>
+<li id="973">
+<a href="soap.htm#soap-invoke-method-op-bookmarkxx"><b>soap-invoke-method</b></a> (Generic Function)
+</li>
+<li id="974">
+<a href="soap.htm#soap-make-fault-op-bookmarkxx"><b>soap-make-fault</b></a> (Function)
+</li>
+<li id="975">
+<a href="soap.htm#soap-message-body-op-bookmarkxx"><b>soap-message-body</b></a> (Generic Function)
+</li>
+<li id="976">
+<a href="soap.htm#soap-message-client-op-bookmarkxx"><b>soap-message-client</b></a> (Function)
+</li>
+
+<li id="977">
+<a href="soap.htm#soap-message-headers-op-bookmarkxx"><b>soap-message-headers</b></a> (Generic Function)
+</li>
+
+<li id="978">
+<a href="soap.htm#soap-message-server-op-bookmarkxx"><b>soap-message-server</b></a> (Function)
+</li>
+<li id="979">
+<a href="soap.htm#soap-must-understand-op-bookmarkxx"><b>soap-must-understand</b></a> (Generic Function)
+</li>
+<li id="980">
+<a href="soap.htm#soap-new-environment-op-bookmarkxx"><b>soap-new-environment</b></a> (Function)
+</li>
+<li id="981">
+<a href="soap.htm#soap-object-class-class-bookmarkxx"><code>soap-object-class</code></a> (Class)
+</li>
+<li id="982">
+<a href="soap.htm#soap-port-name-op-bookmarkxx"><b>soap-port-name</b></a> (Generic Function)
+</li>
+<li id="983">
+<code>*soap-namespaces*</code> (Removed variable, see <a href="#removed-vars">this note</a>)
+</li>
+<li id="984">
+<code>*soap-namespaces-a*</code> (Removed variable, see <a href="#removed-vars">this note</a>)
+</li>
+<li id="985">
+<code>*soap-namespaces-b*</code> (Removed variable, see <a href="#removed-vars">this note</a>)
+</li>
+
+<li id="986">
+<a href="soap.htm#soap-received-string-op-bookmarkxx"><b>soap-received-string</b></a> (Generic Function)
+</li>
+
+<li id="987">
+<a href="soap.htm#soap-result-only-op-bookmarkxx"><b>soap-result-only</b></a> (Generic Function)
+</li>
+<li id="988">
+<a href="soap.htm#soap-result-pair-op-bookmarkxx"><b>soap-result-pair</b></a> (Generic Function)
+</li>
+<li id="989">
+<a href="soap.htm#soap-result-part-op-bookmarkxx"><b>soap-result-part</b></a> (Generic Function)
+</li>
+<li id="990">
+<a href="soap.htm#soap-result-string-op-bookmarkxx"><b>soap-result-string</b></a> (Generic Function)
+</li>
+<li id="991">
+<a href="soap.htm#soap-result-typed-op-bookmarkxx"><b>soap-result-typed</b></a> (Generic Function)
+</li>
+
+<li id="992">
+<a href="soap.htm#soap-sent-string-op-bookmarkxx"><b>soap-sent-string</b></a> (Generic Function)
+</li>
+
+<li id="993">
+<a href="soap.htm#s_soap-server_s-var-bookmarkxx"><code>*soap-server*</code></a> (Variable)
+</li>
+<li id="994">
+<a href="soap.htm#s_soap-server-debug_s-var-bookmarkxx"><code>*soap-server-debug*</code></a> (Variable)
+</li>
+<li id="995">
+<a href="soap.htm#soap-server-message-action-op-bookmarkxx"><b>soap-server-message-action</b></a> (Generic Function)
+</li>
+<li id="996">
+<a href="soap.htm#soap-server-message-method-op-bookmarkxx"><b>soap-server-message-method</b></a> (Generic Function)
+</li>
+<li id="997">
+<a href="soap.htm#soap-server-message-return-op-bookmarkxx"><b>soap-server-message-return</b></a> (Generic Function)
+</li>
+<li id="998">
+<a href="soap.htm#soap-server-message-signature-op-bookmarkxx"><b>soap-server-message-signature</b></a> (Generic Function)
+</li>
+<li id="999">
+<a href="soap.htm#soap-service-name-op-bookmarkxx"><b>soap-service-name</b></a> (Generic Function)
+</li>
+<li id="1000">
+<a href="soap.htm#soap-sub-element-content-op-bookmarkxx"><b>soap-sub-element-content</b></a> (Function)
+</li>
+<li id="1001">
+<a href="soap.htm#soap-version-op-bookmarkxx"><b>soap-version</b></a>
+</li>
+<li id="1002">
+<a href="soap.htm#start-soap-server-op-bookmarkxx"><b>start-soap-server</b></a>
+</li>
+<li id="1003">
+<a href="soap.htm#stop-soap-server-op-bookmarkxx"><b>stop-soap-server</b></a>
+</li>
+
+<li id="1004">
+<a href="soap.htm#wsdl-add-form-op-bookmarkxx"><b>wsdl-add-form</b></a> (Generic Function)
+</li>
+
+<li id="1005">
+<code>*wsdl-default-namespaces*</code> (Removed variable, see <a href="#removed-vars">this note</a>)
+</li>
+<li id="1006">
+<a href="soap.htm#wsdl-file-connector-class-bookmarkxx"><code>wsdl-file-connector</code></a>
+</li>
+<li id="1007">
+<a href="soap.htm#wsdl-generate-code-op-bookmarkxx"><b>wsdl-generate-code</b></a> (Generic Function)
+</li>
+<li id="1008">
+<a href="soap.htm#wsdl-include-file-op-bookmarkxx"><b>wsdl-include-file</b></a>
+</li>
+<li id="1009">
+<a href="soap.htm#wsdl-include-url-op-bookmarkxx"><b>wsdl-include-url</b></a>
+</li>
+<li id="1010">
+<a href="soap.htm#wsdl-maybe-conflicts-op-bookmarkxx"><b>wsdl-maybe-conflicts</b></a>
+</li>
+<li id="1011">
+<a href="soap.htm#wsdl-post-process-op-bookmarkxx"><b>wsdl-post-process</b></a>
+</li>
+<li id="1012">
+<a href="soap.htm#wsdl-service-names-op-bookmarkxx"><b>wsdl-service-names</b></a>
+</li>
+<li id="1013">
+<code>*wsdl-1.1-namespaces*</code> (Removed variable, see <a href="#removed-vars">this note</a>)
+</li>
+<li id="1014">
+<code>*wsdl-1.2-namespaces*</code> (Removed variable, see <a href="#removed-vars">this note</a>)
+</li>
+<li id="1015">
+<a href="soap.htm#xmp-namespace-declaration-class-bookmarkxx"><code>xmp-namespace-declaration</code></a>
+</li>
+<li id="1016">
+<a href="soap.htm#xmp-namespace-map-class-bookmarkxx"><code>xmp-namespace-map</code></a>
+</li>
+</ul>
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>The object described on this page has been modified in the 10.0 release; see the Release Notes.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/soap.htm">9.0 version</a></td></tr></table></html>

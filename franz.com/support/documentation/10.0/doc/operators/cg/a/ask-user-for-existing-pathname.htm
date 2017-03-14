@@ -1,0 +1,157 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ask-user-for-existing-pathname</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-existing-pathname.htm">9.0 version</a></td></tr></table><h2 id="2">ask-user-for-existing-pathname</h2>
+
+<p id="3"><b>Arguments: </b><i>
+prompt </i>&amp;key <i>initial-directory initial-name stream allowed-types multiple-p change-current-directory-p share-aware-p default-extension</i> (<i>buffer-size</i> (file-selection-buffer-size (configuration *system*)))<i>
+</i></p>
+
+<p id="4">
+This function provides the service of prompting for one 
+or more existing pathnames.
+</p>
+<p id="5">
+If <i>multiple-p</i> is <code>nil</code>
+(the default), returns the pathname of the selected file, or <code>nil</code> if none was chosen. If
+<i>multiple-p</i> is true, returns a list of selected
+files (even if only one is selected) or <code>nil</code>
+if none is selected. <i>prompt</i> should be a string
+explaining what is to be done with the selected file (e.g. "Choose
+file to open").
+</p>
+<p id="6">
+The arguments are:
+</p>
+<ul>
+<li id="7">
+<b><i>initial-name</i></b>: the filename shown initially
+for selection. It can be any relative filename with respect to the
+initial directory (the value of
+:host). If <code>nil</code> or " " (the empty string), the
+initial name will appear as the currently allowed type, such as
+"*.cl". The default is " ". A non-<code>nil</code>
+value may be either a namestring or a pathname object.
+</li>
+<li id="8">
+<b><i>initial-directory</i></b>: the initial directory
+from which to select the file or from which to change directory. If
+this value is unsupplied, the default depends on the value of
+the <a href="../../ide/context-sensitive-default-path.htm"><b>context-sensitive-default-path</b></a> configuration
+property, but in most cases the most recent value is used. The value
+of <a href="../../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> is used initially.
+In earlier releases, this argument was called
+<i>host</i>. &nbsp;<i>host</i> is
+still accepted in place of <i>initial-directory</i>. Do
+not specify both.
+</li>
+<li id="9">
+<b><i>stream</i></b>: specifies the parent window for
+the dialog that pops up. Defaults to the stream returned
+by <a href="../s/selected-window-or-screen.htm"><b>selected-window-or-screen</b></a>.
+</li>
+<li id="10">
+<b><i>allowed-types</i></b>: specifies what types of
+files appear in the dialog's list of existing files.  The value is a
+list where each member specifies one of the choices in the drop-down
+list of file type choices.  Each list member is a cons of (1) the
+string to appear in the list of file type choices and (2) a string of
+the form "*.foo;*.bar;..." that indicates the file type(s) that it
+represents.  The first choice is the one that is initially in effect.
+For example, the value <code>(("Text Files" . "*.txt")("Pixmap
+Files" . "*.bmp;*.jpg;*.jpeg"))</code> would initially display all
+files whose type is "txt", and also allow the user to select the
+second choice to instead display all files of the types "bmp", "jpg",
+and "jpeg". (Users can always type in some other file if desired.)
+The default value of this argument is <code>(("All files"
+. "*.*"))</code> to display all files. (In releases prior to 7.0,
+the default was the value of the variable
+<code>cg:*edit-allowed-types*</code>.  That variable is no
+longer supported and the default is now built in.)
+</li>
+<li id="11">
+<b><i>multiple-p</i></b>: a Boolean which, if true,
+allows the user to select more than one file; the list of selected
+pathname strings is returned. If <code>nil</code>, only
+one file may be selected and the returned value is a pathname string
+or <code>nil</code>, if the user cancels the dialog. The
+default is
+<code>nil</code>.
+
+</li>
+<li id="12">
+<b><i>change-current-directory-p</i></b>: a Boolean
+which, if true, changes the Microsoft Windows current directory to be
+the final selected directory when you exit or cancel the
+dialog. If <code>nil</code>, the current directory is left
+unchanged. Default is <code>nil</code>. This argument has
+no effect on GTK. See <b>GTK note</b> below.
+</li>
+<li id="13">
+<b><i>share-aware-p</i></b>: a Boolean which controls
+whether a file that is currently opened by another application can be
+selected. If <code>nil</code> (the default), the file
+cannot be selected. If true, the file can be selected. This argument
+has no effect on GTK. See <b>GTK note</b> below.
+</li>
+<li id="14">
+<b><i>default-extension</i></b>: the value should be
+either
+<code>nil</code> or a string that names a default pathname
+extension. This value is used only if the end user has selected an
+allowed type such as "All Files (*.*)" on the file selection dialog
+that does not specify a particular type, and they type in a filename
+with no extension.  In that case, the pathname returned by this
+function will have default-extension as its pathname-type.  An
+exception is that if default-extension is the null string, it will
+result in a pathname whose type is <code>nil</code> rather
+than the null string, just as if default-extension were <code>nil</code>.
+</li>
+
+<li id="15">
+<b><i>buffer-size</i></b>: an integer specifying the
+size of the buffer that's used to return the seleced pathnames. This
+is used only on the Windows platform.  The default value is
+<code>(file-selection-buffer-size (configuration
+*system*))</code> (see <a href="../f/file-selection-buffer-size.htm"><b>file-selection-buffer-size</b></a>, <a href="../c/configuration.htm"><b>configuration</b></a>, and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>). The default should always be
+sufficient when asking for new pathnames, where the filenames must be
+typed in.
+</li>
+
+</ul>
+<p id="16">
+This function uses the standard Common Dialog supplied by the
+platform's underlying windowing system for file selection. Internal
+Allegro CL file selection dialogs use this function.
+</p>
+<h3 id="17">
+GTK notes
+</h3>
+<ol>
+<li id="18">
+The arguments <i>change-current-directory-p</i> and
+<i>share-aware-p</i> have no effect on GTK because the
+underlying native GTK file selection dialog does not support such
+options.
+</li>
+<li id="19">
+The file <b>~/.config/gtk-2.0/gtkfilechooser.ini</b> contains some
+options for how the GTK file selection dialog behaves. In particular,
+if the end user specifies <code>ShowHidden=true</code>, then dot
+files and other hidden files and directories will be included in the
+dialog's list. This option does not appear to be specifiable
+programmatically. Alternately, the user can type the name of a hidden
+file even if it's not shown in the list.
+</li>
+</ol>
+
+<p id="20">
+See also <a href="../a/ask-user-for-new-pathname.htm"><b>ask-user-for-new-pathname</b></a> and
+<a href="../a/ask-user-for-directory.htm"><b>ask-user-for-directory</b></a>. And see
+<a href="../f/file-selection-buffer-size.htm"><b>file-selection-buffer-size</b></a>.
+</p>
+
+
+
+
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-existing-pathname.htm">9.0 version</a></td></tr></table></body></html>

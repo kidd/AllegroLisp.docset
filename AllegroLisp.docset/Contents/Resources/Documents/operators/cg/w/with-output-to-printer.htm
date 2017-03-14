@@ -1,0 +1,79 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-output-to-printer</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/with-output-to-printer.htm">9.0 version</a></td></tr></table><h2 id="2">with-output-to-printer</h2>
+
+
+
+<p id="3"><b>Arguments: </b><i>
+(stream-var </i> &amp;rest <i>printer-args</i><i> 
+</i>&amp;key <i>units-per-inch font</i> (<i>cancel-value</i> :cancel) (<i>printer-class</i> (quote printer))<i>
+ &amp;allow-other-keys)
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+
+<p id="4">
+Executes <i>body</i> with
+<i>stream-var</i> bound to a newly-opened printer
+stream. The <i>printer-args</i> parameter allows any
+initargs that would be passed to 
+<a href="../o/open-stream.htm"><b>open-stream</b></a> for a printer
+to be passed to this macro. In addition, if
+<i>units-per-inch</i> is specified true, then the
+stream-units-per-inch of the printer stream is set to this value
+before executing body. If a <i>font</i> is passed, then
+the font of the printer stream is set to this font before executing
+body (just after the stream-units-per-inch is set, if this is also
+done). If <b><i>printer-class</i></b> is
+specified, it should be the name of the printer stream class to be
+instantiated, which should always be a subclass of
+the <a href="../../../classes/cg/printer.htm"><code>cg:printer</code></a> class (or
+that class itself).
+</p>
+<p id="5">
+When the printer stream is opened, the end user is presented with the
+printer job dialog as usual (unless the :no-dialog-p printer-arg is
+passed as true). If the user cancels from this
+dialog, then cancel-value is returned from the with-output-to-printer
+form.
+</p>
+<p id="6">
+Otherwise the values returned by the last form in body are
+returned. An unwind-protect ensures that the printer stream always
+gets closed.
+</p>
+<p id="7">
+The following example does the following:
+</p>
+<ol>
+<li id="8">
+opens a printer stream, 
+</li>
+<li id="9">
+sets its stream-units-per-inch to 100 (which scales it
+approximately the same as a video monitor),
+</li>
+<li id="10">
+sets its font to be a large arial font which is 48 of these stream
+units tall,
+</li>
+<li id="11">
+prints "A Large String" on the printer stream, 
+</li>
+<li id="12">
+closes the printer stream (which ejects the output).
+</li>
+</ol>
+<pre id="13">
+&gt; (with-output-to-printer (p :units-per-inch 100
+			     :font (make-font-ex nil :arial 48))
+     (print &quot;A Large String&quot; p))[returns] &quot;A Large String&quot;
+</pre>
+
+<p id="14">
+See also <a href="../w/with-printer.htm"><b>with-printer</b></a>.
+</p>
+
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/with-output-to-printer.htm">9.0 version</a></td></tr></table></body></html>

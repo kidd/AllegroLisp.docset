@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>show-help-strings-as-tooltips</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/show-help-strings-as-tooltips.htm">9.0 version</a></td></tr></table><h2 id="2">show-help-strings-as-tooltips</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pull-down-menu
+</i></p>
+
+<p id="4">
+This property of menus returns whether the <a href="../h/help-string.htm"><b>help-string</b></a> of any menu-item on
+<i>pull-down-menu</i> will be presented as a tooltip
+just below the menu if the user holds the mouse cursor over the
+menu-item for <a href="../m/menu-tooltip-delay.htm"><b>menu-tooltip-delay</b></a> milliseconds.
+(When the <a href="../h/help-string.htm"><b>help-string</b></a> property of the
+menu-item is <code>nil</code>, no tooltip is shown even
+when this property is turned on.)
+</p>
+<p id="5">
+The default value is <code>nil</code>, and the value may
+be changed at any time by calling the <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of this function.  When this property is
+not used, an alternative way to display menu-item help-strings (though
+with no delay) is to write a <a href="../m/menu-item-highlighted.htm"><b>menu-item-highlighted</b></a> method that
+displays the help-strings in some custom way.
+</p>
+<p id="6">
+This property is implemented only for menus that pull down from
+menu-bars and for their child menus, and will have no effect on
+<a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a>s.
+</p>
+<p id="7">
+There is a control on the <a href="../../../ide-menus-and-dialogs/menu-editor-dialog.htm">menu editor</a> dialog for toggling
+this property individually for any menu in the menu hierarchy that is
+being edited in the dialog.
+</p>
+
+<h3 id="8">
+GTK Note
+</h3>
+
+<p id="9">
+Tooltips for menus have not been implemented on the GTK
+platform. Let us know if you need them (it is rather nonstandard).
+Specifying this option currently will have no effect on GTK.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/show-help-strings-as-tooltips.htm">9.0 version</a></td></tr></table></body></html>

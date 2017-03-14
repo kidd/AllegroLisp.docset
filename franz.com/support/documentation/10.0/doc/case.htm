@@ -1,0 +1,831 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Allegro CL Case Modes</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/case.htm">9.0 version</a></td></tr></table><h1 id="2">Allegro CL Case Modes</h1><p id="3">This document contains the following sections:</p><a href="#modern-mode-1">1.0 Allegro CL Modern Mode</a><br>&nbsp;&nbsp;&nbsp;<a href="#modern-background-2">1.1 Modern mode background</a><br>&nbsp;&nbsp;&nbsp;<a href="#ansi-mode-2">1.2 ANSI mode problems</a><br>&nbsp;&nbsp;&nbsp;<a href="#modern-mode-2">1.3 Modern Mode</a><br>&nbsp;&nbsp;&nbsp;<a href="#ansi-support-2">1.4 A note on support for ANSI mode</a><br><a href="#implementation-1">2.0 Case implementation in Allegro CL</a><br><a href="#readtable-case-1">3.0 readtable-case</a><br><a href="#portability-1">4.0 ANSI/Modern code portability</a><br>&nbsp;&nbsp;&nbsp;<a href="#package-names-2">4.1 Package names</a><br>&nbsp;&nbsp;&nbsp;<a href="#package-definitions-2">4.2 Package definitions</a><br>&nbsp;&nbsp;&nbsp;<a href="#creating-symbols-2">4.3 Creating symbols</a><br>&nbsp;&nbsp;&nbsp;<a href="#testing-symbols-2">4.4 Testing symbols</a><br><a href="#importing-uc-1">5.0 Importing ANSI mode code into Modern mode</a><br><a href="#importing-other-mode-1">6.0 Importing ANSI/Modern-mode code into a Modern/ANSI-mode Lisp</a><br>&nbsp;&nbsp;&nbsp;<a href="#importing-uc-2">6.1 Importing ANSI mode code into Modern mode</a><br>&nbsp;&nbsp;&nbsp;<a href="#importing-lc-2">6.2 Importing Modern mode code into ANSI mode</a><br><p id="4">
+Allegro CL provides various options for starting Lisp, including a
+choice between "Modern" and "ANSI" mode Lisps.  See <a href="startup.htm#executable-names-1">Allegro CL
+Executables</a> in <a href="startup.htm">startup.htm</a> for details
+of the startup options.
+</p><p id="5">
+This document describes the issues of case sensitivity and modern and
+ANSI modes.
+</p><hr><hr><h2 id="6"><a name="modern-mode-1">1.0 Allegro CL Modern Mode</a></h2>
+
+<p id="7">
+The Modern/ANSI mode choice refers to the Lisp image's <i>case
+mode</i>. As described elsewhere in this document, a case mode is a
+combination of two things: (a) the Lisp symbol reader's default
+behavior, and (b) which case (upper case or lower case) is used to
+store pre-defined Lisp symbols which name functions, variables,
+classes, etc. The case mode being used has a big effect on how source
+files and data files are read and how their data may be represented
+internally or output by Lisp. Thus, it is important to understand how
+the case mode choice affects one's Lisp programming. But first, a
+couple of comments about compatibility.
+</p>
+
+<hr><h2 id="8"><a name="modern-background-2">1.1 Modern mode background</a></h2>
+
+
+<p id="9">
+The ANSI Common Lisp specification states that all pre-defined
+Common Lisp functions, variables, classes, etc. are represented as
+symbols whose names are stored in all upper case. Thus, for example,
+suppose you wish to evaluate the following Lisp source expression:
+</p>
+
+<pre id="10">
+(member 'cat '(dog cat mouse))
+</pre>
+<p id="11">
+When Lisp reads this expression, either by loading a source file, or
+from a user typing it to a Lisp Listener, the symbol reader internally
+converts all symbol names to their upper case equivalents. (As an
+aside, please note that case of some non-English letters can actually
+depend on a user's locale. Thus, it is possible to have the Lisp
+reader's behavior depend on the environment in which it is being
+run. Other than mentioning it here, we disregard this problem in the
+rest of this document.)
+</p>
+<p id="12">
+Thus, after being read by Lisp, the form above is equivalent to the
+following:
+</p>
+
+<pre id="13">
+(MEMBER 'CAT '(DOG CAT MOUSE))
+</pre>
+<p id="14">
+When Lisp evaluates this expression, it finds that the first element,
+MEMBER, matches the pre-defined Lisp symbol,
+<code>MEMBER</code>, whose function when applied to the
+arguments as described, returns the following:
+</p>
+
+<pre id="15">
+(CAT MOUSE)
+</pre>
+<p id="16">
+As can be seen by the examples below, the ANSI Lisp symbol reader is
+case-insensitive. In other words, each of the following expressions,
+when read in ANSI mode, returns the same result:
+</p>
+
+<pre id="17">
+(Member 'cat '(dog cAT mOUSE)) 
+  <b>RETURNS</b> (CAT MOUSE)
+(MEMBER 'CAT '(Dog Cat Mouse))
+  <b>RETURNS</b> (CAT MOUSE)
+(mEmBEr 'Cat '(dog CAT mouse))
+  <b>RETURNS</b> (CAT MOUSE)
+(member 'CAT '(dog cat mouse))
+  <b>RETURNS</b> (CAT MOUSE)
+(MEMBER 'CAT '(DOG CAT MOUSE))
+  <b>RETURNS</b> (CAT MOUSE)
+;;  and so on....
+</pre>
+
+<p id="18">
+One of the features of such a case-insensitive reader is that it
+allows programmers to write source code using mixed case knowing that
+Lisp will canonicalize (and thus ignore the case variants of) the
+symbol names. Some programmers may choose to adopt a coding style
+where they indicate predefined Lisp symbols in upper case:
+</p>
+
+<pre id="19">
+(DEFUN my-function (arg1 &OPTIONAL arg2)
+ (WHEN (my-predicate arg1 arg2)
+  (PRINT "Success")))
+</pre>
+
+<p id="20">
+An alternate style might be simply to capitalize all symbols:
+</p>
+
+<pre id="21">
+(Defun My-Function (Arg1 &Optional Arg2)
+ (When (My-Predicate Arg1 Arg2)
+  (Print "Success")))
+</pre>
+
+<p id="22">
+One can have many different such case-variant styles even within a
+single file. Whether it is good or not to have such styles is another
+matter. However, as far as Lisp is concerned, all (unescaped) symbols
+are converted to upper case as they are read.
+</p>
+
+
+<hr><h2 id="23"><a name="ansi-mode-2">1.2 ANSI mode problems</a></h2>
+
+<p id="24">
+As long as Lisp programs only require that symbol names be in upper
+case, there would be no problem using the default ANSI specified Lisp
+reader. However, difficulties occur when interfacing to non-Lisp
+programming systems which are increasingly using lower case
+case-sensitive identifiers. The case-insensitive nature of the Common
+Lisp symbol reader creates hurdles for programmers wishing to
+interface to such systems.
+</p>
+<p id="25">
+For example, if a user wants to establish a foreign function
+associated with the Microsoft Windows API function
+<code>CreateDIBitmap()</code> (which is used to <b>C</b>reate a
+<b>D</b>evice <b>I</b>ndependent <b>B</b>itmap), the default Lisp
+reader action is to turn the name into upper case. Thus, one may have
+source code which reads as follows:
+</p>
+
+<pre id="26">
+(defun call-windows ()
+ (CreateDIBitmap ...))
+</pre>
+<p id="27">
+If, however, an error occurs during the execution of this call, the
+Lisp stack backtrace displayed by the debugger is hard to read due to
+missing word boundary information in the function's name:
+</p>
+
+<pre id="28">
+(CREATEDIBITMAP ...)
+</pre>
+<p id="29">
+Processing XML data is another example which demonstrates Lisp's power
+as well as the ANSI-mode hurdle with case-sensitive data.
+Suppose we have employee information in XML format as shown in the
+following fragment:
+</p>
+
+<pre id="30">
+ &lt;Employee OfficePhone=&quot;510-452-2000&quot;
+           SSNumber=&quot;111-22-3333&quot;
+           HomePhone=&quot;510-555-2222&quot;&gt;
+ Franz Liszt
+ &lt;IdPhoto href=&quot;liszt.jpg&quot;/&gt;
+ &lt;/Employee&gt;
+</pre>
+
+<p id="31">
+A natural way to represent such elements in Lisp is with keyword-style
+lists, and this is what Franz' open-source xml-parser returns.  XML is
+intrinsically case sensitive, and the DTD (Document Type Definition)
+mandates the case of all tag and attribute names.  Thus, the above
+expression can be represented with case-preserving tags, but escapes
+are needed when the list is printed in ANSI-mode:
+</p>
+
+<pre id="32">
+ ((|Employee| |OfficePhone| "510-452-2000"
+              |SSNumber| "111-22-3333"
+              |HomePhone| "510-555-2222")
+  "Franz Liszt"
+  ((|IdPhoto| |href| "liszt.jpg")))
+</pre>
+
+<p id="33">
+A reason to choose symbols for tags is that we can then use powerful
+Lisp tools such as <a href="../ansicl/dictentr/destruct.htm"><b>destructuring-bind</b></a> to
+further process the parsed structure. Element attributes in XML
+consist of key/value pairs, but the attributes attached to any node
+are unordered, and it can be tedious to extract some set of attributes
+from a node. This pattern is so very similar to Lisp keywords that
+exploiting Lisp lambda-list binding is an obvious mechanism for
+extracting and collecting attributes and their values. In ANSI mode,
+however, Lisp code which deals with case-sensitive symbol tags needs a
+lot of escaping, making the code both hard to read and hard to write.
+</p>
+
+<pre id="34">
+ ;; An XML phone directory processor
+ (case (car element)
+   ((|CompanyOfficer| |Manager| |Employee| |Consultant|)
+    (destructuring-bind
+        ((tag &key ((|OfficePhone| office-phone))
+                   ((|HomePhone| home-phone))
+                   ((|SSNumber| ss-number))
+              &allow-other-keys)
+         &rest content)
+        element
+      (my-formatted-output content tag office-phone
+                           home-phone ss-number)
+      ...))
+   (|Customer| ...)
+   ...)
+</pre>
+
+<p id="35">
+The above code works in either ANSI mode or Modern mode Lisp,
+but we'll see below how this code
+can be rewritten more felicitously in Modern mode.
+</p>
+<p id="36">
+Many Lisp programmers have chosen to avoid the symbol
+case-insensitivity problem by using strings instead of symbols to
+represent externally named objects.  Strings are always read with
+their case preserved.  Unfortunately, by using strings, a Lisp
+programmer gives up using Lisp variables for case-sensitive external
+identifiers.  Furthermore, one gives up other features unique to
+symbols such as fast <a href="../ansicl/dictentr/eq.htm"><b>eq</b></a> comparisons or being able to
+store the identifiers in separate package name spaces.
+</p>
+
+<p id="37">
+Note that ANSI Common Lisp does provide some support for case mode
+choice, using <a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a>
+and various global variables.  See
+<a href="#readtable-case-1">Section 3.0 readtable-case</a> for details.
+</p>
+
+
+
+<hr><h2 id="38"><a name="modern-mode-2">1.3 Modern Mode</a></h2>
+
+<p id="39">
+Modern programming environments almost universally use case sensitive
+lower case identifiers. Modern mode in Lisp thus eases interfacing to
+such environments. It also simplifies the Lisp reader.
+</p>
+<p id="40">
+As opposed to ANSI Mode, symbols in Modern mode are simply treated as
+<i>WYSIWYG</i> (<i>W</i>hat <i>Y</i>ou <i>S</i>ee <i>I</i>s
+<i>W</i>hat <i>Y</i>ou <i>G</i>et). In other words, symbols are simply
+read with case preserved.  Thus, following up on an example above, the
+call to <code>(CreateDIBitmap ...)</code> shows up as
+<code>(CreateDIBitmap ...)</code> when displayed in a
+stack backtrace, or trace output, etc. Further examples show how in a
+Modern mode Lisp session, one gets straightforward results:
+</p>
+
+<pre id="41">
+(quote MyDogSpot)
+  <b>RETURNS</b> MyDogSpot
+(symbol-name 'MyDogSpot)
+  <b>RETURNS</b> "MyDogSpot"
+</pre>
+<p id="42">
+Thus, in Modern mode, one is easily able to use symbols as names for
+externally defined case-sensitive identifiers (e.g., foreign functions).
+</p>
+<p id="43">
+As a further example, the Lisp / XML fragment from above can be
+greatly simplified by using unescaped symbols to represent XML tags,
+and by using the corresponding case-sensitive variable names directly
+in Lisp code:
+</p>
+
+<pre id="44">
+ ;; An XML phone directory processor
+ (case (car element)
+   ((CompanyOfficer Manager Employee Consultant)
+    (with-xml-element (tag (OfficePhone HomePhone SSNumber)
+                           &rest content)
+        element
+      (my-formatted-output content tag
+                           OfficePhone HomePhone SSNumber)))
+   (Customer ...)
+   ...)
+</pre>
+<p id="45">
+The helper <code>with-xml-element</code>
+macro is defined as follows:
+</p>
+<pre id="46">
+ (defmacro with-xml-element ((tag (&rest attributes)
+                                  &rest contents)
+                             element
+                             &body body)
+   `(destructuring-bind
+        ((,tag
+          &key ,@(mapcar #'(lambda (x)
+                             (list (list x x)))
+                         attributes)
+          &allow-other-keys)
+         ,@contents)
+        ,element
+      ,@body))
+</pre>
+
+<p id="47">
+As for <a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a>, there
+is little need for it at all in Modern mode. In fact, the original
+implementation of Modern mode, which predates <a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> and even the full ANSI Common
+Lisp specification itself by several years, ignored <a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> settings because ignoring them
+allowed greater ease moving between ANSI mode and Modern mode by
+allowing the same <a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> settings in both modes. Responding
+to user feedback, however, Franz Inc. reconsidered that
+decision. Allegro CL now provides full <a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> functionality in Modern mode. The
+default <a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> setting
+for Modern mode is <code>:preserve</code>.
+</p>
+
+
+
+<hr><h2 id="48"><a name="ansi-support-2">1.4 A note on support for ANSI mode</a></h2>
+
+<p id="49">
+Franz Inc. is committed to providing fully
+ANSI-compliant Common Lisp development and runtime environments.  With
+each release, Franz Inc. includes a fully supported ANSI-compliant
+Common Lisp executable. As Franz Inc. introduces new features that
+extend the ANSI Common Lisp specification, priority is given to ensure
+not only that ANSI-compliant Common Lisp code will run, but also that
+such new features are as backwards compatible as possible with prior
+Franz Inc. releases.
+</p>
+<p id="50">
+Modern mode is provided separately from the backwards compatible ANSI
+executable(s) because Modern mode directly contradicts the ANSI
+specification in two very specific user-visible ways which can break
+ANSI-compliant Common Lisp programs. If you have Allegro CL installed,
+you may find, for example, files named <i>alisp.dxl</i>
+and <i>mlisp.dxl</i>. These correspond to the base lisp
+images for ANSI mode and Modern mode respectively. (Please see
+<a href="startup.htm">startup.htm</a> for information on starting Allegro CL
+images.) Windows users may find "ANSI" and "Modern" as Allegro CL
+start menu items. Other than the case mode, however, the images are
+equivalent.  Users unable to switch to Modern mode can simply stick to
+using the ANSI mode versions.
+</p>
+<p id="51">
+In order to increase Common Lisp's effectiveness with modern day,
+externally accessible, case-sensitive programming environments, Franz
+Inc. is bringing its Modern mode to the fore as a way to encourage
+Lisp users and developers to consider new ways of thinking about how
+Lisp symbols can be used. In Modern mode, Lisp symbols can easily be
+used not only for Lisp function/variable/object names, but also for
+external names such as classes/functions in Java/C++, or data elements
+in XML or CORBA. Note that it is generally easy to write and maintain
+Lisp code which runs in either ANSI or Modern mode.
+</p>
+
+
+
+
+<hr><hr><h2 id="52"><a name="implementation-1">2.0 Case implementation in Allegro CL</a></h2>
+
+<p id="53">
+There are two parameters that determine the reader's actions:
+<i>case preference</i> and <i>case sensitivity</i>. The
+preferred case is either <i>upper</i> or <i>lower</i>, and refers to
+the case of the characters in the print names of all of the standard
+symbols, such as <code>car</code> and <code>cdr</code>. Case
+sensitivity can be either <i>sensitive</i> or <i>insensitive</i> to
+case. Case-sensitive means that the Lisp reader does not modify the
+case of any characters it reads. Case-insensitive means that
+characters that are not of the preferred case are converted to the
+preferred case.
+</p>
+
+<p id="54">
+Thus, there are four possible values for the combination of case
+preference and case sensitivity. However, only three are supported in
+Allegro CL.
+</p>
+
+<ul>
+<li id="55">
+<i>Case-insensitive, uppercase-preferred</i>. This is the mode 
+used in standard Common Lisp and in most of the older Lisps 
+such as MacLisp. With this mode you can even enter Lisp 
+programs with a card punch. This is the most portable mode. 
+</li>
+<li id="56">
+<i>Case-sensitive, uppercase-preferred</i>. This is the mode 
+used by InterLisp and the mode that <strong>Allegro CL no longer 
+supports</strong>.
+</li>
+<li id="57">
+<i>Case-insensitive, lowercase-preferred</i>. This mode is similar 
+to the case-insensitive, uppercase-preferred mode. This mode 
+is useful if you are reading files designed for a case-insensitive 
+Lisp into a case-sensitive, lowercase preferred Lisp.
+</li>
+<li id="58">
+<i>Case-sensitive, lowercase-preferred</i>. This is the mode 
+used by many modern languages, including, for example, the C 
+programming language. It matches the conventions of Unix and thus 
+is the most natural mode to use for some programmers. 
+</li>
+</ul>
+
+
+<p id="59">
+The functions <a href="operators/excl/set-case-mode.htm"><b>set-case-mode</b></a> and <a href="operators/excl/convert-mixed-case-symbols.htm"><b>convert-mixed-case-symbols</b></a>, and two variables
+<a href="variables/excl/s_current-case-mode_s.htm"><code>*current-case-mode*</code></a>
+and <a href="variables/excl/s_ignore-package-name-case_s.htm"><code>*ignore-package-name-case*</code></a> are provided for
+controlling and sensing case modes.
+</p>
+
+<p id="60">
+So, Allegro Common Lisp can operate in three different case modes, two
+of which, modern (case-sensitive lower) and ANSI (case-insensitive
+upper) are the more important and treated in detail in this document.
+</p>
+
+
+<hr><hr><h2 id="61"><a name="readtable-case-1">3.0 readtable-case</a></h2>
+
+<p id="62">
+The ANSI specification does, in fact, address limited case-sensitivity
+by providing <em>readtable-case</em> functionality. The function
+<a href="../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> accesses (and
+with <a href="../ansicl/dictentr/setfpset.htm"><b>setf</b></a> sets) the
+readtable-case of a readtable object.  Franz Inc. fully supports this
+readtable-case functionality in both ANSI and Modern modes.  
+</p>
+<p id="63">
+While the ANSI readtable-case solution may be suitable for programmers
+wishing to use ANSI mode yet still requiring a case-sensitive reader,
+this functionality is somewhat counterintuitive due to ANSI
+limitations.  Specifically, the only readtable-case setting which can
+effectively be used that doesn't require all source code to be
+converted to upper case and which still provides case-sensitivity is
+the <i>:invert</i> setting.  The way this setting works is by having
+the Lisp symbol reader turn symbol names with all lower case
+characters into all upper case and vice versa.
+</p>
+<p id="64">
+For those not already aware of the interaction between <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> and the
+<code>:invert</code> readtable-case, ANSI mode Common Lisp can
+create some surprising results. For example, a symbol whose name is
+"ZEBRA" is printed in <i>all lower case</i> even when <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> is specified to be
+<code>:upcase</code>. Also, the symbol whose name is "Zebra" is
+printed as 'Zebra' (i.e., <i>capitalized</i>) even if <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> is either
+<code>:upcase</code> or <code>:downcase</code>.  While
+these results are understandable, given how the reader and printer
+must operate with the ANSI specified case mode, they are not
+intuitive.  On the other hand, the Allegro CL case modes, the Modern
+mode in particular, provide a direct way of dealing with reading and
+printing case-sensitive symbols.
+</p>
+<p id="65">
+For each case mode, the initial case settings for readtable-case are
+summarized in the following table:
+</p>
+<table border="1">
+<tr>
+<th>mode</th>
+<th>initial symbol-name storage</th>
+<th>readtables cases</th>
+</tr>
+<tr>
+<td><code>:case-insensitive-upper</code> (ANSI)</td>
+<td>uppercase</td>
+<td><code>:upcase</code></td>
+</tr>
+<tr>
+<td><code>:case-sensitive-lower</code> (Modern)</td>
+<td>lowercase</td>
+<td><code>:preserve</code></td>
+</tr>
+<tr>
+<td><code>:case-insensitive-lower</code></td>
+<td>lowercase</td>
+<td><code>:downcase</code></td>
+</tr>
+</table>
+
+<p id="66">
+A call to <a href="operators/excl/set-case-mode.htm"><b>set-case-mode</b></a>
+resets to the corresponding value in the table above the
+readtable-case of the Lisp standard readtable as well as all existing
+readtables except those whose readtable-case has been explicitly set.
+In other words, the default situation is that a readtable's
+<nobr>readtable-case</nobr> will be updated by <a href="operators/excl/set-case-mode.htm"><b>set-case-mode</b></a>. If you have used <b>setf</b> to
+modify a readtable's readtable-case to one of the ANSI-specified
+settings, then that readtable's readtable-case is <i>not</i> changed
+by subsequent calls to <a href="operators/excl/set-case-mode.htm"><b>set-case-mode</b></a> unless/until that readtable-case
+is set to <code>:default</code>.  Specifically, for any
+readtable <i>rt</i>, evaluating
+</p>
+<pre id="67">
+(setf (readtable-case rt) :default)
+</pre>
+<p id="68">
+sets <i>rt</i>'s readtable-case to the value according to the current
+case mode as specified by the above table.  Furthermore, unless the
+<i>rt</i>'s readtable-case is later set to a value other than
+:default, <i>rt</i>'s readtable-case is automatically adjusted by
+future calls to <a href="operators/excl/set-case-mode.htm"><b>set-case-mode</b></a>.
+</p>
+
+<hr><hr><h2 id="69"><a name="portability-1">4.0 ANSI/Modern code portability</a></h2>
+
+
+<p id="70">
+In general, Common Lisp programs which don't depend on
+case-sensitivity, and which are written using lower case for
+pre-defined Lisp names will work either in Modern mode or in ANSI
+mode.  Code which works in both ANSI mode and Modern mode
+is called <b>case-portable</b> code.
+</p>
+<p id="71">
+There are a few areas that programmers must look for when developing
+code that is to be case-portable, that is compatible between both
+Modern and ANSI modes (and portable to other conforming Common Lisp
+implementations).
+</p>
+<p id="72">
+Specifically, places where literal upper case strings are used as
+string designators can portably be replaced by symbols. For example,
+the following form works only in ANSI mode:
+</p>
+
+<pre id="73">
+ (in-package "COMMON-LISP-USER")
+</pre>
+
+<p id="74">
+If the string designator is changed to be a symbol, then the form
+will work in both ANSI and Modern modes (and is portable to other
+conforming Common Lisp implementations):
+</p>
+
+<pre id="75">
+ (in-package :common-lisp-user)
+</pre>
+
+
+<p id="76">
+Both <a href="../ansicl/dictentr/in-packa.htm"><b>in-package</b></a>
+and <a href="../ansicl/dictentr/defpacka.htm"><b>defpackage</b></a>
+convert non-keyword symbols used for names to uninterned symbols and
+so avoid cluttering up the package namespaces when fasl files with the
+<a href="../ansicl/dictentr/in-packa.htm"><b>in-package</b></a>
+or <a href="../ansicl/dictentr/defpacka.htm"><b>defpackage</b></a> forms are
+read. See <a href="implementation.htm#cl-defpackage-2">cl:defpackage and cl:in-package</a>
+in <a href="implementation.htm">implementation.htm</a> for details.
+</p>
+
+
+<p id="77">
+Some functions may deal with symbol-names directly in other ways.
+Again, these can also be made compatible between ANSI and Modern modes
+by using symbols (often keywords) as string designators. For example,
+the following form works only in ANSI mode:
+</p>
+
+<pre id="78">
+ (defun my-new-symbol (arg)
+   (intern (concatenate 'string
+             "MY-NEW-SYMBOL-"
+             (format nil "~a" arg))))
+</pre>
+<p id="79">
+If written as follows, however, the function works exactly the same
+way in ANSI mode, but also can be used in Modern mode:
+</p>
+
+<pre id="80"> 
+ (defun my-new-symbol (arg)
+   (intern (concatenate 'string
+             (symbol-name :my-new-symbol-)
+             (format nil "~a" arg))))
+</pre>
+
+<h3 id="81">
+Pre-defined mixed-case symbols in the winapi and winapi-dev packages.
+</h3>
+
+
+<p id="82">
+Some symbols naming operators in the winapi and winapi-dev packages,
+which are documented only indirectly in <a href="cgide.htm#nocg-winapp-1">cgide.htm</a>, have mixed-case symbol names
+like <code>CreateWindowEx</code>. Unlike in releases prior to
+9.0, these names do not generally have single-case equivalents in an
+ANSI Lisp unless specifically documented. This change was made to ease
+portability between ANSI and Modern code.
+</p>
+<p id="83">
+That package is the only one in Allegro CL where mixed-case symbols
+name operators. 
+</p>
+
+
+<hr><h2 id="84"><a name="package-names-2">4.1 Package names</a></h2>
+
+<p id="85">
+Packages are named by strings and are looked up in a case sensitive
+manner. In Modern mode the standard package names are all in lower
+case and in ANSI mode they are in upper case. Thus a good way to
+refer to package is not by a string e.g.  "common-lisp-user"
+but by a symbol such as <code>:common-lisp-user</code> or
+<code>#:common-lisp-user</code>. Putting the symbol in the keyword
+package or using an uninterned-symbol keeps from cluttering the
+current package (and maybe causing symbol clashes).
+</p>
+
+<p id="86">
+Symbols can be used nearly everywhere a package name is needed. The
+functions that look for package names use the <a href="../ansicl/dictentr/symbol-n.htm"><b>symbol-name</b></a> of a symbol passed as an argument.
+By doing
+</p>
+
+<pre id="87">
+(in-package :ole)
+</pre>
+
+<p id="88">
+you end up calling <a href="../ansicl/dictentr/in-packa.htm"><b>in-package</b></a> with "ole" in Modern
+mode or "OLE" in ANSI mode, and thus the package is
+found regardless of the mode.
+</p>
+
+<p id="89">
+A global solution to matching package names is to set the variable
+<a href="variables/excl/s_ignore-package-name-case_s.htm"><code>*ignore-package-name-case*</code></a>.  When the value of
+that variable is true, package name to package lookup is done in a
+case insensitive manner.
+</p>
+
+
+
+<hr><h2 id="90"><a name="package-definitions-2">4.2 Package definitions</a></h2>
+
+<p id="91">
+In package definitions you also want to use symbols in place of
+strings, as in:
+</p>
+
+<pre id="92">(defpackage :foreign-functions 
+      (:nicknames :ff) 
+      (:use :common-lisp :excl) 
+      (:export #:def-foreign-call 
+               #:def-foreign-type
+               #:defun-foreign-callable 
+               #:def-foreign-variable ))</pre>
+
+
+
+<hr><h2 id="93"><a name="creating-symbols-2">4.3 Creating symbols</a></h2>
+
+<p id="94">
+The most common non-compatible form we come across looks like this
+</p>
+
+<pre id="95">
+(defun constructor (struct) 
+  (intern (format nil "MAKE-~a" struct)))
+</pre>
+
+<p id="96">
+This assumes that this code will run in ANSI mode. Writing it as
+follows allows the case of the <i>make-</i> symbol and the struct
+argument to be determined by the case of the symbols' symbol-names,
+which will be correct for the case mode:
+</p>
+
+<pre id="97">
+(defun constructor (struct) 
+  (intern (format nil "~a~a" 
+            (symbol-name :make-) (string struct))))
+</pre>
+
+
+
+<hr><h2 id="98"><a name="testing-symbols-2">4.4 Testing symbols</a></h2>
+
+<p id="99">
+When reading and testing against symbol names you'll want the code to
+work regardless of the case of the print names. This can be
+accomplished by using case-insensitive predicates (such as <a href="../ansicl/dictentr/equalp.htm"><b>equalp</b></a>). Another possibility is to use
+<code>(string :foo)</code> rather than "foo" or
+"FOO" so that the correct string for the current case mode
+is used at runtime.
+</p>
+
+
+
+
+<hr><hr><h2 id="100"><a name="importing-uc-1">5.0 Importing ANSI mode code into Modern mode</a></h2>
+
+<p id="101">
+Generally ANSI mode code can be made compatible by looking for
+and fixing the few items we've mentioned above. However you may
+encounter code written in a style such as this:
+</p>
+
+<pre id="102">
+(DeFun Foo (x y)
+      (Cond ((PlusP x) (Sqrt y)) 
+            (t y)))
+</pre>
+
+<p id="103">The author of this code is taking advantage of the fact that in
+ANSI mode the case of symbols in the source code doesn't matter. In
+order to port this to Modern mode you could go through and lowercase
+every symbol naming an official Lisp form. The author of the code is
+unlikely to want the code back after such a transformation, as he must
+see some value to his style of capitalization. A way to make this code
+readable into Modern mode Lisp without modifying it is to switch the Lisp
+to <code>:case-insensitive-lower</code> mode. In this mode, the
+strange symbol names will be downcased. After reading in this file the
+mode can be switched back to <code>:case-sensitive-lower</code>
+mode.
+</p>
+
+<p id="104">
+Note that when you switch to
+<code>:case-insensitive-lower</code> mode the value of <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> determines how
+symbols will be printed. The initial value of <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> is <code>:upcase</code>. Thus
+unless you change <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> you'll find that when you switch to
+<code>:case-insensitive-lower</code>, symbols will start
+printing in upper case even though their print names are in lower
+case. If this annoys you, you can set <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> to
+<code>:downcase</code>.
+</p>
+
+
+
+
+
+<hr><hr><h2 id="105"><a name="importing-other-mode-1">6.0 Importing ANSI/Modern-mode code into a Modern/ANSI-mode Lisp</a></h2>
+
+<p id="106">
+Import can mean two things: (1) compiling and loading source files,
+and (2) loading fasl (compiled) files. Obviously, if you have the
+sources, you can make modifications when you encounter
+difficulties. When you only have fasl files, modifications are harder
+to impossible but some potential problems go away.
+</p>
+<p id="107">
+Please note that importation may not be possible. Particularly if the
+suggestions in <a href="#portability-1">Section 4.0 ANSI/Modern code portability</a> are not
+followed, the sources must be modified and likely the fasl files
+simply will not work (they may load but the code will likely error
+when run).
+</p>
+<p id="108">
+The macro <a href="operators/excl/in-case-mode.htm"><b>in-case-mode</b></a> is
+designed to facilitate loading files compiled in one mode into the
+other mode. (It does not deal with the case-insensitive, lowercase
+preferred mode.) See the description of that macro for further information.
+</p>
+
+<hr><h2 id="109"><a name="importing-uc-2">6.1 Importing ANSI mode code into Modern mode</a></h2>
+
+<h3 id="110">
+Starting from the sources
+</h3>
+<p id="111">
+Generally ANSI mode code can be made compatible by looking for and
+fixing the few items we've mentioned above
+in <a href="#portability-1">Section 4.0 ANSI/Modern code portability</a>. However you may
+encounter code written in a style such as this:
+</p>
+
+<pre id="112">
+(DeFun Foo (x y)
+      (Cond ((PlusP x) (Sqrt y)) 
+            (t y)))
+</pre>
+
+<p id="113">The author of this code is taking advantage of the fact that in
+ANSI mode the case of symbols in the source code doesn't matter. In
+order to port this to Modern mode you could go through and lowercase
+every symbol naming an official Lisp form. The author of the code is
+unlikely to want the code back after such a transformation, as he must
+see some value to his style of capitalization. A way to make this code
+readable into Modern mode Lisp without modifying it is to switch the Lisp
+to <code>:case-insensitive-lower</code> mode. In this mode, the
+strange symbol names will be downcased. After reading in this file the
+mode can be switched back to <code>:case-sensitive-lower</code>
+mode.
+</p>
+
+<p id="114">
+Note that when you switch to
+<code>:case-insensitive-lower</code> mode the value of <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> determines how
+symbols will be printed. The initial value of <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> is <code>:upcase</code>. Thus
+unless you change <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> you'll find that when you switch to
+<code>:case-insensitive-lower</code>, symbols will start
+printing in upper case even though their print names are in lower
+case. If this annoys you, you can set <a href="../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> to
+<code>:downcase</code>.
+</p>
+
+<h3 id="115">
+Importing ANSI-mode fasl files into Modern Lisp
+</h3>
+
+<p id="116">
+See <a href="operators/excl/in-case-mode.htm"><b>in-case-mode</b></a>.
+</p>
+
+
+
+
+
+<hr><h2 id="117"><a name="importing-lc-2">6.2 Importing Modern mode code into ANSI mode</a></h2>
+
+<p id="118">
+This often works so long as mixed-case symbol names are not used, nor
+are two distinct symbols in the same package named
+with <a href="../ansicl/dictentr/stringst.htm"><b>string-equal</b></a>
+names. If you have compiled files only see <a href="operators/excl/in-case-mode.htm"><b>in-case-mode</b></a>.
+</p>
+
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/case.htm">9.0 version</a></td></tr></table></html>

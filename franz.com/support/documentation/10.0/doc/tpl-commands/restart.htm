@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>:restart</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Top-level Command</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/restart.htm">9.0 version</a></td></tr></table><h2 id="2">:restart</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;optional <i>frame</i><i>
+</i></p>
+
+<p id="4">The <i>frame</i> argument to <a href="restart.htm"><b>:restart</b></a> must evaluate to either a
+frame object or <code>nil</code>. A frame object is a list whose first element is a symbol
+naming a function and whose later arguments are the evaluated arguments to the function.
+When <a href="zoom.htm"><b>:zoom</b></a> is printing frames in moderate mode, it prints frame
+objects as described and sets the value of <code>cl:*</code> to the chosen current frame
+object. </p>
+
+<p id="5">The <i>frame</i> argument replaces the current frame in the evaluation stack and
+computation is continued. (If the argument evaluates to <code>nil</code> or is left out
+altogether, computation is restarted from the current frame. You have presumably done
+something to change the state of Lisp - e.g. defined an undefined function or changed the
+value of a variable - so that whatever error threw you into a break loop is not repeated.)</p>
+
+<p id="6">You cannot restart every frame. If you attempt to <a href="restart.htm"><b>:restart</b></a> over an
+inappropriate frame, Lisp will signal an error. </p>
+
+<p id="7">The minimal abbreviation of <a href="restart.htm"><b>:restart</b></a> is <strong>:rest</strong>. Note
+that <strong>:res</strong> is the abrieviation for the <a href="reset.htm"><b>:reset</b></a> command.</p>
+
+<p id="8">
+See <a href="../top-level.htm">top-level.htm</a> for more information on top-level
+commands. See <a href="../debugging.htm">debugging.htm</a> for information on the
+debugger.
+See section <a href="../debugging.htm#return-and-restart-1">:return and :restart</a>) in that 
+document for examples of 
+<a href="restart.htm"><b>:restart</b></a> 
+and a comparison
+between <a href="restart.htm"><b>:restart</b></a> 
+and <a href="return.htm"><b>:return</b></a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/restart.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>md5-final</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/md5-final.htm">9.0 version</a></td></tr></table><h2 id="2">md5-final</h2>
+
+<p id="3"><b>Arguments: </b><i>
+context </i>&amp;key <i>return</i><i>
+</i></p>
+
+<p id="4">
+Finalize and return the MD5 hash
+from <b><i>context</i></b> in a format determined by the
+<b><i>return</i></b> keyword argument.
+</p>
+<p id="5">
+<i>return</i> can be one of the following values:
+</p>
+<ul>
+<li id="6">
+<code>:integer</code> (the default): the return value is an
+integer of up to 128 bits representing the digest. Warning: note that
+an integer representation of the digest potentially loses information
+if the generated signature has leading octets containing only
+zeroes. Care should be taking when using this return type if you
+intend to further encode the signature (such as to a base64-encoded
+string). See the example below.
+</li>
+<li id="7">
+<i>:usb8</i>: return an (unsigned-byte 8) array
+containing the digest.
+</li>
+<li id="8">
+<i>:hex</i>: return a string containing the hexadecimal
+representation of the digest. See <a href="hex-string-to-integer.htm"><b>hex-string-to-integer</b></a>.
+</li>
+</ul>
+
+
+
+<pre id="9">
+cl-user(4): (setq c (md5-init))
+#(1 35 69 103 137 171 205 239 254 220 ...)
+cl-user(5): (md5-update c "foo")
+cl-user(6): (md5-final c :return :usb8)
+#(172 189 24 219 76 194 248 92 237 239 ...)
+
+;;  Potential problem with :return :integer (or :return unspecified
+;;  as the default is :integer). The call is to MD5-FILE which calls
+;;  MD5-FINAL and returns the value MD5-FINAL returns.
+;;
+;;  Here we get the md5 value in a shell:
+%  openssl dgst -md5 -hex cmp05-optdialog.jpg
+MD5(cmp05-optdialog.jpg)= 03c6f3f0ede5188ac49c30e11e7afa4e
+
+;; Now we get it with MD5-FILE:
+cl-user(17): (md5-file "~/cmp05-optdialog.jpg")
+5020706479262241505478555770059160142
+cl-user(18): (format t "~x" *)
+3c6f3f0ede5188ac49c30e11e7afa4e
+nil
+cl-user(19): 
+
+;; Note the hex values are the same but the leading 0 is not printed
+;; by Lisp, which is dealing with the value as an integer. The leading
+;; 0 is preserved when the :return is :hex:
+cl-user(21): (md5-file "~/cmp05-optdialog.jpg" :return :hex)
+"03c6f3f0ede5188ac49c30e11e7afa4e"
+cl-user(22): 
+</pre>
+
+<p id="10">
+See <a href="../../miscellaneous.htm#md5-1">MD5, SHA*, HMAC, RC4, and other message digest
+support</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a>.
+See also <a href="digest-final.htm"><b>digest-final</b></a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/md5-final.htm">9.0 version</a></td></tr></table></body></html>

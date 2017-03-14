@@ -1,0 +1,56 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>preload-forms</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/preload-forms.htm">9.0 version</a></td></tr></table><h2 id="2">preload-forms</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">This macro can be used to create a <i>fasl</i> file with CLOS
+optimizations, as we describe.</p>
+
+<p id="5">A generic function examines its arguments to determine which method
+or methods are applicable. This is called discrimination. The
+symbol-function of a generic-function is a discriminator
+function. There are various kinds of discriminators and the
+discriminator for a particular generic function may change during the
+execution of a program. </p>
+
+<p id="6">When Lisp determines that a generic function needs a different kind
+of discriminator it checks to see if the one it needs has already been
+built and, if not, creates one. The creation of a discriminator is
+relatively expensive since it involves the Lisp compiler. </p>
+
+<p id="7">When a CLOS application is loaded the generic-functions all have a
+simple discriminator which will select the correct discriminator when
+the generic function is first called.  Therefore when a CLOS
+application starts it will run very slowly unless the discriminators
+it needs are already built. The only way to tell which discriminators
+your program needs is to run your program for a while and then look at
+the list of discriminators that exist.  Allegro CL provides a
+mechanism for dumping out these discriminators and then loading them
+in with your program so that when the program starts all the
+discriminators it will need will already exist.</p>
+
+<p id="8">Further, with method-combination a call to a generic function can
+result in a sequence of methods being called. The code that calls the
+methods and processes the results of each call is called an effective
+method. In order to make effective methods fast, Lisp compiles
+them. In order to cut down on the compilation cost, Lisp actually
+creates effective-method templates which are functions closed over the
+particular methods to be called.</p>
+
+<p id="9">Thus many effective methods can share the same code. Just as in the
+case of discriminators discussed above, it is expensive to start a
+CLOS application running if the effective methods it will need haven't
+been compiled already. And again Allegro CL provides a way of saving
+the effective methods that the application has used so that they can
+be defined before the application starts.</p>
+
+<p id="10">You can dump discriminator functions and effective methods to a
+<i>fasl</i> file by compiling a source file that contains the
+following two lines after loading and running your application:</p>
+
+<p id="11"><code>(in-package :clos)
+(preload-forms)</code></p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/preload-forms.htm">9.0 version</a></td></tr></table></body></html>

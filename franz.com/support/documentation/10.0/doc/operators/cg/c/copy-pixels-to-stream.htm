@@ -1,0 +1,51 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>copy-pixels-to-stream</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-pixels-to-stream.htm">9.0 version</a></td></tr></table><h2 id="2">copy-pixels-to-stream</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream texture texture-info to-box-or-position
+from-box-or-nil paint-operation
+</i></p>
+
+<p id="4">
+Implements the bit block transfer operation, generalized to
+pixels. Pixels from <i>texture</i> are copied onto
+<i>stream</i> using <i>paint-operation</i>
+to combine them with the existing ones. Note that the function <a href="../c/copy-to-stream.htm"><b>copy-to-stream</b></a> does much
+the same thing as this function and does not require the use of
+separate texture and texture-info objects.
+</p>
+<p id="5">
+<i>from-box-or-nil</i> is either a box object or <code>nil</code>. If it is a box, it is the box in texture from
+which copying occurs. If it is <code>nil</code>, then the
+whole pixmap is copied.
+</p>
+<p id="6">
+<i>to-box-or-position</i> is either a box object or a
+position object. If it is a box, it is the box in stream which is
+modified. If it is a position, then the pixmap is copied with its
+upper-left corner at that position without stretching the pixmap.
+</p>
+<p id="7">
+Thus, if <i>from-box-or-nil</i> is <code>nil</code> and <i>to-box-or-position</i> is a
+position, then the entire pixmap is drawn at the specified position
+without stretching it.
+</p>
+<p id="8">
+The box to be copied is intersected with the texture dimensions and
+stream clipping box and the resultant box is the set of pixels
+actually copied. If texture is a bitmap, 1's are copied as stream's
+foreground color, 0's as its background color. If texture-info is
+<code>nil</code>, one that matches the stream is used.
+</p>
+<p id="9">
+When the destination area (<i>to-box-or-nil</i>) is a
+box of a different size than the source bitmap, the copied area is
+stretched rather than clipped to make it fit the destination
+area. Clipping is performed when the source area
+(<i>from-box-or-nil</i>) is a box of a different size
+than the source bitmap.
+</p>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-pixels-to-stream.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>string-simple-stream</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/excl/string-simple-stream.htm">9.0 version</a></td></tr></table><h2 id="2">string-simple-stream</h2>
+
+<p id="3">
+This kind of stream allows for the moving and possible translation of
+characters.
+</p>
+<p id="4">
+One subclass of <a href="string-simple-stream.htm"><code>string-simple-stream</code></a>, <a href="composing-stream.htm"><code>composing-stream</code></a>, allows composing of
+external-formats and ligatures using Java-style encapsulations.
+<p id="5">
+</p>
+Other subclasses of <a href="string-simple-stream.htm"><code>string-simple-stream</code></a> have a single buffer
+which is in fact a string. It is available as an optimization to allow
+read and format at a high level to be used on strings. For resourcing,
+the string for the stream may be specified by a
+<code>:string</code> option to <strong>make-instance</strong>,
+which is then passed to <a href="../../operators/excl/device-open.htm"><b>device-open</b></a> as an options flag, or the string
+for a string-output-simple-stream may be reused if it already exists
+in the stream.
+</p>
+
+<p id="6">
+A string stream that is not a <a href="composing-stream.htm"><code>composing-stream</code></a> incorporates a major
+exception in the CL requirements for the streams system: there is no
+external connection; everything that lisp is reading from or writing
+to the stream is within the lisp heap, and thus there are no reconnect
+or shutdown problems with these streams; they continue to work across
+a dumped lisp image that has been restarted.
+</p>
+
+<h3 id="7">
+Specific exceptions to non-composing string-simple-streams operations:
+</h3>
+
+<ul>
+<li id="8">The basic unit of transfer is the character, not the octet. </li>
+<li id="9"><strong>read-byte</strong> and <strong>write-byte</strong> will 
+signal an error if given a string-simple-stream. </li>
+<li id="10">No external-format processing is performed on the characters 
+read or written, since the characters do not become external, but 
+remain within the lisp during the round trip through the stream. </li>
+<li id="11">Because CL specifies only input and output string streams 
+(the classes <code>string-input-simple-stream</code> 
+and <code>string-output-simple-stream</code> and 
+perhaps further subclasses), but not bidirectional, it is not 
+necessary to implement mode switching internally for the single string buffer. Implementations are free to define such a bidirectional string 
+stream (or to emulate such a stream - see note just below). </li>
+</ul>
+
+<p id="12">
+Note: something similar to string streams could be implemented, with
+less efficient operation, by simulating an external-connection at the
+device level of either a single-channel or dual-channel stream.  The
+"final destination" (or source) of the device would in that
+case be a string, and the extra octet buffering would require extra
+copying at the device level when transferring data out (or in). This
+technique would allow external-format processing on the strings either
+during input or output.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/excl/string-simple-stream.htm">9.0 version</a></td></tr></table></body></html>

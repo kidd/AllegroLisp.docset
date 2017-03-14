@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*color-gradient-filling*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/s_color-gradient-filling_s.htm">9.0 version</a></td></tr></table><h2 id="2">*color-gradient-filling*</h2>
+
+<p id="3">
+<b>This variable has an effect only on the Windows platform.</b>
+</p>
+<p id="4">
+When this variable is true, filling functions such
+as <a href="../../operators/cg/f/fill-ellipse.htm"><b>fill-ellipse</b></a> and
+<a href="../../operators/cg/f/fill-polygon.htm"><b>fill-polygon</b></a> will fill an area
+with a color gradient for a highlighted or three-dimensional effect.
+</p>
+<p id="5">
+This technique varies the lightness of the color gradually from one
+side of the filled area to the other.  The particular way that the
+lightness varies can be controlled with the variables
+<a href="s_color-gradient-intensity_s.htm"><code>*color-gradient-intensity*</code></a>,
+<a href="s_color-gradient-direction_s.htm"><code>*color-gradient-direction*</code></a>,
+and <a href="s_color-gradient-blend_s.htm"><code>*color-gradient-blend*</code></a>.
+</p>
+<p id="6">
+The default value is <code>nil</code>.  Typically you
+would bind this variable to true around a block of drawing code where
+gradient filling is desired.  It is probably not a good idea to
+globally set this variable to true, because gradient filling is
+usually not desirable absolutely everywhere.
+</p>
+<p id="7">
+As a special case, <a href="../../operators/cg/e/erase-contents-box.htm"><b>erase-contents-box</b></a> and <a href="../../operators/cg/e/erase-contents-box-x-y.htm"><b>erase-contents-box-x-y</b></a> will bind this variable
+to <code>nil</code> to prevent default <a href="../../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> methods from clearing the
+background of windows with a gradient effect, even if this variable is
+globally true.
+</p>
+<p id="8">
+For gradient filling in <a href="../../classes/cg/chart-widget.htm"><code>chart</code></a> and <a href="../../classes/cg/plot-widget.htm"><code>plot</code></a> widgets, see <a href="../../operators/cg/b/body-gradient-filling.htm"><b>body-gradient-filling</b></a>, <a href="../../operators/cg/i/icon-gradient-filling.htm"><b>icon-gradient-filling</b></a>, and <a href="../../operators/cg/b/bar-gradient-filling.htm"><b>bar-gradient-filling</b></a>.
+</p>
+
+
+<p id="9">
+See <a href="s_antialiasing_s.htm"><code>*antialiasing*</code></a>
+and <a href="s_alpha-blending_s.htm"><code>*alpha-blending*</code></a> for
+other appearance-enhancing effects.
+</p>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/s_color-gradient-filling_s.htm">9.0 version</a></td></tr></table></body></html>

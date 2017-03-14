@@ -1,0 +1,134 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>get-objects</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table><h2 id="2">get-objects</h2>
+
+<p id="3"><b>Arguments: </b><i>
+code </i>&amp;key <i>old new</i><i>
+</i></p>
+
+<p id="4">
+This function takes one required argument and two keyword
+arguments. It returns a heapwalk vector, which is defined below. Its
+return value is suitable as the required argument to the related
+function <a href="get-references.htm"><b>get-references</b></a>. Here is more about the
+arguments:
+</p>
+<ul>
+  <li id="5">
+    <b><i>code</i></b>: this argument, which is
+    req1uired, should be a type code, which is a positive
+    integer. Type code are shown in the output of (room t) and also in
+    the output of <a href="print-type-counts.htm"><b>print-type-counts</b></a>. See below for an
+    example.
+  </li>
+  <li id="6">
+    <b><i>new</i></b>: this keyword argument, if true
+    (the default), causes newspace to be searched for objects with the
+    desired type code.
+  </li>
+  <li id="7">
+    <b><i>old</i></b>: this keyword argument, if true
+    (the default), causes oldspace to be searched for objects with the
+    desired type code.
+  </li>
+</ul>
+<p id="8">
+Since both new and old default to true, if neither is specified, both
+old and new space will be searched.
+</p>
+<p id="9">
+Here is a (slightly truncated) output
+of <code>(room t)</code>:
+</p>
+
+<pre id="10">
+cl-user(2): (room t)
+area area  address(bytes)        cons         other bytes
+  #  type                   8 bytes each
+                             (free:used)      (free:used)
+     Top #x20d7a000
+     New #x20994000(4087808)   916:15225     843936:3035024
+     New #x205ae000(4087808)    -----            -----
+   0 Old #x20000aa0(5952864)   711:78771    2098888:3209704
+Root pages: 126
+  Lisp heap:    #x20000000  pos: #x20d7a000 resrve: #x20fa0000
+Aclmalloc heap: #xa0000000  pos: #xa0048000 resrve: #xa00fa000
+ Pure space:    #x1f8ec000  end: #x1ffff888
+
+code   type                                 items     bytes 
+126: (simple-array (unsigned-byte 16))       10767   2153400 31.4%
+112: (simple-array t)                         8891   1445976 21.1%
+  1: cons                                    93996    751968 11.0%
+  7: symbol                                  20360    651520  9.5%
+  8: function                                 9681    602864  8.8%
+133: sv-vector                               20549    340840  5.0%
+120: (simple-array fixnum)                     259    270272  3.9%
+119: (simple-array code)                       367    192064  2.8%
+117: (simple-array character)                 2396    148960  2.2%
+125: (simple-array (unsigned-byte 8))           19     98720  1.4%
+ 12: standard-instance                        3900     62400  0.9%
+  9: closure                                  2897     50432  0.7%
+ 15: structure                                1159     47856  0.7%
+127: (simple-array (unsigned-byte 32))          11     12744  0.2%
+[...]
+
+ total bytes = 6856032
+aclmalloc arena:
+[...]
+</pre>
+<p id="11">
+The type codes are given in the first column: 112 for (simple-array t
+(*)), 117 for strings (also known as <code>(simple-array
+character)</code>), and 127 for <code>(simple-array
+(unsigned-byte 32))</code>. We use 127 in the example below.
+</p>
+<p id="12">
+<a href="get-objects.htm"><b>get-objects</b></a> returns a
+heapwalk vector, which is a simple vector of type t whose first
+element is the number of objects of the specified type which were
+found, whose next elements are the objects found, and whose last
+elements are unspecified (the vector is made somewhat bigger than is
+necessary). Here is an example where we find objects of typecode 127,
+which is the code for <code>(simple-array (unsigned-byte
+32))</code>.:
+</p>
+<pre id="13">
+cl-user(3): (get-objects 127)
+#(11 #(255 65535 16777215 4294967295) #(32 8224 2105376 538976288)
+  #(3960924350 2165561044 562617442 2270225120 1264129478 758582028 172407450
+    2782512936 595962478 1609675396 ...)
+  #(0 2567483615)
+  #(546914304 4087808 916 15225 529448960 536869000 553254912 536870912 843936
+    3035024 ...)
+  #(3960924350 2165561044 562617442 2270225120 1264129478 758582028 172407450
+    2782512936 595962478 1609675396 ...)
+  #(3960924350 2165561044 562617442 2270225120 1264129478 758582028 172407450
+    2782512936 595962478 1609675396 ...)
+  #(200235464 1375865383 2472949741 3729159793 443451277 421802134 4188904507
+    2175392005 408067652 1254986169 ...)
+  #(3960924350 2165561044 562617442 2270225120 1264129478 758582028 172407450
+    2782512936 595962478 1609675396 ...)
+  ...)
+cl-user(4): (length *)
+31
+cl-user(5):
+</pre>
+<p id="14">
+The result is a heapwalk vector. The first element is 11, the number
+of objects of the type of interest. Then those eleven objects. Then
+some extra elements (19 extra in this case, for a total vector size of
+31).
+</p>
+<p id="15">
+The objects in the heapwalk vector returned by get-objects (that is,
+the elements with indices 1 through (+ 1 (aref hwvec 0)), where hwvec
+is the heapwalk vector) are suitable as the required argument
+to <a href="get-references.htm"><b>get-references</b></a>.
+</p>
+<p id="16">
+See <a href="../../miscellaneous.htm#heap-walking-1">Heap
+walkers in Allegro CL</a> for more information.
+</p>
+
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table></body></html>

@@ -1,0 +1,117 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-to-component-toolbar</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/add-to-component-toolbar.htm">9.0 version</a></td></tr></table><h2 id="2">add-to-component-toolbar</h2>
+
+<p id="3"><b>Arguments: </b><i>
+component-class-name pixmap-or-title
+</i>&amp;key <i>after tooltip help-string</i><i>
+</i></p>
+
+<p id="4">
+This function allows developers to extend the IDE to include their own
+classes. It adds a new button to the IDE's Component Toolbar to allow
+a specified control class to be interactively instantiated onto a
+form. The control class is also added to the list of component classes
+presented by the <a href="../../ide-menus-and-dialogs/form-menu.htm#add-component">Form | Add Component</a> menubar command. If
+the class is already represented on the Component Toolbar, then no
+button is added.
+</p>
+<p id="5">
+The new button will remain on the toolbar only as long as the current
+invocation of Allegro is still running, rather than being added back
+automatically the next time that Allegro starts up. If a project
+defines a custom control class, you may want to add a call to <a href="add-to-component-toolbar.htm"><b>add-to-component-toolbar</b></a>
+to one of the project's .cl source code files as a top-level form ---
+then the control class will be added to the toolbar if needed whenever
+the project is loaded. Alternately, a call to <a href="add-to-component-toolbar.htm"><b>add-to-component-toolbar</b></a> could be
+placed in the <i>startup.cl</i> file or in an <a href="../../variables/ide/s_ide-startup-hook_s.htm"><code>*ide-startup-hook*</code></a>
+function. (See <a href="../../cgide.htm#startup-1">About IDE
+startup</a> in <a href="../../cgide.htm">cgide.htm</a>.)
+</p>
+<p id="6">
+<i>component-class-name</i> is either the name of a
+control class to be added or the symbol :gap. Specifying :gap inserts
+a small gap (with a thin bar drawn in it) between groups of buttons,
+as usual with a <a href="../../classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a> range. A
+multi-picture-button will automatically filter out multiple contiguous
+gaps, so an application does not have to worry about whether a gap is
+already where one is desired.
+</p>
+<p id="7">
+The arguments are:
+</p>
+<ul>
+<li id="8">
+<i>pixmap-or-title</i>: the value should be either a
+pixmap object to display on the toolbar's button for the control, or a
+string to display instead.
+</li>
+<li id="9">
+<i>after</i>: the value may be the name of a control
+class that may already be on the toolbar, or the symbol :last, or
+nil. If it is a class name and there is a button on the toolbar for
+that class, then the new button is placed just to the right of the
+specified button. If it is the symbol :last, then the new button is
+placed after the last (rightmost) button. Otherwise the new button is
+placed at the left end of the toolbar.
+</li>
+<li id="10">
+<i>tooltip</i>: the value should be a string to display
+in a tooltip when the mouse cursor pauses over the button. Defaults to
+the name of the class, except with spaces in place of dashes, and each
+word capitalized.
+</li>
+<li id="11">
+<i>help-string</i>: the value should be a string to
+display in the IDE's status bar to indicate what the button will do if
+clicked. Defaults to a standard message about adding the particular
+type of control.
+</li>
+</ul>
+<p id="12">
+See <a href="remove-from-component-toolbar.htm"><b>remove-from-component-toolbar</b></a>, which removes
+components (either your own or standard ones) from the toolbar.
+</p>
+<h3 id="13">
+Example:
+</h3>
+<pre id="14">
+;; Define a custom single-item-list.
+(defclass pretty-item-list (single-item-list)()
+  (:default-initargs
+   :background-color cyan))
+
+;; Define a pixmap to represent the custom control class.
+(cache-pixmap
+ (make-instance 'pixmap
+   :name 'pretty-item-list
+   :bits-per-pixel 4
+   :colors (default-palette-vector *system*)
+   :contents
+   '(( 7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7)
+     ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+     ( 0 14 14 14 14 14 14 14 14 14 14 14 14 14 14  0)
+
+     ( 0 14  0 14  0 14  0 14 14 14 14 14 14 14 14  0)
+     ( 0 14 14 14 14 14 14 14 14 14 14 14 14 14 14  0)
+     ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+     ( 0  0 14  0 14  0 14  0 14  0  0  0  0  0  0  0)
+     ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+     ( 0 14 14 14 14 14 14 14 14 14 14 14 14 14 14  0)
+     ( 0 14  0 14  0 14  0 14 14 14 14 14 14 14 14  0)
+     ( 0 14 14 14 14 14 14 14 14 14 14 14 14 14 14  0)
+     ( 0  8  8  8  8  8  8  8  8  8  8  8  8  8  8  0)
+
+     ( 0 14 14 14 14 14 14 14 14 14 14 14 14 14 14  0)
+     ( 0 14  0 14  0 14  0 14 14 14 14 14 14 14 14  0)
+     ( 0 14 14 14 14 14 14 14 14 14 14 14 14 14 14  0)
+     ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0))))
+
+;;; Add a button using the above pixmap to instantiate the custom control.
+(ide:add-to-component-toolbar 'pretty-item-list
+ (find-pixmap 'pretty-item-list) :after 'single-item-list)
+</pre>
+
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/add-to-component-toolbar.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,179 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>jlookup</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlookup.htm">9.0 version</a></td></tr></table><h2 id="2">jlookup</h2>
+
+<p id="3"><b>Arguments: </b><i>name </i> &amp;optional <i>arg</i><i>
+</i></p>
+
+
+<p id="4">
+This generic function has methods dispatching on the value of the
+<i>name</i> argument.
+</p>
+<ul>
+<li id="5"><code><a href="#eql-version">(name (eql
+:version))</a></code></li>
+<li id="6"><code><a href="#eql-query-lookup">(name (eql
+:query-lookup))</a></code></li>
+<li id="7"><code><a href="#eql-query">(name (eql
+:query))</a></code></li>
+<li id="8"><code><a href="#eql-table">(name (eql
+:table))</a></code></li>
+<li id="9"><code><a href="#eql-compile-time-lookup">(name (eql
+:compile-time-lookup))</a></code></li>
+<li id="10"><code><a href="#eql-preload">(name (eql
+:preload))</a></code></li>
+<li id="11"><code><a href="#eql-preloaded">(name (eql
+:preloaded))</a></code></li>
+<li id="12"><code><a href="#eql-gen-preload">(name (eql
+:gen-preload))</a></code></li>
+<li id="13"><code><a href="#eql-new">(name (eql
+:new))</a></code></li>
+<li id="14"><code><a href="#eql-none">(name (eql
+:none))</a></code></li>
+</ul>
+
+<h3 id="15"><a name="eql-version">(name (eql :version))</a></h3>
+<p id="16"><b>Arguments: </b><i>(name (eql :version)) </i> &amp;optional <i>error-p</i><i>
+</i></p>
+<p id="17">
+This method returns a number that represents the version of the
+jLinker Java code.  The number is of the form mnnnsss where the digits
+m are the major version, nnn the minor version, and sss the sub-minor
+version. A second returned value is a string containing the Java JDK
+version. If the <i>error-p</i> argument is non-<code>nil</code>, signal an error if not connected to Java;
+otherwise return <code>nil</code> values.
+</p>
+
+<h3 id="18"><a name="eql-query-lookup">(name (eql :query-lookup))</a></h3>
+<p id="19"><b>Arguments: </b><i>(name (eql :query-lookup)) </i> &amp;optional <i>action</i><i>
+</i></p>
+<p id="20">
+This method returns <code>t</code> if caching is in effect.
+</p>
+
+<h3 id="21"><a name="eql-query">(name (eql :query))</a></h3>
+<p id="22"><b>Arguments: </b><i>(name (eql :query)) </i> &amp;optional <i>pprint-p</i><i>
+</i></p>
+<p id="23">
+Returns a list of object statistics if the second argument is <code>nil</code> or omitted. 
+If the second argument is non-<code>nil</code>, the value is
+pretty-printed to *standard-output* and no value is returned.
+</p>
+<pre id="24">
+       (:LOOKUP 
+        (:NEW-ENTRIES 0 :OBJECTS 1 :NAMES 0) 
+	 :DIST-OB-CACHE
+         (:LIVE 9 :DEAD 0) 
+	 :JAVA-SERVER 
+	 (:LIVE 9 :FREE 0) 
+	 :LISP-SERVER
+	 (:COUNT 0)) 
+</pre>
+<p id="25">
+<code>:NEW-ENTRIES</code> is the number of named objects added to the cache 
+since the last call to <code>(jlookup :preloaded)</code>.
+<br>
+<code>:OBJECTS</code> is the number of named objects in the object cache.
+<br>
+<code>:NAMES</code> is the number of names in the object cache.
+<br>
+<code>:DIST-OB-CACHE :LIVE</code> is the number of live Lisp 
+references to Java objects.
+<br>
+<code>:DIST-OB-CACHE :DEAD</code> is the number of dead Lisp references 
+to Java objects.
+<br>
+<code>:JAVA-SERVER :LIVE</code> is the number of live references in 
+the Java server.
+<br>
+<code>:JAVA-SERVER :FREE</code> is the number of free entries in 
+the Java server table.
+<br>
+<code>:LISP-SERVER :COUNT</code> is the number of references to Lisp 
+objects in the  Lisp server table.
+</p>
+<p id="26">
+When <i>pprint-p</i> is non-<code>nil</code>, the result is printed
+to *standard-output* and no values are returned; otherwise the value
+is an alist of the above items.
+</p>
+
+<h3 id="27"><a name="eql-table">(name (eql :table))</a></h3>
+<p id="28"><b>Arguments: </b><i>(name (eql :table)) </i> &amp;optional <i>pprint-p</i><i>
+</i></p>
+<p id="29">
+This method returns a list of the names of the objects in the cache.
+When <i>pprint-p</i> is non-<code>nil</code>, the table is
+pretty-printed to *standard-output* and no values are returned.
+</p>
+
+<h3 id="30"><a name="eql-compile-time-lookup">(name (eql :compile-time-lookup))</a></h3>
+<p id="31"><b>Arguments: </b><i>(name (eql :compile-time-lookup)) 
+</i></p>
+<p id="32">
+Initiate compile-time lookup of Java methods. 
+</p>
+<p id="33">
+When this facility is enabled, all j* macro expansions trigger a
+lookup of any class and method constants.  If a class or method can
+only be determined at run time, a warning is printed. After compiling
+an application with compile-time lookup enabled, a (partial) pre-load
+table may be generated. For the application, a file should have the
+following contents:
+</p>
+<pre id="34">
+(in-package ...)
+(eval-when (compile) (jlookup :compile-time-lookup)
+(eval-when (load)    (jlookup :preload))
+
+... application code definitions ...
+
+(eval-when (compile) (jlookup :gen-preload))
+</pre>
+
+<h3 id="35"><a name="eql-preload">(name (eql :preload))</a></h3>
+<p id="36"><b>Arguments: </b><i>(name (eql :preload)) </i> &amp;optional <i>infile</i><i>
+</i></p>
+<p id="37">
+Initialize the object cache with empty hashtables and load the file 
+specified by <i>infile</i>, which
+defaults to <i>jpreload.cl</i>.
+</p>
+
+<h3 id="38"><a name="eql-preloaded">(name (eql :preloaded))</a></h3>
+<p id="39"><b>Arguments: </b><i>(name (eql :preloaded))
+</i></p>
+<p id="40">
+Reset the new entry count in the object cache to zero.
+</p>
+
+<h3 id="41"><a name="eql-gen-preload">(name (eql :gen-preload))</a></h3>
+<p id="42"><b>Arguments: </b><i>(name (eql :gen-preload)) </i> &amp;optional <i>outfile</i><i>
+</i></p>
+<p id="43">
+Write out the object cache into the file specified by
+<i>outfile</i>, which defaults to
+<i>jpreload.cl</i>.
+</p>
+
+<h3 id="44"><a name="eql-new">(name (eql :new))</a></h3>
+<p id="45"><b>Arguments: </b><i>(name (eql :new)) </i> &amp;optional <i>action</i><i>
+</i></p>
+<p id="46">
+Clears the cache and starts a new one.
+</p>
+
+<h3 id="47"><a name="eql-none">(name (eql :none))</a></h3>
+<p id="48"><b>Arguments: </b><i>(name (eql :none))
+</i></p>
+<p id="49">
+Disables caching. 
+</p>
+
+<p id="50">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="51"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlookup.htm">9.0 version</a></td></tr></table></body></html>

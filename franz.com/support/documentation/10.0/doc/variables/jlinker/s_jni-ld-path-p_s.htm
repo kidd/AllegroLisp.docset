@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*jni-ld-path-p*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/jlinker/s_jni-ld-path-p_s.htm">9.0 version</a></td></tr></table><h2 id="2">*jni-ld-path-p*</h2>
+
+<p id="3">
+This variable is used when the jlinker native implementation is initialized.
+</p>
+<p id="4">
+Some versions of the Java VM require that the environment variable
+LD_LIBRARY_PATH include the path(s) to the Java VM shared libraries,
+even though the Java VM shared library is loaded by Lisp. If the
+setting is required, it must be done before Lisp is started - using
+<a href="../../operators/system/getenv.htm"><b>(setf
+sys:getenv)</b></a> (after Lisp has started) is not sufficient. If
+the setting is required, but not there, the Java VM exits the
+application unconditionally with the message
+</p>
+<pre id="5">
+  Error occurred during initialization of VM
+  Unable to load native library: libjvm.so: cannot open shared object file:
+</pre>
+<p id="6">
+Thus, the setting of the environment variable is outside the control
+of the Lisp application. If the variable <a href="s_jni-ld-path-p_s.htm"><code>*jni-ld-path-p*</code></a> is non-<code>nil</code>, we attempt to determine if LD_LIBRARY_PATH is
+set correctly, and if not, signal a continuable error.
+</p>
+<p id="7">
+The initial value of this variable is <code>t</code> in
+the linux86 port of ACL. The initial value of this variable is
+<code>nil</code> in all other ports.
+</p>
+<p id="8">
+If the value of the variable is a string, we look for a file with that
+name in all the directories mentioned in LD_LIBRARY_PATH. If the value
+of the variable is some other non-<code>nil</code> value,
+we look for a file named "libjvm.so", "libjvm.dll", or "libjvm.dylib",
+as approriate for the current operating system.
+</p>
+
+<p id="9">
+See <a href="../../jlinker.htm">jlinker.htm</a> for general information on the
+jLinker facility.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/jlinker/s_jni-ld-path-p_s.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>po-condition</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.post-office</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/post-office/po-condition.htm">9.0 version</a></td></tr></table><h2 id="2">po-condition</h2>
+
+
+<p id="3">
+The Imap interface defines a set of conditions that are signaled due
+to events in the interface. Each condition has an identifier which is
+a keyword which can be used in the handling code to identify the class
+of error. The accessor is <a href="../../operators/post-office/po-condition-identifier.htm"><b>po-condition-identifier</b></a>. The
+identifiers are listed below.
+</p>
+<p id="4">
+All our conditions are <a href="po-condition.htm"><code>po-condition</code></a> or <a href="po-error.htm"><code>po-error</code></a> (which is
+a subclass of <a href="po-condition.htm"><code>po-condition</code></a>).
+</p>
+<p id="5">
+A condition will have a server-string value if it is initiated by
+something returned by the server. The accessor is <a href="../../operators/post-office/po-condition-server-string.htm"><b>po-condition-server-string</b></a>. It will
+have a format-control value (with the usual Common Lisp accessors) if
+there is something to display in response to identifiers used in
+conditions/errors.
+</p>
+<p id="6">
+The condition identifiers are:
+</p>
+
+<ul>
+<li id="7">
+<code>:problem</code>: (a condition).
+The server responded with 'no' followed by an explanation.
+This means that something unusual happened and doesn't necessarily
+mean that the command has completely failed (but it might).
+</li>
+<li id="8">
+<code>:unknown-ok</code>: (a condition).
+The server responded with an 'ok' followed by something
+that was not recognized.  It is probably safe to ignore this.
+</li>
+<li id="9">
+<code>:unknown-untagged</code>: (a condition).
+The server responded with some untagged command 
+that was not recognized. It is probably ok to ignore this.
+</li>
+<li id="10">
+<code>:error-response</code>: (an error).
+The command failed.
+</li>
+<li id="11">
+<code>:syntax-error</code>: (an error).
+The data passed to a function in this interface was malformed.
+</li>
+<li id="12">
+<code>:unexpected</code>: (an error).
+The server responded an unexpected way.
+</li>
+<li id="13">
+<code>:server-shutdown-connection</code>: (an error).
+The server has shut down the connection, don't attempt to
+send any more commands to this connection, or even close it.
+</li>
+<li id="14">
+<code>:timeout</code>: (an error).
+The server failed to respond within the timeout period.
+</li>
+<li id="15">
+<code>:response-too-large</code>: (an error).
+The contents of a response is too large to store in a Lisp array.
+</li>
+</ul>
+
+<p id="16">
+See <a href="../../imap.htm">imap.htm</a> for more information.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/post-office/po-condition.htm">9.0 version</a></td></tr></table></body></html>

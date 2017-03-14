@@ -1,0 +1,394 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>grid-widget</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/grid-widget.htm">9.0 version</a></td></tr></table><h2 id="2">grid-widget</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of all grid-widget controls.  
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+An instance of the <a href="grid-widget.htm"><code>grid-widget</code></a> class. This is a very
+versatile (and therefore relatively complex) widget that is useful for
+implementing things such as spreadsheets and tables.  Grid cells can
+either use built-in cell widgets or implement custom drawing and
+mouse/keyboard behavior.
+</p>
+<p id="7">
+A grid-widget may be divided into multiple sections, each of which may
+be independently scrollable and resizable.  Within each section are
+rows and columns that are collectively known as subsections.
+(Sections are sometimes referred to as <b>main sections</b> to
+distinguish them from subsections.)  Rows and columns may be
+interactively resized, moved (to change their order), selected, and
+deleted, whenever each of those options is enabled.  Rows and columns
+may be added and removed programmatically at any time.  A row or
+column can have its own individual stylistic properties, and can also
+be replicated to produce a set of identical visual rows or columns
+that are represented by a single row or column lisp object.
+</p>
+<p id="8">
+Each section, row, and column is implemented as a <a href="../../../ansicl/dictentr/standar2.htm"><code>standard-object</code></a>.  A grid cell does not
+have a Lisp object to represent it because the number of cells
+increases quadratically as the rows and columns increase.  Instead, a
+cell is accessed by methods that specialize on both the row and column
+whose intersection defines the cell.
+</p>
+<h3 id="9">
+Some illistrations
+</h3>
+<p id="10">
+The <b>Examples</b> tab of the <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator Dialog</a> has sevel Grid
+widgets examples. We illustrate some here.
+</p>
+<p id="11">
+Here is <b>Grid-widget: the simplest possible
+grid-widget-example</b>. A simple grid. Left click on a cell and an X
+is marked (as we have done with several). Right click and the X goes
+away. Note the scroll bars. The widget is bigger than the window
+displaying it.
+</p>
+<p id="12"><img src="../../pictures/grid-simple.jpg"></p>
+<p id="13">
+Here is a more complex example <b>Grid-widget: using built-in cell
+widgets in ARBITRARY cells</b>.
+</p>
+<p id="14"><img src="../../pictures/grid-arb.jpg"></p>
+<p id="15">
+All these examples (and there are several more) are available to run
+and the code the generates them can be examined and adapted or
+reused. See the <b>Examples</b> tab of the <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator Dialog</a>.
+</p>
+
+<h3 id="16">
+Writing Grid-Widget Code
+</h3>
+
+<p id="17">
+Using a grid-widget consists of constructing the grid-widget from
+sections and subsections, specifying various stylistic properties, and
+(the trickier part) writing methods that control how various grid
+cells read application data to display, draw themselves based on that
+data, respond to mouse clicks and keypresses, and finally write
+user-modified data back to the application.
+</p>
+
+<h3 id="18">
+Constructing a Grid-Widget
+</h3>
+
+<p id="19">
+Normally you will first define subclasses of various grid classes so
+that you can specialize methods on them.  The basic classes to
+subclass are <a href="grid-widget.htm"><code>grid-widget</code></a>, <a href="grid-row-section.htm"><code>grid-row-section</code></a>, <a href="grid-column-section.htm"><code>grid-column-section</code></a>,
+<a href="grid-row.htm"><code>grid-row</code></a>, and
+<a href="grid-column.htm"><code>grid-column</code></a>.
+When you create a grid-widget instance, specify its <a href="../../operators/cg/r/row-sections.htm"><b>row-sections</b></a> property as a list of
+instances of your <a href="grid-row-section.htm"><code>grid-row-section</code></a> subclasses, and
+its <a href="../../operators/cg/c/column-sections.htm"><b>column-sections</b></a> property as a list
+of your own <a href="grid-column-section.htm"><code>grid-column-section</code></a>s.  When making
+each grid-row-section or grid-column-section, specify its <a href="../../operators/cg/s/subsections.htm"><b>subsections</b></a> property as a
+list of instances of your <a href="grid-row.htm"><code>grid-row</code></a> or <a href="grid-column.htm"><code>grid-column</code></a> subclasses
+(respectively).
+</p>
+<p id="20">
+Optionally, you can also specify the <a href="../../operators/cg/s/section-count.htm"><b>section-count</b></a> property of a row or
+column to make that single row or column lisp object produce multiple
+identical visual rows or columns, which are distinguished by an index
+only.  Subsections can also be added and removed later by calling
+<a href="../../operators/cg/a/add-row.htm"><b>add-row</b></a>, <a href="../../operators/cg/a/add-column.htm"><b>add-column</b></a>, <a href="../../operators/cg/d/delete-row.htm"><b>delete-row</b></a>, and <a href="../../operators/cg/d/delete-column.htm"><b>delete-column</b></a>.  Call
+<a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> as
+usual to create each object.
+</p>
+<p id="21">
+Grid sections and subsections have various properties that determine
+how they appear and behave mechanically.  These may be specified when
+creating each object and/or changed anytime later.  Some of these
+properties apply to both sections and subsections, including <a href="../../operators/cg/r/resizable.htm"><b>resizable</b></a>, <a href="../../operators/cg/s/section-size.htm"><b>section-size</b></a>, <a href="../../operators/cg/b/border-width.htm"><b>border-width</b></a>, <a href="../../operators/cg/b/border-dashing.htm"><b>border-dashing</b></a>, <a href="../../operators/cg/b/border-color.htm"><b>border-color</b></a>, and <a href="../../operators/cg/p/proportional.htm"><b>proportional</b></a>.  Properties
+that apply only to sections include <a href="../../operators/cg/s/scrollbars.htm"><b>scrollbars</b></a>, <a href="../../operators/cg/u/uniform-resizing.htm"><b>uniform-resizing</b></a>, <a href="../../operators/cg/e/empty-color.htm"><b>empty-color</b></a>, <a href="../../operators/cg/d/default-cell-3d-border.htm"><b>default-cell-3d-border</b></a>, <a href="../../operators/cg/d/default-cell-border-color.htm"><b>default-cell-border-color</b></a>, and
+<a href="../../operators/cg/d/default-cell-border-width.htm"><b>default-cell-border-width</b></a>.
+Properties that apply only to subsections include <a href="../../operators/cg/m/movable.htm"><b>movable</b></a>, <a href="../../operators/cg/d/deletable.htm"><b>deletable</b></a>, and <a href="../../operators/cg/s/selectable.htm"><b>selectable</b></a>.
+</p>
+
+<h3 id="22">
+Manipulating Application Data in a Grid-Widget
+</h3>
+
+<p id="23">
+In addition to writing code to constuct a grid-widget and specify its
+mechanical behavior, you need to write methods that specify how it
+displays application data and optionally modifies it.  (Further below
+we discuss some higher-level alternatives that can remove the need to
+write some or all of these methods.)  Here are the basic generic
+functions to specialize in order to display data in a grid-widget:
+</p>
+<ul>
+<li id="24">
+<a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a>
+fetches an application data value to be represented in a grid cell,
+based on the <a href="grid-row.htm"><code>grid-row</code></a> and <a href="grid-column.htm"><code>grid-column</code></a> that were passed to
+it.
+</li>
+<li id="25">
+<a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> draws
+something in a grid cell, typically to represent a value that it
+retrieved by calling <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a>.  <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> is called automatically
+whenever a grid-cell is uncovered and therefore needs to be redrawn.
+<p id="26">
+If you know that an application value has changed and needs to be
+redrawn in its grid cell, you still should not call <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> yourself; instead, you
+should force the cell to redraw itself by calling <a href="../../operators/cg/i/invalidate-cell.htm"><b>invalidate-cell</b></a>, or force a whole
+section to update by calling <a href="../../operators/cg/i/invalidate-section.htm"><b>invalidate-section</b></a>, or the whole
+grid-widget by calling <a href="../../operators/cg/i/invalidate.htm"><b>invalidate</b></a>.
+</p>
+<p id="27">
+There is a default <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> method that calls <a href="../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a> on the value
+returned by <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a>, and draws that
+string in the cell. If this is sufficient, then you do not need to
+write your own <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> methods.
+</p>
+</li>
+</ul>
+<p id="28">
+And here are the basic generic functions to specialize if you also
+want to allow the user to modify the data interactively in the grid,
+rather than simply viewing it:
+</p>
+<ul>
+<li id="29">
+<a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a> is
+called when the user presses a mouse button over a cell, and <a href="../../operators/cg/c/cell-key-down.htm"><b>cell-key-down</b></a> is called
+when the user presses a keyboard key while a cell has the keyboard
+focus.  Methods can be written on these generic functions that decide
+how to respond to the gestures and change the value that is
+represented in a cell, and then to write the modified value back into
+the application, typically by calling <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a>.  You may also
+specialize <a href="../../operators/cg/c/cell-mouse-in.htm"><b>cell-mouse-in</b></a> and <a href="../../operators/cg/c/cell-mouse-out.htm"><b>cell-mouse-out</b></a> to respond in some
+way as the mouse cursor enters and leaves various cells.
+</li>
+<li id="30">
+<a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a>
+modifies an application's data based on changes that a user has made
+with interactive gestures in a grid cell.
+</li>
+</ul>
+
+<h3 id="31">
+Higher-Level Alternatives
+</h3>
+
+<p id="32">
+The above generic functions are all that you need to specialize in
+order to write your data-manipulating grid code from scratch.  But
+there is some additional higher-level grid functionality that can
+reduce the number of grid methods that must be written for typical
+applications.
+</p>
+<p id="33">
+These alternatives are applicable to any application that uses grid
+rows to represent data objects and grid columns to represent their
+properties.  For example, one of the Navigator grid examples uses grid
+rows to represent employees, and grid columns to represent properties
+such as employee name and department.  We will discuss that example
+here.
+</p>
+<p id="34">
+This higher-level functionality falls into two camps: reader and
+writer properties, and cell widgets.
+</p>
+
+<h3 id="35">
+Reader and Writer Properties
+</h3>
+
+<p id="36">
+The first higher-level alternative lets you avoid writing <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> and
+<a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a>
+methods.  In an application such as the employee example, you would
+probably have an employee class that already has accessor functions
+such as <b>employee-name</b> and <b>employee-department</b>.  When
+representing employees and their properties in a grid-widget, you
+could specify the <a href="../../operators/cg/d/data-object.htm"><b>data-object</b></a> property of each
+<a href="grid-row.htm"><code>grid-row</code></a> as
+the employee that the row represents, and specify the <a href="../../operators/cg/d/data-reader.htm"><b>data-reader</b></a> property of
+each <a href="grid-column.htm"><code>grid-column</code></a> as the existing
+accessor function (such as <b>employee-name</b> or
+<b>employee-department</b>) for the property that the column
+represents.  If you are allowing the user to modify data values in the
+grid, then you could also specify a function such as <b>(setf
+employee-name)</b> as the <a href="../../operators/cg/d/data-writer.htm"><b>data-writer</b></a> property of the
+column.
+</p>
+<p id="37">
+It just so happens that the default <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> method calls the
+grid column's data-reader function on the row's data-object, if both
+of those exist.  And the default <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> method calls the
+column's data-writer function on the data-object.  This means that by
+specifying <a href="../../operators/cg/d/data-object.htm"><b>data-object</b></a>, <a href="../../operators/cg/d/data-reader.htm"><b>data-reader</b></a>, and <a href="../../operators/cg/d/data-writer.htm"><b>data-writer</b></a> properties for your
+grid subsections, you can avoid writing custom <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> and <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> methods
+for various types of cells.  You can still write your own <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> methods that
+call the default <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> method, though, and
+write custom <a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a> and <a href="../../operators/cg/c/cell-key-down.htm"><b>cell-key-down</b></a> methods that call the
+default <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> method. See also
+<a href="../../operators/cg/d/data-read-converter.htm"><b>data-read-converter</b></a> and <a href="../../operators/cg/d/data-write-converter.htm"><b>data-write-converter</b></a>.
+</p>
+
+<h3 id="38">
+Built-In Grid Cell Widgets
+</h3>
+
+<p id="39">
+The other higher-level alternative lets you avoid writing custom
+<a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a>,
+<a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a>, and
+<a href="../../operators/cg/c/cell-key-down.htm"><b>cell-key-down</b></a>
+methods.  It consists of several types of built-in "cell widgets" that
+know how to draw themselves and how to respond to user gestures to
+modify the represented value.  When using these built-in cell widgets,
+you can still write your own <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> and <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> methods
+that will be called automatically by the built-in cell widget code.
+Or use <b>both</b> of these higher-level alternatives together to
+avoid writing any custom methods.
+</p>
+<p id="40">
+Since there is not an object for each grid cell, the built-in cell
+widgets are defined as mixin classes that you combine with a <a href="grid-column.htm"><code>grid-column</code></a> class.
+The defined classes are <a href="editable-text-column-mixin.htm"><code>editable-text-column-mixin</code></a>, <a href="check-box-column-mixin.htm"><code>check-box-column-mixin</code></a>, <a href="combo-box-column-mixin.htm"><code>combo-box-column-mixin</code></a>, <a href="static-text-column-mixin.htm"><code>static-text-column-mixin</code></a>,
+
+<a href="static-text-and-button-column-mixin.htm"><code>static-text-and-button-column-mixin</code></a>,
+<a href="pixmap-column-mixin.htm"><code>pixmap-column-mixin</code></a>, and
+<a href="lamp-column-mixin.htm"><code>lamp-column-mixin</code></a>.
+The pseudo-widget will appear in any cell whose column is an instance
+of one of these mixin classes and whose row is an instance of the
+<a href="widget-row-mixin.htm"><code>widget-row-mixin</code></a> class.  This
+design lets you specify a type of widget for some subset of the cells
+of a grid column.  This is appropriate for applications that use a
+grid column to represent a property, since typically the same widget
+would be appropriate for editing a particular property regardless of
+which data object (grid row) is being edited.
+</p>
+<p id="41">
+Typically you would have a header row or row-section that does not
+have the <a href="widget-row-mixin.htm"><code>widget-row-mixin</code></a>, and then a number
+of "body" rows that do have it, so that the widget does not appear in
+the header row.  See also <a href="row-header-column.htm"><code>row-header-column</code></a> and <a href="column-header-row.htm"><code>column-header-row</code></a>.
+</p>
+
+<p id="42">
+A quicker but less object-oriented way to use the built-in cell
+widgets is to write <a href="../../operators/cg/c/cell-widget.htm"><b>cell-widget</b></a> methods. This bypasses the <a href="widget-column-mixin.htm"><code>widget-column-mixin</code></a> and <a href="widget-row-mixin.htm"><code>widget-row-mixin</code></a> classes
+altogether, and allows the widgets to be used in arbitrary cells
+rather than only in particular columns for each type of widget.
+</p>
+
+<h3 id="43">
+Controlling the Built-In Draw-Cell Methods
+</h3>
+
+<p id="44">
+If you are using a built-in <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> method that's supplied
+by a cell widget, or the default method that displays any cell value
+as a string, then you can still exert some control over how a cell
+draws itself.  You do this by writing trivial methods that return
+specific aspects of the drawing style.  The generic functions to
+specialize include <a href="../../operators/cg/c/cell-font.htm"><b>cell-font</b></a>, <a href="../../operators/cg/c/cell-background-color.htm"><b>cell-background-color</b></a>, <a href="../../operators/cg/c/cell-foreground-color.htm"><b>cell-foreground-color</b></a>,
+<a href="../../operators/cg/c/cell-horizontal-padding.htm"><b>cell-horizontal-padding</b></a>, <a href="../../operators/cg/c/cell-vertical-padding.htm"><b>cell-vertical-padding</b></a>,
+<a href="../../operators/cg/c/cell-horizontal-justification.htm"><b>cell-horizontal-justification</b></a>,
+<a href="../../operators/cg/c/cell-vertical-justification.htm"><b>cell-vertical-justification</b></a>,
+<a href="../../operators/cg/c/cell-wrapped-p.htm"><b>cell-wrapped-p</b></a>,
+<a href="../../operators/cg/c/cell-3d-border.htm"><b>cell-3d-border</b></a>,
+and <a href="../../operators/cg/d/data-read-converter.htm"><b>data-read-converter</b></a>.  Each built-in
+draw-cell method will call some subset of these generic functions and
+use the values that they return.
+</p>
+
+
+<h3 id="45">
+Caching Read-Cell-Value Values and Delaying Write-Cell-Value Calls
+</h3>
+
+<p id="46">
+By default, an application's <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> method (or a <a href="../../operators/cg/d/data-reader.htm"><b>data-reader</b></a> function that the default method
+calls) is called every time a cell is drawn to return the value to
+display.  If this code takes significant time, then these calls can be
+minimized by setting the <a href="grid-widget.htm"><code>grid-widget</code></a>'s <a href="../../operators/cg/c/cache-cell-values.htm"><b>cache-cell-values</b></a> property to true.
+</p>
+<p id="47">
+Similarly by default, an application's <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> method (or a <a href="../../operators/cg/d/data-writer.htm"><b>data-writer</b></a> function that the default method
+calls) is called immediately whenever the user interactively edits the
+value in a grid cell.  To delay these calls that modify application
+data until the user either confirms or rejects recent edits sometime
+later, set the <a href="grid-widget.htm"><code>grid-widget</code></a>'s <a href="../../operators/cg/d/delay-write-cell-value.htm"><b>delay-write-cell-value</b></a> property to true.
+</p>
+
+
+<h3 id="48">
+Bypassing Read-Cell-Value and Write-Cell-Value Altogether
+</h3>
+
+<p id="49">
+Perhaps it will be clear at this point that <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> and <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> exist
+primarily because the higher-level grid features uses them to separate
+the functionality that they provide from the methods that you still
+have to write.  So if you are not using either higher-level
+alternative, then a <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> method actually would not
+need to call a separate <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> method, and could
+instead fetch its application data to draw directly.  Similarly, a
+<a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a> or
+<a href="../../operators/cg/c/cell-key-down.htm"><b>cell-key-down</b></a>
+method would not need to call a separate <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> method, and could
+instead modify the application's data directly.  The "simple color
+editor" example in <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator Dialog</a> is an example of
+this.
+</p>
+
+<h3 id="50">
+Adding a Grid-Widget to a Form
+</h3>
+
+<p id="51">
+A grid-widget can be added to a <a href="form.htm"><code>form</code></a> interactively as with other
+widgets, but it is probably simpler to write all of its code
+programmatically, due to the need to define subclasses and properties
+for sub-components.  To usefully add a grid-widget to a form
+interactively, you probably should first define the subclasses for
+your grid-widget, sections and subsections, and give them
+default-initargs that specify the properties that you would like for
+their instances, and then call <a href="../../operators/ide/add-to-component-toolbar.htm"><b>add-to-component-toolbar</b></a> to add
+your customized grid-widget class to the widget palette.
+</p>
+
+<p id="52">
+A higher-level alternative that is already in the widget palette is
+the <a href="class-grid.htm"><code>class-grid</code></a>.  A <a href="class-grid.htm"><code>class-grid</code></a> works well when created
+interactively on a form because all of its customizable properties are
+at the top level rather than on grid sections.
+</p>
+
+
+<h3 id="53">
+Additional Grid-Widget Help
+</h3>
+<p id="54">
+Please refer to the multiple grid-widget examples in <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator Dialog</a> for
+complete example code.  And to look up additional grid functionality
+that was not covered here, look at the <a href="../../ide-menus-and-dialogs/common-graphics-tree-of-knowledge.htm">Allegro Tree of
+Knowledge</a> (displayed with the <a href="../../ide-menus-and-dialogs/help-menu.htm#common-graphics-tree">Help | Tree of
+Knowledge</a> menu command). In that dialog, do <a href="../../ide-menus-and-dialogs/search-menu.htm#find-forward">Search |
+Find Forward</a> on the string "grid-widget".
+</p>
+
+
+
+
+<p id="55">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="56"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/grid-widget.htm">9.0 version</a></td></tr></table></body></html>

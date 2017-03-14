@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>windows</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/windows.htm">9.0 version</a></td></tr></table><h2 id="2">windows</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window-or-screen </i>&amp;key <i>owned-p states</i><i>
+</i></p>
+
+<p id="4">
+This function returns a list of the child windows or the other owned
+windows of either a window or the screen.
+</p>
+<p id="5">
+The order of the windows in the returned list will be the
+front-to-back occlusion order of the windows. (An exception is that
+the occlusion order of top-level windows on the GTK platform is not
+known, and so the order of windows in the returned list is not useful
+when asking for the child windows of the screen or the owned windows
+of a top-level window.)
+</p>
+<p id="6">
+<i>window-or-screen</i> is the window or screen whose
+child or owned windows are to be found. (The screen is the value
+returned by <code>(screen *system*)</code>. See <a href="../s/screen.htm"><b>screen</b></a> and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>.)
+</p>
+<p id="7">
+If <i>owned-p</i> is <code>nil</code> (the
+default) then the child windows of window-or-screen are returned. If
+<i>owned-p</i> is true, then the
+owned windows of <i>window-or-screen</i> that are not
+also child windows of <i>window-or-screen</i> are
+returned. These two groups together comprise all of the owned windows
+of <i>window-or-screen</i>. Note that only top-level
+windows can have owned windows that are not also their children;
+therefore, <code>nil</code> will always be returned if
+owned-p is passed as true along with a child window or the screen.
+</p>
+<p id="8">
+<i>states</i> specifies that only windows that are
+currently in certain states are to be returned. If <code>nil</code> (the default), then windows in all states are
+returned. Otherwise <i>states</i> may be a list of some
+combination of the symbols <code>:normal</code>,
+<code>:shrunk,</code> <code>:icon</code>, and
+<code>:maximized</code>, in which case only windows that are
+currently in those states are returned. See <a href="../s/state.htm"><b>state</b></a>.
+</p>
+<p id="9">
+Note that if the specified window is a <a href="../../../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a> window,
+then its <a href="../f/frame-child.htm"><b>frame-child</b></a> pane will be included
+in the returned list, even though it is sometimes considered to be
+logically a part of the frame window.
+</p>
+<p id="10">
+See also <a href="../w/windows-scratch-list.htm"><b>windows-scratch-list</b></a>, <a href="../d/do-windows.htm"><b>do-windows</b></a>, <a href="../f/front-window.htm"><b>front-window</b></a>, and <a href="../n/next-window.htm"><b>next-window</b></a>.
+</p>
+
+
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/windows.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,199 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>state</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/state.htm">9.0 version</a></td></tr></table><h2 id="2">state</h2>
+
+<p id="3"><b>Arguments: </b><i>
+widget
+</i></p>
+
+<h3 id="4">State for windows and miscellaneous controls</h3>
+<p id="5">
+<a href="../s/state.htm"><b>state</b></a> works
+differently on <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a>s, as described below
+under the heading <b>State on outline-items</b>.
+</p>
+<p id="6">
+This generic function returns two values. The first is the state of
+the argument, which should be a window or a visible control of some
+sort. Possible values for most objects are <code>:normal</code>
+and <code>:shrunk</code>. Windows can also be
+<code>:icon</code>, and <code>:maximized</code>. The
+second returned value is described under the heading <b>Second
+returned value</b> below.
+</p>
+
+<ul>
+<li id="7">
+<code>:normal</code>: the control or window has its normal size
+and is visible.
+</li>
+<li id="8">
+<code>:shrunk</code>: the control or window is shrunken and not visible.
+</li>
+<li id="9">
+<code>:icon</code>: the window is shrunk to a visible icon.
+</li>
+<li id="10">
+<code>:maximized</code>: the window is extended to its maximum size.
+</li>
+</ul>
+
+<p id="11">
+The associated generic function <a href="../s/state.htm"><b>(setf state)</b></a> is called
+whenever the state of a window is changed, either programmatically by
+calling other exported functions such as <a href="../s/shrink-window.htm"><b>shrink-window</b></a>, <a href="../e/expand-window.htm"><b>expand-window</b></a>, and <a href="../z/zoom-window.htm"><b>zoom-window</b></a>, or
+interactively when the user clicks the shrink, maximize, or restore
+buttons on a window frame.
+</p>
+<p id="12">
+The <i>value</i> argument to <a href="../s/state.htm"><b>(setf state)</b></a> can be
+passed as <code>:expanded</code> to expand the window to
+<code>:normal</code> or <code>:maximized</code>, whichever
+it was before being shrunk (if it has never been expanded, it is made
+<code>:normal</code>). Note that <code>:expanded</code> is
+not a true state, so the resulting state of the window will be either
+<code>:normal</code> or <code>:maximized</code>.
+</p>
+<p id="13">
+A <a href="../s/state.htm"><b>(setf
+state)</b></a> &nbsp;<code>:around</code> method
+prevents any other non-<code>:around</code>
+&nbsp;<a href="../s/state.htm"><b>(setf state)</b></a> methods from being called if the
+state would not actually be changed by the call. Therefore any methods
+added by an application do not need to handle this efficiency
+consideration. This around method also coerces the special
+<code>:expanded</code> state to either
+<code>:normal</code> or <code>:maximized</code> and passes
+that value to the other <a href="../s/state.htm"><b>(setf state)</b></a> methods that it calls, so any
+primary, <code>:before</code>, or <code>:after</code>
+&nbsp;<a href="../s/state.htm"><b>(setf state)</b></a> methods added by an application
+will not receive the <code>:expanded</code> state.
+</p>
+<p id="14">
+The generic functions <a href="../s/state.htm"><b>state</b></a> and <a href="../s/state.htm"><b>(setf state)</b></a> may be
+called on dialog-items or windows, while the other three functions
+apply only to windows.
+</p>
+<h3 id="15">Second returned value</h3>
+<p id="16">
+<a href="../s/state.htm"><b>state</b></a> returns a
+second value for the "expanded state" of the window. This value is
+always either <code>:normal</code> or
+<code>:maximized</code>. If the current state of the window is
+<code>:shrunk</code> or <code>:icon</code>, then the value
+is the state into which the window will be placed if <a href="../e/expand-window.htm"><b>expand-window</b></a> is called on it or if
+<a href="../s/state.htm"><b>(setf
+state)</b></a> is called on it with the <code>:expanded</code>
+state. This is also the most recent expanded state that the window was
+in, or <code>:normal</code> if it has never been expanded. If
+the current state of the window is <code>:normal</code> or
+<code>:maximized</code>, the value is the state to which the
+window was most recently expanded from <code>:shrunk</code> or
+<code>:icon</code> state.
+</p>
+<h3 id="17">Example</h3>
+<p id="18">
+Here is an example of an added <a href="../s/state.htm"><b>(setf state)</b></a> :around
+method that looks at both the old and new states of any frame-window
+whose state may be changing, and reports any change. Typcially several
+custom methods on <a href="../s/shrink-window.htm"><b>shrink-window</b></a>, <a href="../e/expand-window.htm"><b>expand-window</b></a>, and so on in 5.0.1
+could be collapsed into such a single <a href="../s/state.htm"><b>(setf state)</b></a> method.
+A simpler :after method could be used instead if the old state is not
+of interest.
+</p>
+<p id="19">
+The <a href="../../excl/without-package-locks.htm"><b>without-package-locks</b></a> is
+needed here in a source code file that's not in the common-graphics
+package only because it specializes a common-graphics method on a
+built-in common-graphics class; normally an application would
+specialize on its own subclass instead.
+</p>
+<p id="20">
+The <i>requested-state</i> argument is ignored because
+it may be :expanded, and we are interested here in the resulting
+:normal or :maximized state instead.  Similarly, some other <a href="../s/state.htm"><b>(setf state)</b></a>
+method could coerce the requested state to something else.
+</p>
+<p id="21">
+<a href="../../ide/eval-in-listener-thread.htm"><b>eval-in-listener-thread</b></a> is
+used to make sure that the printed output always goes to the selected
+IDE listener pane (and so this method is suitable only for the IDE and
+not for a generated application).  Otherwise, the message will go to
+the *terminal-io* of whatever thread changed the window state; for
+example, clicking the minimize button of an IDE window would iconize
+the window in the IDE GUI thread, for which *terminal-io* is bound to
+the console, and so the output would appear there.
+</p>
+<p id="22">
+The <a href="../../../../ansicl/dictentr/prog1pro.htm"><b>prog1</b></a> is used
+to ensure that this <a href="../s/state.htm"><b>(setf state)</b></a> method returns whatever the next
+called method returns, though that would normally be the
+requested-state.
+</p>
+<pre id="23">
+(without-package-locks
+ (defmethod (setf state) :around (requested-state (window frame-window))
+   (declare (ignore requested-state))
+   (let* ((old-state (state window))
+          new-state)
+     (prog1 (call-next-method)
+       (setq new-state (state window))
+       (unless (eq old-state new-state)
+         (ide:eval-in-listener-thread
+          `(format t "~&State of ~s changed from ~s to ~s.~%"
+             (name ,window) ,old-state ,new-state)))))))
+</pre>
+
+<h3 id="24">State on outline-items</h3>
+
+
+
+<p id="25">
+The <a href="../s/state.htm"><b>state</b></a>
+property also applies to <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a>s, though the valid
+values are <code>:closed</code>, <code>:open</code>, and
+<code>:partially-open</code>, rather than the values listed
+above.
+</p>
+<p id="26">
+<code>:closed</code> indicates that the item's subitems are not
+currently shown, while <code>:open</code> indicates that they
+are.  <code>:partially-open</code> indicates that some but
+perhaps not all of the subitems are currently shown, and so the next
+user gesture to toggle the state will show all subitems, rather than
+hiding them as is normally done when subitems are already showing.
+</p>
+<p id="27">
+<code>:partially-open</code> is probably useful only when a
+<a href="../r/range-on-open.htm"><b>range-on-open</b></a>
+method has been supplied for the outline, since a <a href="../r/range-on-open.htm"><b>range-on-open</b></a> method can be written
+to return different sets of subitems at different times depending on
+some arbitrary current context. 
+</p>
+<p id="28">
+<a href="../s/state.htm"><b>(setf
+state)</b></a> may be called on an outline-item to hide or show its
+subitems, as an alternative to calling <a href="../c/close-outline-item-value.htm"><b>close-outline-item-value</b></a> or <a href="../o/open-outline-item-value.htm"><b>open-outline-item-value</b></a>;
+passing <code>:partially-open</code> will show the subitems, but
+leave the outline-item in a state where the next user gesture to
+toggle the state will again show subitems. The state of an
+outline-item may also be established by passing the
+<code>:state</code> initarg when calling <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> to create the outline-item.
+</p>
+<p id="29">
+The <a href="../s/state.htm"><b>(setf
+state)</b></a> method for an <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a> does not do certain additional
+things (that were done is earlier releases) that an interactive
+toggling of the item state might do, such as moving the keyboard focus
+to the item and scrolling the item into view. This was especially
+inefficient when programmatically setting the state of a number of
+outline-items, and could leave the focus on an arbitrary item.  An
+application can control the extra behavior with calls to the setf's of
+functions such as <a href="../f/focus-index.htm"><b>focus-index</b></a>, <a href="../s/selected-outline-item.htm"><b>selected-outline-item</b></a>, and a call to
+<a href="../s/set-first-visible-line.htm"><b>set-first-visible-line</b></a>.
+</p>
+
+
+
+
+<hr><p id="30"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/state.htm">9.0 version</a></td></tr></table></body></html>

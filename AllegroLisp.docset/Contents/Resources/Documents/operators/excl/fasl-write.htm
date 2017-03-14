@@ -1,0 +1,82 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>fasl-write</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/fasl-write.htm">9.0 version</a></td></tr></table><h2 id="2">fasl-write</h2>
+
+<p id="3"><b>Arguments: </b><i>data stream </i> &amp;optional <i>*fasl-circle* *compile-verbose*</i></p>
+
+<p id="4"><a href="fasl-write.htm"><b>fasl-write</b></a> writes coded
+data that can be loaded later to recreate a Lisp data value. The
+function's return value is unspecified. The coded data written to the
+file is independent of the value of 
+<a href="../../../ansicl/dictentr/package.htm"><code>*package*</code></a> when
+<a href="fasl-write.htm"><b>fasl-write</b></a> is called. The
+compiler must be in the image executing the <a href="fasl-write.htm"><b>fasl-write</b></a>. A file written by <a href="fasl-write.htm"><b>fasl-write</b></a> can be read by <a href="fasl-read.htm"><b>fasl-read</b></a>.</p>
+
+<p id="5">The data argument specifies the data item to be written. It can be
+any Lisp value built from the following data types: cons cells,
+hashtables, symbols, numbers (integers, floats, ratios, complexes),
+characters, strings, structures, vectors and arrays (simple or
+non-simple, general or specialized), and functions.</p>
+
+<p id="6">The data cannot at this time include CLOS objects, streams, stacks,
+or c-allocated data (cstructs).</p>
+
+<p id="7">The value of the <i>stream</i> argument must be a
+string naming the file to be written or an open output stream with
+element-type (unsigned-byte 8) or one opened by <a href="fasl-open.htm"><b>fasl-open</b></a>. If a string is supplied then a file
+with this name will be opened, with option <code>:if-exists</code>
+<code>:supersede</code>. If a stream is supplied, then <a href="fasl-write.htm"><b>fasl-write</b></a> will put the coded form
+of the data argument in the stream without performing open or close
+operations. This allows writing several data values to a file so that
+all can be read later.</p>
+
+<p id="8">The <i>fasl-circle</i> argument specifies whether
+shared or circular structures should be handled. If this argument is
+passed and is <code>nil</code>, then <a href="fasl-write.htm"><b>fasl-write</b></a> will perform no checking for
+circular or shared structure. If it is passed and is
+true, then checking will be done. If it is
+omitted, then the value of <code>comp::*fasl-circle*</code> determines
+whether checking is to be done, a true value of
+<code>comp::*fasl-circle*</code> forcing the check for shared/circular
+structure. Note that <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a>-ness
+of uninterned symbols within the data object is maintained even if the
+<i>fasl-circle</i> argument does not cause general
+checking for sharing. When the data object is subsequently read in,
+new instances of the uninterned symbols will be created, but only one
+new uninterned symbol will be created for each distinct uninterned
+symbol in the data.
+</p>
+
+<p id="9">
+Note that structure sharing cannot be maintained across separate
+calls to <a href="fasl-write.htm"><b>fasl-write</b></a>.
+</p>
+<h3 id="10">
+Version warning: a fasl file from one version of Allegro CL is usually
+unreadable in another
+</h3>
+<p id="11">
+The fasl file format often changes in new releases and in general,
+fasl files written by a release will <b>not</b> be readable in a later
+release. Therefore, all data written to a fasl file should also be
+available in another readable format (such as a text file). The
+purpose of the fasl reader/writer is to allow faster data storage and
+retrieval in a single Allegro CL release on a single platform (fasl
+files written on one platform also may not be readable on
+another). Long term data storage should be in a generally readable
+format.
+</p>
+<h3 id="12">
+Application note
+</h3>
+<p id="13">
+<a href="fasl-read.htm"><b>fasl-read</b></a> and <a href="fasl-write.htm"><b>fasl-write</b></a> require the compiler so
+they are not available in application images without the compiler.
+</p>
+<p id="14">
+See <a href="../../miscellaneous.htm#fasl-read-write-1">The fasl
+reader/writer</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a> for
+more information on <a href="fasl-read.htm"><b>fasl-read</b></a> and <a href="fasl-write.htm"><b>fasl-write</b></a>.
+</p>
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/fasl-write.htm">9.0 version</a></td></tr></table></body></html>

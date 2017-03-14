@@ -1,0 +1,154 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>eol-convention</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/eol-convention.htm">9.0 version</a></td></tr></table><h2 id="2">eol-convention</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream 
+</i></p>
+
+
+
+<p id="4">
+This function queries the <i>stream</i>'s
+external-format to obtain information on the end-of-line convention
+being used. It returns two values: a symbol indicating the end-of-line
+convention and an external-format.
+</p>
+<p id="5">
+The first returned value is one of the following values:
+</p>
+<ul>
+<li id="6">
+<b><code>:dos</code></b>: <i>stream</i>'s external
+format is a composed external format with a DOS-style end-of-line
+convention (carriage-return linefeed at the end of each line).
+</li>
+<li id="7">
+<b><code>:mac</code></b>: <i>stream</i>'s external
+format is a composed external format with a Macintosh-style
+end-of-line convention (carriage-return but no linefeed at the end of
+each line).
+</li>
+<li id="8">
+<b><code>:unix</code></b>: <i>stream</i>'s
+external format is not a composed external format and has a UNIX-style
+end-of-line convention (linefeed but no carriage return).
+</li>
+
+<li id="9">
+<b><code>:anynl-unix</code></b>: on input, any convention
+(dos-style carriage-return linefeed, unix-style linefeed and mac-style
+carriage-return) is correctly read and converted to a Lisp
+<code>#\newline</code>. On output, <code>#\newline</code>s
+are converted to linefeed (unix-style).
+</li>
+<li id="10">
+<b><code>:anynl-dos</code></b>: on input, any convention
+(dos-style carriage-return linefeed, unix-style linefeed and mac-style
+carriage-return) is correctly read and converted to a Lisp
+<code>#\newline</code>. On output, <code>#\newline</code>s
+are converted to carriage-return linefeed (dos-style).
+</li>
+<li id="11">
+<b><code>:anynl-mac</code></b>: on input, any convention
+(dos-style carriage-return linefeed, unix-style linefeed and mac-style
+carriage-return) is correctly read and converted to a Lisp
+<code>#\newline</code>. On output, <code>#\newline</code>s
+are converted to carriage-return (mac-style).
+</li>
+
+</ul>
+<p id="12">
+The nature of the second returned value depends on whether
+<i>stream</i>'s external format is or is not a
+composed external format. If <i>stream</i>'s external
+format is not a composed external format (i.e. the first returned
+value is <code>:unix</code>), <i>stream</i>'s
+external format is returned as the second returned value. If
+<i>stream</i>'s external format is a composed external
+format, the second returned value is the composee (which translates
+Lisp characters to octets) external format. This allows easy
+construction of a new composed external format based on
+<i>stream</i>'s, if desired. Composed external formats
+are described in <a href="../../iacl.htm#composed-efs-3">Composed External-Formats</a>.
+</p>
+
+
+<p id="13">
+You can change the end-of-line convention using <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> and this function. Specify one of the
+keywords specified above as the first return value or specify the
+keyword <b><code>:anynl</code></b>. When you specify
+<code>:anynl</code>, no change is made if the first return value
+is <code>:anynl-unix</code>, <code>:anynl-dos</code>, or
+<code>:anynl-mac</code>, and <code>:unix</code> is changed
+to <code>:anynl-unix</code>, <code>:dos</code> is changed
+to <code>:anynl-dos</code>, and <code>:mac</code> is
+changed to <code>:anynl-mac</code> (and the second returned value
+is changed appropriately).
+</p>
+<p id="14">
+The <code>:anynl</code> value allows you to have streams read
+files using any standard end of line convention while still writing
+files using the machine-appropriate convention. This makes importing
+files for input much easier.
+</p>
+<h4 id="15">
+Modifying the external format of a stream
+</h4>
+
+<p id="16">
+The <a href="eol-convention.htm"><b>eol-convention</b></a> of a
+stream may be modified if you explicitly set the external format of a
+stream and so you may have to reset the <a href="eol-convention.htm"><b>eol-convention</b></a> to the desired value.
+</p>
+
+<h3 id="17">
+Examples
+</h3>
+
+<pre id="18">
+[On Windows]
+ (setq s (open &quot;c:/autoexec.bat&quot;)) -&gt; stream
+ 
+ ;; The stream is currently set to read/write Ascii 13 followed by Ascii 10
+ ;; as/for #\newline.
+ (eol-convention s) -&gt; :dos #&lt;external-format ...&gt;
+ 
+ ;; Set the stream so that it reads/writes Ascii 13 as/for #\newline
+ (setf (eol-convention s) :mac) -&gt; :mac #&lt;external-format ...&gt;
+
+ ;; Set the stream so that it reads/writes Ascii 10 as/for #\newline
+ (setf (eol-convention s) :unix) -&gt; :unix #&lt;external-format ...&gt;
+
+ [On Unix]
+ (setq s (open &quot;/etc/passwd&quot;))
+
+ ;; The stream is currently set to read/write Ascii 10 as/for #\newline
+ (eol-convention s) -&gt; :unix #&lt;external-format ...&gt;
+
+ ;; Set the stream so that it reads/writes Ascii 13 followed by
+ ;; Ascii 10 as/for #\newline.
+ (setf (eol-convention s) :dos) -&gt; :dos #&lt;external-format ...&gt;
+ 
+ ;; Set the stream so that it reads/writes Ascii 13 as/for #\newline
+ (setf (eol-convention s) :mac) -&gt; :mac #&lt;external-format ...&gt;
+
+
+ ;; Set the stream so that it reads any standard end of line
+ ;; and writes Ascii 13 for #\newline
+ (setf (eol-convention s) :anynl-mac) -&gt; :anynl-mac #&lt;external-format ...&gt;
+
+ ;; Set the stream to the UNIX default
+ (setf (eol-convention s) :unix)
+ ;; Set the stream so that it reads any standard end of line
+ ;; and writes Ascii 10 for #\newline
+ (setf (eol-convention s) :anynl) -&gt; :anynl-unix #&lt;external-format ...&gt;
+
+</pre>
+
+<p id="19">
+See also <a href="../../iacl.htm#newline-1">#\newline
+discussion</a>.
+</p>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/eol-convention.htm">9.0 version</a></td></tr></table></body></html>

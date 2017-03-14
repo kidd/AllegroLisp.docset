@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>test-error</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: util.test</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/util.test/test-error.htm">9.0 version</a></td></tr></table><h2 id="2">test-error</h2>
+
+<p id="3"><b>Arguments: </b><i>
+form
+</i>&amp;key <i>announce catch-breaks fail-info known-failure</i> (<i>condition-type</i> (quote simple-error))<i> include-subtypes format-control format-arguments</i><i>
+</i></p>
+
+<p id="4">
+Test that <i>form</i> signals an error. The order of
+evaluation of the arguments is keywords first, then
+<i>form</i>.  
+</p>
+<p id="5">
+If <i>announce</i> is non-nil, then cause the error
+message to be printed.
+</p>
+<p id="6">
+If the <i>catch-breaks</i> is non-nil then consider a
+call to <strong>common-lisp:break</strong> an error.
+</p>
+<p id="7">
+The value of the <i>fail-info</i> argument should be nil
+or a string. If a string, it is printed if the test fails, providing
+more information with a test failure. (Typical strings are
+"bug2127" and "can fail when network is slow".)
+</p>
+  
+<p id="8">
+<i>known-failure</i> if true,
+affects what is printed when the test fails or succeeds. Thus a
+failure is reported as "Test failed: known failure: ..." and
+a success as "Expected test failure for [...] did not
+occur."
+</p>
+  
+<p id="9">
+The value of <i>condition-type</i> must be a symbol
+naming a condition type (nil is not an acceptable value). The
+condition type is used to check against the signaled condition
+type. The test will fail if they do not match. <strong>Note</strong>:
+the default is <a href="../../../ansicl/dictentr/simple-e.htm"><code>simple-error</code></a>
+so if this argument is unspecified, the test will fail if an error
+that is not a <a href="../../../ansicl/dictentr/simple-e.htm"><code>simple-error</code></a>
+is signaled. If you want any error, specify the value of this argument
+<a href="../../../ansicl/dictentr/error.htm"><code>error</code></a> and
+the value of <i>include-subtypes</i> t.
+</p>
+  
+<p id="10">
+<i>include-subtypes</i>, used with
+<i>condition-type</i>, can be used to match a condition
+to an entire subclass of the condition type hierarchy.
+</p>
+<p id="11">
+<i>format-control</i> and
+<i>format-arguments</i> can be used to check the error
+message itself. The comparison is done with <strong>equal</strong>.
+</p>
+
+<p id="12">
+See <a href="../../test-harness.htm">test-harness.htm</a> for information on the Allegro
+CL test harness.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/util.test/test-error.htm">9.0 version</a></td></tr></table></body></html>

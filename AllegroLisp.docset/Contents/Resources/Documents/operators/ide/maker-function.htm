@@ -1,0 +1,123 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>maker-function</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/maker-function.htm">9.0 version</a></td></tr></table><h2 id="2">maker-function</h2>
+
+<p id="3"><b>Arguments: </b><i>
+module
+</i></p>
+
+<p id="4">
+When an application window is designed in the IDE using a form,
+several functions associated with the form/window are defined in a
+<i>.bil</i> file. The <i>.bil</i> file is
+automatically generated, so it can be examined but should not be
+edited (as the edits will be lost when the file is next generated).
+One of the functions in the <i>.bil</i> file is the
+maker function, which creates the window, and the other is the finder
+function, which finds the window (returning it, after calling the
+maker function to create it if it is not already created). See <a href="../../cg/ide-ug/ide_user_guide_4.htm">IDE User
+Guide, chapter 4: Projects</a> for more discussion on this point.
+</p>
+<p id="5">
+This function returns the name (a symbol) of the maker function
+associated with the form/window named by
+<i>module</i>. <a href="finder-function.htm"><b>finder-function</b></a> returns the name of the finder
+function. <a href="maker-function.htm"><b>maker-function</b></a> and
+<a href="finder-function.htm"><b>finder-function</b></a> may be called
+only in the IDE, where the projects facility exists.  Application code
+should instead directly call the functions that are returned by
+<a href="maker-function.htm"><b>maker-function</b></a> and/or <a href="finder-function.htm"><b>finder-function</b></a>, and you can
+determine the names of these functions based on a form's name, as
+described below. So there is usually no need to use these functions,
+though they may be useful in utility code that you might write for use
+in the IDE.  A related function that may be called in a standalone
+application is <a href="../cg/m/main-window-maker.htm"><b>main-window-maker</b></a>.
+</p>
+<p id="6">
+<i>module</i> should be the module associated with the
+form. You get the module object by calling <a href="find-module.htm"><b>find-module</b></a> with arguments the
+project containing the form and the form name. Form/window names
+are typically keywords. When a new form is displayed in the IDE, to be
+used to design an application window, its name is something like
+<code>:form6</code>. The programmer typically changes the name
+to something more meaningful for the application, such as
+<code>:curve-dialog</code> (to use an example from the tutorial).
+</p>
+<p id="7">
+The names of the finder function and the maker function are determined
+by the following rules:
+</p>
+<p id="8">
+The name of the finder function is a symbol
+with the same name as the form but in the package of the project (more
+precisely, the package of the form, but that is typically the same as
+the project package). Therefore, if the form is named
+<code>:form6</code> and the package is
+<code>my-package</code>, the finder function is named
+<code>my-package::form6</code>. Assuming the project containing
+the form is the current project,
+</p>
+<pre id="9">
+(ide:finder-function (find-module (current-project) :form6) )
+  -&gt; my-package::form6
+</pre>
+<p id="10">
+If the name of the form is <code>:curve-dialog</code> and the
+package is <code>common-graphics-user</code>, then if <a href="finder-function.htm"><b>finder-function</b></a> is called
+with the <code>:curve-dialog</code> module as an argument, it
+returns the symbol
+<code>common-graphics-user::curve-dialog</code>.
+</p>
+<p id="11">
+The name of the maker function is the finder function's name with
+<code>make-</code> prepended,
+<code>my-package::make-form6</code> and
+<code>common-graphics-user::make-curve-dialog</code> in the examples
+above. 
+</p>
+
+<p id="12">
+The finder function (whose name is returned by <a href="finder-function.htm"><b>finder-function</b></a>) returns a window
+that has already been created from the form if one exists, otherwise
+creating (by calling the maker function) the window and returning it.
+The maker function (whose name is returned by <a href="maker-function.htm"><b>maker-function</b></a>) always
+creates a new window and returns it. 
+</p>
+<p id="13">
+The finder function takes no arguments, and always creates the window
+(when it does create one) as a non-owned top-level window with the
+properties that were specified at design time.
+</p>
+<p id="14">
+The maker function, on the other hand, has a number of keyword
+arguments that allow creation of the window as an owned or child
+window of any other window and with a custom position, size, name,
+title, and/or border. The names of the maker function's keyword
+arguments are <i>owner</i>,
+<i>child-p</i>, <i>exterior</i>,
+<i>interior</i>, <i>name</i>,
+<i>title</i>, and <i>border</i>. These
+arguments have the same meanings as they do with the function <a href="../cg/m/make-window.htm"><b>make-window</b></a>. The new
+in 8.0 <i>interior</i> argument is provided with a
+default value (the size of the interior of the form used to design the
+window). The <i>exterior</i> has no default value.
+The <i>interior</i> argument is provided with a
+default value (the size of the interior of the form used to design the
+window). The <i>exterior</i> has no default value.
+</p>
+
+
+<p id="15">
+If the arguments that are supplied with a <a href="maker-function.htm"><b>maker-function</b></a> are not adequate for creating
+the window in the desired way at run time (because the <a href="maker-function.htm"><b>maker-function</b></a> does not have all of
+the arguments of <a href="../cg/m/make-window.htm"><b>make-window</b></a>), a solution is to
+change the <a href="../cg/s/state.htm"><b>state</b></a>
+property of the form to <code>:shrunk</code> so that the window
+is not yet visible when it is created.  Then at run time you can
+modify the window after calling the <a href="maker-function.htm"><b>maker-function</b></a> to create it, and then call
+<a href="../cg/s/state.htm"><b>(setf
+state)</b></a> to set the window's state to
+<code>:normal</code> when it is ready to be seen.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/maker-function.htm">9.0 version</a></td></tr></table></body></html>

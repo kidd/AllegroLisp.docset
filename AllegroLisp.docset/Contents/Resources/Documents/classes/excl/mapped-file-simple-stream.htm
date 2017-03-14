@@ -1,0 +1,161 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>mapped-file-simple-stream</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/excl/mapped-file-simple-stream.htm">9.0 version</a></td></tr></table><h2 id="2">mapped-file-simple-stream</h2>
+
+<p id="3">
+This <a href="simple-stream.htm"><code>simple-stream</code></a> subclass
+is a subclass of both <a href="file-simple-stream.htm"><code>file-simple-stream</code></a> and <a href="direct-simple-stream.htm"><code>direct-simple-stream</code></a>. Similar to
+<a href="file-simple-stream.htm"><code>file-simple-stream</code></a> but
+opening a mapped file allows for much faster access to the file, with
+much less kernel overhead. Note: most operating systems do not allow
+the automatic extension of mapped files, so this class does not allow
+the extending operation either. Writes beyond the end of the file may
+cause an error.
+</p>
+<p id="4">
+A mapped file must be a simple-stream which has 
+<b><code>:mapped t</code></b> specified to the operator (like
+to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a>) which creates the
+stream. Recall that a simple stream is created when the <b>:element-type</b>
+is not specified (see the
+beginning of <a href="../../streams.htm">streams.htm</a>).
+The <b><i>direction</i></b> argument
+to <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> should be
+<code>:input</code> or <code>:io</code>. The file should
+have permissions consistent with the value specified
+to <i>direction</i>: if <code>:input</code> is
+specified, the file must be readable; if <code>:io</code> is
+specified, it must be both readable and writable.
+</p>
+
+<p id="5">
+ The handle of a
+mapped file can be released at stream creation time if the
+option <code>:release-handle t</code> is
+specified. <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> will then
+return a stream which has been mapped to a file but for which the file
+number (the handle) has been closed.  The mapping is not removed, but
+the file handle is made available for use in other file stream
+situations. The mapping is removed when <a href="../../../ansicl/dictentr/close.htm"><b>cl:close</b></a> is called on the stream.
+</p>
+
+
+
+<p id="6">
+After a <a href="mapped-file-simple-stream.htm"><code>mapped-file-simple-stream</code></a> is opened, the value
+returned by calling <a href="../../operators/excl/mapped-file-simple-stream-buffer.htm"><b>mapped-file-simple-stream-buffer</b></a> on the
+stream is an aligned pointer (see
+the section <a href="../../ftype.htm#aligned-pointers-1">Aligned
+pointers</a> in <a href="../../ftype.htm">ftype.htm</a>) which can
+be used with any accessors that support aligned pointers,
+e.g. <a href="../../operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a> with
+an <code>:aligned</code> allocation.
+</p>
+
+<p id="7">
+The options when creating an instance of this class are:
+</p>
+<ul>
+<li id="8">
+
+<b><i>filename</i></b> (required)
+
+</li>
+<li id="9">
+
+<b><i>direction</i></b> (defaults to :input)
+
+</li>
+<li id="10">
+
+<b><i>if-exists</i></b>
+
+</li>
+<li id="11">
+
+<b><i>if-does-not-exist</i></b>
+
+</li>
+<li id="12">
+
+<b><i>external-format</i></b> (defaults to :default)
+
+</li>
+<li id="13">
+
+<b><i>input-handle</i></b>
+
+</li>
+<li id="14">
+
+<b><i>output-handle</i></b>
+
+</li>
+
+<li id="15">
+<b><i>release-handle</i></b>: releases the handle of a
+mapped file. The mapping is not removed, but the file handle is made
+available for use in other file stream situations.
+</li>
+
+<li id="16">
+
+<b><i>mapped</i></b>
+
+</li>
+
+<li id="17">
+
+<b><i>length</i></b> (the length of the mapping)
+
+</li>
+<li id="18">
+
+<b><i>offset</i></b> (the number of bytes beyond the
+start of the file where the mapping begins)
+
+</li>
+
+
+<li id="19">
+
+<b><i>fn-in</i></b> (another name for the input-handle,
+for compatibility only, do not specify both)
+
+</li>
+<li id="20">
+
+<i>fn-out</i> (another name
+for the output handle, for compatibility
+only, do not specify both)
+
+</li>
+</ul>
+
+<p id="21">
+See <a href="../../operators/excl/device-open.htm"><b>device-open</b></a> for a
+description of the <i>input-handle</i>,
+<i>output-handle</i>, and <i>mapped</i>
+options.
+</p>
+
+<p id="22">
+For the <i>offset</i> and <i>length</i>
+arguments, no attempt is made to validate their values; they are
+passed to the underlying mapping implementation.
+For <i>offset</i> the system is likely to require a page
+alignment; the mapping may fail if the offset is not some multiple of
+a page size, typically 4096. For <i>length</i> page
+alignment may be needed here as well but that is less likely. Often
+the <i>length</i> argument is more lax, because the
+system simply rounds that argument up to the next page boundary.  If
+the length is not page aligned, however, it would be dangerous to use
+any memory between the length and the page boundary.
+</p>
+
+<p id="23">
+See <a href="../../streams.htm">streams.htm</a> for general information on
+simple-streams in Allegro CL.
+</p>
+
+<hr><p id="24"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/excl/mapped-file-simple-stream.htm">9.0 version</a></td></tr></table></body></html>

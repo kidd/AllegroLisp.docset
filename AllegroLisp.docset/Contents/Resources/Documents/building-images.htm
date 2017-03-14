@@ -1,0 +1,1944 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Building Images</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/building-images.htm">9.0 version</a></td></tr></table><h1 id="2">Building Images</h1><p id="3">This document contains the following sections:</p><a href="#comparison-with-dumplisp-1">1.0 Comparison with excl:dumplisp</a><br><a href="#comparison-with-generate-application-1">2.0 Comparison with excl:generate-application</a><br><a href="#build-lisp-image-template-1">3.0 The template of a call to build-lisp-image</a><br>&nbsp;&nbsp;&nbsp;<a href="#char-size-2">3.1 The character size in the resulting image</a><br><a href="#arguments-with-inherited-defaults-1">4.0 Arguments to build-lisp-image 1: defaults inherited from the running image</a><br><a href="#arguments-without-inherited-defaults-1">5.0 Arguments to build-lisp-image 2: defaults not inherited from the running image</a><br><a href="#arguments-with-environment-defaults-1">6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a><br><a href="#build-debug-1">7.0 Debugging an image build problem or failure</a><br><a href="#custom-dot-cl-1">8.0 Use of custom.cl</a><br><a href="#image-with-patches-1">9.0 Building an image to include patches</a><br><a href="#minimal-top-levels-1">10.0 Minimal top levels</a><br>&nbsp;&nbsp;&nbsp;<a href="#default-minimal-top-level-2">10.1 Using the default minimal top-level</a><br>&nbsp;&nbsp;&nbsp;<a href="#requiring-normal-tpl-2">10.2 Requiring the normal top-level in a minimal top-level lisp</a><br>&nbsp;&nbsp;&nbsp;<a href="#tpl-vars-2">10.3 Top-level variables</a><br><p id="4">There are many links to <a href="operators/excl/build-lisp-image.htm"><b>excl:build-lisp-image</b></a> in this document. In fact,
+essentially all relevant information about <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> is contained in this
+document.</p><p id="5">The function <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> can be used to create a new
+image (<em>dxl</em>) file. This will be a fresh image, fresh in the
+sense that it inherits little from the running image (only values of
+certain global variables used as argument defaults). Typical reasons
+for building images with <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> include:</p><blockquote>
+  <ul>
+    <li id="6">Building a new image that includes patches.</li>
+    <li id="7">Building a custom image which includes local functionality or with locally-desired
+      initializations.</li>
+  </ul>
+</blockquote><p id="8"><a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> is a
+lisp function, so it is called from a running Lisp. We distinguish
+between the image which calls <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>, the <i><b>running
+image</b></i>, from the image being created, the <i><b>new
+image</b></i>.</p><p id="9"><a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> spawns a
+separate process. On Windows, a "Create image" window displays information about
+the build process (you may have to expose this window). On Unix, information is printed to
+the listener. You will see many prompts: do not attempt to type to them. </p><hr><hr><h2 id="10"><a name="comparison-with-dumplisp-1">1.0 Comparison with excl:dumplisp</a></h2>
+
+<p id="11">Images can also be created with <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a>, as described in the documentation
+for that function and in the document
+<a href="dumplisp.htm">dumplisp.htm</a>. An image created by
+<b>excl:dumplisp</b> is essentially a copy of the currently running
+image, with all loaded functionality included and all values of
+variables preserved. In contrast, <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> spawns a separate process
+which builds a new image out of constituent parts. The currently
+running image supplies only default values for certain arguments. The
+new image does not capture loaded or newly-defined functionality of
+the running image (thus, if the function <strong>user::foo</strong> is
+defined in the currently running image, it will not be defined in the
+new image created by <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>).</p>
+
+<p id="12">This is why <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+can be used to create a new image with new patches. Patches in the
+currently running image are not captured by the newly created
+image. Instead (as described below), patch files are built into the
+newly created image but the patches in the current image are not
+involved.</p>
+
+<p id="13">Note that <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+calls <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> in
+the spawned process. All arguments accepted by <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> are also
+accepted by <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+except the <em>name</em> argument (which is accepted but ignored since
+the required argument to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+specifies the new image name).</p>
+
+<hr><hr><h2 id="14"><a name="comparison-with-generate-application-1">2.0 Comparison with excl:generate-application</a></h2>
+
+<p id="15"><a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+itself calls <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>.
+<strong>generate-application</strong> is designed to produce a
+directory of files suitable for shipping to another machine or site
+(note that you must be licensed to distribute software built in
+Allegro CL -- contact your Franz Inc. account manager if you are
+unsure of licensing terms). In contrast, <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> builds a single image file
+only. See the description of <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> and the document 
+<a href="delivery.htm">delivery.htm</a>.</p>
+
+<hr><hr><h2 id="16"><a name="build-lisp-image-template-1">3.0 The template of a call to build-lisp-image</a></h2>
+
+<p id="17">The "BUILD" module must be loaded for <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> to work (that is,
+"BUILD" should be on the <a href="../ansicl/dictentr/modules.htm"><code>*modules*</code></a> list). It will be loaded automatically
+when <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> is
+called. You can force loading of the module by evaluating</p>
+
+<pre id="18">
+(require :build)
+</pre>
+
+<p id="19"><a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> takes
+one required and many keyword arguments. The required argument must be
+a string naming a file, with or without path information. If no path
+information is specified, the image file will be placed in the current
+directory (as returned by <a href="operators/excl/current-directory.htm"><b>current-directory</b></a>). If relative path
+information is supplied, it will be resolved relative to the current
+directory. The image file name must have an extension (type). If it
+does not, it will not be found when Lisp is started. The standard
+extension (type) of an image file is <i>.dxl</i> but any extension
+will do. Note that on Windows machines, <em>.dxl</em> is registered
+and associated with Allegro CL, so double-clicking on a <em>dxl</em>
+file (in the Windows Explorer, say) executes <strong>mlisp.exe</strong>
+with `-I [that file].dxl' as arguments. When <em>mlisp.exe</em>
+is called without an image specified with -I, it looks for an
+image (<em>dxl</em>) file with the same name (i.e. <em>mlisp</em>) and
+in the same directory. You can copy <strong>mlisp.exe</strong> to
+[anything else]<em>.exe</em> if you want it to find a different
+image file named [anything else].<em>dxl</em> automatically.
+</p>
+
+<p id="20">Here is the template for a call to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>:</p>
+
+<pre id="21">
+     (excl:build-lisp-image <em>image-file</em>
+                            <em> ...keyword/value pairs... 
+                             ...dumplisp-keyword/value pairs...)</em>
+</pre>
+
+<hr><h2 id="22"><a name="char-size-2">3.1 The character size in the resulting image</a></h2>
+
+<p id="23">
+Allegro CL supports two character sizes: 16-bit and 8-bit. Thus
+images and executables either use 16-bit characters or 8-bit
+characters. No image or executable supports characters of both
+sizes. See <a href="iacl.htm">iacl.htm</a> for information on character
+sizes in Allegro CL.
+</p>
+<p id="24">
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> creates a
+16-bit character or an 8-bit character image as the new image is
+created using a 16-bit executable (<i>mlisp</i> and
+<i>alisp</i> on UNIX, <i>mlisp.exe</i> and
+<i>alisp.exe</i> on Windows) or an 8-bit executable
+(<i>mlisp8</i> and <i>alisp8</i> on UNIX,
+<i>mlisp8.exe</i> and <i>alisp8.exe</i> on
+Windows). The <i>build-executable</i> keyword argument
+to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+specifies the executable that will be used to create the new
+image. The value of that argument defaults to the executable used to
+start the running image.
+</p>
+<p id="25">
+Therefore, if you want the character size of the new image to be the
+same as the character size in the running image, you need not specify
+a value for the <i>build-executable</i> keyword
+argument. If you want a different character size, specify an
+appropriate executable as the value of that argument.
+</p>
+<p id="26">
+For example, if you are running a 16-bit character size image and you
+want to build an 8-bit character size image, call <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> like this:
+</p>
+<pre id="27">
+(build-lisp-image &quot;my-image.dxl&quot;
+   :build-executable &quot;mlisp8&quot; ;; On Windows &quot;mlisp8.exe&quot;
+   ;; &lt; other keyword arguments and values &gt;
+  )
+</pre>
+<p id="28">
+(That call also works if you are running an 8-bit executable already,
+of course.)
+</p>
+<p id="29">
+For example, if you are running an 8-bit character size image and you
+want to build a 16-bit character size image, call <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> like this:
+</p>
+<pre id="30">
+(build-lisp-image &quot;my-image.dxl&quot;
+   :build-executable &quot;mlisp&quot;  ;; On Windows &quot;mlisp.exe&quot;
+   ;; &lt; other keyword arguments and values &gt;
+  )
+</pre>
+<p id="31">
+(That call also works if you are running a 16-bit executable already,
+of course.)
+</p>
+<p id="32">
+<b>Note:</b> Unless you have created your own executable (which is
+uncommon, but see <a href="main.htm">main.htm</a>, all 16-bit character
+size executables are identical and all 8-bit character size executables
+are identical. Therefore, any executable of the correct character size
+may be specified.
+</p>
+
+
+<hr><hr><h2 id="33"><a name="arguments-with-inherited-defaults-1">4.0 Arguments to build-lisp-image 1: defaults inherited from the running image</a></h2>
+
+<p id="34">Certain defaults for keyword arguments to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> are inherited from the
+currently running image. It is important to understand that these
+inheritances are the only effect that values in the currently running
+image have on the new image being built. </p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><strong>Argument</strong></td>
+    <td WIDTH="25%" VALIGN="TOP"><strong>Default</strong></td>
+    <td WIDTH="43%" VALIGN="TOP"><strong>Description</strong></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:case-mode</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_current-case-mode_s.htm"><code>*current-case-mode*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="35">Sets the case mode of the new Lisp
+    image. The default is the case mode of the running image. The value can be one of.</p><ul><li id="36"><code>:case-sensitive-lower</code> (the Modern Common Lisp value)</li>
+    <li id="37"><code>:case-insensitive-lower</code></li>
+    <li id="38"><code>:case-insensitive-upper</code> (the standard Common Lisp value)</li></ul></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:dst</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><a href="variables/excl/s_daylight-saving-time-observed_s.htm"><code>*daylight-saving-time-observed*</code></a></td>
+    <td WIDTH="52%" VALIGN="TOP">Controls daylight savings time inclusion in time
+    computations. If <code>t</code>, United States Daylight Savings Time schedules are
+    used. If <code>nil</code>, daylight savings time is assumed to never be in force. There is
+    no direct support for non-United States schedules. Users outside the United States can
+    contact Franz Inc. technical support (<a href="mailto:support@franz.com">support@franz.com</a>)
+    for assistance in implementing a different schedule.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-clim</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><code>t</code> if clim is in the currently
+    running image, <code>nil</code> if it is not.</td>
+    <td WIDTH="52%" VALIGN="TOP">When true,
+    include CLIM in the resulting image.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-common-graphics</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><strong>This argument is no longer supported.</strong></td>
+    <td WIDTH="52%" VALIGN="TOP">Windows only.  If you are building a
+    development image, specify <code>:include-ide</code> true and Common Graphics and the IDE
+    will be in the image. If building an application image, use the project system in the IDE.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-compiler</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><p id="39"><code>t</code> if the compiler is in the
+    currently running image, <code>nil</code> if it is not.
+    </p>
+    <p id="40">When building a standard runtime
+    image (i.e. when the <code>:runtime</code> argument 
+    (in the next table) is specified <code>:standard</code> 
+    and you are calling
+   <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, not
+   <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>),
+    the compiler cannot be in the image created. Thus, either this 
+    argument must be specified <code>nil</code>
+    or both this argument and <code>:discard-compiler</code> must be specified <code>t</code>.</p></td>
+    <td WIDTH="52%" VALIGN="TOP"><p id="41">When true, include the compiler
+    as the resulting image is being built.  Whether the compiler is in the built image
+    depends on the value of the <code>:discard-compiler</code> argument. </p>
+    <p id="42">When <code>nil</code>,
+    the compiler will not be available at any point during the image building process or in
+    the built image. </p>
+    <p id="43">See the <code>:discard-compiler</code> option in the next table.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-composer</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><code>t</code> if Allegro Composer is in the
+    currently running image, <code>nil</code> if it is not.</td>
+    <td WIDTH="52%" VALIGN="TOP">UNIX only.  When true,
+    include Composer in the resulting image.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-debugger</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="52%" VALIGN="TOP"><p id="44">(The default for this argument is not inherited
+    from the running image, so this argument belongs in the next table. It is repeated here to
+    be with the other <code>:include-*</code> arguments.)</p>
+    <p id="45">When true, include
+    the debugger in the resulting image.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-devel-env</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><code>t</code> if the development environment is
+    in the currently running image (i.e. <code>:develenv</code> is on the <a href="../ansicl/dictentr/modules.htm"><code>*modules*</code></a>
+    list), <code>nil</code> if it is not.</td>
+    <td WIDTH="52%" VALIGN="TOP">When true, include the
+    non-graphical development environment in the resulting image. The file <em>sys:;develenv.cl</em>
+    (i.e. <em>develenv.cl</em> in the Allegro directory) lists the modules (as arguments to <a href="../ansicl/dictentr/provider.htm"><b>require</b></a>)
+    that make up the development environment. This argument must be specified 
+    <code>nil</code> when <code>:runtime</code> is true since
+    some modules are not allowed in a runtime image.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-ide</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><code>t</code> if the IDE is in the currently
+    running image, <code>nil</code> if it is not.</td>
+    <td WIDTH="52%" VALIGN="TOP">Windows only.  When true,
+    include the graphical development environment in the resulting image.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-tpl</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><code>t</code> if the top level is in the
+    currently running image, <code>nil</code> if it is not.</td>
+    <td WIDTH="52%" VALIGN="TOP">When true, include the normal
+    top-level in the resulting image. When <code>nil</code> a minimal top level, as
+    described in <a href="#minimal-top-levels-1">Section 10.0 Minimal top levels</a> below, is
+    available. Also specify <code>nil</code> when supplying your own top level.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:include-xcw</code></td>
+    <td WIDTH="16%" VALIGN="TOP"><code>t</code> if Common Windows is in the
+    currently running image, <code>nil</code> if it is not.</td>
+    <td WIDTH="52%" VALIGN="TOP">UNIX only.  When true,
+    include Common Windows in the resulting image.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:init-file-names</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_init-file-names_s.htm"><code>*init-file-names*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="46">The value should be a list of strings naming
+    files without directory information, like </p>
+    <p id="47">(".clinit.cl"
+    "clinit.cl") </p>
+    <p id="48">The directories to be searched for these files is determined at runtime (the current
+    directory and the home directory -- see <a href="startup.htm">startup.htm</a>). </p>
+    <p id="49">The default comes from the value of the indicated variable in the running image.  
+    See also <code>:read-init-files</code> below.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:load-local-names-info</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_load-local-names-info_s.htm"><code>*load-local-names-info*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP">The value of this argument serves as the default
+    value for <a href="variables/excl/s_load-local-names-info_s.htm"><code>*load-local-names-info*</code></a>
+    in the image to be built. By default, the value is inherited from the value in the running
+    image. The value can be <code>t</code> or <code>nil</code>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:load-source-file-info</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_load-source-file-info_s.htm"><code>*load-source-file-info*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP">The value of this argument serves as the default
+    value for <a href="variables/excl/s_load-source-file-info_s.htm"><code>*load-source-file-info*</code></a> in the image to be built. By default, the value is inherited from the value
+    in the running image. The value can be <code>t</code> or <code>nil</code>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:load-xref-info</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_load-xref-info_s.htm"><code>*load-xref-info*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="50">The value of this argument serves as the default
+    value for <a href="variables/excl/s_load-xref-info_s.htm"><code>*load-xref-info*</code></a> in
+    the image to be built. By default, the value is inherited from the value in the running
+    image. The value can be <code>t</code> or <code>nil</code>.</p>
+    <p id="51">When building a runtime
+    (i.e. <code>:runtime</code> is true), it is best to explicitly specify
+    this argument <code>nil</code>.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:pll-file</code></td>
+    <td WIDTH="25%" VALIGN="TOP">(<a href="operators/excl/pll-file.htm"><b>pll-file</b></a>)</td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="52">The value can be a string naming an existing pll
+    file or <code>nil</code>. The default is the pll file used by the running image (as
+    returned by <a href="operators/excl/pll-file.htm"><b>pll-file</b></a>). If <code>nil</code>,
+    no pll file will be used by the new image. Instead, data that would be placed in the pll
+    file (code vectors and string constants) are placed in the Lisp heap.</p>
+    <p id="53">If the value has
+    no directory information (i.e. is just a filename or a filename and a file type), the pll
+    file will be looked for on startup as described in the <a href="operators/excl/pll-file.htm"><b>pll-file</b></a> entry. If directory information is
+    included, that location (relative to the current directory if relative), will be looked in
+    but nowhere else. The file type defaults to <em>.pll</em> if unspecified. Note that some
+    pll files have type <em>.epll</em>.</p>
+    <p id="54">Note that build-lisp-image does not create a pll file so it is an error to specify a
+    non-existent file as the value of this argument. </p>
+    <p id="55">Pll files are created by the program <strong>cvdcvt</strong>. See the definition of
+    that program and also the discussion of pll files in <a href="miscellaneous.htm">miscellaneous.htm</a>.
+    See also <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+    and <a href="delivery.htm">delivery.htm</a>.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:print-startup-message</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_print-startup-message_s.htm"><code>*print-startup-message*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP">The value of 
+    <a href="variables/excl/s_print-startup-message_s.htm"><code>*print-startup-message*</code></a>
+    is set to the value of this keyword argument in the new image being created.</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:read-init-files</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_read-init-files_s.htm"><code>*read-init-files*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="56">Specifies the value of <a href="variables/excl/s_read-init-files_s.htm"><code>*read-init-files*</code></a> in the new
+    image. The value can be:</p>
+    <p id="57"><code>t</code>, meaning look in both the current directory and
+    the home directory for init files and load sys:siteinit.cl;</p>
+    <p id="58"><code>nil</code>, meaning read no initialization files;</p>
+    <p id="59"><code>:nohome</code>, meaning look only in the current directory and load <em>sys:siteinit.cl</em>.</p>
+    <p id="60">The default is the value of <a href="variables/excl/s_read-init-files_s.htm"><code>*read-init-files*</code></a>
+    in the running image.</p>
+    <p id="61">See the document <a href="startup.htm">startup.htm</a> for information on
+    initialization files and the meaning of the current and the home directories. See also <code>:init-file-names</code>
+    above.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:record-source-file-info</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_record-source-file-info_s.htm"><code>*record-source-file-info*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="62">The value of this argument serves as the default
+    value for <a href="variables/excl/s_record-source-file-info_s.htm"><code>*record-source-file-info*</code></a> in the image to be built. By default, the value is inherited from the value
+    in the running image.</p>
+    <p id="63">When building a runtime (i.e. <code>:runtime</code> is true),
+    it is best to explicitly specify this argument <code>nil</code>.</p></td>
+  </tr>
+<tr>
+<td WIDTH="31%" VALIGN="TOP"><code>:record-xref-info</code></td>
+<td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_record-xref-info_s.htm"><code>*record-xref-info*</code></a></td>
+<td WIDTH="43%" VALIGN="TOP">The value of this argument serves as the default
+value for <a href="variables/excl/s_record-xref-info_s.htm"><code>*record-xref-info*</code></a>
+in the image to be built. By default, the value is inherited from the value in the running
+image.</td>
+</tr>
+
+<tr>
+<td WIDTH="31%" VALIGN="TOP"><code>:require-search-list</code></td>
+<td WIDTH="25%" VALIGN="TOP">
+<a href="variables/system/s_require-search-list_s.htm"><code>*require-search-list*</code></a>
+</td>
+<td WIDTH="43%" VALIGN="TOP">
+The value of this argument serves as the default value for <a href="variables/system/s_require-search-list_s.htm"><code>*require-search-list*</code></a> in the
+image to be built. By default, the value is inherited from the value
+in the running image.
+</td>
+</tr>
+
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:restart-app-function</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP">Causes <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a> to be
+    set to this value. The value must be a symbol (it cannot be a 
+    function object). See <a href="startup.htm">startup.htm</a> or 
+    <a href="delivery.htm">delivery.htm</a>.
+    <p id="64"><b>Warning 1:</b> A function object is a legal value for 
+    <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a> but not a legal value
+    for this argument. If the value of the variable is a function object
+    and no value is specified for this argument, the build will fail.
+    </p>
+<p id="65">
+Note that in earlier versions, the value of this variable in images
+that used the IDE (on Windows) was the function that started the
+IDE. In current versions, that function is the value of the <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a>
+described next.
+</p>
+</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:restart-init-function</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="66">Causes <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> to
+    be set to this value. The value must be a symbol (it cannot be a function object). See <a href="startup.htm">startup.htm</a> or <a href="delivery.htm">delivery.htm</a>.</p>
+<p id="67">
+Note that the value of this variable on Windows in an image that
+starts the IDE, is <strong>cg:start-ide</strong>.  That value is
+likely not appropriate for an application and the build may fail if
+that value is used but necessary parts of Common Graphics code are not
+loaded into the image being built. Be sure to specify the value of
+this variable to be <code>nil</code> or to a symbol naming
+a function of your own creation (or a list defining such a function)
+when building an image from a Lisp running the IDE.
+</p>
+<p id="68">
+If no value is specified for this argument, the value will default to
+the value of <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> in the Lisp
+that's building the image.
+</p>
+<p id="69">
+<b>Warning 1:</b> In the IDE, the value of <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> is a function that
+will start the IDE.  So when building an image in the IDE, you should
+pass an explicit value for this argument unless you want the built
+image to start the IDE. You can pass <code>:restart-init-function
+nil</code> to avoid running any init function.
+</p>
+  <p id="70"><b>Warning 2:</b> A function object is a legal value for 
+    <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> but not a legal value
+    for this argument. If the value of the variable is a function object
+    and no value is specified for this argument, the build will fail.
+    </p></td>
+  </tr>
+</table>
+
+<hr><hr><h2 id="71"><a name="arguments-without-inherited-defaults-1">5.0 Arguments to build-lisp-image 2: defaults not inherited from the running image</a></h2>
+
+<p id="72">
+Most of the remaining keyword arguments are listed in the next
+table. The keyword arguments to <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> are also acceptable to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. None of these
+arguments inherit values from the currently running image.
+</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><strong>Argument</strong></td>
+    <td WIDTH="15%" VALIGN="TOP"><strong>Default value</strong></td>
+    <td WIDTH="55%" VALIGN="TOP"><strong>Description/compatibility notes</strong></td>
+  </tr>
+
+<tr>
+<a name="aclmalloc-heap-size"></a>
+<td WIDTH="30%" VALIGN="TOP"><code>:aclmalloc-heap-size</code>
+</td>
+<td WIDTH="15%" VALIGN="TOP"><code>nil</code>
+(the value can come from an
+environment variable. See
+<a href="#arguments-with-environment-defaults-1">Section 6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a>.)
+</td>
+<td WIDTH="55%" VALIGN="TOP">Allows specification of the total size of
+the ACLMALLOC heap. That is a heap separate from the Lisp heap (see
+the arguments <a href="#lisp-heap-start">:lisp-heap-start</a>
+and <a href="#lisp-heap-size">:lisp-heap-size</a>) used for aclmalloc
+areas and some static areas. See <a href="#memwin">Table note 1:
+Finding available memory addresses</a> immediately following this
+table for information on determining a suitable value for this
+argument. The value must identify a decimal
+integer. See
+<a href="#table-note-3">Table Note 3</a> for information on how to
+specify a value for this argument (in short: as an integer or as a
+string which is an integer followed by k or m, so like
+123456 or "100m").
+</td>
+</tr>
+  <tr>
+<a name="aclmalloc-heap-start"></a>
+<td WIDTH="30%" VALIGN="TOP"><code>:aclmalloc-heap-start</code></td>
+-+
+<td WIDTH="15%" VALIGN="TOP">
+<code>nil</code> (the value can come from an
+environment variable. See
+<a href="#arguments-with-environment-defaults-1">Section 6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a>.)
+</td>
+<td WIDTH="55%" VALIGN="TOP">
+Allows specification of the start of the ACLMALLOC heap. This value must be
+above the value of <a href="#lisp-heap-start">:lisp-heap-start</a>. See <a href="#memwin">Table note
+1: Finding available memory addresses</a> immediately following this
+table. The value must identify a decimal
+integer. See
+<a href="#table-note-3">Table Note 3</a> for information on how to
+specify a value for this argument (in short: as an integer or as a
+string which is an integer followed by k or m, so like
+123456 or "100m").
+
+</td>
+  </tr>
+
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:autoload-warning</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP"><p id="73">If true, 
+    then a report of autoloadable functions will be made to 
+    <em>autoloads.out</em>. If a string, it is
+    interpreted as a filename which will be used in place 
+    of <em>autoload.out</em> for the report.</p>
+
+    <p id="74">An autoloadable function is one for which the function
+    definition is in fact not present in the image. Instead,
+    instructions to load a particular file, usually a fasl file out of
+    the bundle in the Allegro directory are present.  Once the file is
+    loaded, the true function definition is used to evaluate the call
+    to the function that triggered the autoload.</p>
+
+    <p id="75">The autoloading feature is designed to keep unneeded
+    functionality from unnecessarily increasing the size of the
+    running image, but to make use of functionality transparent to
+    users. If you are building an image for use locally (say, making
+    an image with patches) this report is likely of no interest since
+    autoloading is typically transparent, as we said. If however, you
+    are creating an application, you may want to know what
+    functionality might be autoloaded since you are not permitted to
+    distribute the <em>files.bu</em> bundle file from where most
+    autoloading is done. For this reason, <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> changes the default
+    for this argument to <code>t</code>.</p> <p id="76">The format
+    of <em>autoload.out</em> is two columns, a fasl file name on the
+    left and the function that triggers its loading on the right. Some
+    files are loaded by many functions and so appear many times on the
+    left.</p>
+
+  </td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP">
+    <a name="builddebug"></a><code>:build-debug</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Value can be <code>t</code>
+    (meaning provide extra debug information, but not interactively), 
+    <code>:interactive</code> (meaning allow interactive 
+    debugging of the build),
+    and <code>nil</code> (meaning do not provide extra 
+    debug information -- this option is intended for batch builds).
+    See <a href="#build-debug-1">Section 7.0 Debugging an image build problem or failure</a>.
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP">
+    <a name="buildinput"></a><code>:build-input</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Allows specifying a file which 
+    collects the input to the spawned process. 
+    The value, if supplied, must be a
+    string naming a file or <code>t</code> (meaning use
+    the filename <i>buildin.out</i> or 
+    <code>nil</code> (meaning do not write a file). 
+    This argument was previously called 
+    <code>:internal-debug</code>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP">
+    <a name="buildoutput"></a><code>:build-output</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Allows specifying a dribble file which 
+    contains a
+    transcript of the entire process of building the image. 
+    The value, if supplied, must be a
+    string naming a file. This argument was previously called 
+    <code>:dribble-file</code>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:build-executable</code></td> 
+    <td WIDTH="15%" VALIGN="TOP">Defaults to running image
+    executable. Value, if specified, should be a string.</td> 
+    <td WIDTH="55%" VALIGN="TOP">this
+    argument specifies the name of the Lisp executable that will be
+    invoked when the process that builds the new image file is
+    spawned. Typically, you specify a value for this argument only when
+    <p id="77">(1) You want to use a custom executable built as described in
+    <a href="main.htm">main.htm</a></p> 
+    <p id="78">(2) You want a character size in the new image that is different 
+    from the character size in the running image. See 
+    <a href="#char-size-2">Section 3.1 The character size in the resulting image</a> for more information 
+    and examples.</p>
+    <p id="79">Note: if <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> is being called by
+    <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>,
+    the value of this argument is used by generate-application as
+    well. The specified executable will be the one copied to the
+    application directory. See
+    <a href="delivery.htm">delivery.htm</a>.</p></td>
+  </tr>
+
+
+<tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:c-heap-size</code>
+</td>
+<td WIDTH="15%" VALIGN="TOP"><code>nil</code>
+</td>
+<td WIDTH="55%" VALIGN="TOP">
+This is the old name
+for <b><code>:aclmalloc-heap-size</code></b>. Using this name
+will work but is deprecated. We recommend you change code to use 
+<b><code>:aclmalloc-heap-size</code></b>. See 
+<a href="#aclmalloc-heap-size">:aclmalloc-heap-size</a>
+for usage details.
+</td>
+  </tr>
+  <tr>
+<td WIDTH="30%" VALIGN="TOP"><code>:c-heap-start</code></td>
+-+
+<td WIDTH="15%" VALIGN="TOP">
+<code>nil</code>
+</td>
+<td WIDTH="55%" VALIGN="TOP">
+This is the old name
+for <b><code>:aclmalloc-heap-start</code></b>. Using this name
+will work but is deprecated. We recommend you change code to
+use <b><code>:aclmalloc-heap-start</code></b>. See 
+<a href="#aclmalloc-heap-start">:aclmalloc-heap-start</a>
+for usage details.
+</td>
+  </tr>
+
+
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:close-oldspace</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">If true,
+    reorganizes oldspace and newspace sizes just before the new image
+    is created. See 
+    <a href="#close-oldspace">Table note 2: :close-oldpace 
+    argument details</a>
+    immediately following this table for more information.</td>
+  </tr>
+
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:copy-shared-libraries</code></td>
+    <td WIDTH="15%" VALIGN="TOP"></td>
+    <td WIDTH="55%" VALIGN="TOP">See 
+    <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> 
+    and <a href="delivery.htm">delivery.htm</a>. This argument is only 
+    relevant when used with <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:debug-on-error</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><b>Unsupported, causes an error
+    if specified</b></td>
+    <td WIDTH="55%" VALIGN="TOP"> 
+    This argument is replaced by <a href="#builddebug">:build-debug</a>.
+    See <a href="#build-debug-1">Section 7.0 Debugging an image build problem or failure</a>.
+  </td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:discard-arglists</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP"><p id="80">Value can be <code>nil</code>, <code>:medium</code>,
+    and <code>t</code>.</p>
+    <p id="81"><code>nil</code> means <b>keep</b> all arglist information; </p>
+    <p id="82"><code>:medium</code> means discard actual symbols used and use dummy ones (thus
+    reducing the number of symbols in the new image at the cost of the information contained
+    in argument names);</p>
+    <p id="83"><code>t</code> means discard all arglist information.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:discard-compiler</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Allows the compiler to be discarded after the
+    input files are loaded. This might be necessary for some applications. <code>:include-compiler</code>
+    must be <code>t</code> if this argument is 
+    <code>t</code>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:discard-local-name-info</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Controls throwing away local name information
+    loaded from <em>.fasl</em> files as a result of the compiler switch 
+    <a href="variables/compiler/save-local-names-switch.htm"><code>comp:save-local-names-switch</code></a>.
+    If <code>t</code>, local name information is discarded. If <code>nil</code>, it is
+    maintained.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:discard-source-file-info</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>(null [value
+    of :load-source-file-info
+    argument])</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Controls throwing away source file
+    information.  A true value both discards source file info in the
+    image being created and causes the initial value of <a href="variables/excl/s_record-source-file-info_s.htm"><code>*record-source-file-info*</code></a>
+    and <a href="variables/excl/s_load-source-file-info_s.htm"><code>*load-source-file-info*</code></a> 
+    to be <code>nil</code>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:discard-xref-info</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>(null [value
+    of :load-xref-info
+    argument])</code></td>
+    <td WIDTH="55%" VALIGN="TOP"><p id="84">Controls throwing away of cross reference
+    information.  A true value both discards cross reference info in the
+    image being created and causes the initial value of <a href="variables/excl/s_record-xref-info_s.htm"><code>*record-xref-info*</code></a> and <a href="variables/excl/s_load-xref-info_s.htm"><code>*load-xref-info*</code></a> to be <code>nil</code>.</p>
+    <p id="85">When
+    building a runtime (i.e. <code>:runtime</code> is true), the value of this
+    argument must be <code>nil</code>. (This is counter-intuitive but since both
+    :load-xref-info and :record-xref-info must be nil, there will be no xref info to discard.)</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:dribble-file</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">This argument has been renamed 
+    <code>:build-output</code> although <code>:dribble-file</code>
+    is accepted for backwards compatibility. It is an error to specify
+    both <code>:dribble-file</code> and <code>:build-output</code>.
+    See the <a href="#buildoutput">description of :build-output</a> 
+    for details.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:exit-after-image-build</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><b>Unsupported, causes an error
+    if specified</b></td>
+    <td WIDTH="55%" VALIGN="TOP"> 
+    This argument is replaced by <i>build-debug</i>.
+    See <a href="#build-debug-1">Section 7.0 Debugging an image build problem or failure</a>.</td>
+  </tr>
+  
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:exit-on-missing-shared-library</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP"> If the value is
+  non-<code>nil</code>, then any missing shared libraries
+  implicitly reloaded when the application starts will cause the
+  application to exit with a non-zero exit status after printing an
+  appropriate error message.  
+  </td>
+  </tr>
+  
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP">
+    <a name="generatefonts"></a><code>:generate-fonts</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">UNIX only. Generate (X) fonts from server
+    specified by <a href="#servername">:server-name</a>.</td>
+  </tr>
+
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>ignore-command-line-arguments</code></td>
+   <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td> 
+   <td WIDTH="55%" VALIGN="TOP">This is actually an argument to <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> which <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> accepts and passes to
+   <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> when dumplisp is
+   called at the end of the build process.  When true, the resulting
+   image will ignore command-line arguments prefixed by a dash
+   (<code>-</code>). Command-line
+   arguments prefixed by a <code>+</code> (used on Windows only)
+   are never ignored. See <a href="startup.htm#command-line-args-1">Command line arguments</a> in
+   <a href="startup.htm">startup.htm</a> for details of command-line
+   arguments.</td>
+</tr>
+
+
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:include-*</code></td>
+    <td WIDTH="15%" VALIGN="TOP">[See text at right]</td>
+    <td WIDTH="55%" VALIGN="TOP">All <code>:include-*</code> arguments except <code>:include-debugger</code>,
+    documented just below, are documented in 
+    <a href="#arguments-with-inherited-defaults-1">Section 4.0 Arguments to build-lisp-image 1: defaults inherited from the running image</a> 
+    above since
+    their default values are inherited from the running image.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:include-debugger</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="55%" VALIGN="TOP">When true, include the debugger
+    in the resulting image.</td>
+  </tr>
+
+
+
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:internal-debug</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">This argument has been renamed 
+    <code>:build-input</code> although 
+    <code>:internal-debug</code>
+    is accepted for backwards compatibility. It is an error to specify
+    both <code>:internal-debug</code> and 
+    <code>:build-input</code>.
+    See the <a href="#buildinput">description of :build-input</a> 
+    for details.</td>
+  </tr>
+<tr>
+<a name="lisp-heap-size"></a>
+<td WIDTH="30%" VALIGN="TOP"><code>:lisp-heap-size</code></td>
+<td WIDTH="15%" VALIGN="TOP"><code>nil</code>
+(the value can come from an
+environment variable. See
+<a href="#arguments-with-environment-defaults-1">Section 6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a>.)
+</td>
+<td WIDTH="55%" VALIGN="TOP">
+Allows specification of the initial Lisp heap reserve size. This is
+the amount initially allocated by the Operating System (and thus is
+usually guaranteed to be available to the running image). 
+The value, if specified, must identify a positive integer. See
+<a href="#table-note-3">Table Note 3</a> for information on how
+to specify a value for this argument (in short: as an integer or as a string
+which is an integer followed by k or m, so like
+123456 or "100m").
+If more heap
+is needed after Lisp has started, the OS will allocate it if it
+can. If you find your Lisp heap is unable to grow because the OS will
+not make additional space available, you might build an image with a
+larger value for this argument so the OS will locate the image in a
+larger block of space at startup. The value for an image is printed by
+<code>(room t)</code> output (as <code>resrve</code>). See
+<a href="gc.htm">gc.htm</a> for more general information on space
+allocation. Also see <a href="#memwin">Table note 1: Finding available
+memory addresses</a>.</td>
+</tr>
+<tr>
+<a name="lisp-heap-start"></a>
+    <td WIDTH="30%" VALIGN="TOP"><code>:lisp-heap-start</code></td>
+<td WIDTH="15%" VALIGN="TOP"><code>nil</code>
+(the value can come from an
+environment variable. See
+<a href="#arguments-with-environment-defaults-1">Section 6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a>.)
+</td>
+    <td WIDTH="55%" VALIGN="TOP">Allows specification of the start of the 
+    Lisp
+    heap. The value must identify a decimal integer below the value of 
+   <a href="#aclmalloc-heap-start">aclmalloc-heap-start</a>. See
+   <a href="#table-note-3">Table Note 3</a> for information on how to
+   specify a value for this argument (in short: as an integer or as a
+   string which is an integer followed by k or m, so like
+   123456 or "100m"). Also see <a href="#memwin">Table note 1:
+   Finding available memory addresses</a>. </td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:lisp-files</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP"><p id="86">Allows Lisp files to be loaded 
+    before the image
+    is created.  The value of this argument is <code>nil</code> 
+    or a list of files to
+    load.  The files can be a pathname, string or keyword. Keywords
+    (examples would be <code>:trace</code>
+    and <code>:defsys</code>),
+    are passed to <a href="../ansicl/dictentr/provider.htm"><b>require</b></a>. 
+    These files are loaded after custom.cl is
+    loaded, as described 
+    <a href="#custom-dot-cl-1">below</a>.</p>
+    <p id="87">This argument is ignored
+    by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>.
+    Instead, files to load are specified by the required 
+    <em>input-files</em> argument.</p></td>
+  </tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<a name="newspace"></a><code>:newspace</code>
+</td>
+<td WIDTH="15%" VALIGN="TOP">See text at right. (the value can come from an
+environment variable. See
+<a href="#arguments-with-environment-defaults-1">Section 6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a>.)
+</td>
+<td WIDTH="55%" VALIGN="TOP">
+Specifies the size of the newspace in the new image. See the document
+<a href="gc.htm">gc.htm</a> for information on newspace sizes. 
+The value must identify a decimal
+integer. See
+<a href="#table-note-3">Table Note 3</a> for information on how to
+specify a value for this argument (in short: as an integer or as a
+string which is an integer followed by k or m, so like
+123456 or "100m"). The default depends on whether the image is
+32-bit or 64-bit and is suitable for ordinary use.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<a name="oldspace"></a><code>:oldspace</code></td>
+<td WIDTH="15%" VALIGN="TOP">See text at right.
+(the value can come from an
+environment variable. See
+<a href="#arguments-with-environment-defaults-1">Section 6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a>.)
+</td>
+<td WIDTH="55%" VALIGN="TOP">Specifies the amount of free oldspace in
+the new image. See the document <a href="gc.htm">gc.htm</a> for
+information on oldspace sizes.  The value must identify a decimal
+integer. See
+<a href="#table-note-3">Table Note 3</a> for information on how to
+specify a value for this argument (in short: as an integer or as a
+string which is an integer followed by k or m, so like
+123456 or "100m"). The default depends on whether the image is
+32-bit or 64-bit and is suitable for ordinary use.
+</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:opt-debug</code></td>
+    <td WIDTH="15%" VALIGN="TOP">2</td>
+    <td WIDTH="55%" VALIGN="TOP">The initial value of the debug optimization
+    quality in the new image. Value must be one of 0, 1, 2, 3. See 
+    <a href="compiling.htm#decl-opts-1">Declarations
+    and optimizations</a> in <a href="compiling.htm">compiling.htm</a> 
+    for information on how these values are used.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:opt-safety</code></td>
+    <td WIDTH="15%" VALIGN="TOP">1</td>
+    <td WIDTH="55%" VALIGN="TOP">The initial value of the safety optimization
+    quality in the new image. Value must be one of 0, 1, 2, 3 but 0 is strongly discouraged.
+    See <a href="compiling.htm#decl-opts-1">Declarations
+    and optimizations</a> in <a href="compiling.htm">compiling.htm</a>
+    for information on how these values are used.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:opt-space</code></td>
+    <td WIDTH="15%" VALIGN="TOP">1</td>
+    <td WIDTH="55%" VALIGN="TOP">The initial value of the space optimization
+    quality in the new image. Value must be one of 0, 1, 2, 3. See 
+    <a href="compiling.htm#decl-opts-1">Declarations
+    and optimizations</a> in <a href="compiling.htm">compiling.htm</a>
+    for information on how these values are used.</td>
+  </tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP"><code>:opt-speed</code></td>
+<td WIDTH="15%" VALIGN="TOP">1</td>
+<td WIDTH="55%" VALIGN="TOP">The initial value of the speed optimization
+quality in the new image. Value must be one of 0, 1, 2, 3. See 
+<a href="compiling.htm#decl-opts-1">Declarations
+and optimizations</a> in <a href="compiling.htm">compiling.htm</a>
+for information on how these values are used.</td>
+</tr>
+
+<tr>
+<td WIDTH="30%" VALIGN="TOP"><code>:opt-compilation-speed</code></td>
+<td WIDTH="15%" VALIGN="TOP">1</td>
+<td WIDTH="55%" VALIGN="TOP">The initial value of the
+compilation-speed optimization quality in the new image. Value must be
+one of 0, 1, 2, 3. See
+<a href="compiling.htm#decl-opts-1">Declarations
+and optimizations</a> in <a href="compiling.htm">compiling.htm</a>
+for information on how these values are used.</td>
+</tr>
+
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:post-load-form</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">A form to be evaluated just after the files given
+    by <code>:lisp-files</code> are loaded.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:pre-load-form</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">A form to be evaluated just before the files
+    given by <code>:lisp-files</code> are loaded.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:preserve-documentation-strings</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>t</code> when
+    <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> is
+    called, <code>nil</code> when <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is called.</td> 
+    <td WIDTH="55%" VALIGN="TOP">This argument sets the value of the
+    <a href="variables/excl/s_load-documentation_s.htm"><code>*load-documentation*</code></a> variable
+    in the resulting image. If the value of that variable is
+    true, then documentation strings are loaded
+    into and can be created in the new image being created. If the
+    value of that variable is <code>nil</code>, no
+    documentation strings are loaded and documentation strings
+    appearing in definitions are ignored.  
+
+    <p id="88">Note that the default
+    value of this argument is different depending on whether <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> is called
+    directly (default <code>t</code>) or is called from
+    <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+    (default <code>nil</code>).</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:restart-app-function</code></td>
+    <td WIDTH="15%" VALIGN="TOP"></td>
+    <td WIDTH="55%" VALIGN="TOP">This argument is documented in 
+    <a href="#arguments-with-inherited-defaults-1">Section 4.0 Arguments to build-lisp-image 1: defaults inherited from the running image</a> 
+    above since
+    its default value is inherited from the running image. </td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:restart-init-function</code></td>
+    <td WIDTH="15%" VALIGN="TOP"></td>
+    <td WIDTH="55%" VALIGN="TOP">This argument is documented in 
+    <a href="#arguments-with-inherited-defaults-1">Section 4.0 Arguments to build-lisp-image 1: defaults inherited from the running image</a> 
+    above since
+    its default value is inherited from the running image. 
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:runtime</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP"><p id="89">When calling 
+    <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>, the
+    value must be <code>nil</code>, as runtime images cannot be
+    created with calls from 
+    <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. 
+    Runtime images must be
+    created with a call to 
+    <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>. 
+    In a call to
+    <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, 
+    the value can be <code>nil</code>, 
+    <code>:standard</code>,
+    or <code>:dynamic</code>. Must be <code>nil</code> 
+    unless you have a runtime license and
+    have installed necessary functionality. (Standard runtime is included 
+    with the Enterprise edition
+    of Allegro CL and is not available with the Professional edition. 
+    Contact your account manager for information on upgrading Allegro CL
+    Professional to Enterprise so you get Allegro Runtime, or for
+    information on adding Allegro CL Dynamic Runtime to an
+    enterprise edition.)</p>
+    <p id="90">See <a href="runtime.htm">runtime.htm</a> for more information. See
+    particularly the discussion in that document of what values other arguments (such as
+    :include-compiler and :include-devel-env) must be.</p>
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP">
+    <a name="servername"></a><code>:server-name</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Specifies X server from which to get fonts.
+    Ignored if <a href="#generatefonts">:generate-fonts</a> is 
+    <code>nil</code>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:show-window</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>:showna</code></td>
+    <td WIDTH="55%" VALIGN="TOP"><strong>Windows only</strong>. 
+    The value of the <code>:show-window</code> keyword to 
+    <a href="operators/excl/run-shell-command.htm"><b>run-shell-command</b></a>, 
+    used to start 
+    the process to build the image being created. See the page for 
+    <a href="operators/excl/run-shell-command.htm"><b>run-shell-command</b></a> to 
+    see the other allowable values for this argument.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:splash-from-file</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP"><strong>Windows only</strong>. Allows
+    specification of a splash bitmap file. If true, the value must be a string
+    naming a bitmap file.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:temporary-directory</code></td>
+    <td WIDTH="15%" VALIGN="TOP">See text at right.</td>
+    <td WIDTH="55%" VALIGN="TOP">Default value is architecture
+    dependent. Temporary files created during the build will be stored in this directory,
+    either the default or the specified location.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:us-government</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Must be specified <code>t</code> by any user
+    employed by or acting on behalf of the United States Government. The only effect is to
+    change the copyright banner to include language required by US copyright laws relating to
+    US Government use. All other users can specify <code>nil</code> or leave unspecified. Only
+    for the United States Federal Government. State and local governments in the United 
+    States and all governmental entities outside the United States can specify <code>nil</code>
+    or leave unspecified.</td>
+  </tr>
+  <tr>
+   <td WIDTH="30%" VALIGN="TOP"><code>:user-shared-libraries</code></td> 
+   <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td> 
+    <td WIDTH="55%" VALIGN="TOP">Allows loading DLLs (Windows) or 
+    shared objects (.so
+    or .sl, UNIX) files into the new application image. The value, 
+    if not <code>nil</code>, should be a list of pathnames or strings
+    naming pathnames. These files are copied to the destination
+    directory and they are loaded upon application image startup. An error
+    will be signaled by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> if files
+    listed cannot be found in order to be copied to the 
+    destination directory.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:verbose</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="55%" VALIGN="TOP">Causes informative messages to be printed while
+    the image is created.</td>
+  </tr>
+  <tr>
+    <td WIDTH="30%" VALIGN="TOP"><code>:wait</code></td>
+    <td WIDTH="15%" VALIGN="TOP"><b>Unsupported, causes an error
+    if specified</b></td>
+    <td WIDTH="55%" VALIGN="TOP"> 
+    This argument is replaced by <i>build-debug</i>.
+    See <a href="#build-debug-1">Section 7.0 Debugging an image build problem or failure</a>.</td>
+  </tr>
+</table>
+
+<h4 id="91"><a name="memwin"></a>Table note 1: Finding available memory addresses</h4>
+
+<p id="92">
+To successfully allocate the heap, you will need to move the starting
+address of the Lisp heap to a location large enough to support a
+contiguous address range specified by the heap size you chose. If you
+evaluate the following forms in Allegro CL, a memory map of the
+current state of virtual memory on your machine will be printed to the
+file <em>filename.ext</em> (except on the IBM RS/6000 where the output
+file will say only that the information is not available). Note that
+you may use any filename and extension.
+</p>
+
+<pre id="93">
+(ff:def-foreign-call memory_status_dump ((filename (* :char)))
+    :arg-checking nil :strings-convert t)
+
+(memory_status_dump "filename.ext")
+</pre>
+
+<p id="94">
+The output differs for different platforms, but in all (except the
+RS/6000) cases, a set of address ranges is provided showing what
+ranges are allocated.
+</p>
+
+<p id="95">
+The value of the <i>filename</i> may be 0, causing the
+information to be printed to the terminal (on Windows, if the
+<i>filename</i> argument is 0, then the <b>Console</b>
+is used as output). You may get a warning if you specify 0 as the
+<i>filename</i> argument. It can be ignored.
+</p>
+
+<p id="96">Permissions on Windows are shown in the last four 
+characters in the output: </p>
+
+<ul>
+  <li id="97"><code>r</code> - read access</li>
+  <li id="98"><code>w</code> - write access</li>
+  <li id="99"><code>x</code> - execute access</li>
+  <li id="100"><code>c</code> - mapped copy on write (and has not been copied yet).</li>
+</ul>
+
+<p id="101">
+You will need to locate a large chunk of free memory and specify to
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> a starting
+address that will support your heap size.
+</p>
+
+<h4 id="102"><a name="close-oldspace"></a>Table note 2: :close-oldspace argument
+details</h4>
+
+<p id="103">
+The default value of the <i>close-oldspace</i> keyword
+arguments in <code>nil</code>. If its value is specified
+true, the following is evaluated just before the
+image being built is created (<i>newspace</i> is the value of the
+<code>:newspace</code> keyword argument described <a href="#newspace">above</a>, <i>oldspace</i> is the value of the
+<code>:oldspace</code> keyword argument also described <a href="#oldspace">above</a>):
+</p>
+<pre id="104">
+(sys:resize-areas
+            :old 0
+            :new (- (/ <i>newspace</i> 2) (* 1025 50))
+            :global-gc t
+            :tenure t)
+(sys:resize-areas :old <i>oldspace</i> :sift-old-areas nil)
+(setf (sys:gsgc-parameter :open-old-area-fence) -1)
+</pre>
+
+<p id="105">
+See:
+</p>
+<ul>
+<li id="106">
+<a href="operators/system/resize-areas.htm"><b>resize-areas</b></a>
+</li>
+<li id="107">
+<a href="operators/system/gsgc-parameter.htm"><b>gsgc-parameter</b></a>
+</li>
+<li id="108">
+<a href="gc.htm#generation-and-tenuring-parameters-2">Parameters that control
+generations and tenuring</a> in <a href="gc.htm">gc.htm</a>, where
+the <code>:open-old-area-fence</code> gsgc parameter is described
+and closed old areas are described.
+The value -1 means close all old areas except the newest one.
+</li>
+</ul>
+
+<p id="109">
+As described in <a href="gc.htm">gc.htm</a>, closed old areas are never
+gc'ed, so objects in them and objects they point to are never
+considered garbage. The idea is that the image being created is an
+application, and the application machinery is being loaded. That machinery
+will never become garbage, so it saves time if the garbage collector
+never looks at it. Data to be used by the application is loaded
+after the image is created. That data will be tenured to the open old areas,
+and thus will be garbage collected. This allows faster global gc's to
+clear out data sets when they are no longer needed.
+</p>
+
+<a name="table-note-3"></a><h4 id="110">Table Note 3: specifying starts and sizes for heaps and old and new space</h4>
+
+<p id="111">
+The
+arguments <a href="#aclmalloc-heap-start">aclmalloc-heap-start</a>, 
+<a href="#aclmalloc-heap-size">aclmalloc-heap-size</a>,
+
+<a href="#lisp-heap-start">lisp-heap-start</a>, 
+<a href="#lisp-heap-size">lisp-heap-size</a>, 
+<a href="#newspace">newspace</a>, and 
+<a href="#oldspace">oldspace</a> all take a
+number of bytes as a value. You can express this number as a positive
+integer or as a string which is a decimal or hex integer optionally followed
+by the letter <code>k</code> or <code>m</code>,
+ (case does not
+matter). <code>k</code> means multiple the integer by
+1024 (i.e. kilobytes) and <code>m</code> by 1024*1024
+(i.e. megabytes).
+ So "1024K" is the
+same as "1m", "1048576" and 1048576. We recommend using letter
+modifiers for large values as sometimes very large integers can
+overflow when read.
+
+</p>
+
+
+<hr><hr><h2 id="112"><a name="arguments-with-environment-defaults-1">6.0 Arguments to build-lisp-image 3: defaults taken from environment variables</a></h2>
+
+<p id="113">
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> will take
+certain defaults from the values of environment variables if these are
+set when <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> is
+called. The following table shows the arguments and the name of the
+associated environment variable.
+</p>
+<p id="114">
+All these arguments do not inherit values from the running Lisp image
+(the one which calls <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>). See
+<a href="#arguments-without-inherited-defaults-1">Section 5.0 Arguments to build-lisp-image 2: defaults not inherited from the running image</a>
+above for more information on these argument and their default
+values.
+</p>
+
+<p id="115">
+If an environment variable has a value, it overrides a specified value
+in the call to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. This allows having different
+values then called for in scripts without modifying the script.
+</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+<tr>
+<td WIDTH="40%" VALIGN="TOP">
+<strong>Argument</strong>
+</td>
+<td WIDTH="45%" VALIGN="TOP">
+<strong>Associated Environment Variable</strong>
+</td>
+</tr>
+
+
+<tr>
+<td WIDTH="40%" VALIGN="TOP">
+<code>:aclmalloc-heap-size</code>
+</td>
+<td WIDTH="45%" VALIGN="TOP">
+ACL_BUILD_ACLMALLOC_HEAP_SIZE
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP">
+<code>:aclmalloc-heap-start</code>
+</td>
+<td WIDTH="45%" VALIGN="TOP">
+ACL_BUILD_ACLMALLOC_HEAP_START
+</td>
+</tr>
+
+
+<tr>
+<td WIDTH="40%" VALIGN="TOP">
+<code>:lisp-heap-size</code>
+</td>
+<td WIDTH="45%" VALIGN="TOP">
+ACL_BUILD_LISP_HEAP_SIZE
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP">
+<code>:lisp-heap-start</code>
+</td>
+<td WIDTH="45%" VALIGN="TOP">
+ACL_BUILD_LISP_HEAP_START
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP">
+<code>:newspace</code>
+</td>
+<td WIDTH="45%" VALIGN="TOP">
+ACL_BUILD_NEWSPACE
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP">
+<code>:oldspace</code>
+</td>
+<td WIDTH="45%" VALIGN="TOP">
+ACL_BUILD_OLDSPACE
+</td>
+</tr>
+
+</table>
+
+
+
+<hr><hr><h2 id="116"><a name="build-debug-1">7.0 Debugging an image build problem or failure</a></h2>
+
+
+<p id="117">
+Starting in Allegro CL 6.2, the method for debugging a failed or
+problematic image build has been simplified, and unified for all
+platforms. (In earlier releases, behavior was different for Windows
+and UNIX.) As part of the changes, the
+<i>debug-on-error</i>,
+<i>exit-after-image-build</i>, and
+<i>wait</i> keyword arguments to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> (and therefore to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>) have been
+removed.  An error is signaled if they are specified. In their place
+is a new keyword argument <i>build-debug</i>. In this
+section, we discuss that argument and the general issue of debugging
+builds.
+</p>
+<p id="118">
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> spawns
+another Lisp to build the desired image (that is one reason why the
+new image does not inherit from the calling image). If there is a
+problem, it is this spawned image that one wants to debug. Debugging
+the image in which you called <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is not useful because
+the problem is not manifested in that image.
+</p>
+<p id="119">
+The problem is usually caused by a Lisp error being signaled. If the
+spawned image exits at that point, it will exit with a non-zero
+status. As we describe just below, specifying the
+<i>build-debug</i> keyword argument as
+<code>:interactive</code> causes the spawned image not to exit
+and allows interactive debugging. 
+</p>
+<p id="120">
+It is possible that a warning will be signaled during the
+build. Warnings will not typically cause the build to fail, but are
+legitimate causes for concern. If you want to debug a warning, call
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> specifying
+<code>:pre-load-form '(setf *break-on-signals* t)</code>. This
+will cause an error when the warning is signaled.
+</p>
+<p id="121">
+The choices for debugging are:
+</p>
+<ul>
+<li id="122">
+<b>Interactively debugging the spawned process</b>. For this option,
+specify <code>:build-debug :interactive</code> (see <a href="#builddebug">:build-debug</a>). In the event of an error, the
+spawned process started to build the image does not exit, allowing the
+problem to be debugged. When you find the cause of the problem,
+correct the argument values or the input files and run <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> again. Do not
+try to continue the process you are debugging through to a new image
+or distribution.
+</li>
+<li id="123">
+<b>Get debugging information but do not debug interactively</b>. For
+this option, specify <code>:build-debug t</code> or leave the
+value unspecified, as <code>t</code> is the default (see
+<a href="#builddebug">:build-debug</a>). The spawned process will exit
+with a non-zero status at the end of the build, error or not, but will
+print a backtrace at the point of error. On Windows, the default
+behavior, with no <a href="startup.htm#command-line-args-1">+ command-line arguments</a>, is that
+when Lisp exits with a non-zero status, the console requires manual
+closing.
+</li>
+<li id="124">
+<b>Get minimal debugging information</b>. For this option, which is
+intended for batch (no operator) builds, specify <code>:build-debug
+nil</code> (see <a href="#builddebug">:build-debug</a>). The
+spawned process is invoked with <a href="startup.htm#command-line-args-1">-batch</a> command-line arguments. No
+backtrace is provided. The console will close automatically regardless
+of error status.
+</li>
+</ul>
+
+<p id="125">
+Here are examples using the various values of
+<i>build-debug</i>. The file <i>foo.cl</i>
+includes the form at the top-level <code>(setq x y)</code>, but
+<code>y</code> does not have a value.
+</p>
+
+<pre id="126">
+;;******************************************************************
+;; This call in the calling process spawns the process which
+;; will attempt the build. Note that :build-debug is t,
+;; so the spawned process will exit (its window will remain, however, 
+;; until you close it by clicking on the Close button).
+cl-user(3): (build-lisp-image &quot;foo.dxl&quot; 
+                              :lisp-files '(&quot;foo.cl&quot;) :build-debug t)
+Initial generation spread = 1
+Allocated 10492920 bytes for old space
+Allocated 5242880 bytes for new space
+;;;;;;;;;;...
+...
+ #|
+ (let ((*libfasl* nil) (*global-gc-behavior* nil))
+   (tenuring (load &quot;foo.cl&quot;)))
+ |#
+; Loading /stuff1/acl/acl70/src/foo.cl
+Error (from error): Script /tmp/genappa149d19b aborted due to error:
+                    Attempt to take the value of the unbound variable
+                    `y'.
+Evaluation stack:
+
+   (excl::internal-invoke-debugger &quot;Error&quot; #&lt;simple-error @ #x71f252aa&gt;
+                                   nil)
+   (error &quot;Script ~a aborted due to error: ~a&quot; #1=&quot;/tmp/genappa149d19b&quot;
+          #&lt;unbound-variable @ #x71f2507a&gt;)
+   (excl::process-script #1#)
+ -&gt;(tpl:start-interactive-top-level
+      #&lt;terminal-simple-stream [initial terminal io] fd 0/1 @
+        #x711751f2&gt;
+      #&lt;Function top-level-read-eval-print-loop&gt; nil)
+   (excl::start-lisp-execution)
+; Auto-exit
+; Exiting Lisp
+
+[Perhaps a messsage about the exit status]
+;;  You may examine the window of the spawned Lisp.
+;;  When you have finished examining it, click the Close 
+;;  button to close it, and then you will see back in the 
+;;  calling process:
+
+Error: image creation failed
+  [condition type: simple-error]
+
+Restart actions (select using :continue):
+ 0: Return to Top Level (an &quot;abort&quot; restart).
+ 1: Abort entirely from this process.
+[1] cl-user(4):  
+
+;;******************************************************************
+;; This call in the calling process spawns the process which
+;; will attempt the build. Note that :build-debug is nil,
+;; so the spawned process will exit.
+cl-user(5): (build-lisp-image &quot;foo.dxl&quot; :lisp-files '(&quot;foo.cl&quot;) 
+                              :build-debug nil)
+Initial generation spread = 1
+Allocated 10492920 bytes for old space
+Allocated 5242880 bytes for new space
+;;;;;;;...
+...
+ #|
+ (let ((*libfasl* nil) (*global-gc-behavior* nil))
+   (tenuring (load &quot;foo.cl&quot;)))
+ |#
+; Loading /stuff1/acl/acl70/src/foo.cl
+Error (from error): Script /tmp/genappa149d19c aborted due to error:
+                    Attempt to take the value of the unbound variable
+                    `y'.
+; Auto-exit
+; Exiting Lisp
+Error: image creation failed
+  [condition type: simple-error]
+
+Restart actions (select using :continue):
+ 0: Return to Top Level (an &quot;abort&quot; restart).
+ 1: Abort entirely from this process.
+[1] cl-user(6): 
+
+;;******************************************************************
+;; This call in the calling process spawns the process which
+;; will attempt the build. Note that :build-debug is :interactive,
+;; so the spawned process will not exit.
+cl-user(1): (build-lisp-image &quot;foo.dxl&quot; :lisp-files '(&quot;foo.cl&quot;) 
+              :build-debug :interactive)
+; Fast loading /stuff1/acl/acl70/src/code/build.fasl
+Initial generation spread = 1
+Allocated 10492920 bytes for old space
+Allocated 5242880 bytes for new space
+;;;;;;...
+...
+ #|
+ (let ((*libfasl* nil) (*global-gc-behavior* nil))
+   (tenuring (load &quot;foo.cl&quot;)))
+ |#
+; Loading /stuff1/acl/acl70/src/foo.cl
+Error: Attempt to take the value of the unbound variable `y'.
+  [condition type: unbound-variable]
+
+Restart actions (select using :continue):
+ 0: Try evaluating y again.
+ 1: Use :y instead.
+ 2: Set the symbol-value of y and use its value.
+ 3: Use a value without setting y.
+ 4: retry the load of foo.cl
+ 5: skip loading foo.cl
+ 6: recompile /stuff1/acl/acl70/src/foo.cl
+ 7: Abort entirely from this process.
+[Current process: Initial Lisp Listener]
+[1] cl-user(1): :zo :all t
+Evaluation stack:
+
+... 4 more newer frames ...
+
+   (excl::cer-general-error-handler-one 5 y)
+   (sys::..context-saving-runtime-operation)
+   (sys::..runtime-operation)
+   (excl::%eval y)
+ -&gt;(setq x y)
+   [... excl::%eval ]
+   (eval (setq x y))
+   (excl::sloload
+      #&lt;file-simple-stream
+        #p&quot;/stuff1/acl/acl70/src/foo.cl&quot; for input pos 32 @
+        #x71f237ba&gt;)
+   (excl::load-from-stream-or-bundle
+      #&lt;file-simple-stream
+        #p&quot;/stuff1/acl/acl70/src/foo.cl&quot; for input pos 32 @
+        #x71f237ba&gt;
+      #p&quot;/stuff1/acl/acl70/src/foo.cl&quot; ...)
+   (excl::load-2 &quot;foo.cl&quot; t ...)
+
+... more older frames ...
+[Current process: Initial Lisp Listener]
+[1] cl-user(2): 
+
+;;  You are still at a prompt in the spawned process.
+</pre>
+
+<p id="127">
+It is possible that the spawned image will fail without signaling a
+Lisp error. In that case, it will also exit with a non-zero status,
+but interactive debugging is not, of course, possible. However, this
+is rare. If it happens, please save any messages that are printed and
+try the build again (to ensure that it was not a transient problem that
+caused the failure). If the retry fails, send a bug report to <a href="mailto:support@franz.com">support@franz.com</a>.
+</p>
+
+
+<h3 id="128">The call that invokes the spawned process and input to it</h3>
+
+<p id="129">
+To get maximal information about the invocation of the spawned process
+caused by your call to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> (or <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> add the arguments:
+</p>
+<pre id="130">
+:build-input "input.txt" :verbose t :build-output "output.txt"
+</pre>
+<p id="131">
+"input.txt" and "output.txt" are filenames -- any filename with any
+valid path will do, of course. Here is what the build-lisp-image form
+looks like:
+</p>
+
+<pre id="132">
+(excl:build-lisp-image &lt;image-file&gt; 
+                       :build-input &quot;input.txt&quot; :verbose t 
+                       :build-output &quot;output.txt&quot; 
+                       &lt;your arguments&gt;)
+</pre>
+
+<p id="133">
+This causes the actual command starting the Lisp that builds the new
+dxl (along with other stuff) to be printed to the listener where the
+build-lisp-image command was issued. 
+</p>
+
+<p id="134">
+Generated (by the <a href="#buildinput">:build-input</a>
+argument) is the file "input.txt" which
+contains the Lisp forms passed to the spawned Lisp. It looks roughly
+like:
+</p>
+<pre id="135">
+(EXCL:SET-CASE-MODE :CASE-SENSITIVE-LOWER) (COMMON-LISP:FORCE-OUTPUT) 
+(COMMON-LISP:PROGN (COMMON-LISP:SETQ EXCL::*STORE-DOCUMENTATION* COMMON-LISP:NIL) 
+(COMMON-LISP:SETQ EXCL:*RECORD-SOURCE-FILE-INFO* COMMON-LISP:NIL) 
+(COMMON-LISP:SETQ EXCL:*LOAD-LOCAL-NAMES-INFO* COMMON-LISP:NIL) 
+[...]
+</pre>
+
+<p id="136">
+Generated (by the :build-output argument) is the file "output.txt" which
+contains essentially a dribble output from the spawned process.
+</p>
+
+<hr><hr><h2 id="137"><a name="custom-dot-cl-1">8.0 Use of custom.cl</a></h2>
+
+<p id="138">
+The file <i>sys:custom.cl</i> in the Allegro directory
+is loaded into the new image at the end of the building process but
+just before the files specified by <code>:lisp-files</code> are
+loaded. If you are running <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, <em>sys:custom.cl</em>
+is loaded before the files specified by the (required)
+<em>input-files</em> argument are loaded.
+</p>
+<p id="139">
+<i>sys:custom.cl</i>, as delivered, contains various
+things, either commented out or marked with
+<code>#+ignore</code>. For example, certain forms setting values
+to the defaults used in previous versions of Allegro CL are provided,
+preceded by <code>#+ignore</code> so they will not be read
+unless the <code>#+ignore</code> is removed. (See <a href="implementation.htm#rm-table-3">Features present or missing
+from *features* in Allegro CL</a> in
+<a href="implementation.htm">implementation.htm</a> for information on
+<code>#+ignore</code>.)
+</p>
+
+<hr><hr><h2 id="140"><a name="image-with-patches-1">9.0 Building an image to include patches</a></h2>
+
+<p id="141">During the build, all patch files in <em>[Allegro
+Directory]/update</em> relevant to the products included in the
+image (as coded by the filenames) are loaded into the image during the
+build.</p>
+
+<hr><hr><h2 id="142"><a name="minimal-top-levels-1">10.0 Minimal top levels</a></h2>
+
+<p id="143">When building a lisp image, specifying <code>nil</code>
+for <em>include-tpl</em> will cause a greatly reduced top-level
+functionality to be built into the lisp. The sole purpose of this
+minimal top-level is to reduce the space used by the full top-level.
+Applications which do not require a top-level or which provide their
+own will often specify <em>include-tpl</em> &nbsp;<code>nil</code>. The minimal top level described here will be
+available in such images.</p>
+
+<p id="144">
+The entire text of the minimal top level functionality is given
+below. Note that this code is loaded only if <em>include-tpl</em> is
+<code>nil</code>. The top-level code when
+<em>include-tpl</em> is true is quite
+different.
+</p>
+
+<pre id="145">
+(defpackage :top-level
+  (:nicknames :tpl)
+  (:use :common-lisp :excl)
+  (:size 20)
+  (:import-from :excl excl::read-eval-print-loop)
+
+  ;; These are the function handlers for the top-level commands.
+  ;; They are user visible.
+  (:export #:*read-eval-print-loop*	; user-defined read-eval-print-loop
+	   #:*read*			; the top-level reader
+	   #:*eval*			; the top-level evaler
+	   #:*print*			; the top-level printer
+	   ))
+
+(provide :tpl-user)
+
+(in-package :top-level)
+
+;; simple default tpl handlers:
+(defvar *read-eval-print-loop* 'default-read-eval-print-loop)
+(setq *read* 'read)
+(setq *eval* 'eval)
+(setq *print* 'print)
+
+(declaim (special *break-level*))
+(setq *break-level* 0)
+
+(defun start-interactive-top-level (*terminal-io*
+				    function args
+				    &key initial-bindings
+				    &aux vars vals)
+
+  (declare (:discard-source-file-info))
+  (setf (getf (excl::stream-property-list *terminal-io*) 'initial-listener)
+    sys::*current-process*)
+
+  ;; Compute the list of special variables and bindings for progv.
+  (dolist (b initial-bindings)
+    (unless (member (car b) vars :test #'eq)
+      (push (car b) vars)
+      (push (eval (cdr b)) vals)))
+  (progv vars vals
+    (setq vars nil vals nil)		;free up space
+    (apply function args)))
+
+(defun top-level-read-eval-print-loop ()
+  (declare (:discard-source-file-info))
+  (loop
+    (setq *evalhook* nil *applyhook* nil)
+    (catch ':top-level-reset (read-eval-print-loop :level 0))
+    ))
+
+(defun read-eval-print-loop (&key &allow-other-keys)
+  (declare (:discard-source-file-info))
+  (let (pop-type cval1 cval2)
+    (loop
+      (multiple-value-setq (pop-type cval1 cval2)
+	(catch 'top-level-break-loop
+	  (funcall *read-eval-print-loop*)))
+      ;; If we get here and pop-type is not null, then a throw
+      ;; to 'top-level-break-loop was done (by a different toplevel)
+      (case pop-type
+	((:pop :debug-pop)
+	 (when (plusp cval1)
+	   (excl::funcall-in-package :debug-pop :debugger
+				     nil (1- cval1) (1- cval2))))
+	(error "user toplevel can't handle this pop type: ~s" pop-type)))))
+
+
+(defun default-read-eval-print-loop ()
+  (loop
+    ;; print the prompt
+    (fresh-line *terminal-io*)
+    (princ "// " *terminal-io*)
+    (force-output *terminal-io*)
+    (let* ((exp (funcall *read*))
+	   (res (funcall *eval* exp)))
+      (funcall *print* res *terminal-io*))))
+</pre>
+
+<hr><h2 id="146"><a name="default-minimal-top-level-2">10.1 Using the default minimal top-level</a></h2>
+
+<p id="147">The minimal top-level is set up by default to issue a
+"//" prompt.  It only accepts lisp evaluable expressions as
+"commands", and does not interpret any other top-level
+commands.</p>
+
+<p id="148"><strong>Example on a sparc:</strong></p>
+
+<pre id="149">
+% mlisp -I umsloadxcomp.dxl -qq
+Loading /release/duane/acl70/src/libacl70pf23.so.
+Mapping umsloadxcomp.dxl...done.
+Mapping umclxcomp.pll.
+Allegro CL 7.0
+Copyright (C) 1985-2004, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
+// (room)
+area  address(bytes)        cons        symbols        other bytes
+                        8 bytes each  24 bytes each
+                        (free:used)   (free:used)      (free:used)
+Top #x81dc000
+New #x8180000(376832)     918:3158      254:0         246536:37944
+New #x8124000(376832)      -----         -----            -----
+Old #x8000c40(1192896)    781:15523     135:5628      518896:397344
+Root pages: 34
+Lisp heap limit: 67108864
+
+
+NIL 
+// (exit)
+; Exiting Lisp
+%
+</pre>
+
+
+
+<hr><h2 id="150"><a name="requiring-normal-tpl-2">10.2 Requiring the normal top-level in a minimal top-level lisp</a></h2>
+
+<p id="151">If the power of the normal top-level is needed after a
+(non-runtime) minimal top-level lisp is built, <code>:toplevel</code>
+can be required. However, simply requiring <code>:toplevel</code> is
+not enough to start the regular top-level listener; instead, the
+listener must be invoked recursively, either by an error or by any
+command (such as <a href="../ansicl/dictentr/inspect.htm"><b>inspect</b></a>) that
+starts a new listener level. At that time, top-level commands (such as
+<a href="tpl-commands/zoom.htm"><b>:zoom</b></a>, etc) can be invoked.</p>
+
+<p id="152">
+Note however that when <code>:toplevel</code> is required, the
+read-eval-print-loop is reset, and so a <a href="tpl-commands/reset.htm"><b>:reset</b></a> command will make it appear as if
+the Lisp had always had a normal top-level.
+</p>
+
+<h3 id="153">Example 1:</h3>
+
+<pre id="154">
+;; In this example, an error can be debugged after the fact by requiring
+;; the normal top-level.
+
+% mlisp -I umsloadxcomp.dxl -qq
+Loading /release/duane/acl70/src/libacl70pf23.so.
+Mapping umsloadxcomp.dxl...done.
+Mapping umclxcomp.pll.
+Allegro CL 7.0
+Copyright (C) 1985-2004, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
+// (require :toplevel)
+; Fast loading /acl70/src/code/toplevel.fasl
+;   Fast loading /acl70/src/code/frame.fasl
+;     Fast loading /acl70/src/code/r/rframe.fasl
+
+T 
+// a
+Error: Attempt to take the value of the unbound variable `A'.
+  [condition type: UNBOUND-VARIABLE]
+
+Restart actions (select using :continue):
+ 0: Try evaluating A again.
+ 1: Use :A instead.
+ 2: Set the symbol-value of A and use its value.
+ 3: Use a value without setting A.
+[1] USER(1): :zo
+; Autoloading for TOP-LEVEL::ZOOM-COMMAND:
+; Fast loading /acl70/src/code/tpl-debug.fasl
+; Autoloading for package &quot;DEBUGGER&quot;:
+;   Fast loading /acl70/src/code/debug.fasl
+Evaluation stack:
+
+ -&gt;(EXCL::INTERNAL-INVOKE-DEBUGGER &quot;Error&quot; #&lt;UNBOUND-VARIABLE @ #x81b9f8a&gt; ...)
+   (ERROR #&lt;UNBOUND-VARIABLE @ #x81b9f8a&gt;)
+   (SYS::..CONTEXT-SAVING-RUNTIME-OPERATION)
+   (EVAL A)
+   (TPL:TOP-LEVEL-READ-EVAL-PRINT-LOOP)
+   (TPL:START-INTERACTIVE-TOP-LEVEL #&lt;BIDIRECTIONAL-TERMINAL-STREAM [initial terminal io] fd 0/1 @ #x80439ba&gt;
+                                    #&lt;Function TOP-LEVEL-READ-EVAL-PRINT-LOOP @ #x804d22a&gt; ...)
+
+(to see any ghost frames, the disassembler must be loaded)
+[1] USER(2): :res
+USER(1): 
+</pre>
+
+<p id="155"><strong>Example 2:</strong></p>
+
+<pre id="156">
+;; Note in this example a variable is inspected after setting it,
+;; to indicate the state of the lisp before the new top-level is
+;; pulled into the lisp.  Note also that we wrap a progn which will
+;; return a final nil value, so as not to see a huge printout due to
+;; the lack of *print-level*/*print-length* controls.
+
+% mlisp -I umsloadxcomp.dxl -qq
+Loading /acl70/src/libacl70pf23.so.
+Mapping umsloadxcomp.dxl...done.
+Mapping umclxcomp.pll.
+Allegro CL 7.0
+Copyright (C) 1985-2004, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
+// (progn (setq x (excl::get-objects 7)) nil)
+
+NIL 
+// (require :toplevel)
+; Fast loading /acl70/src/code/toplevel.fasl
+;   Fast loading /acl70/src/code/frame.fasl
+;     Fast loading /acl70/src/code/r/rframe.fasl
+
+T 
+// (inspect x)
+; Autoloading for INSPECT:
+; Fast loading /acl70/src/code/inspect.fasl
+A simple T vector (5649) @ #x81a506a
+   0-&gt; fixnum 5629 [#x000057f4]
+   1-&gt; The symbol CL:NIL
+   2-&gt; The symbol T
+   3-&gt; The symbol EXCL::ER-WNAERR
+   4-&gt; The symbol EXCL::ER-GENERAL-ERROR-HANDLER-ZERO
+   5-&gt; The symbol EXCL::ER-GENERAL-ERROR-HANDLER-ONE
+   6-&gt; The symbol EVAL
+   7-&gt; The symbol EXCL::INTERPRETED-FUNCALL
+   8-&gt; The symbol EXCL::+_2OP
+   9-&gt; The symbol EXCL::GC-AFTER
+  10-&gt; The symbol EXCL::*WITHOUT-INTERRUPTS*
+  11-&gt; The symbol EQUAL
+  12-&gt; The symbol *PACKAGE*
+  13-&gt; The symbol *LISP-PACKAGE*
+  14-&gt; The symbol *KEYWORD-PACKAGE*
+  15-&gt; The symbol EXCL::INTERN*
+  16-&gt; The symbol EXCL::FASL-FIND-PACKAGE
+  17-&gt; The symbol EXCL::CONVERT-TO-INTERNAL-FSPEC
+  18-&gt; The symbol *COMPILER-PACKAGE*
+  19-&gt; The symbol *SYSTEM-PACKAGE*
+  20-&gt; The symbol EXCL::CONVERT-TO-EXTERNAL-FSPEC
+  21-&gt; The symbol SYS::LISP-BREAKPOINT
+  22-&gt; The symbol EXCL::HANDLE-PENDING-SIGNAL
+  23-&gt; The symbol EXCL::SET-FUNCTION
+  24-&gt; The symbol EXCL::.INV-MACRO-FUNCTION
+   ...
+ 5648-&gt; The symbol NIL
+[1i] USER(1): 
+</pre>
+
+
+
+<hr><h2 id="157"><a name="tpl-vars-2">10.3 Top-level variables</a></h2>
+
+<p id="158">The following variables are maintained or used by the minimal
+top-level:</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="29%"><strong>Variable</strong></td>
+    <td width="71%"><strong>Notes</strong></td>
+  </tr>
+  <tr>
+    <td width="29%"><a href="variables/tpl/s_read_s.htm"><code>*read*</code></a></td>
+    <td width="71%">Must be true - the function to be used to read top-level
+    input. Initially set to <a href="../ansicl/dictentr/readread.htm"><b>read</b></a>.</td>
+  </tr>
+  <tr>
+    <td width="29%"><a href="variables/tpl/s_eval_s.htm"><code>*eval*</code></a></td>
+    <td width="71%">Must be true - the function to be used to evaluate
+    top-level input. Initially set to <a href="../ansicl/dictentr/eval.htm"><b>eval</b></a>.</td>
+  </tr>
+  <tr>
+    <td width="29%"><a href="variables/tpl/s_print_s.htm"><code>*print*</code></a></td>
+    <td width="71%">Must be true - the function to be used to print top-level
+    input. Initially set to <a href="../ansicl/dictentr/writepri.htm"><b>print</b></a>.</td>
+  </tr>
+  <tr>
+    <td width="29%"><code>tpl:*read-eval-print-loop*</code></td>
+    <td width="71%">Must be true - the function to be used as the
+    read-eval-print-loop. Initially set to the <code>tpl::default-read-eval-print-loop</code>
+    as shown in the code 
+    <a href="#minimal-top-levels-1">above</a>, 
+    where <code>tpl::default-read-eval-print-loop</code>
+    is also defined. This variable only exists in minimal top-level lisps. 
+    This variable does
+    not have a separate descriptions page.</td>
+  </tr>
+</table>
+
+<p id="159">If <code>*read-eval-print-loop*</code> is set to a value
+other than <code>tpl::default-read-eval-print-loop</code>, then the
+three read/eval/print variables are not used. Normally, this variable
+should not be set unless it is desired to remove all possible user
+interaction with lisp. If a replacement top-level is supplied, it is
+recommended that all possible errors be handled explicitly with
+handlers.</p>
+
+<p id="160">
+The top-level variables in the table with links are also discussed in
+<a href="top-level.htm#tpl-vars-1">Top-level
+variables</a> in <a href="top-level.htm">top-level.htm</a>.
+</p>
+
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/building-images.htm">9.0 version</a></td></tr></table></html>

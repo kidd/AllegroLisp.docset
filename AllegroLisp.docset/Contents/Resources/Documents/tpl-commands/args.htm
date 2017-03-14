@@ -1,0 +1,58 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>:args</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Top-level Command</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/args.htm">9.0 version</a></td></tr></table><h2 id="2">:args</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>save</i><i>
+</i></p>
+
+<p id="4">
+Lisp stores some function arguments in registers, rather than on the
+stack. This allows code to run significantly faster, but makes
+debugging harder, since the registers storing the arguments may be
+overwritten when an unhandled error occurs, and therefore the values
+will not be available for examination when debugging.
+</p>
+<p id="5">
+Lisp can optionally save values stored in registers (at the cost of
+worse performance). If argument saving is enabled, the argument values
+in registers will be saved and available for debugging. If argument
+saving is disabled, those argument values will not be saved. Unsaved
+arguments show up as <code>:unknown</code> in stack backtraces (as
+printed by <a href="zoom.htm"><b>:zoom</b></a>).
+</p>
+<p id="6">
+This command either reports whether such arguments are saved or
+specifies whether arguments should be saved or should not be saved.
+</p>
+<p id="7">
+If the <i>save</i> is unspecified, this command reports on
+the current status of argument saving, printing <code>(:save t)</code> 
+if arguments are
+being saved, <code>(:save nil)</code> if they are not.
+</p>
+<p id="8">
+If the <i>save</i> is specified <code>t</code> or <code>nil</code>, argument saving
+will start or stop, respectively.
+</p>
+
+<p id="9">
+The <a href="../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'able function
+<a href="../operators/excl/argument-saving.htm"><b>argument-saving</b></a> is the
+functional equivalent of this command. It takes no argument and
+returns <code>t</code> or <code>nil</code> as
+arguments are or are not saved.
+</p>
+
+<p id="10">
+Note that on some architectures (in 6.2, only the Sparc, including the
+64-bit Sparc), arguments are always saved. On those architectures,
+this command has no effect.
+</p>
+
+<p id="11">
+See <a href="../top-level.htm">top-level.htm</a>
+for more information on top-level commands.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/args.htm">9.0 version</a></td></tr></table></body></html>

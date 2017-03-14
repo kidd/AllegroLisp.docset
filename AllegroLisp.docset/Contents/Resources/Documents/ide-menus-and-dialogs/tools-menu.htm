@@ -1,0 +1,210 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>tools-menu</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Menu</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/tools-menu.htm">9.0 version</a></td></tr></table><h2 id="2">Tools Menu</h2>
+<p id="3">
+The Tools Menu displays commands that control various tools in the
+system, or displays dialogs that control or report on tools. The
+commands on the menu are:
+</p>
+
+<ul><li id="4"><b><a name="compile-project">Compile Project</a></b> -- 
+Compiles any files of the current project that are out of date.
+(I.e. those which have no compiled version or those whose compiled
+version is earlier than the source version.)
+</li></ul>
+
+
+
+<ul><li id="5"><b><a name="full-compile">Full Compile</a></b> -- 
+Compiles all files associated with the current project.
+</li></ul>
+
+
+
+<ul><li id="6"><b><a name="incremental-compile">Incremental Compile</a></b> --  Compiles and evaluates the selected form or
+forms. A form is selected if it is highlighted or if the cursor is
+within it or just after the final parenthesis. See the description of
+the <a href="editor-workbook.htm">Editor
+Workbook</a> for more information on this command and the IDE
+editor.
+</li></ul>
+
+
+
+<ul><li id="7"><b><a name="incremental-evaluation">Incremental Evaluation</a></b> -- 
+Evaluates the selected form or forms. A
+form is selected if it is highlighted or if the cursor is within it or
+just after the final parenthesis. See the description of the <a href="editor-workbook.htm">Editor Workbook</a> for
+more information on this command and the IDE editor.
+</li></ul>
+
+
+
+<ul><li id="8"><b><a name="evaluate-clipboard">Evaluate Clipboard</a></b> --  Evaluates the top item on the clipboard. In
+releases prior to 7.0, the standard shortcut for this command was
+control-Q. In 7.0, it is control-shift-Q, since control-Q is used on
+the Edit menu for inserting a special character.
+</li></ul>
+
+
+
+<ul><li id="9"><b><a name="browse-class">Browse Class</a></b> -- 
+Displays the <a href="class-browser-dialog.htm">Class Browser</a> dialog. If the
+current selection is a symbol naming a class, that class is browsed
+but the dialog displays whether or not it can determine the class of
+interest.
+</li></ul>
+
+
+
+<ul><li id="10"><b><a name="graph-subclasses">Graph Subclasses</a></b> -- 
+Displays a graph of subclasses of the class named by the
+currently-selected symbol. Displays nothing if the current selection
+does not name a class.
+</li></ul>
+
+
+
+<ul><li id="11"><b><a name="graph-superclasses">Graph Superclasses</a></b> -- 
+Displays a graph of superclasses of the class named by the
+currently-selected symbol. Displays nothing if the current selection
+does not name a class.
+</li></ul>
+
+
+
+<ul><li id="12"><b><a name="inspect-selected-object">Inspect Selected Object</a></b> -- 
+Inspects the currently-selected object.
+</li></ul>
+
+
+
+<ul><li id="13"><b><a name="inspect-returned-object">Inspect Returned Object</a></b> --  Inspects the value of <a href="../../ansicl/dictentr/unnamed2.htm"><code>*</code></a>.
+</li></ul>
+
+
+
+<ul><li id="14"><b><a name="inspect-system-data">Inspect System Data</a></b> -- 
+Displays a submenu of things to inspect:
+<ul>
+<li id="15">
+CG Configuration options: details of the CG environment.
+</li>
+<li id="16">
+IDE Configuration options: details of the IDE environment.
+</li>
+<li id="17">
+Current Package
+</li>
+<li id="18">
+All Packages 
+</li>
+<li id="19">
+Character Names
+</li>
+<li id="20">
+Key Names 
+</li>
+<li id="21">
+Font Faces 
+</li>
+<li id="22">
+Top-Level Development Windows
+</li>
+<li id="23">
+All Top-Level Windows 
+</li>
+<li id="24">
+Allegro Menu Bar 
+</li>
+<li id="25">
+Online File Systems
+</li>
+<li id="26">
+OS Version Info
+</li>
+<li id="27">
+Memory Status 
+</li>
+</ul>
+
+</li></ul>
+
+
+
+<ul><li id="28"><b><a name="return-selected-object">Return Selected Object</a></b> --  Returns (to the Debug window)
+and sets the value of <a href="../../ansicl/dictentr/unnamed2.htm"><code>*</code></a>
+to the currently-selected object, usually text or a control on a form.
+The variable <a href="../variables/ide/s_selected-object_s.htm"><code>*selected-object*</code></a> will also hold the value that
+was returned by the most recent use of this command. The value of
+<a href="../variables/ide/s_selected-object_s.htm"><code>*selected-object*</code></a> will
+be effected by other uses of this command but will not be affected (as
+<a href="../../ansicl/dictentr/unnamed2.htm"><code>*</code></a> will be) by
+evaluations in the Debug window.
+</li></ul>
+
+
+
+<ul><li id="29"><b><a name="get-component">Get Component</a></b> -- 
+Changes the cursor to a cross. Returns to the Debug window and sets
+the value of * to the next object clicked over.
+</li></ul>
+
+
+
+<ul><li id="30"><b><a name="options">Options</a></b> -- 
+Displays the <a href="options-dialog.htm">Options</a> dialog.
+</li></ul>
+
+
+
+<ul><li id="31"><b><a name="save-options-now">Save Options Now</a></b> -- 
+This command, if chosen, saves the current options (the current values
+on the <a href="options-dialog.htm">Options</a> dialog
+and the current window positions and sizes and which windows are
+visible) to the file allegro-ide-options.cl. This command
+is useful if you wish to arrange things as you want them to come up,
+and then want to be free to make changes for the current session only
+(such as moving, resizing, or hiding windows). If you use this
+command, you may want to toggle the <a href="tools-menu.htm#save-options-on-exit">Save Options on
+Exit</a> switch on the <a href="tools-menu.htm">Tools</a> menu to off (unchecked) so options
+are not again saved on exit, perhaps overwriting what you saved now.
+
+See <a href="../cgide.htm#user-options-file-1">The user
+options file allegro-ide-options.cl</a> in
+<a href="../cgide.htm">cgide.htm</a> for more information on the options file.
+
+</li></ul>
+
+
+
+<ul><li id="32"><b><a name="save-options-on-exit">Save Options On Exit</a></b> -- 
+This command displays whether options (the current values on the
+<a href="options-dialog.htm">Options</a> dialog and
+the current window positions and sizes and which windows are visible)
+will be saved to the file allegro-ide-options.cl when Allegro CL exits. If this item
+in the menu is checked, options will be saved on exit; if it is
+unchecked, options will not be saved on exit.
+<p id="33">
+If options are saved, the IDE will come up with all standard windows
+sized and positioned as they were on the last exit. Some users like this
+feature. Others prefer to have the IDE come up in a specific fashion,
+and to then be free to move and resize windows as desired during the
+current invocation without having such changes affect the next
+invocation.
+</p>
+<p id="34">
+To ensure that Save Options on Exit is toggled off when the IDE
+starts, toggle it off and choose <a href="tools-menu.htm#save-options-now">Tools | Save Options
+Now</a>.
+</p>
+</li></ul>
+
+
+
+
+
+
+
+
+<hr><p id="35"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/tools-menu.htm">9.0 version</a></td></tr></table></body></html>

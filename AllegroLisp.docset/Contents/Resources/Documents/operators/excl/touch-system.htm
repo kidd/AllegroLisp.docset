@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>touch-system</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/touch-system.htm">9.0 version</a></td></tr></table><h2 id="2">touch-system</h2>
+
+<p id="3"><b>Arguments: </b><i>system </i> &amp;rest <i> rest </i><i>
+</i>&amp;key <i>&amp</i></p>
+
+<p id="4">
+This generic function makes the <i>fasl</i> files of the modules in
+system up-to-date by performing a Unix <strong>touch</strong> command
+(or equivalent) on each of the <i>fasl</i> files. This is similar to
+<strong>make -t</strong> in Unix. The defsystem facility uses the Unix
+filesystem creation timestamp when checking whether a source file
+needs to be reloaded or recompiled.
+</p>
+
+<p id="5">
+The &allow-other-keys allows any keywords to be specified. The
+default method looks at only two: <i>silent</i> and
+<i>simulate</i>.
+</p>
+
+<p id="6">
+The value of the <i>silent</i> keyword argument can
+be <code>t</code> or <code>nil</code>.  Its
+default value is <code>nil</code>. <code>t</code> means do not print anything while performing the
+operation. This is similar to <strong>make -s</strong>. A
+true value of <i>simulate</i>
+overrides <i>silent</i> 
+&nbsp;<code>t</code>.</p>
+
+<p id="7">The value of the <i>simulate</i> keyword argument can
+be <code>t</code> or <code>nil</code>.
+<code>t</code> means print the list of actions that would
+be taken if the operations were to be performed at this time, but do
+not actually perform the operations. This is similar to <strong>make
+-n</strong>.</p>
+
+<p id="8">
+Although the home package of the symbol naimg this operator is the
+excl package, it is also exported from the defsystem package.
+</p>
+<p id="9">
+See also <a href="../../defsystem.htm">defsystem.htm</a> for general
+information on the defsystem facility in Allegro
+CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/touch-system.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,98 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rename-file-raw</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/rename-file-raw.htm">9.0 version</a></td></tr></table><h2 id="2">rename-file-raw</h2>
+
+<p id="3"><b>Arguments: </b><i>
+filespec new-name </i>&amp;key <i>follow-symlinks</i><i>
+</i></p>
+
+<p id="4">
+The function is similar to <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> in that it renames the file or
+directory specified by the <i>filespec</i> to the file
+or directory specified by the <i>new-name</i>
+argument. The truename of the renamed file is returned, as a symbolic
+link (if it is one) if <i>follow-symlinks</i> is <code>nil</code> (the default) and as the canonical filename if
+<i>follow-symlinks</i> is true. (<a href="rename-file-raw.htm"><b>rename-file-raw</b></a> calls <a href="../../../ansicl/dictentr/truename.htm"><b>truename</b></a> passing the value of
+<i>follow-symlinks</i>. See <a href="../../implementation.htm#extensions-to-clfuns-one-2">Extensions
+to cl:make-package, cl:disassemble, cl:truename, cl:probe-file,
+cl:open, cl:apropos</a> in
+<a href="../../implementation.htm">implementation.htm</a>.)
+</p>
+<p id="5">
+<a href="rename-file-raw.htm"><b>rename-file-raw</b></a>
+differs from <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> in
+that it mimics the UNIX <b>mv</b>/Windows <b>MOVE</b> method of
+resolving relative pathnames when renaming files. If
+<i>new-name</i> is a relative pathname, it is merged
+with <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> to get the actual
+new name. <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>
+merges <i>new-name</i> with
+<i>filespec</i>. The difference can be seen with the
+following example:
+</p>
+<pre id="6">
+;; *default-pathname-defaults* is an absolute pathname and
+;; both directories /usr/home/user1/tmp/ and 
+;; /usr/home/user1/tmp/tmp/ exist.
+*default-pathname-defaults*
+  -&gt; #p&quot;/usr/home/user1/&quot;
+
+(probe-file &quot;tmp/foo.cl&quot;) -&gt; #p&quot;/usr/home/user1/tmp/foo.cl&quot;
+(probe-file &quot;tmp/tmp/&quot;) -&gt; #p&quot;/usr/home/user1/tmp/tmp/&quot;
+
+;;  Only one of the following four forms may be evaluated, 
+;;  since after evaluation the file specified by 
+;;  the first argument will not exist.
+;;  Only the first value returned is shown.
+
+(rename-file &quot;tmp/foo.cl&quot; &quot;tmp/baz.cl&quot;)
+  -&gt; #p&quot;/usr/home/user1/tmp/tmp/baz.cl&quot;
+(rename-file-raw &quot;tmp/foo.cl&quot; &quot;tmp/baz.cl&quot;)
+  -&gt; #p&quot;/usr/home/user1/tmp/baz.cl&quot;
+
+(rename-file &quot;tmp/foo.cl&quot; &quot;baz.cl&quot;)
+  -&gt; #p&quot;/usr/home/user1/tmp/baz.cl&quot;
+(rename-file-raw &quot;tmp/foo.cl&quot; &quot;baz.cl&quot;)
+  -&gt; #p&quot;/usr/home/user1/baz.cl&quot;
+</pre>
+
+<p id="7">
+Like <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>, <a href="rename-file-raw.htm"><b>rename-file-raw</b></a> returns
+three values: The new name, the truename of filespec, and the truename
+of the new name. Here is the source, followed by the source of <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>:
+</p>
+<pre id="8">
+(defun rename-file-raw (filespec new-name)
+  (let ((new-name (pathname new-name))
+	(old-truename (truename filespec)))
+    (excl::filesys-rename-file (namestring old-truename)
+			 (namestring
+			  (merge-pathnames
+			   (translate-logical-pathname new-name))))
+    (values new-name old-truename (truename new-name))))
+
+(defun rename-file (filespec new-name)
+  (let ((defaulted-new-name (merge-pathnames new-name filespec))
+	(old-truename (truename filespec)))
+    (excl::filesys-rename-file (namestring old-truename)
+			 (namestring (translate-logical-pathname
+				      (pathname defaulted-new-name))))
+    (values defaulted-new-name old-truename
+	    (truename defaulted-new-name))))
+</pre>
+
+<p id="9">
+The situation in release 6.1 was confused, because the behavior of
+<a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> depended on the
+value of <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> in inappropriate
+ways (when <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> was an absolute
+pathname, 6.1 <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>
+worked like the new <a href="rename-file-raw.htm"><b>rename-file-raw</b></a>; when <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> was an empty
+pathname -- #p"", 6.1 <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> worked as specified by ANSI, that
+is, as <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> works
+now. An additional function, <a href="rename-file-acl6.1.htm"><b>rename-file-acl6.1</b></a> is provided which is the
+Allegro CL 6.1 implementation of <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>. Users who want the exact 6.1
+behavior can use it. 
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/rename-file-raw.htm">9.0 version</a></td></tr></table></body></html>

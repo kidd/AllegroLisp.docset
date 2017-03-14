@@ -1,0 +1,71 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-common-status-bar</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-common-status-bar.htm">9.0 version</a></td></tr></table><h2 id="2">add-common-status-bar</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window </i> &amp;rest <i>
+options</i><i>
+</i>&amp;key  (<i>font</i> (status-bar-font window))<i> parts min-height</i> (<i>minimum-height</i> min-height)<i> size-grip-p along-top-p name</i><i>
+</i></p>
+
+<p id="4">
+Creates a status-bar that has multiple sections, rather than allowing
+multiple lines of text as with status-bars created by <a href="../a/add-status-bar.htm"><b>add-status-bar</b></a>.  The
+status bar is placed along the bottom of
+<i>window</i>. Panes that are siblings of the new
+status-bar and overlap with it are automatically resized so they no
+longer overlap with the new status-bar. The status bar added by this
+function has a more Windows look and feel compared to that added by
+<a href="../a/add-status-bar.htm"><b>add-status-bar</b></a>
+but, as mentioned, supports only one line of text.
+</p>
+<p id="5">
+The arguments are:
+</p>
+<ul>
+<li id="6">
+<i>font</i> specifies the font that will be used for
+status-bar messages.  The height of the status-bar is set to fit this
+font.
+</li>
+<li id="7">
+<i>parts</i> can be a list of section widths (a number or t) 
+into which the status-bar will be divided. If some members of the 
+list are t, then those sections will be assigned a width such that 
+they are equally wide and just wide enough to make all of the sections 
+cover the entire width of <i>window</i>.
+</li>
+<li id="8">
+<i>min-height</i> can be used to make the status-bar
+taller than its default, which is the height of the status-bar's font.
+</li>
+<li id="9">
+<i>size-grip-p</i> is designed to control whether a
+resizing icon is added at the right end of the status-bar (yes if
+true, no if <code>nil</code>) but the
+OS seems to add it in all cases.
+</li>
+<li id="10">
+<i>along-top-p</i> if true adds the
+status-bar to the top of window rather than the bottom as usual. The
+automatic resizing of sibling panes to make room for the status-bar is
+not implemented when the status-bar is placed along the top.
+</li>
+<li id="11">
+<i>name</i>, if supplied, should be a symbol (we
+recommend using a keyword) providing a programmatic handle for the
+status bar, suitable as the name argument to, e.g., <a href="../f/find-named-object.htm"><b>find-named-object</b></a>.
+</li>
+</ul>
+<p id="12">
+Note that the argument list of this function as returned by <a href="../../excl/arglist.htm"><b>arglist</b></a> (or <a href="../../../../ansicl/dictentr/describe.htm"><b>describe</b></a> or other tools) includes &rest
+options. This is included for internal technical reasons. From the
+programmer's point of view, there is one required argument and a number
+of keyword arguments.
+</p>
+
+
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-common-status-bar.htm">9.0 version</a></td></tr></table></body></html>

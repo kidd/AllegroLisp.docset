@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>convert-mixed-case-symbols</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/convert-mixed-case-symbols.htm">9.0 version</a></td></tr></table><h2 id="2">convert-mixed-case-symbols</h2>
+
+<p id="3"><b>Arguments: </b><i>bool </i>&amp;key <i>push pop</i></p>
+
+<p id="4">This function affects the behavior of 
+<a href="set-case-mode.htm"><b>set-case-mode</b></a> to convert, or not,
+symbols with mixed upper and lower case characters when it is doing a
+symbol name conversion operation. It also affects how symbols are
+created during fasl file reading. If called with the required argument
+<code>t</code>, 
+<a href="set-case-mode.htm"><b>set-case-mode</b></a> will convert
+mixed case symbols. If this function is called with the required
+argument <code>nil</code>, 
+<a href="set-case-mode.htm"><b>set-case-mode</b></a> will
+not convert mixed-case symbols.</p>
+
+<p id="5">
+The initial value returned by this function, starting in release 6.0,
+is <code>t</code>. Note that in releases prior to 6.0, the
+initial value was <code>nil</code>.
+</p>
+
+<p id="6">Symbol name conversion is done for two reasons: </p>
+
+<blockquote>
+  <ol>
+    <li id="7">When a call to 
+    <a href="set-case-mode.htm"><b>set-case-mode</b></a> requires it (when
+      going between upper case and lower case preferred modes). </li>
+    <li id="8">When reading a fasl file compiled in a case mode other than the current case mode, and
+      those case modes differ in whether upper case or lower case was the preferred mode. </li>
+  </ol>
+</blockquote>
+
+<p id="9"><a href="convert-mixed-case-symbols.htm"><b>convert-mixed-case-symbols</b></a> returns the
+previous value of this switch.</p>
+
+<p id="10">
+Note that it is not easy to determine the currently in force value
+using this function. To see the current value, look at the value of
+the unexported variable
+<code>excl::*convert-mixed-case-symbols*</code>. Do not set the
+value of that variable except by using this function, however.
+</p>
+
+<p id="11">This function is used automatically during <code>(require
+:winapi)</code> and <code>(require :ole)</code> (both on Windows only)
+since these modules intentionally contain symbols with mixed case.</p>
+
+<p id="12">The keyword arguments can be used to manage a private stack of
+values for this function (the stack itself is not accessible
+directly). If the keyword argument <code>:push</code> is given a
+true value, then the old value (i.e. the value
+when this function is called) is pushed on the private stack kept for
+this function. The call <code>(excl::convert-mixed-case-symbols nil
+:pop t)</code> restores the setting to the old value at the top of the
+stack (and pops that value off the saved values stack). When
+<i>pop</i> is specified true, the required argument is
+ignored (since the new value comes off the stack).</p>
+
+<p id="13">
+See also <a href="../../case.htm">case.htm</a> and
+<a href="../../variables/excl/s_current-case-mode_s.htm"><code>*current-case-mode*</code></a>,
+<a href="../../variables/excl/s_ignore-package-name-case_s.htm"><code>*ignore-package-name-case*</code></a>,
+and <a href="set-case-mode.htm"><b>set-case-mode</b></a>.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/convert-mixed-case-symbols.htm">9.0 version</a></td></tr></table></body></html>

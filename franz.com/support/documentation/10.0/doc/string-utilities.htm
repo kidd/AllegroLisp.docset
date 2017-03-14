@@ -1,0 +1,127 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>String utility functions in  Allegro CL</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/string-utilities.htm">9.0 version</a></td></tr></table><h1 id="2">String utility functions in  Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#util-string-ops-1">1.0 Operators in the util-string module</a><br><p id="4">
+The <b>util-string</b> module is designed to contain operators which
+extend standard Common-Lisp string functionality in ways that are
+faster, more efficient, or more convenient. The initial release of
+this module contains the single operator string+. 
+</p><p id="5">
+Symbols in the <b>util-string</b> module are in the <b>util.string</b>
+package. You load the module with the form
+</p><pre id="6">
+(require :util-string)
+</pre><hr><hr><h2 id="7"><a name="util-string-ops-1">1.0 Operators in the util-string module</a></h2>
+
+<hr><h3 id="8"><a name="string+-op-bookmarkxx"></a>string+</h3><h3 id="9">Function</h3><h4 id="10">Package: util.string</h4>
+
+<p id="11"><b>Arguments: </b><i>
+</i> &amp;rest <i>objects</i><i>
+</i></p>
+
+<p id="12">
+<a href="string-utilities.htm#string+-op-bookmarkxx"><b>string+</b></a> returns a fresh
+simple string that contains the printed representation of all the
+individual objects passed as arguments in the order that they are
+supplied. Actual strings among objects are
+copied into the result string. Other objects are made into strings as
+if they were passed to
+<a href="../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a> (although the
+actual mechanism may be different for some types of objects),
+with <a href="../ansicl/dictentr/print-pr.htm"><code>*print-pretty*</code></a> bound to
+<code>nil</code>. This function is designed to allow string
+to be used as identifiers or labels to be created quickly and
+efficiently.
+</p>
+<p id="13">
+<a href="string-utilities.htm#string+-op-bookmarkxx"><b>string+</b></a>
+called with no arguments returns the null string "".
+</p>
+<p id="14">
+The aim of <a href="string-utilities.htm#string+-op-bookmarkxx"><b>string+</b></a> is to be much more
+efficient than <code>(format nil "..." ...)</code> and more
+flexible than <a href="../ansicl/dictentr/concate1.htm"><b>cl:concatenate</b></a>. <a href="string-utilities.htm#string+-op-bookmarkxx"><b>string+</b></a>
+is highly optimized for the following types:
+</p>
+<ul>
+<li id="15">
+
+strings
+
+</li>
+<li id="16">
+
+symbols
+
+</li>
+<li id="17">
+
+fixnums
+
+</li>
+<li id="18">
+
+characters
+
+</li>
+</ul>
+<p id="19">
+You may not see the same speed or space efficiencies if other types of
+objects are included.
+</p>
+
+<p id="20">
+<a href="string-utilities.htm#string+-op-bookmarkxx"><b>string+</b></a> is also optimized for
+smaller strings. Creating large strings will also not show much speed
+improvement over <a href="../ansicl/dictentr/format.htm"><b>cl:format</b></a>
+although it is easier to call.
+</p>
+<p id="21">
+No action is taken by <a href="string-utilities.htm#string+-op-bookmarkxx"><b>string+</b></a> to ensure that the
+values of the various print variables other
+than <a href="../ansicl/dictentr/print-pr.htm"><code>*print-pretty*</code></a>
+(like, for example, <a href="../ansicl/dictentr/print-ar.htm"><code>*print-array*</code></a>) are appropriate for providing
+information about the associated object in the string (see the example
+using <a href="../ansicl/dictentr/print-ar.htm"><code>*print-array*</code></a>). If
+you want better control over how objects of types other than those
+listed above, such as arrays, floats (which are also affected by
+variables like <a href="../ansicl/dictentr/read-def.htm"><code>*read-default-float-format*</code></a>), lists, and so on,
+are included, consider passing the desired print representation as an
+argument rather than the object or using <a href="../ansicl/dictentr/format.htm"><b>format</b></a> in place of
+<a href="string-utilities.htm#string+-op-bookmarkxx"><b>string+</b></a>.
+</p>
+
+<h3 id="22">
+Examples
+</h3>
+
+<pre id="23">
+(use-package :util.string)
+(string+ 1 2 3 4 5) <b>RETURNS</b> "12345"
+(string+)  <b>RETURNS</b> ""
+(setq a "new string")
+(setq b (string+ a)) <b>RETURNS</b> "new string"
+(eq a b) <b>RETURNS</b> nil
+
+(string+ 1 #\space 2 #\- 3 "=" 4 :x 5) <b>RETURNS</b> "1 2-3=4x5"
+
+(let ((*print-base* 8))
+  (string+ 16))
+  <b>RETURNS</b> "20"  ;;  *print-base* etc. are respected
+
+;; How more complex objects are stringified depends on things,
+;; like print variables, which are not set by STRING+,
+;; as this vector example shows:
+
+(setq my-vec (vector 1 2 3 4))
+(let ((*print-array* t))
+  (string+ my-vec))
+    <b>RETURNS</b> "#(1 2 3 4)"
+(let ((*print-array* nil))
+  (string+ my-vec))
+    <b>RETURNS</b> &quot;#&lt;Vector&gt;&quot;
+</pre>
+
+
+<hr>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/string-utilities.htm">9.0 version</a></td></tr></table></html>

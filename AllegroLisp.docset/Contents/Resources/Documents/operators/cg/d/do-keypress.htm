@@ -1,0 +1,107 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>do-keypress</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/do-keypress.htm">9.0 version</a></td></tr></table><h2 id="2">do-keypress</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window-or-widget-or-handle-or-nil keynum-or-character
+</i>&amp;key  (<i>preview-seconds</i> 0.5) (<i>down-seconds</i> 0.5)<i> shift control alt</i> (<i>down</i> t) (<i>up</i> t)<i>
+</i></p>
+
+<p id="4">
+This generic function programmatically emulates pressing and/or
+releasing a key on the keyboard, after optionally exposing a window
+and giving it the keyboard focus.  This may be useful for automated
+testing.
+</p>
+<p id="5">
+The two required arguments
+<i>window-or-widget-or-handle-or-nil</i> and
+<i>keynum-or-character</i>.
+</p>
+<p id="6">
+<i>window-or-widget-or-handle-or-nil</i> may be either a
+window, a dialog-item, an internal window "handle", or <code>nil</code>.  If non-<code>nil</code>, then the
+specified window or widget and all of its ancestor windows are brought
+to front, and the window is given the keyboard focus before the
+keypress is done, so that the specified window will receive it.  (If a
+handle of a window in another application is specified, then it is not
+possible to give it the keyboard focus programmatically, though
+<a href="../d/do-click.htm"><b>do-click</b></a> can work
+for that.)
+</p>
+<p id="7">
+<i>keynum-or-character</i> indicates which key to press
+and/or release.  It may be either the value of one of the "vk-" key
+constants (see <a href="../../../variables/cg/key-names.htm"><code>key-names</code></a>) or the character that
+appears on one of the alphanumeric keys. If an uppercase character is
+passed, then a shift is done as if <i>shift</i> were
+true.
+</p>
+<p id="8">
+The keyword arguments are:
+</p>
+<ul>
+<li id="9">
+<i>preview-seconds</i>: may be either a non-negative
+number indicating the number of seconds to sleep before pressing the
+key down, or <code>nil</code> to not sleep at all.  The
+default is 0.5.
+</li>
+<li id="10">
+<i>down-seconds</i> may be either a non-negative number
+indicating the number of seconds to sleep after pressing the key down
+but before releasing it, or <code>nil</code> to not sleep
+at all.  The default is 0.5.
+</li>
+<li id="11">
+<i>shift</i>, <i>control</i>, and
+<i>alt</i>: if <i>shift</i> is true, then
+the shift key is pressed before pressing and/or releasing the main
+key, and released after pressing and/or releasing the main key.
+<i>control</i> and <i>alt</i> work
+similarly for the control and alt keys.
+</li>
+<li id="12">
+<i>down</i> and <i>up</i>: If
+<i>down</i> argument is true, then the key is pressed
+down.  If <i>up</i> is true, then the key is released.
+If both are true, the key is first pressed and then released.  Both
+are true by default.  It would not be useful to pass both as <code>nil</code>.
+</li>
+</ul>
+
+<h4 id="13">
+Examples
+</h4>
+
+<pre id="14">
+;; Type a "j" to a window.
+(do-keypress some-window #\j)
+
+;; Type a semicolon to whatever window has the keyboard focus.
+(do-keypress nil vk-semicolon)
+
+;; Press down the shift key without releasing it.
+;; WARNING:  Doing this without a subsequent
+;; up-click of the same key leaves the OS thinking
+;; that the shift key is still down, and a further keystroke
+;; will believe it is shifted.  This can be fixed interactively
+;; by simply pressing and releasing the left shift key.
+(do-keypress some-window vk-shift :up nil)
+
+;; Type control-j into a window.
+(do-keypress some-window #\j :control t)
+</pre>
+
+<h3 id="15">
+GTK Note
+</h3>
+
+<p id="16">
+This function is not implemented on GTK, and we doubt that there is
+any feasible way to implement it.  The function does not exist at all
+on the GTK platform, so you should use <code>#+mswindows</code>
+to conditionalize any calls to it.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/do-keypress.htm">9.0 version</a></td></tr></table></body></html>

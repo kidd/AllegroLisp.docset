@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>generate-rsa-keys</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/generate-rsa-keys.htm">9.0 version</a></td></tr></table><h2 id="2">generate-rsa-keys</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>verbose</i><i>
+</i></p>
+
+<p id="4">
+Generate a pair of RSA keys and return a list of two items:
+the public key and the private key.
+</p>
+<p id="5">
+If <i>verbose</i> it true (the default) then <a href="generate-rsa-keys.htm"><b>generate-rsa-keys</b></a> will
+print diagnostic information as it generates the keys. This function
+generates very large numbers and tries to find prime numbers near
+those numbers. This can take a long time (perhaps 15 minutes on a
+slow processor if finding a prime number proves difficult).
+</p>
+<p id="6">
+The crucial part of generating an RSA key is computing two
+large prime numbers.  Testing whether a number is prime is
+done in a probabilistic manner.  This means that we can't say
+with 100% certainty that we've found prime numbers and if
+the key is generated with non-prime numbers then the RSA
+algorithm will fail to encrypt or decrypt certain values.  
+A mitigating factor is that all RSA key generators 
+use this probabilistic prime number test and one never
+hears of cases where it failed.
+</p>
+<p id="7">
+The resulting modulus value is approximately 1024 bits long.
+</p>
+
+<p id="8">
+See <a href="rsa-encrypt.htm"><b>rsa-encrypt</b></a>
+and <a href="rsa-decrypt.htm"><b>rsa-decrypt</b></a>.
+</p>
+
+
+<p id="9">
+See <a href="../../miscellaneous.htm#rsa-2">Support for RSA
+encryption</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a> for
+information on RSA encryption and RSA encryption support in Allegro
+CL. There are examples of RSA encryption and decryption in that
+section. <a href="../../miscellaneous.htm#encrypt-1">Support for
+encryption</a> in the same document discusses encryption support
+in Allegro CL in general.
+</p>
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/generate-rsa-keys.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,68 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*sharp-plus-de-facto-standard-compatible*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_sharp-plus-de-facto-standard-compatible_s.htm">9.0 version</a></td></tr></table><h2 id="2">*sharp-plus-de-facto-standard-compatible*</h2>
+
+<p id="3">
+When true (the initial value is <code>t</code>), the inner
+conditionals of nested conditionals are resolved to produce the form
+which the outer conditional applies to. Thus we have the following
+behavior:
+</p>
+<pre id="4">
+(list #+allegro :allegro #-allegro #+foo :foo #-foo :default)
+  evaluates to (:allegro)
+
+(list #+allegro :allegro #-allegro #+foo :foo)
+  signals an error
+</pre>
+<p id="5">
+When the value of this variable is <code>nil</code>, the
+inner conditionals of nested conditionals are not resolved before the
+outer is applied, producing the following behavior on the forms from
+above: evaluate as follows:
+</p>
+<pre id="6">
+(list #+allegro :allegro #-allegro #+foo :foo #-foo :default)
+  evaluates to (:allegro :default)
+
+(list #+allegro :allegro #-allegro #+foo :foo)
+  evaluates to (:allegro)
+</pre>
+
+<p id="7">
+The section <a href="../../implementation.htm#nested-conditionals-3">The issue of nested conditionals in
+Allegro CL</a> in <a href="../../implementation.htm">implementation.htm</a>
+discusses the issue assocated with this variable in detail, with
+examples. See also <a href="s_warn-on-nested-reader-conditionals_s.htm"><code>*warn-on-nested-reader-conditionals*</code></a>.
+</p>
+
+<h4 id="8">
+Further note on (list #+allegro :allegro #-allegro #+foo :foo)
+</h4>
+
+<p id="9">
+If the purpose of this form is to produce the following results:
+</p>
+
+<pre id="10">
+Both :allegro and :foo are features: (:allegro)
+:allegro is a feature and :foo is not: (:allegro)
+:allegro is not a feature and :foo is: (:foo)
+Neither :allegro nor :foo are features: nil
+</pre>
+
+<p id="11">
+then this form
+</p>
+<pre id="12">
+#+allegro (list :allegro) #-allegro (list #+foo :foo)
+</pre>
+<p id="13">
+will do that whatever the value of this variable. If users have forms
+similar to <code>(list #+allegro :allegro #-allegro #+foo
+:foo)</code>, we recommend that they modify them to ones similar to
+<code>#+allegro (list :allegro) #-allegro (list #+foo
+:foo)</code> rather than setting this variable to <code>nil</code>.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_sharp-plus-de-facto-standard-compatible_s.htm">9.0 version</a></td></tr></table></body></html>

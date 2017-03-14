@@ -1,0 +1,142 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-plot-value</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/set-plot-value.htm">9.0 version</a></td></tr></table><h2 id="2">set-plot-value</h2>
+
+<p id="3"><b>Arguments: </b><i>
+plot-widget </i>&amp;key <i>value-index object-index object-id x y x-low x-high y-low y-high icon-size update-now &amp</i><i>
+</i></p>
+
+
+
+
+<p id="4">
+Establishes one or more of the values to display on
+a <a href="../../../classes/cg/plot-widget.htm"><code>plot-widget</code></a> for one of
+the points of one of the chart objects that are represented in a
+plot-widget. The return value is not defined.
+</p>
+<p id="5">
+An alternative to calling <a href="../s/set-plot-value.htm"><b>set-plot-value</b></a> multiple times is to provide a
+<a href="../p/plot-value-returner.htm"><b>plot-value-returner</b></a> function
+that will be called as needed to return all of the plot's values. That
+approach is more efficient if you already have all of the plot's data
+stored somewhere such as in an array. The <a href="../s/set-plot-value.htm"><b>set-plot-value</b></a> approach is somewhat more
+straightforward, and is more suitable if you are incrementally adding
+or modifying the data over time.
+</p>
+<p id="6">
+<b><i>plot-widget</i></b> is the widget to modify.
+</p>
+<h2 id="7">
+The keyword arguments 
+</h2>
+<p id="8">
+The first group of keyword arguments specify which value-index/object
+pair to modify.
+</p>
+<ul>
+<li id="9">
+<b><i>value-index</i></b> is the zero-based index of the
+plot value to modify, or the symbol <code>:new</code> to add a
+plot value to the existing values for the specified object, or the
+symbol <code>:last</code> to modify the most-recently-added plot
+value for the object (that is, the one with the highest index), or
+else <code>nil</code> to default
+to <code>:new</code>. If the plot is empty
+and <i>value-index</i> is <code>:last</code>, then
+it behaves like <code>:new</code>. To simply add new values,
+you can avoid passing this argument.
+</li>
+<li id="10">
+<b><i>object-index</i></b> is the zero-based index of
+the chart object to modify, or nil to not specify an object index. If
+both object-index and object-id are nil, then object-index defaults to
+zero. If both are true, then object-index takes precedence.  If there
+is only one chart object, then there is probably no need to pass this
+argument or object-id.
+</li>
+<li id="11">
+<b><i>object-id</i></b> is the arbitrary ID of the chart
+object to modify, or <code>nil</code> to not specify an
+object ID. If <i>object-index</i>
+is <code>nil</code> and <i>object-id</i> is
+true, then if there is an existing object whose ID
+is <i>object-id</i> then it will be modified, and
+otherwise a new object will be created and its ID will
+be <i>object-id</i>.
+<p id="12">
+(If there is no entry in the <a href="../c/chart-objects.htm"><b>chart-objects</b></a> property for the specified
+<i>object-index</i> or <i>object-id</i>,
+the <a href="../c/chart-objects.htm"><b>chart-objects</b></a> sequence is
+expanded to include such an entry.)
+</p>
+</li>
+</ul>
+<p id="13">
+The next group of keyword arguments specify one or more values for the
+specified value-index/object pair. Any subset of these arguments may
+be passed, though the auxilliary values will have no effect until if
+and when the x and y values are both specified for the same
+value-index/object
+pair. An <i>x</i>, <i>y</i>, <i>x-low</i>,
+<i>x-high</i>, <i>y-low</i>,
+or <i>y-high</i> value may be either a real number to
+add a value to the plot or modify an existing value, or
+else <code>nil</code> to remove a value from the plot.
+</p>
+<ul>
+<li id="14">
+<b><i>x</i></b> is the X coordinate of a point to be
+plotted.  This is always measured along a horizontal axis.
+</li>
+<li id="15">
+<b><i>y</i></b> is the Y coordinate of a point to be
+plotted. This is always measured along a vertical axis.
+</li>
+<li id="16">
+<b><i>x-low</i></b> is an additional value that is
+typically somewhat lower than the x value. It is drawn according to
+the <a href="../h/high-low-value-style.htm"><b>high-low-value-style</b></a> of
+the plot-view, and is typically used to represent an error range.
+</li>
+<li id="17">
+<b><i>x-high</i></b> is an additional value that is
+typically somewhat higher than the main value. It is drawn according
+to the <a href="../h/high-low-value-style.htm"><b>high-low-value-style</b></a> of
+the plot-view, and is typically used to represent an error range.
+</li>
+<li id="18">
+<b><i>y-low</i></b>
+and <b><i>y-high</i></b> are
+like <i>x-low</i> and <i>x-high</i>,
+except that they are plotted vertically from the main plotted point
+rather than horizontally from it.
+</li>
+<li id="19">
+<b><i>icon-size</i></b> is the size of the icon drawn at
+a particular plotted point. The value should be a positive integer to
+be used as the "radius" of the icon, measured in pixels, or
+else <code>nil</code> to defer to the icon-sizes of the
+<a href="../../../classes/cg/icon-drawing-view.htm"><code>icon-drawing-view</code></a>. It is
+used only if the <a href="../d/draw-icons.htm"><b>draw-icons</b></a>
+property of the plot-view is true, and only if the <a href="../i/icon-images.htm"><b>icon-images</b></a> property uses names of the built-in
+icons (which are <code>:dot</code>, <code>:circle</code>,
+<code>:square</code>, <code>:triangle</code>, and
+<code>:diamond</code>) rather than
+pixmaps. For <code>:dot</code>, the value refers to the diameter
+of the dot rather than the radius, to allow more accurate dot sizes.
+</li>
+<li id="20">
+<b><i>update-now</i></b> indicates whether to display
+the new value now. If <code>nil</code>, then the widget is
+invalidated so that it will be redrawn to reflect the new value, but
+as usual not until all queued events are handled. This allows adding
+many values quickly, which will then be displayed once at the end. If
+true, then the plot will be redrawn immediately. This allows animating
+the incremental adding of values. (If a <a href="../../../../ansicl/dictentr/sleep.htm"><b>sleep</b></a> or <a href="../../mp/process-wait.htm"><b>process-wait</b></a> occurs between the adding of
+incremental values, then the widget should still redisplay at those
+times without passing this argument as true.)
+</li>
+</ul>
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/set-plot-value.htm">9.0 version</a></td></tr></table></body></html>

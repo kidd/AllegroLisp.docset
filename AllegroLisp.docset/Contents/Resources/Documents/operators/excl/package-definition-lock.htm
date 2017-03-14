@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>package-definition-lock</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/package-definition-lock.htm">9.0 version</a></td></tr></table><h2 id="2">package-definition-lock</h2>
+
+<p id="3"><b>Arguments: </b><i>package</i></p>
+
+<p id="4">Returns <code>t</code> or <code>nil</code>
+as <i>package</i> is or is not
+definition-locked. <i>package</i> must be a package
+object (it cannot be a symbol or a string). <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> may be used with this function to
+definition-lock or unlock a package.</p>
+
+<p id="5">
+Even if a package is package-definition-locked, no error will be
+signaled when
+</p>
+
+<ol>
+  <li id="6">the value of <a href="../../variables/excl/s_enable-package-locked-errors_s.htm"><code>*enable-package-locked-errors*</code></a> is <code>nil</code>; </li>
+  <li id="7">the violation is dynamically inside the body of a call to the macro
+    <a href="without-package-locks.htm"><b>without-package-locks</b></a>; </li>
+  <li id="8">the value of <a href="../../../ansicl/dictentr/package.htm"><code>*package*</code></a> 
+    is the home package of the symbol being operated
+    on; or </li>
+  <li id="9">the list returned by 
+    <a href="package-implementation-packages.htm"><b>package-implementation-packages</b></a>
+    applied to the value of
+    <a href="../../../ansicl/dictentr/package.htm"><code>*package*</code></a> contains 
+    the home package of the symbol being operated upon. </li>
+</ol>
+
+<p id="10">If a package-definition-lock violation is encountered while
+compiling a file, a warning is signaled rather than an error. If the
+resulting <i>fasl</i> file is loaded, an error will then be
+signaled.</p>
+
+<p id="11">
+See <a href="../../packages.htm">packages.htm</a>, particularly sections
+<a href="../../packages.htm#package-definition-locking-2">Package definition locking</a>
+and <a href="../../packages.htm#implementation-packages-2">Implementation packages</a>,
+and 
+<a href="package-implementation-packages.htm"><b>package-implementation-packages</b></a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/package-definition-lock.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>printer</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/printer.htm">9.0 version</a></td></tr></table><h2 id="2">printer</h2>
+
+<p id="3">
+The class of printer objects. Open a printer with <a href="../../operators/cg/o/open-stream.htm"><b>open-stream</b></a> (not
+make-instance). For example, this form, if run, sets some values and
+pops up a printer job dialog for getting more instructions from the
+user: 
+</p>
+<pre id="4">
+(open-stream 'printer nil nil
+             :output :units-per-inch 100
+             :font (make-font-ex nil :arial 48)) 
+</pre>
+<p id="5">
+The printer-specific arguments to <a href="../../operators/cg/o/open-stream.htm"><b>open-stream</b></a> are documented under <a href="../../operators/cg/p/pop-up-printer-job-dialog.htm"><b>pop-up-printer-job-dialog</b></a>. Do not call
+that function directly, though, because it is called internally when
+you open a printer stream. To show the Page Setup dialog, which is
+independent of any particular print job, call <a href="../../operators/cg/p/pop-up-printer-setup-dialog.htm"><b>pop-up-printer-setup-dialog</b></a> at any time.
+</p>
+<p id="6">
+A higher-level alternative to <a href="../../operators/cg/o/open-stream.htm"><b>open-stream</b></a> is <a href="../../operators/cg/w/with-output-to-printer.htm"><b>with-output-to-printer</b></a>.  This macro ensures that
+the printer stream gets closed after executing the macro body, and
+avoids executing the macro body at all if the user cancels the print
+job dialog.  It also provides additional arguments for setting up the
+resolution and initial font of the printed output.
+</p>
+<p id="7">
+You can draw on a printer stream just as you would on a window,
+calling functions such as <a href="../../operators/cg/d/draw-line.htm"><b>draw-line</b></a> and <a href="../../operators/cg/d/draw-string-in-box.htm"><b>draw-string-in-box</b></a>.  The pixel resolution of a
+laser printer is typically much finer than on a monitor, though, so
+first call <a href="../../operators/cg/s/stream-units-per-inch.htm"><b>stream-units-per-inch</b></a> to find the resolution and
+then adjust your drawing code to it, or call <a href="../../operators/cg/s/stream-units-per-inch.htm"><b>(setf
+stream-units-per-inch)</b></a> to adjust the stream's resolution to
+your preferred drawing coordinates.  Call <a href="../../operators/cg/l/left-margin.htm"><b>left-margin</b></a>, <a href="../../operators/cg/t/top-margin.htm"><b>top-margin</b></a>, <a href="../../operators/cg/r/right-margin.htm"><b>right-margin</b></a>, and <a href="../../operators/cg/b/bottom-margin.htm"><b>bottom-margin</b></a> to find the coordinates within
+which you should draw on the current page, and call <a href="../../operators/cg/n/new-page.htm"><b>new-page</b></a> to advance to the next printed page.
+</p>
+<p id="8">
+To find out attributes of a printer without actually printing
+anything, use <a href="../../operators/cg/w/with-printer.htm"><b>with-printer</b></a>.
+</p>
+
+<h3 id="9">
+GTK Note
+</h3>
+
+<p id="10">
+Printing (hardcopy) is not implemented on the GTK platform at this
+time.  Opening a printer stream will simply invoke the <a href="../../variables/cg/s_gtk-compatibility-warning-action_s.htm"><code>*gtk-compatibility-warning-action*</code></a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/printer.htm">9.0 version</a></td></tr></table></body></html>

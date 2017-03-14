@@ -1,0 +1,83 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>plot-value</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/plot-value.htm">9.0 version</a></td></tr></table><h2 id="2">plot-value</h2>
+
+<p id="3"><b>Arguments: </b><i>
+plot-widget value-type value-index </i>&amp;key <i>object-index object-id</i><i>
+</i></p>
+
+
+
+<p id="4">
+Returns an individual value that is in a <a href="../../../classes/cg/plot-widget.htm"><code>plot-widget</code></a>. This could be a value that was
+added by calling <a href="../s/set-plot-value.htm"><b>set-plot-value</b></a> or a value that is returned by
+the widget's <a href="../p/plot-value-returner.htm"><b>plot-value-returner</b></a> function if it has one. The
+value will be <code>nil</code> if the plot does not define
+a value for the specified value-type, value-index, and object, and
+otherwise it will be a number.
+</p>
+<p id="5">
+<b><i>plot-widget</i></b> is the widget to be accessed.
+</p>
+<p id="6">
+<b><i>value-type</i></b> is the type of value to
+return. This argument may be one of the following keywords:
+</p>
+<ul>
+<li id="7">
+<code>:x</code>: The X coordinate of the value-index'th point to
+plot for some object.
+</li>
+<li id="8">
+<code>:y</code>: The Y coordinate of the value-index'th point to
+plot for some object.
+</li>
+<li id="9">
+<code>:x-high</code>: an optional value that's normally greater
+than the X coordinate.  Typically represents an error range.
+</li>
+<li id="10">
+<code>:x-low</code>: an optional value that's normally less than
+the X coordinate.
+</li>
+<li id="11">
+<code>:y-high</code>: an optional value that is normally greater
+than the Y coordinate.
+</li>
+<li id="12">
+<code>:y-low</code>: an optional value that's normally less than
+the Y coordinate.
+</li>
+<li id="13">
+<code>:icon-size</code>: an optional size for a built-in icon
+that is drawn at X,Y.
+</li>
+</ul>
+<p id="14">
+<b><i>value-index</i></b> is the zero-based index of the
+plot value to access.
+</p>
+<p id="15">
+The keyword arguments are: 
+</p>
+<ul>
+<li id="16">
+<b><i>object-index</i></b> is the zero-based index of
+the chart object to access, or <code>nil</code> to not
+specify an object index. The default is zero if neither this argument
+nor <i>object-id</i> is
+true. <i>object-index</i> takes precedence if both are
+true. The widget's <a href="../c/chart-object-id-equality-test.htm"><b>chart-object-id-equality-test</b></a> is used to find a
+matching object-index.
+</li>
+<li id="17">
+<b><i>object-id</i></b> is the arbitrary ID of the chart
+object to access, as defined in the <a href="../c/chart-objects.htm"><b>chart-objects</b></a> property,
+or <code>nil</code> to not specify an ID.
+</li>
+</ul>
+<p id="18">
+See <a href="../../../classes/cg/plot-widget.htm"><code>plot-widget</code></a>.
+</p>
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/plot-value.htm">9.0 version</a></td></tr></table></body></html>

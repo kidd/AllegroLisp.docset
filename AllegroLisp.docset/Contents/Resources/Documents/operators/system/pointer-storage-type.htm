@@ -1,0 +1,95 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pointer-storage-type</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/pointer-storage-type.htm">9.0 version</a></td></tr></table><h2 id="2">pointer-storage-type</h2>
+
+<p id="3"><b>Arguments: </b><i>object</i></p>
+
+<p id="4">
+Use of this function is deprecated. Please use <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a> instead. Calls to
+<a href="pointer-storage-type.htm"><b>pointer-storage-type</b></a> can
+be changed to a call to <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a> with the same argument
+(and <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a>
+also accepts a second, optional argument). Thus
+</p>
+<pre id="5">
+(sys:pointer-storage-type object)
+</pre>
+<p id="6">
+can be changed to
+</p>
+<pre id="7">
+(sys:lispval-storage-type object)
+</pre>
+<p id="8">
+Returns a keyword denoting where <i>object</i> is
+stored. The possible return values are:
+</p>
+
+<ol>
+<li id="9">
+<code>:immediate</code>, which means the object is not
+referenced with a pointer (fixnums, e.g.)
+</li>
+<li id="10">
+<code>:static</code>, which means the object is stored in an
+area which is not garbage collected.
+</li> 
+<li id="11">
+<code>:tenured</code>, which means the object is stored in
+oldspace (also called tenured space).
+</li>
+<li id="12">
+<code>:new</code>,
+which means the object is stored in newspace but will, if it survives,
+eventually be tenured.
+</li>
+<li id="13">
+<code>:pan</code>, which means that the object is stored in
+newspace and will never be tenured. (The name comes from Peter Pan,
+who never grew old.) See the note just below. (Note that <a href="lispval-storage-type.htm"><b>lispval-storage-type</b></a> returns the
+keyword <code>:panified</code> rather than
+<code>:pan</code>.)
+
+</li>
+</ol>
+
+<p id="14">
+<b>Note on :pan objects:</b> Only system-created objects can have
+storage type <code>:pan</code> but sometimes these objects are
+created as a consequnce of user action. The key vector of a weak-keys
+hashtable is typically a <code>:pan</code> object, though this
+can be controlled. See <a href="../../implementation.htm#cl-make-hash-table-2">cl:make-hash-table</a> in
+<a href="../../implementation.htm">implementation.htm</a>.
+</p>
+
+<p id="15">
+See <a href="../../gc.htm">gc.htm</a> for a discussion of where
+Lisp objects are stored.
+</p>
+
+<pre id="16">
+;; A 1-d static array has storage type :STATIC
+;; (2-d and higher dimension
+;; static arrays have headers that are Lisp objects so they will have
+;; storage type :NEW or :TENURED, but their data vectors
+;; (available via INSPECT) 
+;; will have storage type :STATIC):
+USER(24): (sys:pointer-storage-type 
+             (make-array 3 :allocation :static
+                         :element-type 'fixnum :initial-element 2))
+:static
+;; Fixnums are immediates:
+USER(25): (sys:pointer-storage-type 22)
+:immediate
+;; Most Lisp objects start in new space:
+USER(26): (setq a (cons 1 2))
+(1 . 2)
+USER(27): (sys:pointer-storage-type a)
+:new
+;; And after surviving several scavenges, move to oldspace:
+USER(28): (gc) (gc) (gc) (gc) (gc)
+USER(29): (sys:pointer-storage-type a)
+:tenured
+</pre>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/pointer-storage-type.htm">9.0 version</a></td></tr></table></body></html>

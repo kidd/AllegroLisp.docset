@@ -1,0 +1,92 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>draw-cell</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-cell.htm">9.0 version</a></td></tr></table><h2 id="2">draw-cell</h2>
+
+<p id="3"><b>Arguments: </b><i>
+row column row-num column-num cell-box stream
+</i></p>
+
+<p id="4">
+Called for drawing the interior of each individual cell of a grid (see
+<a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>
+class). If not using one of the built-in widget column types, then
+supply a draw-cell method to draw your custom
+cell. <i>cell-box</i> is the region within stream that
+contains the interior of the cell, so you should draw only within that
+area of stream.
+</p>
+<p id="5">
+Here is the default method, which is used for any cell not handled
+either by one of the special built-in grid-column types such as
+<a href="../../../classes/cg/combo-box-column-mixin.htm"><code>combo-box-column-mixin</code></a> or by an
+application-defined draw-cell method. It simply draws the printed
+representation of the cell's value. Note that it calls <a href="../r/read-cell-value.htm"><b>read-cell-value</b></a> to find
+the value to draw for this particular cell; this is the suggested
+approach, though the <a href="../d/draw-cell.htm"><b>draw-cell</b></a> method may determine what
+to draw by whatever means is suitable to the application. The default
+mthod calls <a href="../c/cell-horizontal-padding.htm"><b>cell-horizontal-padding</b></a>, <a href="../c/cell-vertical-padding.htm"><b>cell-vertical-padding</b></a>,
+<a href="../c/cell-horizontal-justification.htm"><b>cell-horizontal-justification</b></a>,
+<a href="../c/cell-vertical-justification.htm"><b>cell-vertical-justification</b></a>,
+<a href="../c/cell-wrapped-p.htm"><b>cell-wrapped-p</b></a>,
+<a href="../d/data-read-converter.htm"><b>data-read-converter</b></a>, <a href="../d/draw-string-in-box.htm"><b>draw-string-in-box</b></a>,
+<a href="../i/inflate-box.htm"><b>inflate-box</b></a>, and
+<a href="../r/read-cell-value.htm"><b>read-cell-value</b></a>.
+</p>
+<pre id="6">
+(defmethod draw-cell ((row grid-row)(column grid-column)
+                      row-num column-num cell-box stream)
+  (let* ((converter (or (data-read-converter column) #'identity))
+         (value (funcall converter
+                         (read-cell-value
+                          row column row-num column-num))))
+    (when value
+      (draw-string-in-box
+       stream (princ-to-string value) nil nil
+       (inflate-box cell-box
+                    (- (cell-horizontal-padding row column))
+                    (- (cell-vertical-padding row column)))
+       (cell-horizontal-justification row column)
+       (cell-vertical-justification row column)
+       nil (cell-wrapped-p row column)))))
+</pre>
+<p id="7">
+Common Graphics will call <a href="../d/draw-cell.htm"><b>draw-cell</b></a> any time a grid cell gets
+partly uncovered or is invalidated (such as by calling <a href="../i/invalidate-cell.htm"><b>invalidate-cell</b></a> or
+<a href="../i/invalidate-section.htm"><b>invalidate-section</b></a>), so an
+application need not call it.
+</p>
+<p id="8">
+A draw-cell method often calls <a href="../r/read-cell-value.htm"><b>read-cell-value</b></a> to retrieve the
+value that should be displayed in the cell. Otherwise it may call the
+<a href="../d/data-reader.htm"><b>data-reader</b></a> of
+the column and/or directly access the <a href="../d/data-object.htm"><b>data-object</b></a> of the row to find the
+value. Those techniques are handy if the grid follows the common
+paradigm where each grid row represents a data object and each grid
+column represents an attribute of those objects. Otherwise, a
+draw-cell method may use a completely custom technique for determining
+the value to draw, keying in some way off of the names or types of the
+row and column or the sub-row and sub-column indices.
+</p>
+<p id="9">
+Even if you are not using the built-in cell widgets such as those
+provided by <a href="../../../classes/cg/editable-text-column-mixin.htm"><code>editable-text-column-mixin</code></a> or
+<a href="../../../classes/cg/combo-box-column-mixin.htm"><code>combo-box-column-mixin</code></a>, you still
+likely won't need to write custom <a href="../d/draw-cell.htm"><b>draw-cell</b></a> methods for cells that
+simply display a string for the value you are returning from a <a href="../r/read-cell-value.htm"><b>read-cell-value</b></a> method.
+And if you need to modify the way in which the default draw-cell
+method draws the string, you can alternately do that by writing
+methods on generic functions such as <a href="../c/cell-background-color.htm"><b>cell-background-color</b></a>, <a href="../c/cell-font.htm"><b>cell-font</b></a>, and <a href="../c/cell-vertical-padding.htm"><b>cell-vertical-padding</b></a>.
+</p>
+<p id="10">
+Before Common Graphics calls <a href="../d/draw-cell.htm"><b>draw-cell</b></a>, it will first set the current font of
+the stream to be the font that's returned by <a href="../c/cell-font.htm"><b>cell-font</b></a>. It will also set the current <a href="../f/foreground-color.htm"><b>foreground-color</b></a> and <a href="../b/background-color.htm"><b>background-color</b></a> of the stream to be the values
+returned by <a href="../c/cell-foreground-color.htm"><b>cell-foreground-color</b></a> and <a href="../c/cell-background-color.htm"><b>cell-background-color</b></a>, and fill the cell with
+the background color.  So a custom <a href="../d/draw-cell.htm"><b>draw-cell</b></a> method does not need to handle those
+aspects of the drawing.
+</p>
+<p id="11">
+See also <a href="../d/draw-cell-focus.htm"><b>draw-cell-focus</b></a>.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-cell.htm">9.0 version</a></td></tr></table></body></html>

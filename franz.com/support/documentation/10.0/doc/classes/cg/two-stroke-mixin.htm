@@ -1,0 +1,109 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>two-stroke-mixin</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">two-stroke-mixin</h2>
+
+<p id="3">
+This mixin class can be used along with a window class
+(<a href="basic-pane.htm"><code>basic-pane</code></a> or
+some subclass of it) for creating windows that interpret certain kinds
+of touchscreen gestures. This class specializes in interpreting
+"two-stroke" drags such as three fingers dragged to the right and then
+downward.  It also interprets single-direction drags as well as taps
+and holds plus two-finger pinches and spreads.  As with other
+touchscreen support, it is currently available only on the Windows
+platform.
+</p>
+<p id="4">
+To write code directly on top of Microsoft's touchscreen support, use
+either <a href="../../operators/cg/g/gesture-event.htm"><b>gesture-event</b></a>
+or <a href="../../operators/cg/t/touch-event.htm"><b>touch-event</b></a> instead of this
+class.  <a href="../../operators/cg/g/gesture-event.htm"><b>gesture-event</b></a>
+interprets certain common gestures for you, but handles only a handful
+of them, while <a href="../../operators/cg/t/touch-event.htm"><b>touch-event</b></a>
+requires that you interpret your own gestures from many finger
+coordinate positions. To make it easier to handle a larger number of
+gestures, we provide this custom facility on top of
+the <a href="../../operators/cg/t/touch-event.htm"><b>touch-event</b></a> API, though
+the particular gestures that it interprets may not be what you want to
+handle. It specializes in dragging gestures where the user drags one
+or more fingers either leftward, upward, rightward, or downward, and
+then perhaps in another one of those directions while their finger are
+still on the screen.
+</p>
+<p id="5">
+You probably should put this class before the window class in the
+precedence for the class that you create for windows, for example:
+</p>
+
+<pre id="6">
+(defclass my-two-stroke-window (two-sroke-mixin frame-window)())
+</pre>
+
+<p id="7">
+An application would handle the high-level gestures by adding one or
+more <a href="../../operators/cg/t/two-stroke-gesture.htm"><b>two-stroke-gesture</b></a>
+methods.  It could also handle dragging gestures during the actual
+drag by adding one or more <a href="../../operators/cg/t/two-stroke-dragging.htm"><b>two-stroke-dragging</b></a> methods.
+</p>
+<p id="8">
+Here is complete simple example that simply prints the arguments that
+are passed to the two generic functions.
+</p>
+
+<pre id="9">
+(in-package :cg-user)
+
+(defclass two-stroke-demo (two-stroke-mixin frame-window)
+  ((two-stroke-demo-string :accessor two-stroke-demo-string
+                           :initform nil)
+   (two-stroke-now-dragging :accessor two-stroke-now-dragging
+                            :initform nil))
+  (:default-initargs
+    :double-buffered t
+    :scrollbars nil))
+
+(defmethod redisplay-window ((window two-stroke-demo) &optional box)
+  (declare (ignore box))
+  (with-boxes (interior)
+    (nvisible-box window interior)
+    (erase-contents-box window interior)
+    (let* ((dragging (two-stroke-now-dragging window))
+           (string (two-stroke-demo-string window)))
+      (with-font (window (make-font-ex nil "Arial"
+                                       (if dragging 24 48)))
+        (cond (dragging
+               (move-to-x-y window 0 0)
+               (princ string window))
+              (t (draw-string-in-box
+                  window string nil nil interior :center :center)))))))
+
+(defmethod two-stroke-dragging ((window two-stroke-demo) count x y
+                                dx-down dy-down dx-prev dy-prev
+                                spread-diff spread-factor first last)
+  (setf (two-stroke-now-dragging window) t)
+  (setf (two-stroke-demo-string window)
+    (format nil "~(~r~) finger~:p at ~a ~a~%~
+                 distance from start ~a ~a~%~
+                 distance from previous ~a ~a~%~
+                 spread difference ~a~%~
+                 spread factor ~a~%~a"
+      count x y dx-down dy-down dx-prev dy-prev spread-diff spread-factor
+      (if first "FIRST" "")(if last "LAST" "")))
+  (invalidate window)
+  t)
+
+(defmethod two-stroke-gesture ((window two-stroke-demo) count gesture)
+  (setf (two-stroke-now-dragging window) nil)
+  (setf (two-stroke-demo-string window)
+    (format nil "~(~r~)   ~s" count gesture))
+  (invalidate window)
+  t)
+
+#+test
+(make-window :two-stroke-demo
+  :class 'two-stroke-demo
+  :title "Try Some One- and Two-Stroke Finger Gestures"
+  :interior (make-box-relative 100 100 800 500))
+</pre>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

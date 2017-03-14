@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>apropos-regexp</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/apropos-regexp.htm">9.0 version</a></td></tr></table><h2 id="2">apropos-regexp</h2>
+
+<p id="3"><b>Arguments: </b><i>
+string </i> &amp;optional <i>package external-only case-insensitive</i><i>
+</i></p>
+
+<p id="4">
+This function is just like <a href="../../../ansicl/dictentr/aproposa.htm"><b>apropos</b></a> except the first
+<i>string</i> argument (which must be a string or a
+symbol) is interpreted as a regular expression. For example (the exact
+symbols listed may be different for you):
+</p>
+<pre id="5">
+cl-user(2): (apropos-regexp "^def.n-.*")
+excl::defun-like    [function] (xp list &rest args)
+excl::defun-spec
+excl::defun-proto-1
+defun-proto         [macro] (name varlist &rest body)
+ff::defun-foreign-callable-1 [function] (name arglist body)
+ff:defun-c-callable [macro] (&whole form &rest args)
+ff:defun-foreign-callable [macro] (name arglist &rest body)
+sys::defun-noicheck
+cl-user(3): 
+</pre>
+
+<p id="6">
+The first optional argument, <i>package</i>, is similar
+to the same optional argument to <a href="../../../ansicl/dictentr/aproposa.htm"><b>apropos</b></a>. It can be <code>nil</code> or a package designator. If it is a package
+designator, only symbols accessible in that package are considered.
+</p>
+<p id="7">
+The second and third optional arguments are Allegro CL extensions to
+<a href="../../../ansicl/dictentr/aproposa.htm"><b>apropos</b></a>, as described
+in <a href="../../implementation.htm#extensions-to-clfuns-one-2">Extensions to cl:make-package,
+cl:disassemble, cl:open, cl:apropos</a> in
+<a href="../../implementation.htm">implementation.htm</a>. If
+<i>external-only</i> is specified non-<code>nil</code>, only external symbols are considered. If
+<i>case-insensitive</i> is specified non-<code>nil</code>, a case-insensitive search is done, rather than a
+case-sensitive search. All the optional arguments default to <code>nil</code>. See <a href="../../implementation.htm#extensions-to-clfuns-one-2">Extensions to cl:make-package,
+cl:disassemble, cl:open, cl:apropos</a> in
+<a href="../../implementation.htm">implementation.htm</a> for more information on the
+optional arguments.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/apropos-regexp.htm">9.0 version</a></td></tr></table></body></html>

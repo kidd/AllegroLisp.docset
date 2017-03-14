@@ -1,0 +1,141 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>blowfish-encrypt</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/blowfish-encrypt.htm">9.0 version</a></td></tr></table><h2 id="2">blowfish-encrypt</h2>
+
+<p id="3"><b>Arguments: </b><i>
+value </i>&amp;key <i>key end context pad in-place</i> (<i>external-format</i> :utf-8) (<i>mode</i> :ecb)<i> iv</i><i>
+</i></p>
+
+
+
+<p id="4">
+This function encrypts <i>value</i> using the specified
+<i>key</i> or <i>context</i> and returns
+two values: an (unsigned-byte 8) array holding the encryption and an
+integer specifying the index into that array just after the end of the
+encrypted result (equivalently, the length of the encrypted
+result). The second value will also be the length of the array
+returned as the first value if the <i>in-place</i> is
+<code>nil</code> (which is its default). If
+<i>in-place</i> is true, the second returned value will
+be less than or equal to the length of the first returned value.
+</p>
+
+<p id="5">
+The arguments are:
+</p>
+
+<ul>
+<li id="6">
+<i>value</i> (the single required argument): an
+(unsigned-byte 8) array or string to be encrypted.
+</li>
+<li id="7">
+<i>key</i>: a string or (unsigned-byte 8) array which
+serves as the encryption key. Do not specify a value for this argument
+and for <i>context</i>.
+</li>
+<li id="8">
+<i>end</i>: an integer or <code>nil</code>.
+If an integer, the length of the portion of <i>value</i>
+to be encrypted. If <code>nil</code>, then the whole of
+<i>value</i> is encrypted. (The
+<i>in-place</i> argument to both this function and to
+<a href="blowfish-decrypt.htm"><b>blowfish-decrypt</b></a> allows
+using an existing (unsigned-byte 8) array, which may be larger than
+necessary to hold the encrypted value. This argument allows you to
+specify the portion of interest and ignore the remainder of the
+array.)
+</li>
+<li id="9">
+<i>context</i>: an object (again, an (unsigned-byte 8)
+array) returned by <a href="blowfish-init.htm"><b>blowfish-init</b></a> when passed the key to be used to
+encrypt <i>value</i>. This argument is typically
+used when a number of things need to be encrypted or decrypted using
+the same key. (The first step in encryption and decryption is to
+convert the key into a context object. Using the context object
+directly avoids repeating this step for each encryption/decryption.)
+Do not specify a value for this argument and for
+<i>key</i>.
+</li>
+<li id="10">
+<i>pad</i> (default is <code>t</code>): if
+<i>pad</i> is true then the value to be encrypted will
+be padded out to have an octet length that is a multiple of 8.  The
+pad is constructed such that it contains information specifying how
+much padding was added so that when the result is decrypted, the
+padding can be removed.  Thus if <i>pad</i> is true then
+at least one and as many as eight more octets will be added to the
+returned value.  If <i>pad</i> is
+<code>:pkcs5</code>, then standard PKCS#5 padding will be used.
+If pad is <code>:zero</code>, then null padding will be used.
+Note that null padding is only suitable if the value to be encrypted
+contains no null octets.  If pad is <code>nil</code> then
+an error is signaled if the value to be encrypted doesn't have a
+length that is a multiple of 8.
+</li>
+<li id="11">
+<i>in-place</i>: if specified true, the value of
+<i>value</i> will be modified to hold the encrypted
+value (if possible), thus avoiding the creation of a new array. If it
+is not possible to encrypt in place then this argument will be ignored
+and a new (unsigned-byte 8) array will be created. (This would happen
+when <i>value</i> is a string rather than an
+(unsigned-byte 8) array or when <i>value</i> is not
+large enough to hold the result.)  If <i>value</i> is
+used, the second returned value (the number of bytes in the
+decryption) may be less than the length of the first returned value.
+</li>
+<li id="12">
+<i>external-format</i>: this argument specifies the
+external format to be used when interpreting the string to be
+encrypted. The same external format should be used when
+decrypting. The default is <code>:utf-8</code> and that is in
+general a good choice. When
+<code>:default</code> is specified, the value returned by
+<code>(find-external-format :default)</code> is used
+(see <a href="find-external-format.htm"><b>find-external-format</b></a>).
+That value is not recommended because the value of the default
+external format (which depends on the value of <a href="../../variables/excl/s_locale_s.htm"><code>*locale*</code></a>) may change between
+encryption and decryption. 
+</li>
+<li id="13">
+<i>mode</i>: this argument allows specifying ECB
+(Electronic Code Book) encryption or CBC (Cipher Block Chaining)
+encryption. The default is <code>:ecb</code>, meaning use
+ECB. Specify <code>:cbc</code> for CBC. The text must be
+decrypted in the same mode. If CBC encryption mode is requested, the
+initialization vector (IV) must be provided by using keyword argument
+<i>iv</i>. The IV must be a usb8 array of at least 8
+elements. The IV <b>will be modified</b> so that it may be used for
+subsequent encrypt/decrypt calls. CBC encryption is generally
+considered superior to ECB encryption and should be used unless there
+is a reason not to.
+</li>
+<li id="14">
+<i>iv</i>: ignored unless <i>mode</i> is
+specified <code>:cbc</code>. When mode is
+<code>:cbc</code>, the value, called the initialization vector
+or IV, must be an (unsigned-byte 8) array of at least 8 elements. The IV
+<b>will be modified</b> so that it may be used for subsequent
+encrypt/decrypt calls.
+</li>
+</ul>
+
+<p id="15">
+See also the new auxilliary functions <a href="hex-string-to-usb8-array.htm"><b>hex-string-to-usb8-array</b></a> and <a href="usb8-array-to-hex-string.htm"><b>usb8-array-to-hex-string</b></a>.
+</p>
+<p id="16">
+See also <a href="blowfish-decrypt.htm"><b>blowfish-decrypt</b></a> and <a href="blowfish-init.htm"><b>blowfish-init</b></a>.
+</p>
+<p id="17">
+See <a href="../../miscellaneous.htm#blowfish-2">Support for
+Blowfish encryption</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a>
+for information on Blowfish encryption and Blowfish encryption support
+in Allegro CL. There are examples of blowfish encryption and decryption
+in that section. <a href="../../miscellaneous.htm#encrypt-1">Support for
+encryption</a> in the same document discusses encryption support
+in Allegro CL in general.
+</p>
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/blowfish-encrypt.htm">9.0 version</a></td></tr></table></body></html>

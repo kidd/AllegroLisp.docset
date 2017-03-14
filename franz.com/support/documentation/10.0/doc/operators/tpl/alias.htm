@@ -1,0 +1,95 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>alias</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: top-level</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/tpl/alias.htm">9.0 version</a></td></tr></table><h2 id="2">alias</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name args </i> &amp;rest <i>body</i><i>
+</i></p>
+
+<p id="4">
+This macro is used to define top-level aliases. The syntax of
+<a href="alias.htm"><b>alias</b></a> is similar to
+that of <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a>, and
+<i>body</i> can be anything acceptable in the body of a
+lambda expression. <i>name</i> can be a string or a list
+of a string and options. The string is the name of the top-level
+alias. If <code>(</code><code><i>string</i></code><code>
+</code><code><i>option*</i></code><code>)</code> is used, the options
+are (either or both may be specified) the keyword
+<code>:case-sensitive</code> and the integer abbreviation
+index.
+</p>
+<p id="5">
+As with <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a>, if
+there is more than one form after the argument list, and the first
+form is a string, it is assumed to be a documentation string and is
+used for documenting the command. The <a href="../../tpl-commands/help.htm"><b>:help</b></a> top-level command will display the
+new command created by alias and will use the documentation string, if
+present, for documentation.
+</p>
+
+<p id="6">If the <code>:case-sensitive</code> option is chosen, the arguments
+will be read in case-sensitive mode without regard to the current
+reader mode. This option is most appropriate when the argument is a
+filename. Case-sensitivity is fully described in
+<a href="../../case.htm">case.htm</a>. </p>
+
+<p id="7">If an abbreviation index is supplied, it must be an integer which
+is interpreted as an index into the string specified by the string
+which is either the value of or the first element of
+<i>name</i>. This index identifies the shortest
+substring which will stand for the entire command. Note that string
+indexing is <em>zero</em>-based.  For example, </p>
+
+<pre id="8">
+("load" 1)
+</pre>
+
+<p id="9">specifies that <em>lo</em> and <em>loa</em> are valid abbreviations
+for <em>load</em>, while </p>
+
+<pre id="10">
+("load" 0)
+</pre>
+
+<p id="11">specifies <em>l</em> as well. Note that it is possible that the
+same substring will be common to more than one command. In that case,
+the substring calls the most recently defined command. However, no
+warning is printed when a command is defined that leads to such a
+conflict.</p>
+
+<p id="12"><i>args</i> is the list of formal parameters to the
+alias, and has the same form as the formal list of a lambda
+expression. </p>
+
+<p id="13">An alias can also be defined with <strong>setf</strong>, in the
+following way: </p>
+
+<pre id="14">
+  (setf (top-level:alias "foo") 
+     #'(lambda (arg) (format t "foo: arg is ~s~%"
+  arg))) 
+</pre>
+
+<p id="15">That form has the same effect as: </p>
+
+<pre id="16">
+  (top-level:alias "foo" (arg) 
+             (format t "foo: arg is ~s~%"
+  arg)) 
+</pre>
+
+<p id="17">This operator is not available in Lisp images built with a minimal
+top level, that is built with the <i>include-tpl</i>
+argument to <a href="../excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+specified <code>nil</code>. See
+<a href="../../building-images.htm#minimal-top-levels-1">Minimal top levels</a> in
+<a href="../../building-images.htm">building-images.htm</a> for information on minimal top
+levels.</p>
+
+<p id="18">
+See <a href="../../top-level.htm">top-level.htm</a>
+for more information on the top level.
+</p>
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/tpl/alias.htm">9.0 version</a></td></tr></table></body></html>

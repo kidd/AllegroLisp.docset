@@ -1,0 +1,219 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>command-buttons</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/command-buttons.htm">9.0 version</a></td></tr></table><h2 id="2">command-buttons</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object-editor
+</i></p>
+
+<p id="4">
+Returns a list of the standard command buttons that are included on
+<b><i>object-editor</i></b>, which must be an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>.  The value may be
+set at creation time with the <i>command-buttons</i>
+initarg, or any time later by calling <a href="../c/command-buttons.htm"><b>(setf command-buttons)</b></a>.
+</p>
+<p id="5">
+The value should be a list containing any subset of the keyword
+symbols in the left column below.  The list of all choices is the
+value the constant <a href="../../../variables/cg/s_object-editor-command-buttons_s.htm"><code>*object-editor-command-buttons*</code></a>, which is the
+default value of this property. Each button calls an exported generic
+function, which is shown to the right of the button name here.  An
+application could add custom widgets that call these functions rather
+than using the built-in buttons.  An application could also add
+wrapper methods to the generic functions to intercept all usage of the
+command buttons (or other calls to the functions).  See the doc pages
+for the functions for more information on the behavior of these
+buttons.
+</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8">
+  <tr>
+    <td WIDTH="40%" VALIGN="TOP"><p id="6" ALIGN="CENTER"><b>Button Name</b></p></td>
+    <td WIDTH="40%" VALIGN="TOP"><p id="7" ALIGN="CENTER"><b>Generic Function Called</b></p></td>
+    <td WIDTH="20%" VALIGN="TOP"><p id="8" ALIGN="CENTER"><b>Notes</b></p></td>
+  </tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:first-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../d/display-special-instance.htm"><b>display-special-instance</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+(passing <code>:first</code>)
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:previous-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../d/display-special-instance.htm"><b>display-special-instance</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+(passing <code>:previous</code>)
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:next-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../d/display-special-instance.htm"><b>display-special-instance</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+(passing <code>:next</code>)
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:last-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../d/display-special-instance.htm"><b>display-special-instance</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+(passing <code>:last</code>)
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:select-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../o/object-editor-select.htm"><b>object-editor-select</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:search-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../o/object-editor-search.htm"><b>object-editor-search</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:save-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../o/object-editor-save.htm"><b>object-editor-save</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:revert-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../o/object-editor-revert.htm"><b>object-editor-revert</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:new-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../o/object-editor-new.htm"><b>object-editor-new</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:delete-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../o/object-editor-delete.htm"><b>object-editor-delete</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:commit-button </code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../c/cg-commit.htm"><b>cg-commit</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+<tr>
+<td WIDTH="40%" VALIGN="TOP"><b><code>:rollback-button</code></b></td>
+<td WIDTH="40%" VALIGN="TOP">
+
+<a href="../c/cg-rollback.htm"><b>cg-rollback</b></a>
+
+</td>
+<td WIDTH="20%" VALIGN="TOP">
+
+&nbsp;
+
+</td>
+</tr>
+
+</table>
+
+<p id="9">
+The order of the buttons in this property value does not make a
+difference because the buttons that are included are automatically
+layed out in certain standard positions.  When creating an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> interactively as a
+form window in a project, you could move the buttons to wherever you
+like after the automatic layout is done.
+</p>
+<p id="10">
+<code>:save-button</code> is a <a href="../../../classes/cg/default-button.htm"><code>default-button</code></a>, and so pressing the Enter key in
+an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will call
+<a href="../o/object-editor-save.htm"><b>object-editor-save</b></a> (unless the
+keyboard focus is on some other button widget, which makes that button
+be the acting default button).  <code>:revert-button</code> is a
+<a href="../../../classes/cg/cancel-button.htm"><code>cancel-button</code></a>, and so
+pressing the Escape key anywhere in an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will call <a href="../o/object-editor-revert.htm"><b>object-editor-revert</b></a>.
+</p>
+<p id="11">
+<code>:commit-button</code> and
+<code>:rollback-button</code> ordinarily should not be used on
+an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> whose
+<a href="../e/edited-class.htm"><b>edited-class</b></a> is not a
+persistent class.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/command-buttons.htm">9.0 version</a></td></tr></table></body></html>

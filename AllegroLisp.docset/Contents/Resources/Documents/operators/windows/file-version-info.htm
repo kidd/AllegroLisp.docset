@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>file-version-info</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: windows</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/file-version-info.htm">9.0 version</a></td></tr></table><h2 id="2">file-version-info</h2>
+
+<p id="3"><b>Arguments: </b><i>
+file
+</i></p>
+
+<p id="4">
+Returns the <b>file version</b> information (VERSIONINFO) from a file
+on the Microsoft Windows platform. The can include general attributes
+of the file such as a description of the file and the name of the
+company that supplies it, though the Microsoft API refers to this
+block of information as "file version info". This information appears,
+for example, on the Version tab of the properties dialog for a file in
+Microsoft's File Explorer.
+</p>
+<p id="5">
+<b><i>file</i></b> should be the pathname or path
+namestring of a file. The file is typically an EXE or DLL file.
+</p>
+<p id="6">
+The return value will be a plist of the version info strings that
+exist in the file, where the keys are keywords that match the keyword
+parameters of <a href="set-file-version-info.htm"><b>set-file-version-info</b></a> (see that
+function for a list of the file attribute keywords). The value for
+each of these keys will be a list of the length of the field and the
+string that's currently in the field (where the current string may be
+shorter than the field length).  The plist will include entries only
+for the subset of the allowed attributes that are defined in the
+specified file.
+</p>
+<p id="7">
+The returned plist will also contain entries
+for <code>:language-id</code> (an integer), :language-name (a
+string), and <code>:code-page</code> (an integer). These
+indicate the language in which the information strings are defined.
+An exception is that if there is no file version info resource in the
+file at all, then <code>nil</code> is returned.
+</p>
+<h3 id="8">  
+Example
+</h3>
+
+<pre id="9">
+(file-version-info "c:/windows/system32/charmap.exe")
+
+A value similar to following is returned.
+
+(:company-name (21 "Microsoft Corporation")
+ :file-description (13 "Character Map")
+ :file-version (33 "5.1.2600.0 (xpclient.010817-1148)")
+ :internal-name (11 "charmap.exe")
+ :legal-copyright (45 "Â© Microsoft Corporation. All rights reserved.")
+ :original-filename (11 "charmap.exe")
+ :product-name (36 "MicrosoftÂ® WindowsÂ® Operating System")
+ :product-version (10 "5.1.2600.0")
+ :language-id 1033
+ :language-name "English (United States)"
+ :code-page 1200)
+</pre>
+
+<p id="10">
+The function <a href="../excl/generate-application.htm"><b>generate-application</b></a> takes a file-version-info
+argument which allows users to specify the VERSIONINFO of the
+application executable. See <a href="../../delivery.htm#version-info-3">Setting the VERSIONINFO of the application
+executable on Windows</a> in <a href="../../delivery.htm">delivery.htm</a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/file-version-info.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,262 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>tab-control</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/tab-control.htm">9.0 version</a></td></tr></table><h2 id="2">tab-control</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of tab-control controls.
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+An instance of the tab-control class. This control allows you to
+create a set of pages of controls and group them in related sub-groups
+on each tab. The <a href="../../ide-menus-and-dialogs/options-dialog.htm">Options dialog</a> dialog is an example of
+a tab-control.
+</p>
+
+
+<p id="7">
+The individual tabs are instances of the <a href="tab-info.htm"><code>tab-info</code></a> class. The <a href="../../operators/cg/r/range.htm"><b>range</b></a> property contains a list
+of <a href="tab-info.htm"><code>tab-info</code></a> objects, and
+the <a href="../../operators/cg/v/value.htm"><b>value</b></a> property contains
+the name of the selected <a href="tab-info.htm"><code>tab-info</code></a>. Setting the <a href="../../operators/cg/v/value.htm"><b>value</b></a> property to a different name will select a
+different tab. A tab can be added to an existing tab-control by
+calling <a href="../../operators/cg/a/add-tab.htm"><b>add-tab</b></a>, or
+removed by calling <a href="../../operators/cg/r/remove-tab.htm"><b>remove-tab</b></a>.  A widget can be added to
+an existing tab by calling <a href="../../operators/cg/a/add-component-to-tab.htm"><b>add-component-to-tab</b></a>, or removed by
+calling <a href="../../operators/cg/r/remove-component-from-tab.htm"><b>remove-component-from-tab</b></a>.
+</p>
+<p id="8">
+Other properties that are unique to the <a href="tab-control.htm"><code>tab-control</code></a> include <a href="../../operators/cg/t/tab-height.htm"><b>tab-height</b></a>, <a href="../../operators/cg/t/tab-width.htm"><b>tab-width</b></a>, <a href="../../operators/cg/f/fixed-width.htm"><b>fixed-width</b></a>, <a href="../../operators/cg/s/single-line.htm"><b>single-line</b></a>, <a href="../../operators/cg/f/focus-on-click.htm"><b>focus-on-click</b></a>, <a href="../../operators/cg/r/ragged-right.htm"><b>ragged-right</b></a>, <a href="../../operators/cg/t/tab-side.htm"><b>tab-side</b></a>, <a href="../../operators/cg/b/button-style.htm"><b>button-style</b></a>, and <a href="../../operators/cg/t/tabs-are-draggable.htm"><b>tabs-are-draggable</b></a>.
+</p>
+<p id="9">
+When creating tab-controls interactively on form windows, tab-controls
+allow overlap on their borders even when the <a href="../../operators/ide/allow-component-overlap.htm"><b>allow-component-overlap</b></a> option is turned
+off. Objects overlapping a tab may or may not appear in the range and
+tab-info(s) for the tabs they overlap, so use this feature with care.
+</p>
+
+<p id="10">
+In Windows, the tab-order of the controls on a parent window is always
+the same as the front-to-back occlusion order of the controls. This
+means that a <a href="tab-control.htm"><code>tab-control</code></a> must be positioned in
+the tab order after all of the widgets that are on it, or else it will
+cover those widgets. This is handled automatically when designing a
+form window interactively, but it must be handled by the application
+when creating a dialog programmatically. See <a href="../../operators/cg/t/tab-position.htm"><b>tab-position</b></a>.
+</p>
+<p id="11">
+The generic functions <a href="../../operators/cg/s/select-adjacent-tab.htm"><b>select-adjacent-tab</b></a> and <a href="../../operators/cg/s/select-recent-tab.htm"><b>select-recent-tab</b></a> are
+useful for keyboard shortcuts that select nearby or recently-selected
+tabs of a tab-control.
+</p>
+
+<h3 id="12">
+Adding a tab-control to your form
+</h3>
+<p id="13">
+Click the tab-control tool on of the Component toolbar. Move the mouse
+cursor to the part of the form where you want to place the control,
+and click again. The control will appear with colored resizing
+handles.
+</p>
+
+<h3 id="14">
+Adding widgets to tabs programmatically
+</h3>
+
+<p id="15">
+If you are creating a dialog programmatically rather than laying it
+out interactively as a form, then there are two ways to add widgets to
+tab-control tabs.  One way is to associate the widgets with each other
+when creating all of them together. The other way is to call <a href="../../operators/cg/a/add-component-to-tab.htm"><b>add-component-to-tab</b></a> to
+add a widget to a pre-existing tab-control.
+</p>
+<p id="16">
+First we have is an example of the first approach. This code will
+create a window that contains a tab-control that has a <a href="button.htm"><code>button</code></a> widget on its
+first tab. To make the button appear only when its tab is selected,
+the tab-control and the button must be associated with each other.  So
+the button points to its tab by specifying a
+<code>:tab-control</code> initarg of <code>(:my-tab-control
+:one)</code>, which is a list of the name of the tab-control
+followed by the name of the tab. Conversely, the first tab points to
+the button by specifying a <code>:widgets</code> initarg of
+<code>(:first-button)</code>, which is a list of all of the
+widgets that are on that tab.
+</p>
+
+<pre id="17">
+(setq my-window
+      (make-window :my-window
+        :class 'dialog :width 300 :height 300
+        :dialog-items
+        (list (make-instance 'button
+                :left 80 :top 100 :width 100 :height 30
+                :name :first-button :title "~First"
+                :tab-control '(:my-tab-control :first-tab))
+              (make-instance 'tab-control
+                :left 50 :top 50 :width 200 :height 150
+                :name :my-tab-control :value :first-tab
+                :range
+                (list (make-instance 'tab-info
+                        :name :first-tab :label "One"
+                        :widgets '(:first-button))
+                      (make-instance 'tab-info
+                        :name :second-tab :label "Two")
+                      (make-instance 'tab-info
+                        :name :third-tab :label "Three"))))))
+</pre>
+
+<p id="18">
+The other way to add a widget to a tab programmatically is to call
+<a href="../../operators/cg/a/add-component-to-tab.htm"><b>add-component-to-tab</b></a>. This is
+useful if you want to create a tab-control and then add widgets to it
+later.  (Similarly, <a href="../../operators/cg/r/remove-component-from-tab.htm"><b>remove-component-from-tab</b></a> will
+remove a widget from a tab.)
+</p>
+<p id="19">
+This example would add another <a href="button.htm"><code>button</code></a> widget to the tab-control
+that was created above, this time to the second tab.
+</p>
+
+<pre id="20">
+(add-component-to-tab
+  (find-component :my-tab-control my-window)
+  :second-tab
+  (make-instance 'button
+    :left 100 :top 100 :width 100 :height 30
+    :name :second-button :title "~Second"))
+</pre>
+
+<h3 id="21">
+Resizing and moving the control
+</h3>
+<p id="22">
+Controls can only be resized and moved on forms during the design
+stage; the size and location of everything is fixed on a running form.
+</p>
+<p id="23">
+Resize the control by clicking the mouse cursor and dragging one of
+the handles to the new size-point. Release the mouse key when you are
+satisfied with the new size.
+</p>
+<p id="24">
+Resizing the tab-control won't mean proportional changes in the size
+of the characters of the labels of the tabs. Change the <a href="../../operators/cg/f/font.htm"><b>font</b></a> property if you want
+to change the size of the actual characters displayed.
+</p>
+<p id="25">
+Move the control by clicking anywhere on it except a resizing handle
+and dragging it to a new location on the form. Release the mouse key
+when you are ready to place the control.
+</p>
+<p id="26">
+Moving a tab-control means dragging all of the contained objects along
+with it.
+</p>
+<h3 id="27">
+Adding controls to the tab-control tabs
+</h3>
+<p id="28">
+When designing a dialog using a form, drag controls onto the
+individual tabs and position them. After you have added controls to
+each tab, you will be able to see their names in the expanded portions
+of the Inspector. To see the names of the controls placed on each tab
+in the Inspector:
+</p>
+<ol>
+<li id="29">
+Click on the tab-control to give it focus in the Inspector.  (If no
+inspector is visible, double-click the widget to ensure that an
+Inspector window is created if needed and brought to the front.)
+</li>
+<li id="30">
+Click on the <a href="../../operators/cg/r/range.htm"><b>range</b></a>, making sure to click on the
+name of the range property (the left column) rather than the value
+(the right column). You will see a display of <a href="tab-info.htm"><code>tab-info</code></a> entries, one per
+line. There will be one <a href="tab-info.htm"><code>tab-info</code></a> for each tab in your
+tab-control. They will be numbered from 0 to n for (n+1) tabs.
+</li>
+<li id="31">
+Double-click on the <a href="../../operators/cg/v/value.htm"><b>value</b></a> (the right hand column) for
+one of the tab-infos. A dialog will appear displaying the contents of
+the tab-info. All of the controls on that tab will appear in the value
+expression displayed by the dialog.
+</li>
+<li id="32">Click the OK button when you are done inspecting the expression to
+close the dialog.
+</li>
+</ol>
+<p id="33">
+You can also inspect the tab-infos programmatically by searching your
+code for calls to <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> with <code>tab-info</code>
+for the particular tab-control you are working on.
+</p>
+<h3 id="34">
+Adding more tabs to the tab-control in the IDE
+</h3>
+<ol>
+<li id="35">
+Click on the tab-control to give it focus in the Inspector.
+</li>
+<li id="36">
+Click on the extended editor button (the one with 3 dots) for the
+value of the range of the tab-control.
+</li>
+<li id="37">
+The Edit Expression dialog will appear. You can either copy a
+make-info from one of the existing tabs in the dialog and paste it in
+another location and modify it, or just begin typing your own
+make-infos directly into the window.
+</li>
+<li id="38">
+Click the OK button when you are satisfied with your new
+expression.  The new tab-control will appear on your form with the
+changes you coded in the Edit Expression dialog.
+</li>
+</ol>
+
+<h3 id="39">
+Highlighting one or more specific tabs
+</h3>
+
+<p id="40">
+The generic funcion <a href="../../operators/cg/h/highlight-tab.htm"><b>highlight-tab</b></a> allows you to highlight one or
+more tabs on a tab-control.
+</p>
+
+<p id="41">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+<p id="42">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<h3 id="43">
+GTK Note
+</h3>
+
+<p id="44">
+The GTK <a href="tab-control.htm"><code>tab-control</code></a> always
+uses a single row of tabs, and specifying the <a href="../../operators/cg/s/single-line.htm"><b>single-line</b></a> property will have no effect.  You
+can scroll a tab-control quickly by holding the mouse button down on
+the scroll arrow, but only if the widget's <a href="../../operators/cg/f/focus-on-click.htm"><b>focus-on-click</b></a> property is true, since otherwise
+Common Graphics will move the keyboard focus to a widget on a tab.  If
+it is tedious to scroll to all of the tabs, you might consider using a
+<a href="multi-picture-button.htm"><code>multi-picture-button</code></a>
+instead, as we did for the IDE's <a href="../../ide-menus-and-dialogs/class-browser-dialog.htm">Class Browser</a>.
+</p>
+
+
+<hr><p id="45"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/tab-control.htm">9.0 version</a></td></tr></table></body></html>

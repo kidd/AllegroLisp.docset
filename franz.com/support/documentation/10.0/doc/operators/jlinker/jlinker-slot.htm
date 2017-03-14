@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>jlinker-slot</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlinker-slot.htm">9.0 version</a></td></tr></table><h2 id="2">jlinker-slot</h2>
+
+<p id="3"><b>Arguments: </b><i>key 
+</i> &amp;optional <i>value</i></p>
+
+<p id="4">
+The purpose of this function is to extract and modify data specific to
+one particular Lisp-Java connection.  The first (required) argument,
+<i>key</i>, is
+a keyword that specifies the information accessed. If the second
+(optional) argument,
+<i>value</i>, is omitted or <code>nil</code>, the current value is returned;
+if the second argument is non-<code>nil</code>, it is stored.
+</p>
+<p id="5">
+The possible values of the <i>key</i> argument are:
+</p>
+<ul>
+<li id="6">
+<code>:data</code>: this value is reserved for the application
+programmer. The purpose is to provide a place for application-specific
+data associated with a particular connection. There is an example of
+its use in
+<i>examples/jlinker/applet/many-applets.cl</i>.
+</li>
+<li id="7">
+<code>:notifier</code>: this value causes <a href="jlinker-slot.htm"><b>jlinker-slot</b></a> to return a Lisp
+process object when a connection is active or <code>nil</code> when there is no connection.
+</li>
+<li id="8">
+<code>:lisp-call-error-p</code>: if a non-<code>nil</code> value for <i>value</i> is supplied,
+then subsequent calls from Java are affected: if a Lisp error occurs
+in a call from Java an error break will be taken; one of the restarts
+in that case is to return alternate values to Java.  Since the error
+break ties up the Java/Lisp interface, this option should be used
+sparingly.
+</li>
+</ul>
+<p id="9">
+One use for this object is to pass it as an argument to <a href="jnotify-lisp.htm"><b>jnotify-lisp</b></a>.  Another
+use is to detect a new jlinker connection.  The data structure in
+<a href="../../variables/jlinker/s_jlinker-connection_s.htm"><code>*jlinker-connection*</code></a> is re-used
+from one connection to the next, hence an <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a> test against a saved value will
+always return <code>t</code>.
+</p>
+<p id="10">
+The value in the <code>:notifier</code> slot is newly created
+for each connection and can therefore be compared with <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a> to a saved value to detect a new
+connection.  <b>Note and warning</b>: calling <a href="jlinker-slot.htm"><b>jlinker-slot</b></a> with a second
+non-<code>nil</code> argument will modify the value of the
+slot and will probably damage the current jlinker connection beyond
+repair.
+</p>
+<p id="11">
+The other values of the key argument are reserved for internal uses
+at this time.
+</p>
+
+
+<p id="12">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlinker-slot.htm">9.0 version</a></td></tr></table></body></html>

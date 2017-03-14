@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>confirm-grid-subsection-deletion</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/confirm-grid-subsection-deletion.htm">9.0 version</a></td></tr></table><h2 id="2">confirm-grid-subsection-deletion</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-widget selected-subsections
+</i></p>
+
+<p id="4">
+This generic function is called when the user presses the delete key
+while a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> has the keyboard focus,
+and whenever <a href="../d/delete-selected-subsections.htm"><b>delete-selected-subsections</b></a> is
+called with a true <i>confirm</i> argument (as it is by
+the delete key). Its purpose is to ask the user whether to proceed
+with deleting any deletable rows or columns that are selected.  An
+application should not call this function, but may override the
+default method in order to customize the manner in which the user is
+asked for confirmation, or even to suppress the delete key behavior
+altogether.
+</p>
+<p id="5">
+<i>grid-widget</i> is the <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> that has the keyboard
+focus when the delete key is pressed.  selected-subsections is a list
+of any <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a>s and <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>s of the grid that are
+both <a href="../d/deletable.htm"><b>deletable</b></a>
+and <a href="../s/selected.htm"><b>selected</b></a>.
+The method should return true if all of the selected-subsections
+should be deleted, and <code>nil</code> if not.
+</p>
+<p id="6">
+The default method shows a warning dialog if
+<i>selected-subsections</i> is the empty list, and
+otherwise shows a modal dialog with a generic message asking the user
+whether to proceed with the deletion.  Here is the default method:
+</p>
+<pre id="7">
+(defmethod confirm-grid-subsection-deletion ((grid-widget grid-widget)
+                                             selected-subsections)
+  (if* selected-subsections
+     then (y-or-n-dialog "Delete rows and / or columns ~a ?"
+                         (mapcar #'name selected-subsections))
+     else (pop-up-message-dialog
+           (window grid-widget) "Nothing to Delete"
+           "There are no selected and deletable rows or columns to delete."
+           warning-icon "~OK")
+          nil))
+</pre>
+<p id="8">
+All interactive deletion could be suppressed (even if rows and columns
+are selectable for other purposes) by simply always returning <code>nil</code> from this function.
+</p>
+<p id="9">
+The calling of this generic function is never suppressed by adding
+custom <a href="../c/cell-key-down.htm"><b>cell-key-down</b></a> methods.  It could be
+suppressed by overriding the default <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method for the
+<a href="../g/grid-drawing-pane.htm"><b>grid-drawing-pane</b></a>
+of the <a href="../w/window.htm"><b>window</b></a> of
+the <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>, though this would be
+modifying the keypress behavior of the grid at a low level.
+</p>
+
+
+<p id="10">
+See also 
+<a href="../s/select-subsection.htm"><b>select-subsection</b></a>, 
+<a href="../d/deselect-subsection.htm"><b>deselect-subsection</b></a>,
+and <a href="../d/deletable.htm"><b>deletable</b></a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/confirm-grid-subsection-deletion.htm">9.0 version</a></td></tr></table></body></html>

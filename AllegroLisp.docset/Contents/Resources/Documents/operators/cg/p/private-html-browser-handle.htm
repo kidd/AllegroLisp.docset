@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>private-html-browser-handle</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/private-html-browser-handle.htm">9.0 version</a></td></tr></table><h2 id="2">private-html-browser-handle</h2>
+
+<p id="3"><b>Arguments: </b><i>
+cg-configuration
+</i></p>
+
+<p id="4">
+Returns a value that identifies the particular instance of the default
+HTML browser program that is currently being used by the function
+<a href="../i/invoke-private-html-browser.htm"><b>invoke-private-html-browser</b></a> to
+show HTML pages from
+lisp. <b><i>cg-configuration</i></b> should be a <a href="../../../classes/cg/configuration.htm"><code>configuration</code></a> object such as
+returned by <a href="../c/configuration.htm"><b>configuration</b></a>
+(typically <code>(configuration *system*)</code>).
+</p>
+<p id="5">
+The IDE saves this value in
+its allegro-ide-options.cl
+file at exit time so that it can reuse the same browser instance in
+the next IDE session, if that browser instance still exists. Otherwise
+each IDE session would create a new instance of the browser, which
+could result in multiple leftover browsers cluttering the environment.
+</p>
+<p id="6">
+A standalone application that calls <a href="../i/invoke-private-html-browser.htm"><b>invoke-private-html-browser</b></a> to display HTML
+files could use this value in a similar way.  Here are the necessary
+steps:
+</p>
+<ol>
+<li id="7">
+When the application is about to exit, it should evaluate the
+expression <code>(private-html-browser-handle (configuration
+*system*))</code>.  If the returned value is non-<code>nil</code>, the application should then save the value
+somewhere (typically in a file) where it can retrieve it later.
+</li>
+<li id="8">
+When the application starts up, it should look for the saved value.
+If one is found, the application should evaluate the expression
+<code>(setf (private-html-browser-handle (configuration *system*))
+the-value)</code> to restore the value to the application. (The
+symbol <i>the-value</i> in that expression represents the retrieved
+value.)
+</li>
+</ol>
+
+<p id="9">
+Any subsequent calls to <a href="../i/invoke-private-html-browser.htm"><b>invoke-private-html-browser</b></a> will then reuse the
+same browser instance as the previous session of the application, if
+that browser instance still exists.  (Otherwise a new browser instance
+will be created as usual.)
+</p>
+<p id="10">
+The form of the cached value is not really important since you should
+always restore the original value without modifying it. But in fact
+the value is a list of three members: (1) a keyword indicating which
+browser program was used, such
+as <code>:firefox</code>, <code>:chrome</code>, 
+<code>:explorer</code>,
+<code>:mozilla</code>, 
+<code>:netscape6</code>, or <code>:netscape4</code> (other
+keywords may be added); (2) the handle of the browser's main window
+(an integer); and (3) <code>t</code> if this browser
+instance has been used only once, and <code>nil</code>
+otherwise.  So basic Lisp printing and reading is sufficient to store
+the value to a file and to retrieve it.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/private-html-browser-handle.htm">9.0 version</a></td></tr></table></body></html>

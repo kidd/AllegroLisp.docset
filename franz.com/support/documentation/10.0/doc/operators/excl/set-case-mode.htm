@@ -1,0 +1,208 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-case-mode</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/set-case-mode.htm">9.0 version</a></td></tr></table><h2 id="2">set-case-mode</h2>
+
+<p id="3"><b>Arguments: </b><i>new-mode 
+</i>&amp;key  (<i>adjust-readtables-case</i> t)<i>
+</i></p>
+
+<p id="4">
+This function sets the case mode of Lisp to that specified by the
+<i>new-mode</i> argument. The value of that argument
+must be one of the following three keywords:
+</p>
+<ul>
+<li id="5">
+<code>:case-insensitive-upper</code>
+</li>
+<li id="6">
+<code>:case-insensitive-lower</code>
+</li>
+<li id="7">
+<code>:case-sensitive-lower</code>
+</li>
+</ul>
+
+<p id="8">
+<a href="set-case-mode.htm"><b>set-case-mode</b></a> converts the running Lisp to use
+the new mode for subsequent reading and returns a keyword denoting the
+previous mode. This function must do quite a bit of consistency
+checking when changing between modes with different case preferences,
+and may take as long as several minutes to complete. As we say below, it
+is much better to use an image with the desired case mode rather than
+changing the case mode after the image has started.
+</p>
+<p id="9">
+Note that the typical case mode is
+<code>:case-sensitive-lower</code>. Allegro CL is distributed
+with modern (<code>:case-sensitive-lower</code>) images (named
+<i>mlisp</i> and <i>mlisp8</i>) and ANSI
+(<code>:case-insensitive-upper</code>) images (named
+<i>alisp</i> and <i>alisp8</i>). Rather than changing case mode after
+starting, it is best to start the image with the desired case mode.
+</p>
+
+<h3 id="10">The :adjust-readtables-case argument</h3>
+
+<p id="11">
+In releases prior to 6.1, Allegro CL ignored <a href="../../../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> in all case modes
+except <code>:case-insensitive-upper</code> (the ANSI mode).
+Starting in release 6.1 of Allegro CL, <a href="../../../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> is not ignored
+unless <a href="set-case-mode.htm"><b>set-case-mode</b></a> is called with a
+<i>case-mode</i> other than
+<code>:case-insensitive-upper</code> and
+<i>adjust-readtables-case</i> specified <code>nil</code>.
+</p>
+<p id="12">
+The <i>adjust-readtables-case</i> keyword argument
+to <a href="set-case-mode.htm"><b>set-case-mode</b></a> allows control of
+ignoring or not ignoring <a href="../../../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> in non-ANSI modes.
+</p>
+<p id="13">
+The default setting of <i>adjust-readtables-case</i> is
+<code>t</code>. The value <code>t</code> has
+two effects: (1) it ensures that <a href="../../../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> is not ignored; and
+(2) it modifies the <a href="../../../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> of existing
+readtables as described next.
+</p>
+<p id="14">
+When <i>adjust-readtables-case</i> is true, <a href="set-case-mode.htm"><b>set-case-mode</b></a> sets the
+readtable-case of the Lisp standard readtable and other readtables
+listed below to the appropriate value for the new case-mode, which is
+shown in the table below. Along with the Lisp standard readtable, all
+existing readtables except for those readtables which have previously
+been modified by <a href="../../../ansicl/dictentr/readtab0.htm"><b>(setf readtable-case)</b></a> are affected.
+</p>
+<p id="15">
+This table shows the <a href="set-case-mode.htm"><b>set-case-mode</b></a> effect when
+<i>adjust-readtables-case</i> is true (the action on
+symbol names assumes that mixed-case symbols are converted, which they
+are by default. See <a href="convert-mixed-case-symbols.htm"><b>convert-mixed-case-symbols</b></a>).
+</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><strong>new-mode</strong></td>
+    <td WIDTH="25%" VALIGN="TOP"><strong>action on symbol-names</strong></td>
+    <td WIDTH="43%" VALIGN="TOP"><strong>readtable-case setting</strong></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:case-insensitive-upper</code>
+    (ANSI mode)</td>
+    <td WIDTH="25%" VALIGN="TOP">symbol names are 
+    upcased</td>
+    <td WIDTH="43%" VALIGN="TOP"><code>:upcase</code></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:case-sensitive-lower</code>
+    (Modern mode)</td>
+    <td WIDTH="25%" VALIGN="TOP">symbol names are
+    downcased</td>
+    <td WIDTH="43%" VALIGN="TOP"><code>:preserve</code></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:case-insensitive-lower</code>
+    </td>
+    <td WIDTH="25%" VALIGN="TOP">symbol names are
+    downcased</td>
+    <td WIDTH="43%" VALIGN="TOP"><code>:downcase</code></td>
+  </tr>
+</table>
+
+<p id="16">
+In rare cases, some code's behavior may be affected by the updated
+casemode behavior. For such code, the previous Allegro CL behavior can be
+restored with the following call:
+</p>
+<pre id="17">
+(excl:set-case-mode excl:*current-case-mode* :adjust-readtables-case nil)
+</pre>
+
+<p id="18">
+As described above, that call causes <a href="../../../ansicl/dictentr/readtab0.htm"><b>readtable-case</b></a> to be ignored in
+non-ANSI modes.
+</p>
+<p id="19">
+The code most likely to be affected will be that which depends on
+prior symbol printing while in the less frequently used
+case-insensitive-lower casemode. While specific code instances may
+need further analysis, generally adding <a href="../../../ansicl/dictentr/print-ca.htm"><code>*print-case*</code></a> bindings in such places is a
+completely adequate and portable fix; and is preferable to using
+<a href="set-case-mode.htm"><b>set-case-mode</b></a> for
+restoring prior Allegro CL behavior.
+</p>
+
+<h3 id="20">Issues with changing the case mode after startup</h3>
+
+
+<p id="21">
+If CLX has been loaded into Lisp, you cannot change the case mode
+at all with this function. Unfortunately, no error is signaled but
+problems will occur later. Note that both Allegro Composer and Allegro
+Common Windows (both only available on Unix) use CLX.
+</p>
+
+<p id="22">
+This function can be called at any time but should, if possible, be
+called as the first action in a fresh invocation of Lisp (and better
+would be to use the image with the desired case mode and do not use
+this function at all). 
+This function takes a lot of time and uses a lot of space, so should never be called in a loop.
+</p>
+<p id="23">
+Note that the system will not be able to
+resolve conflicts if case mode is changed after Lisp has been running
+for some time. However, sometimes it is necessary to change case
+modes more than once. Suppose you want to work in case-sensitive,
+lowercase preferred mode but need to load files written for a standard
+(case-insensitive, uppercase) Lisp. You might first set the mode to
+<code>:case-insensitive-lower</code>, load the files, and then set the
+mode to the desired <code>:case-sensitive-lower</code>.
+</p>
+<p id="24">
+Since <a href="set-case-mode.htm"><b>set-case-mode</b></a> alters the names of
+symbols in the currently running lisp environment, users are advised
+not to use this function lightly as it may introduce subtle
+problems. The following Lisp session illustrates:
+</p>
+<p id="25">
+The initial set of commands establishes state and demonstrates that
+case is preserved by the reader in a case-sensitive-lower
+(modern-mode) lisp:
+</p>
+<pre id="26">
+cl-user(1): (defparameter mixed-sym-name "aBc")
+mixed-sym-name
+cl-user(2): (defparameter mixed-sym (read-from-string mixed-sym-name))
+mixed-sym
+cl-user(3): mixed-sym
+aBc
+cl-user(4): (eq mixed-sym (read-from-string mixed-sym-name))
+t
+</pre>
+<p id="27">
+The subsequent set of commands demonstrates that taking a round-trip
+through case-mode conversions (from modern-mode to ansi-mode back to
+modern-mode) affects the lisp environment. We assume <a href="convert-mixed-case-symbols.htm"><b>convert-mixed-case-symbols</b></a> returns
+true.
+</p>
+
+<pre id="28">
+cl-user(5): (set-case-mode :case-insensitive-upper)
+:CASE-SENSITIVE-LOWER
+CL-USER(6): (set-case-mode :case-sensitive-lower)
+:case-insensitive-upper
+cl-user(7): mixed-sym
+abc
+cl-user(8): (eq mixed-sym (read-from-string mixed-sym-name))
+nil
+cl-user(9): 
+</pre>
+<p id="29">
+See also <a href="../../case.htm">case.htm</a>,
+<a href="../../variables/excl/s_current-case-mode_s.htm"><code>*current-case-mode*</code></a>,
+<a href="../../variables/excl/s_ignore-package-name-case_s.htm"><code>*ignore-package-name-case*</code></a>,
+and <a href="convert-mixed-case-symbols.htm"><b>convert-mixed-case-symbols</b></a>.
+</p>
+
+<hr><p id="30"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/set-case-mode.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,37 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>handle-ocx-shortcut</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/handle-ocx-shortcut.htm">9.0 version</a></td></tr></table><h2 id="2">handle-ocx-shortcut</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ocx-widget-window buttons key-code
+</i></p>
+
+<p id="4">
+<b>Applies to the Windows platform only.</b>
+</p>
+<p id="5">
+This is a tentative function because we are not sure how keypress
+events should properly be intercepted from OCX controls, which
+normally define their own complete keyboard event handling.  This
+functionality may change in the future.
+</p>
+<p id="6">
+This generic function will be called when a keypress event occurs
+while an <a href="../../../classes/cg/ocx-widget-window.htm"><code>ocx-widget-window</code></a>
+has the keyboard focus.  An application could add methods to intercept
+the keypress from the control's usual handler.  True should be
+returned to suppress the control's own built-in handling of the
+keypress (if any), or <code>nil</code> to allow it.
+</p>
+<p id="7">
+The default method does nothing and returns <code>nil</code>.  A method for <a href="../../../classes/cg/html-widget-pane.htm"><code>html-widget-pane</code></a> calls <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> with the same arguments that
+were passed to <a href="../h/handle-ocx-shortcut.htm"><b>handle-ocx-shortcut</b></a>; this allows keystrokes in
+the <a href="../../../classes/cg/html-widget-for-browser.htm"><code>html-widget-for-browser</code></a>
+pane of an <a href="../../../classes/cg/html-browser.htm"><code>html-browser</code></a>
+dialog (for example) to invoke the dialog's toolbar buttons.  You may
+find it useful to define a similar <a href="../h/handle-ocx-shortcut.htm"><b>handle-ocx-shortcut</b></a> method for <a href="../../../classes/cg/ocx-widget.htm"><code>ocx-widget</code></a> classes that you define.
+See <a href="../d/def-cg-ocx-control.htm"><b>def-cg-ocx-control</b></a>.
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/handle-ocx-shortcut.htm">9.0 version</a></td></tr></table></body></html>

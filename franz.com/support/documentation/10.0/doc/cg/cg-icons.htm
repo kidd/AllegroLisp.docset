@@ -1,0 +1,305 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>About icons in Common Graphics</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-icons.htm">9.0 version</a></td></tr></table><h1 id="2">About icons in Common Graphics</h1><p id="3">This document contains the following sections:</p><a href="#when-use-icons-1">1.0 When to use icons</a><br><a href="#using-built-in-icon-1">2.0 Using a built-in icon</a><br><a href="#icon-in-title-bar-1">3.0 Assigning an icon to a window title-bar</a><br><a href="#icon-for-control-1">4.0 Assigning an icon to a control</a><br><a href="#creating-an-icon-1">5.0 Creating an icon</a><br><a href="#drawing-an-icon-1">6.0 Drawing an icon</a><br><a href="#application-icon-1">7.0 Assigning an icon to an application</a><br><hr><hr><h2 id="4"><a name="when-use-icons-1">1.0 When to use icons</a></h2>
+
+<p id="5">
+Icons are like small pixmaps that have a mask, don't stretch, and come
+in two standard sizes. Common Graphics applications usually use
+pixmaps whenever they need to draw pixelated images, but there are a
+couple of special places where icons must be used instead. These
+places include the image that appears on the left end of a window's
+title-bar, and the image that is used to represent an application in
+the Windows taskbar, alt-tab window, and file explorer.
+</p>
+<p id="6">
+These special icon requirements stem directly from the Windows
+operating system, and so icons are one Common Graphics facility whose
+API is likely to differ in future ports of Common Graphics to
+non-Windows platforms.
+</p>
+<p id="7">
+Note that some Common Graphics function names contain the word "icon"
+but are not related to Common Graphics icons. These include the
+function <a href="../operators/ide/standard-toolbar-icons.htm"><b>standard-toolbar-icons</b></a>, the
+list-view function <a href="../operators/cg/i/icon-index.htm"><b>icon-index</b></a> and the outline function
+<a href="../operators/cg/d/draw-icons.htm"><b>draw-icons</b></a>.
+"Icon" is used in a more generic way in these cases to refer to a
+small image. The functions discussed here refer instead to Common
+Graphics icon objects.
+</p>
+
+<hr><hr><h2 id="8"><a name="using-built-in-icon-1">2.0 Using a built-in icon</a></h2>
+
+<p id="9">
+Common Graphics includes several constants whose values are standard
+icons supplied by the operating system. These icons may be used
+directly instead of creating custom icons. The constants are <a href="../variables/cg/error-icon.htm"><code>error-icon</code></a>, <a href="../variables/cg/warning-icon.htm"><code>warning-icon</code></a>,
+<a href="../variables/cg/question-icon.htm"><code>question-icon</code></a>, <a href="../variables/cg/information-icon.htm"><code>information-icon</code></a>,
+and <a href="../variables/cg/application-icon.htm"><code>application-icon</code></a>.
+</p>
+<p id="10">
+Notice that the values of these constants are simply integers. Common
+Graphics does not supply an icon class or special lisp objects for
+icons; instead they are simply handles that the operating system
+uses to look up the desired icon.
+</p>
+
+<hr><hr><h2 id="11"><a name="icon-in-title-bar-1">3.0 Assigning an icon to a window title-bar</a></h2>
+
+
+
+<p id="12">
+Once you have an icon to use, you can add it to a window title-bar by
+calling <a href="../operators/cg/i/icon.htm"><b>(setf
+icon)</b></a> on the window. This icon will override the default icon
+for the whole application (see below).
+</p>
+<p id="13">
+Example: This expression changes the icon in the inspector's title-bar
+to a question mark.
+</p>
+<pre id="14">
+(setf (icon (find-window :inspector)) question-icon)
+</pre>
+<p id="15">
+Setting the <a href="../operators/cg/i/icon.htm"><b>icon</b></a>
+property to nil will revert to the default icon of the application.
+In the IDE this is the Franz bust icon.
+</p>
+<pre id="16">
+(setf (icon (find-window :inspector)) nil)
+</pre>
+
+
+<hr><hr><h2 id="17"><a name="icon-for-control-1">4.0 Assigning an icon to a control</a></h2>
+
+
+<p id="18">
+You can similarly assign an icon to a control, if the control is one
+that displays a pixelated image, by calling <a href="../operators/cg/p/pixmap-icon.htm"><b>(setf
+pixmap-icon)</b></a>. Icons may be used with the <a href="../classes/cg/static-picture.htm"><code>static-picture</code></a>, <a href="../classes/cg/picture-button.htm"><code>picture-button</code></a>, and
+<a href="../classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a> controls. For
+the multi-picture-button control, <a href="../operators/cg/p/pixmap-icon.htm"><b>(setf
+pixmap-icon)</b></a> should be called on the individual <a href="../classes/cg/button-info.htm"><code>button-info</code></a> instances
+in the control's range, rather than on the control itself. (<a href="../classes/cg/list-view.htm"><code>list-view</code></a>s and <a href="../classes/cg/outline.htm"><code>outline</code></a>s can display
+pixmaps but not icons.)
+</p>
+<p id="19">
+There is generally no need to use icons on controls, since pixmaps can
+be used instead, but the option is available, and icons may draw
+slightly faster than pixmaps with masks. (If the image lives in an
+icon file, <a href="../operators/cg/l/load-pixmap.htm"><b>load-pixmap</b></a> may still be used to
+create a pixmap for it, so a pixmap may be used in Common Graphics
+even for an image that was designed as an icon.)
+</p>
+<p id="20">
+Example: The following form will display the question icon on the
+button control near the top left of the inspector.
+</p>
+<pre id="21">
+(setf (pixmap-icon (find-component
+                    :back (frame-child (find-window :inspector))))
+  question-icon)
+</pre>
+
+<p id="22">
+Notice that the image is larger than it was for the same icon in the
+window title-bar (and in fact does not fit within the button). The
+reason is that icons are usually defined at two standard sizes, 16 by
+16 pixels and 32 by 32 pixels, which are both referenced by the single
+icon handle. When assigning a window title-bar icon, the operating
+system always draws the small version in the title-bar, and the large
+version in the alt-tab window (for non-owned top-level
+windows). Common Graphics always draws the large version on a control.
+</p>
+
+
+<hr><hr><h2 id="23"><a name="creating-an-icon-1">5.0 Creating an icon</a></h2>
+
+
+<p id="24">
+By this point you may have begun to tire of the built-in question mark
+icon, delightful though it is. Luckily, the rest of this document
+covers custom icons. There are two ways to create a Common Graphics
+icon: to load it from a file that defines icons, or to create it from
+a Common Graphics pixmap.
+</p>
+<p id="25">
+The typical way to create an icon is to call the function <a href="../operators/cg/e/extract-icon-from-file.htm"><b>extract-icon-from-file</b></a>,
+which loads a pre-made icon from a file. The file may be either a .ico
+file, which is a type of Windows file intended specifically for
+holding an icon, or a .dll file, which can contain a whole library of
+icons, or a .exe file. A distributed application that uses <a href="../operators/cg/e/extract-icon-from-file.htm"><b>extract-icon-from-file</b></a>
+must include the files from which it loads icons and load them at run
+time, since there is no way to embed these icons in the application's
+image file or executable file (other than the single icon for the
+application itself, as described later). Allegro CL does not provide any
+tools for creating icon files, though there are third-party tools for
+doing just that.
+</p>
+<p id="26">
+Example: This expression loads the eighth icon from the file
+<i>moricons.dll</i> in the Windows system directory
+(assuming that this file exists), and displays it in the title-bar of
+the inspector.
+</p>
+<pre id="27">
+(setf (icon (find-window :inspector))
+  (extract-icon-from-file
+    (merge-pathnames "moricons.dll" (windows-directory t))
+    8))
+</pre>
+<p id="28">
+The function <a href="../operators/cg/c/count-icons-in-file.htm"><b>count-icons-in-file</b></a> returns the
+number of icons in a specified file, so that you can know what indices
+make sense to pass to <a href="../operators/cg/e/extract-icon-from-file.htm"><b>extract-icon-from-file</b></a>.
+</p>
+<p id="29">
+The other way to create an icon is to create it from a Common Graphics
+pixmap by calling <a href="../operators/cg/c/create-icon-handle.htm"><b>create-icon-handle</b></a>. This technique
+is useful if the icon does not live in a .ico, .dll, or .exe file,
+since <a href="../operators/cg/e/extract-icon-from-file.htm"><b>extract-icon-from-file</b></a> is not
+applicable. It is also useful if it is desirable to not distribute
+.ico files with an application; in that case, a pixmap could be
+created in lisp (see <a href="cg-pixmaps.htm">cg-pixmaps.htm</a>), and then an
+icon made from the pixmap.
+</p>
+<p id="30">
+<a href="../operators/cg/c/create-icon-handle.htm"><b>create-icon-handle</b></a>
+creates an icon with a single image, rather than the separate large
+and small images that are usually defined in .ico, .dll, and .exe
+files. If you intend to use the icon in window title-bars, the size
+should be 16 by 16 pixels.
+</p>
+<p id="31">
+Example: The following code defines the function
+<b>open-folder-icon</b> to return an icon with an image of an open
+file folder. It caches the icon so that this function may be called
+whenever the icon is needed, without recreating it each time.
+</p>
+<p id="32">
+Note that it would be a bad idea to instead write a <a href="../../ansicl/dictentr/defparam.htm"><b>defparameter</b></a> or <a href="../../ansicl/dictentr/defparam.htm"><b>defvar</b></a> form whose initial value is the icon
+returned by a call to <a href="../operators/cg/c/create-icon-handle.htm"><b>create-icon-handle</b></a>.  The reason is
+that an icon handle will no longer be valid if used in a different
+lisp session than where <a href="../operators/cg/c/create-icon-handle.htm"><b>create-icon-handle</b></a> was called, and
+this would happen after generating a standalone application due to the
+<a href="../../ansicl/dictentr/defparam.htm"><b>defparameter</b></a> initform being
+evaluated when generating the application image rather than when
+running it. (A pixmap, on the other hand, would work fine if created
+in a <a href="../../ansicl/dictentr/defparam.htm"><b>defparameter</b></a> initform.)
+</p>
+<pre id="33">
+(let ((open-folder-icon nil))
+  (defun open-folder-icon ()
+    (or open-folder-icon
+        (setq open-folder-icon
+              (create-icon-handle
+               (make-instance 'pixmap
+                 :name :default-opened-with-mask
+                 :contents
+                 '(( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+                   ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+                   ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+                   ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+                   ( 0  0 11 11 11 11 11  0  0  0  0  0  0  0  0  0)
+                   ( 0 11 11 11 11 11 11 11  0  0  0  0  0  0  0  0)
+                   ( 0 11 11 11 11 11 11 11 11 11 11  0  0  0  0  0)
+                   ( 0 11 11 11 11 11 11 11 11 11 11  0  0  0  0  0)
+                   ( 0 11 11 11 11  0  0  0  0  0  0  0  0  0  0  0)
+                   ( 0 11 11 11  0  3  3  3  3  3  3  3  3  3  0  0)
+                   ( 0 11 11  0  3  3  3  3  3  3  3  3  3  0  0  0)
+                   ( 0 11  0  3  3  3  3  3  3  3  3  3  0  0  0  0)
+                   ( 0  0  3  3  3  3  3  3  3  3  3  0  0  0  0  0)
+                   ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+                   ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+                   ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0))
+                 :mask-contents
+                 '((1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)
+                   (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)
+                   (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)
+                   (1 1 0 0 0 0 0 1 1 1 1 1 1 1 1 1)
+                   (1 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1)
+                   (0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1)
+                   (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)
+                   (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1))))))))
+</pre>
+<p id="34">
+It is, of course, tedious to define a pixmap as a lisp expression as
+above. Such expressions can be obtained, however, by evaluating a form
+such as <code>(pprint (recreation-code my-pixmap))</code> and
+then pasting the output into your source code (see <a href="../operators/cg/r/recreation-code.htm"><b>recreation-code</b></a>). The pixmap may
+originally have lived in a .bmp or .ico file and loaded with
+load-pixmap, but this technique allows you to thereafter define the
+image completely within lisp and avoid distributing the original .bmp
+or .ico file with your application.
+</p>
+<p id="35">
+The following expression displays our made-in-lisp icon in
+the inspector's title-bar:
+</p>
+<pre id="36">
+(setf (icon (find-window :inspector))(open-folder-icon))
+</pre>
+
+
+
+<hr><hr><h2 id="37"><a name="drawing-an-icon-1">6.0 Drawing an icon</a></h2>
+
+
+<p id="38">
+The function <a href="../operators/cg/d/draw-icon.htm"><b>draw-icon</b></a> will draw an icon at an
+arbitrary position in any window. As with assigning an icon to a
+control, this is generally not needed since a pixmap that has a mask
+could be drawn instead with <a href="../operators/cg/c/copy-to-stream.htm"><b>copy-to-stream</b></a> (except for the five
+built-in icons). Icons may draw a bit faster than pixmaps with masks.
+<a href="../operators/cg/d/draw-icon.htm"><b>draw-icon</b></a> always
+draws the larger size of an icon that defines both icon sizes.
+</p>
+<p id="39">
+Example:  The following expression draws the question mark icon on a
+window.
+</p>
+
+<pre id="40">
+(let* ((window (make-window :what? :class 'bitmap-window
+                 :background-color cyan
+                 :exterior (make-box 200 200 330 300))))
+  (with-positions (pos1)
+  (draw-icon (frame-child window)
+    question-icon (nmake-position pos1 30 20))))
+</pre>
+
+<hr><hr><h2 id="41"><a name="application-icon-1">7.0 Assigning an icon to an application</a></h2>
+
+
+<p id="42">
+If you are using the IDE's project system to create an application,
+you can use an icon to represent the entire application by calling
+<a href="../operators/ide/icon-file.htm"><b>(setf
+icon-file)</b></a> on the project. You can do this interactively by
+entering the name of a .ico file on the Build tab of the <a href="../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog. (Click on the Icon File check box to show the
+file dialog for selecting an icon file.) When you later use <a href="../ide-menus-and-dialogs/file-menu.htm">File</a> | <a href="../ide-menus-and-dialogs/file-menu.htm#build-project-distribution">Build Project Distribution</a>
+to generate a standalone application and then run it, the windows of
+that application will show the small version of the icon in their
+title-bars, except where the application may have called <a href="../operators/cg/i/icon.htm"><b>(setf icon)</b></a>
+on particular windows to override this default icon. Moreover, the
+Windows taskbar and the alt-tab window will show the custom icon
+instead of the Franz bust icon, and the Windows file explorer will
+show the icon for certain generated files. This particular facility
+requires a .ico icon file rather than a Common Graphics icon. There
+is no way to save a Common Graphics icon (that may have been created
+in lisp) as a .ico icon file. This particular icon is embedded in the
+generated executable file that is to be distributed, so there is no
+need to distribute the original icon file with the application.
+</p>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-icons.htm">9.0 version</a></td></tr></table></html>

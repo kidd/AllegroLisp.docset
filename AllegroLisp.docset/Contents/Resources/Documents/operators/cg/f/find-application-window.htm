@@ -1,0 +1,35 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>find-application-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/find-application-window.htm">9.0 version</a></td></tr></table><h2 id="2">find-application-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+key </i> &amp;optional  (<i>subkey</i> (default-application-window-subkey))<i>
+</i></p>
+
+<p id="4">
+Returns a window that was cached by calling
+<i>add-application-window</i> (including calls to that
+function that were made by
+<i>find-or-make-application-window</i>).
+</p>
+<p id="5">
+If <i>key</i> and <i>subkey</i> are
+<a href="../../../../ansicl/dictentr/eq.htm"><b>eq</b></a> to values that
+were passed for some window to <a href="../a/add-application-window.htm"><b>add-application-window</b></a>, and that window has not
+been closed, then that window is returned.  Otherwise <code>nil</code> is returned.
+</p>
+<p id="6">
+Typically you would pass the name of the window as the
+<i>key</i> argument to match the default value of
+<a href="../a/add-application-window.htm"><b>add-application-window</b></a>, and
+let the <i>subkey</i> argument in both functions
+ default to the value returned by <a href="../d/default-application-window-subkey.htm"><b>default-application-window-subkey</b></a>. This
+would find any window with a given name on which you have called
+<a href="../a/add-application-window.htm"><b>add-application-window</b></a> in the
+same process.
+</p>
+<p id="7">
+See also <a href="../a/add-application-window.htm"><b>add-application-window</b></a> and <a href="../r/remove-application-window.htm"><b>remove-application-window</b></a>.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/find-application-window.htm">9.0 version</a></td></tr></table></body></html>

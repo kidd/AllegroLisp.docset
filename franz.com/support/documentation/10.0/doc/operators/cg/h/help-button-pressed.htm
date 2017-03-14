@@ -1,0 +1,34 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>help-button-pressed</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/help-button-pressed.htm">9.0 version</a></td></tr></table><h2 id="2">help-button-pressed</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window
+</i></p>
+
+<p id="4">
+This generic function is called whenever the user left-clicks the
+"question-mark button" on the frame of a <a href="../../../classes/cg/frame-window.htm"><code>frame-window</code></a> that has the <a href="../h/help-button.htm"><b>help-button</b></a> property.
+<i>window</i> is the frame-window that has the
+help-button that was clicked.  Applications may override the default
+method in order to tell the user what to do next in some custom way.
+</p>
+<p id="5">
+The behavior of the help-button is hard-wired to wait for the user to
+left-click a control or child window in that window, and to then call
+<a href="../c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> with that
+control or child window (unless the user cancels by pressing the
+ESCAPE key or clicking elsewhere).  <a href="../h/help-button-pressed.htm"><b>help-button-pressed</b></a> is therefore
+useful only for telling the user to click on a control or child window
+in that window for some reason.
+</p>
+<p id="6">
+The default method calls <a href="../w/window-message.htm"><b>window-message</b></a> on
+<i>window</i> with the string "Left-click a control in
+the same window for help on that control."  Due to the general
+functionality of <a href="../w/window-message.htm"><b>window-message</b></a>, this string will
+appear in the window's <a href="../../../classes/cg/status-bar.htm"><code>status-bar</code></a> or <a href="../../../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a> if the window has
+one, or else will appear in an ancestor window's <a href="../../../classes/cg/status-bar.htm"><code>status-bar</code></a> or <a href="../../../classes/cg/common-status-bar.htm"><code>common-status-bar</code></a>, if any.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/help-button-pressed.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,158 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>network-shares</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: windows</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/network-shares.htm">9.0 version</a></td></tr></table><h2 id="2">network-shares</h2>
+
+<p id="3"><b>Arguments: </b><i>machine
+global
+</i></p>
+
+<p id="4">
+Returns a value that describes the logical filesystems that are
+currently offered for sharing by one or more computers in the local
+area network. The form of the returned value depends on the value of
+the <b><i>machine</i></b> argument.
+</p>
+
+<p id="5">
+When the <b><i>global</i></b> keyword argument is
+<code>nil</code> (the default), only the "current and
+default network context" is searched. When true, the entire network is
+searched. 
+</p>
+<p id="6">
+The following describes the two special cases of the
+<i>machine</i> argument (A and B), followed by the
+general case (C) where <i>machine</i> is a machine
+name. Finally, case (D) is described, where a tree of values is
+returned.
+</p>
+
+
+<h4 id="7">Case A: <i>machine</i> is the keyword :connected</h4>
+
+<p id="8">
+If <i>machine</i> is the keyword
+<code>:connected</code>, then a list is returned that contains
+one member for each share that is currently connected to the computer
+where the call was made, such as:
+</p>
+<pre id="9">
+(("\\\\BEAST\\pc" "Z:")
+ ("\\\\SPOT\\ACL" nil)
+ ("\\\\ROMEO\\smith" nil))
+</pre>
+<p id="10">
+where each member of the list represents a share, and is itself a list
+consisting of:
+</p>
+<ol>
+<li id="11">
+the UNC remote name of the share (as a string) --- if you add a final
+slash (or backslash) to this string, or call <a href="../excl/pathname-as-directory.htm"><b>excl:pathname-as-directory</b></a> on the string, then
+<a href="../../../ansicl/dictentr/director.htm"><b>directory</b></a> can be
+called on the resulting value to find the files in the share; and
+</li>
+<li id="12">
+the local name that this computer maps to this share, if any (this is
+typically a drive letter, such as "z:"), and otherwise <code>nil</code>.  When non-<code>nil</code>, this is
+always a string.
+</li>
+</ol>
+
+<h4 id="13">Case B: <i>machine</i> is the keyword :all</h4>
+
+<p id="14">
+If <i>machine</i> is the keyword
+<code>:all</code>, then a list is returned where there is a
+member for each machine that is returned by <a href="network-machines.htm"><b>network-machines</b></a>, and each of these
+members is a list of (1) the UNC machine name (a string) and (2)
+either (a) the symbol <code>:access-denied</code>, when that
+machine does not allow the current user access to its shares, or else
+(b) the list of shares that would be returned if
+<i>machine</i> were the machine name, as in case C. This
+can take a while to run, since it asks every machine in the network
+what its shares are.
+</p>
+<p id="15">
+Sample returned value:
+</p>
+<pre id="16">
+(("\\\\ADMIN" :access-denied)
+ ("\\\\BEAST"
+ (("\\\\BEAST\\cdroms" "")
+  ("\\\\BEAST\\support" "Support Directories")
+  ("\\\\BEAST\\home1" "Home Directories")))
+     ...)
+</pre>
+
+<h4 id="17">Case C: <i>machine</i> is the UNC name of a machine</h4>
+
+<p id="18">
+Otherwise <i>machine</i> should be the UNC name (a
+string) of a machine in the network (including the two backslashes at
+the front), such as "\\\\beast"; a list of all such names is returned
+by network-machines.  In this case, either (1) the symbol
+<code>:access-denied</code> is returned, if the machine will not
+allow the current user access to its shares, or (2) a list of that
+machine's shares is returned, where each share is a list of: (a) the
+UNC name of the share, such as "\\\\beast\\pc", and (b) the "comment"
+for the share (which is always a string).
+</p>
+<p id="19">
+<b>Example</b>: The following expression would find an accessible
+share and return a list of its name and the top-level files in it:
+</p>
+<pre id="20">
+(dolist (machine (network-machines))
+  (let* ((shares (network-shares (first machine))))
+    (unless (or (null shares)
+		(eq shares :access-denied))
+      (let* ((directory-name (concatenate 'string
+			       (caar shares)
+			       "/")))
+	(return (list directory-name
+		      (directory directory-name)))))))
+</pre>
+
+
+<h4 id="21">Case D: <i>machine</i> is the keyword :tree</h4>
+
+<p id="22">
+<b>win:network-shares</b> returns the set of all networked machines
+and their shares as a tree rather than a list (when the
+<i>global</i> argument is true). When
+<i>global</i> is <code>nil</code>,
+<code>:tree</code> is the same as <code>:all</code>.
+</p>
+
+<p id="23">
+This function is defined in the <code>:winapi</code> module. If
+that module is not loaded, evaluate <code>(require
+:winapi)</code>. This function is available on Windows machines
+only.  In releases prior to 7.0, the symbol naming this function was
+in the <code>common-graphics</code> package. Starting in release
+7.0, it is in the <code>windows</code> package.
+</p>
+
+<p id="24">
+<b>Implementation note</b>: On Windows, this function returns
+information as provided by the function <b>WNetEnumResource</b> in the
+Windows Networking (WNet) area of the Windows API.
+</p>
+
+
+<h3 id="25">
+Behavior when an error occurs
+</h3>
+<p id="26">
+If an unknown error occurs in <a href="network-machines.htm"><b>win:network-machines</b></a> (or <a href="network-shares.htm"><b>win:network-shares</b></a>) while trying to access
+a particular machine, then the symbol
+<code>:unknown-error</code> will be returned rather than
+signaling an error.  (For <a href="network-shares.htm"><b>win:network-shares</b></a>, this symbol would replace
+the list of shares for a particular machine in the returned list.)
+This is similar to returning <code>:access-denied</code> when a
+machine does not allow access.
+</p>
+
+
+<hr><p id="27"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/network-shares.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,107 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>print-type-counts</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/print-type-counts.htm">9.0 version</a></td></tr></table><h2 id="2">print-type-counts</h2>
+
+<p id="3"><b>Arguments: </b><i></i> &amp;optional <i>location</i></p>
+
+<p id="4">
+Prints a list of quantities and sizes of lisp objects in the
+specified location in the heap, along with type names and type codes
+of each object type printed. The list is printed in sorted order
+starting with the object type with the most bytes in the specified
+location. Percentages are also printed; these are percentages of the
+total of the specified location. location is interpreted as
+follows:</p>
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="535">
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code><p id="5" ALIGN="CENTER"><i>location</i></p></code></td>
+    <td WIDTH="82%" VALIGN="TOP"><p id="6" ALIGN="CENTER"><strong>Meaning</strong></p></td>
+  </tr>
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code>:new</code></td>
+    <td WIDTH="82%" VALIGN="TOP">Print information on objects in newspace</td>
+  </tr>
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code>:pan</code></td>
+    <td WIDTH="82%" VALIGN="TOP">Print information on panified objects (see below)</td>
+  </tr>
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code>:notpan</code></td>
+    <td WIDTH="82%" VALIGN="TOP">Print information on non-panified objects in newspace (see
+    below)</td>
+  </tr>
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code>:old</code></td>
+    <td WIDTH="82%" VALIGN="TOP">Print information on objects in oldspace, i.e. tenured
+    objects</td>
+  </tr>
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code>:malloc</code></td>
+    <td WIDTH="82%" VALIGN="TOP">Print information about the 
+    malloc arena.</td>
+  </tr>
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code>:holes</code></td>
+    <td WIDTH="82%" VALIGN="TOP">Print information about the types 
+    and sizes of the objects that were removed on the most recent
+    global-gc. Note that no output is available until the first 
+    global-gc is done. See the example below.</td>
+  </tr>
+  <tr>
+    <td WIDTH="18%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="82%" VALIGN="TOP">Print information on all objects. This is the default.</td>
+  </tr>
+</table>
+</div>
+
+<p id="7">
+A <b>panified</b> object (from Peter Pan, who never
+grew up) has a bit set that prevents it from being tenured. Only the
+system can set this bit. Note that malloc space, stack space, and
+purespace are not considered to be the heap.
+</p>
+
+<h3 id="8">
+Examples
+</h3>
+
+<p id="9">
+Here is an example of the information printed when
+<i>location</i> is <code>:holes</code>. Note that
+no information is printed until the first global garbage collection is
+done (a global gc is triggered by a call to <a href="gc.htm"><b>gc</b></a> with argument <code>t</code>). The output you see will likely be different, of
+course.
+</p>
+
+<pre id="10">
+cl-user(1): (print-type-counts :holes)
+code   type                                 items     bytes 
+
+ total bytes = 0
+cl-user(2): (gc t)
+cl-user(3): (print-type-counts :holes)
+code   type                                 items     bytes 
+ 96: (simple-array t)                           33      4656 34.3%
+101: (simple-array character)                   77      2888 21.3%
+100: (simple-array (unsigned-byte 32))           1      2504 18.5%
+  1: cons                                      304      2432 17.9%
+ 15: structure                                  21       840  6.2%
+  9: closure                                     7       112  0.8%
+ 18: bignum                                      9        88  0.6%
+  7: symbol                                      1        24  0.2%
+ 11: readtable                                   1        16  0.1%
+
+ total bytes = 13560
+cl-user(4):
+</pre>
+
+
+<p id="11">
+See also <a href="../../gc.htm">gc.htm</a> for general information on
+garbage collection in Allegro CL.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/print-type-counts.htm">9.0 version</a></td></tr></table></body></html>

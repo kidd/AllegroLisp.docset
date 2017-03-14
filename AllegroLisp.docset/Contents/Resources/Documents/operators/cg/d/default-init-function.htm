@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>default-init-function</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-init-function.htm">9.0 version</a></td></tr></table><h2 id="2">default-init-function</h2>
+
+<p id="3"><b>Arguments: </b><i>
+nil
+</i></p>
+
+<p id="4">
+default-init-function is the default <a href="../../ide/on-initialization.htm"><b>on-initialization</b></a> function for a
+project. It creates and displays the running window for the main form
+of the project, and then returns that window so that the application
+will exit when the main window is closed.
+</p>
+<p id="5">
+Below is the complete code for this function, which an application may
+model after if it needs to use a custom <a href="../../ide/on-initialization.htm"><b>on-initialization</b></a> function.
+</p>
+
+<pre id="6">
+(defun default-init-function ()
+  (let* ((maker (main-window-maker (app *system*)))
+         window)
+    
+    ;; This default project on-initialization function expects
+    ;; the project to have a main form to run.  For a project
+    ;; that uses no windows at all, you would need to substitute 
+    ;; a different on-initialization function.
+    (unless maker
+      (error "The project has no main form to run.  Either add a form ~
+                 to the project or give the project a different ~
+                 on-initialization function."))
+    
+    ;; Call the main form module's maker-function to create its window.
+    (setq window (funcall maker
+                          
+                          ;; When in a Run Project in the IDE,
+                          ;; run the main form on the screen (rather
+                          ;; than on the IDE owner window where
+                          ;; individual forms are run) to more completely
+                          ;; emulate the standalone application.
+                          ;; (The preferred initarg is now :owner, but
+                          ;; :parent also works with maker-functions
+                          ;; that were generated in pre-6.0 versions.)
+                          :parent (screen *system*)))
+    
+    ;; Cache the main window so that its finder function will
+    ;; find it later.
+    (when window
+      (add-application-window window)
+      
+      ;; Select the window if needed so that the end user sees it.
+      ;; A custom on-initialization function might want to customize
+      ;; the window contents in some way before revealing it here.
+      (select-window window)
+      
+      ;; This call may be needed especially in Windows 2000 to
+      ;; ensure that the app comes to the front.
+      (set-foreground-window window))
+    
+    ;; Return the main window of the application, to tell
+    ;; do-default-restart to call event-loop for us, passing the
+    ;; window so that event-loop exits when the window has been closed.
+    ;; Alternately, we could call event-loop ourselves with a
+    ;; custom exit-test, and return anything but a window when
+    ;; it returns.
+    window))
+</pre>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-init-function.htm">9.0 version</a></td></tr></table></body></html>

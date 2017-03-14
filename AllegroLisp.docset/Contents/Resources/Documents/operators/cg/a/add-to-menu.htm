@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-to-menu</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-to-menu.htm">9.0 version</a></td></tr></table><h2 id="2">add-to-menu</h2>
+
+<p id="3"><b>Arguments: </b><i>
+menu menu-item </i>&amp;key <i>position after</i> (<i>at-end</i> t)<i>
+</i></p>
+
+<p id="4">
+Adds <i>menu-item</i> to <i>menu</i> at a
+specified <i>position</i> among the current menu-items
+or after a menu-item given as the value of
+<i>after</i>. <i>at-end</i> is obsolete
+(use <code>:position :end</code>).
+</p>
+<p id="5">
+Returns the menu-item that was passed in after adding it to menu.
+</p>
+<p id="6">
+The arguments are:
+</p>
+<ul>
+<li id="7">
+<i>menu</i>: may be any menu, whether a <a href="../../../classes/cg/menu-bar.htm"><code>menu-bar</code></a>,
+<a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a>, or <a href="../../../classes/cg/pull-down-menu.htm"><code>pull-down-menu</code></a>.
+</li>
+<li id="8">
+<i>menu-item</i>: should be a <a href="../../../classes/cg/menu-item.htm"><code>menu-item</code></a>.
+</li>
+<li id="9">
+<i>position</i>: may be either
+<code>:start</code>, <code>:end</code>, or a non-negative
+integer. <code>:start</code> adds the menu-item at the top of
+the menu. <code>:end</code> adds it at the bottom. An integer
+indicates an index into the list of menu-items, where zero indicates
+the top of the menu and any integer equal to or greater than the
+number of menu-items presently in the menu indicates the bottom.
+</li>
+<li id="10">
+<i>after</i>: may be either <code>nil</code>
+or a menu-item that is presently in the menu or the <a href="../n/name.htm"><b>name</b></a> of such a menu-item. If
+true and the menu-item is found in the menu, then
+the new menu-item is placed just below the after menu-item.
+</li>
+</ul>
+<p id="11">
+The position of the menu-item is determined by the
+<i>after</i> argument if it specifies a menu-item that
+is present in menu, and otherwise by the <i>position</i>
+argument. Note that a menu-item should only be added to one menu. If
+a similar menu-item must appear in more than one menu, create copies
+(by calling <code>(make-instance 'menu-item)</code> with
+identical arguments or with <a href="../c/copy-menu-item.htm"><b>copy-menu-item</b></a>) as necessary.
+</p>
+<p id="12">
+See also <a href="../o/open-menu.htm"><b>open-menu</b></a>.
+</p>
+<p id="13">
+Backward compatibility note: All releases after 5.0 replace the
+<i>at-end</i> argument with the
+<i>position</i> and <i>after</i>
+arguments, but <i>at-end</i> will still work for
+backward compatibility. If <i>at-end</i> is
+true (and <i>position</i> and
+<i>after</i> are unspecified), then the menu-item is
+placed at the bottom of the menu, and otherwise at the
+top. <i>at-end</i> should not be specified
+simultaneously with either <i>position</i> or
+<i>after</i>; an error will be signaled if this is done.
+</p>
+
+
+
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-to-menu.htm">9.0 version</a></td></tr></table></body></html>

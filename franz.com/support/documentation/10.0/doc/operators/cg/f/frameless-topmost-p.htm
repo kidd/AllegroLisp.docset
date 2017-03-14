@@ -1,0 +1,35 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>frameless-topmost-p</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/frameless-topmost-p.htm">9.0 version</a></td></tr></table><h2 id="2">frameless-topmost-p</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window
+</i></p>
+
+<p id="4">
+This function has an effect only on the GTK platform.
+</p>
+<p id="5">
+This overridable generic function should return true if and only if
+instances of the specified window class should use the
+GTK_WINDOW_POPUP style on GTK. This is the only known way on GTK to
+make a non-child window that has no button in the taskbar. This
+property also forces the window to be frameless and topmost (in front
+of all non-topmost windows in all apps), and so is suitable only for
+true "pop-up" windows such as menus and tooltips.
+</p>
+<p id="6">
+Unfortunately it seems that GTK does not call our focus movement
+callbacks when such a window receives or loses the keyboard focus.
+That may cause problems if this option is used in an application.
+</p>
+<p id="7">
+This function has no effect on the Windows platform. To make a
+top-level window on Windows that has no taskbar button, either give it
+an <a href="../o/owner.htm"><b>owner</b></a> window or specify its
+<a href="../b/border.htm"><b>border</b></a> property as
+<code>:palette</code>.  (You can optionally eliminate the
+palette frame by also specifying the <a href="../t/title-bar.htm"><b>title-bar</b></a> property as <code>nil</code>.)
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/frameless-topmost-p.htm">9.0 version</a></td></tr></table></body></html>

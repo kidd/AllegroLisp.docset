@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>argument-saving</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/argument-saving.htm">9.0 version</a></td></tr></table><h2 id="2">argument-saving</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">This <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'able function
+controls whether Lisp saves arguments passed to Lisp functions which
+happen to be stored in registers rather than on the stack. Passing
+some arguments in registers is very efficient and is done when
+possible. However, the values in those registers will be overwritten
+when an unhandled error occurs and thus not be available for
+debugging. If argument saving is enabled, the argument values in
+registers will be saved and available for debugging. If argument
+saving is disabled, those argument values will not be saved. Unsaved
+arguments show up as <code>:unknown</code> in stack backtraces (as
+printed by 
+<a href="../../tpl-commands/zoom.htm"><b>:zoom</b></a>).</p>
+
+<p id="5"><strong>Note</strong>: if arguments are being saved, code may not
+run as fast as possible.</p>
+
+<p id="6">This function returns <code>t</code> if arguments are
+being saved, <code>nil</code> if they are not.</p>
+
+<p id="7"><a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> can be used with
+this function to set argument saving, so</p>
+
+<p id="8"><code>(setf (argument-saving) t)</code></p>
+
+<p id="9">causes arguments to be saved and</p>
+
+<p id="10"><code>(setf (argument-saving) nil)</code></p>
+
+<p id="11">causes them not to be saved.</p>
+
+<p id="12">The top-level command 
+<a href="../../tpl-commands/args.htm"><b>:args</b></a> is roughly
+equivalent to this function.</p>
+
+<p id="13">Note that on some architectures, arguments are always saved. On
+those architectures, this command has no effect.</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/argument-saving.htm">9.0 version</a></td></tr></table></body></html>

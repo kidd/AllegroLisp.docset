@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>complete-date-time</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: util.date-time</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/complete-date-time.htm">9.0 version</a></td></tr></table><h2 id="2">complete-date-time</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+date-time
+</i></p>
+
+<p id="4">
+This function is called automatically by <a href="date-time.htm"><b>date-time</b></a> when <a href="date-time.htm"><b>date-time</b></a>'s
+<i>complete</i> keyword argument is true.
+</p>
+<p id="5">
+This function updates its argument.  If the datetime specifies one of
+<a href="../../date-time.htm#iso-8601-dates-2">Calendar date, a
+Week date, or an Ordinal date</a>, then the other date types are
+calculated and stored in the argument. If the argument specifies a
+time, then the <code>hourf</code>, <code>minutef</code>,
+and <code>secondf</code> slots of the argument are calculated
+and stored in the argument.
+</p>
+<p id="6">
+Note that the function does not modify the conceptual date-time value
+of the argument.  It merely computes the equivalent representations.
+</p>
+<p id="7">
+One may not want to call this function if one wants to maintain the
+slots in the argument as being a representation from the parser of the
+<a href="date-time.htm"><b>date-time</b></a>
+function.  In this case, the <i>complete</i> keyword
+argument to <a href="date-time.htm"><b>date-time</b></a> (the function that does
+the parsing) should be <code>nil</code> to prevent this
+function from being called.
+</p>
+<h4 id="8">
+Examples
+</h4>
+<pre id="9">
+(require :datetime)
+(use-package :util.date-time)
+
+ (setq d (date-time &quot;1985-04-12&quot; :complete nil))
+  =&gt; #&lt;date-time &quot;1985-04-12&quot; @ ...&gt;
+
+ (date-time-ymd-day d) =&gt; 12
+
+ ;; The date-time was not completed, so the following accessor returns nil.
+ (date-time-yd-day d) =&gt; nil
+
+ ;; Update the date-time instance.
+ (complete-date-time d) =&gt;  #&lt;date-time &quot;1985-04-12&quot; @ ...&gt;
+
+ (date-time-yd-day d) =&gt; 102
+</pre>
+<p id="10">
+See also <a href="date-time.htm"><b>date-time</b></a>.
+</p>
+
+
+<p id="11">
+See <a href="../../date-time.htm">date-time.htm</a> for information on support in
+Allegro CL for parsing and generating time expressions using the ISO
+8601 standard.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/complete-date-time.htm">9.0 version</a></td></tr></table></body></html>

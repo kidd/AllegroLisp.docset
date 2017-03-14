@@ -1,0 +1,167 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>track-limits</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/track-limits.htm">9.0 version</a></td></tr></table><h2 id="2">track-limits</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window maximized-size maximized-position minimum-tracking-size
+maximum-tracking-size
+</i></p>
+
+<p id="4">
+This generic function is called whenever a window is about to be
+resized interactively. An application may add track-limits methods to
+its window classes to constrain the minimum and maximum sizes to which
+the end user may resize various windows, as well as their positions
+and sizes when maximized.
+</p>
+<p id="5">
+It may be particularly useful to limit how small a user can resize a
+dialog, in order to prevent some widgets from either being clipped off
+the right or bottom edges of the dialog or being resized too small
+when their <a href="../r/right-attachment.htm"><b>right-attachment</b></a> is
+<code>:right</code> or <code>:scale</code> or their
+<a href="../b/bottom-attachment.htm"><b>bottom-attachment</b></a>
+is <code>:bottom</code> or <code>:scale</code>.
+</p>
+<p id="6">
+<i>window</i> is the window that is being resized. The
+other four arguments specify the constrained sizes and positions. Any
+track-limits method should return these four position objects,
+modified if desired as described below, as the four returned values
+from track-limits (in the same order as in the parameter list). That
+is, the final form in the body of a track-limits methods should be:
+</p>
+<pre id="7">
+(values 
+  maximized-size maximized-position 
+  minimum-tracking-size maximum-tracking-size)
+</pre>
+<p id="8">
+To constrain a window's size, a track-limits method should
+destructively modify these four position objects before returning
+them. When track-limits is entered, these four positions contain the
+default constraints from the operating system. These typically only
+limit a window from being resized too small to display the gadgets in
+the window's title bar.
+</p>
+<p id="9">
+<i>maximized-size</i> is a position where the x and y
+coordinates are the width and height that the window will have when it
+is maximized.
+</p>
+<p id="10">
+<i>maximized-position</i> is a position where the x and
+y coordinates are the position of the upper left corner of the window
+when it is maximized.
+</p>
+<p id="11">
+<i>minimum-tracking-size</i> is a position where the x
+and y coordinates indicate the minimum width and height to which the
+window may be resized by dragging its border. The resizing box will
+not be drawn smaller than this minimum, to visually indicate this
+constraint to the end user.
+</p>
+<p id="12">
+<i>maximum-tracking-size</i> is a position where the x
+and y coordinates indicate the maximum width and height to which the
+window may be resized by dragging its border. The resizing box will
+not be drawn larger than this maximum, to visually indicate this
+constraint to the end user.
+</p>
+<p id="13">
+<a href="../t/track-limits.htm"><b>track-limits</b></a> is
+also called when resizing a window programmatically with <a href="../e/exterior.htm"><b>(setf
+exterior)</b></a> or <a href="../r/resize-window.htm"><b>resize-window</b></a>. It is not called
+when a window is created, however, even though the OS defaults still
+apply at that time. So if an application needs to create a window that
+is larger than the OS default maximum (which is approximately the size
+of the screen), then the application should create the window in
+shrunk state, then resize it as desired, and then show it.
+</p>
+<h3 id="14">
+GTK Note
+</h3>
+<p id="15">
+On GTK platforms (currently Linux and Mac OS X), it does not appear
+possible to constrain the interactive resizing of a top-level window
+dynamically using the track-limits approach. You can instead
+define <a href="../m/minimum-width.htm"><b>minimum-width</b></a> and
+<a href="../m/minimum-height.htm"><b>minimum-height</b></a> methods to
+control the minimum size, though those methods must return the minimum
+size of a window when the window is created, and that minimum size
+will be enforced thereafter whenever the user resizes the window.
+</p>
+<h3 id="16">
+Example using track-limits:
+</h3>
+<pre id="17">
+(in-package :cg-user)
+
+;; Make a custom window subclass to test.
+(defclass my-frame-window (frame-window)
+    
+    ;; Add a slot for remembering the window's original width.
+    ((original-width :initform nil)))
+
+;; Add a track-limits method to constrain interactive resizing.
+(defmethod track-limits ((window my-frame-window)
+                         maximized-size maximized-position
+                         minimum-tracking-size 
+                         maximum-tracking-size)
+   
+   ;; Call the default method to let it constrain the minimum 
+   ;; tracking size of the window as usual.
+   (multiple-value-setq (maximized-size maximized-position
+                         minimum-tracking-size 
+                         maximum-tracking-size)
+     (call-next-method))
+
+   ;; Constrain the maximum tracking size to the 
+   ;; window's original width
+   ;; and an arbitrary height of 400.
+   (let* ((max-width (slot-value window 'original-width)))
+      
+      ;; The first time that this is called, save the 
+      ;; window's current width as the maximum width 
+      ;; to use from now on.
+      (unless max-width
+         (setq max-width
+           (setf (slot-value window 'original-width)
+                 (exterior-width window))))
+      
+      ;; Destructively modify the maximum tracking 
+      ;; width to be returned.
+      (setf (position-x maximum-tracking-size) max-width)
+      (setf (position-y maximum-tracking-size) 400))
+   
+   ;; Specify that when the window is maximized that it should
+   ;; reach only to within 50 pixels of the edges of the screen.
+   ;; Note that this size will be overridden by the more      
+   ;; restrictive maximum tracking size above, so you may 
+   ;; want to comment out the preceding section to demonstrate 
+   ;; this maximized size.
+   (setf (position-x maximized-position) 50)
+   (setf (position-y maximized-position) 50)
+   (setf (position-x maximized-size)
+         (- (interior-width (screen *system*)) 100))
+   (setf (position-y maximized-size)
+         (- (interior-height (screen *system*)) 100))
+   
+   ;; Return all four of the position arguments to the caller.
+   (values maximized-size maximized-position
+     minimum-tracking-size maximum-tracking-size))
+
+;; Make a sample window to test the above track-limits method.
+;; Resize and and maximize the window interactively to 
+;; see the constraints.
+(make-window :my-frame-1
+  :device 'my-frame-window
+  :exterior (make-box 100 100 400 400)
+  :title "Track-limits test")
+</pre>
+
+
+
+
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/track-limits.htm">9.0 version</a></td></tr></table></body></html>

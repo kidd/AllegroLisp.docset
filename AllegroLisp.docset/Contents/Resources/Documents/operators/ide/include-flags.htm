@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>include-flags</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/include-flags.htm">9.0 version</a></td></tr></table><h2 id="2">include-flags</h2>
+
+<p id="3"><b>Arguments: </b><i>
+project
+</i></p>
+
+<p id="4">
+Returns a list of keyword symbols indicating certain arguments that
+will be passed to either <a href="../excl/generate-application.htm"><b>generate-application</b></a> or <a href="../excl/build-lisp-image.htm"><b>build-lisp-image</b></a> when the <a href="../../ide-menus-and-dialogs/file-menu.htm#build-project-exe">File |
+Build Project Exe</a> or <a href="../../ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> command is used to generate a standalone
+application for the specified project. The list may contain any
+combination of the symbols <code>(:top-level :debugger :compiler
+:local-name-info)</code>. The default value is <code>(:top-level
+:debugger)</code>.
+</p>
+<p id="5">
+The <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of this function may
+be called to establish the set of flags programmatically, but
+typically these values are set interactively on the <a href="../../ide-menus-and-dialogs/project-manager-dialog-include.htm">Include</a> tab of the
+<a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog instead, which has an individual check-box for
+each of the possible values, labeled <b>Include the Top Level</b> (for
+<code>:top-level</code>), <b>Include the Debugger</b> (for
+<code>:debugger</code>), <b>Include the Compiler</b> (for
+<code>:compiler</code>), and <b>Save Local Name Info</b> (for
+<code>:local-name-info</code>).
+</p>
+<p id="6">
+When :compiler is included in the list and the <a href="runtime-build-option.htm"><b>runtime-build-option</b></a> property of
+the project is :dynamic or :partners (rather than :standard, which is
+the default), then the :discard-compiler argument to <a href="../excl/generate-application.htm"><b>generate-application</b></a> is passed as <code>nil</code> to include the compiler in the standalone
+application.  (The appropriate Allegro license is required for this.)
+When :compiler is excluded from the list or when the <a href="runtime-build-option.htm"><b>runtime-build-option</b></a> property of
+the project is :standard, the :discard-compiler argument is passed as
+<code>t</code>.
+</p>
+<p id="7">
+When :local-name-info is included, the :discard-local-name-info
+argument to <a href="../excl/generate-application.htm"><b>generate-application</b></a> or <a href="../excl/build-lisp-image.htm"><b>build-lisp-image</b></a> will be <code>nil</code>, and otherwise will be <code>t</code>. When :top-level is included, the :include-tpl
+argument will be <code>t</code>, and otherwise will be
+<code>nil</code>.
+</p>
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/include-flags.htm">9.0 version</a></td></tr></table></body></html>

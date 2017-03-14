@@ -1,0 +1,34 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>nvirtual-exterior</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/n/nvirtual-exterior.htm">9.0 version</a></td></tr></table><h2 id="2">nvirtual-exterior</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window-or-screen box
+</i></p>
+
+<p id="4">
+Returns the bounding box of all monitors in the system on newer
+versions of Windows, when passed the screen.  On Windows with multiple
+monitors, the returned box will be the bounding rectangle for all
+monitors when <i>window-or-screen</i> is the screen.
+Otherwise this function returns the same box as <a href="../n/nexterior.htm"><b>nexterior</b></a>.
+</p>
+<p id="5">
+<b><i>window-or-screen</i></b> should be either a window
+or the screen.  For a window this is the same as calling <a href="../n/nexterior.htm"><b>nexterior</b></a>.
+</p>
+<p id="6">
+<b><i>box</i></b> should be a box object (see <a href="../m/make-box.htm"><b>make-box</b></a>) as created with <a href="../m/make-box.htm"><b>make-box</b></a> or <a href="../w/with-boxes.htm"><b>with-boxes</b></a>.  This box object is modified and
+returned.
+</p>
+<p id="7">
+When <i>window-or-screen</i> is the screen, this
+function simply calls <a href="../m/make-box-relative.htm"><b>make-box-relative</b></a> on the values returned by
+<a href="../v/virtual-screen-left.htm"><b>virtual-screen-left</b></a>, <a href="../v/virtual-screen-top.htm"><b>virtual-screen-top</b></a>, <a href="../v/virtual-screen-width.htm"><b>virtual-screen-width</b></a>, and <a href="../v/virtual-screen-height.htm"><b>virtual-screen-height</b></a>.
+</p>
+<p id="8">
+See also <a href="../v/virtual-exterior.htm"><b>virtual-exterior</b></a>,
+<a href="../u/usable-left.htm"><b>usable-left</b></a>, <a href="../u/usable-top.htm"><b>usable-top</b></a>, <a href="../u/usable-width.htm"><b>usable-width</b></a>, and <a href="../u/usable-height.htm"><b>usable-height</b></a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/n/nvirtual-exterior.htm">9.0 version</a></td></tr></table></body></html>

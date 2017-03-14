@@ -1,0 +1,97 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>border</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/border.htm">9.0 version</a></td></tr></table><h2 id="2">border</h2>
+
+<p id="3"><b>Arguments: </b><i>
+standard-object
+</i></p>
+
+<p id="4">
+Returns the style of the <i>standard-object</i>'s
+border. Various border styles are listed below. Only some styles are
+appropriate for a specific object.
+</p>
+<p id="5">
+The border property may not be changed on an existing window or
+control, and must instead be specified with the inspector when
+designing a window or control (using a form) or with the :border
+initarg of <a href="../m/make-window.htm"><b>make-window</b></a> or make-instance. (It
+can be changed using the inspector when designing a form but not for a
+running window or control, either in the IDE or in an application.)
+</p>
+<p id="6">
+Here are the possible values and their effects:		
+</p>
+<ul>
+<li id="7">
+<code>:black</code>: use a one pixel wide black border. This is
+the only non-3D-style border. The initial value for <a href="../../../classes/cg/picture-button.htm"><code>picture-button</code></a> (which
+has its own 3d border). See :plain below.
+</li>
+<li id="8">
+<code>:dialog-box</code>: similar to <code>:frame</code>,
+but without minimize and maximize buttons. Not applicable to controls.
+</li>
+<li id="9">
+<code>:frame</code>: use a thick frame that includes a title bar
+along the top. The title bar will include buttons for manipulating the
+window if options to <a href="../m/make-window.htm"><b>make-window</b></a> such as
+:minimize-button are true (as they are by
+default). Note that the Windows interface style
+always puts this thick frame-style border on all top-level
+windows. Not applicable to controls.
+</li>
+<li id="10">
+<code>:none</code>: use no border at all.
+</li>
+<li id="11">
+<code>:palette</code>: similar to
+<code>:dialog-box</code>, but with a shorter title bar that has
+a somewhat shorter font.  The title bar also does not have a system
+menu button at the left. Typically used for "floating toolbar"
+windows. Not applicable to controls.
+</li>
+<li id="12">
+<code>:plain</code>: use a standard 3D border with thick black
+upper and left edges and white lower and right edges, and no title
+bar. The initial value for various controls that have a border and
+accept mouse and keyboard input.
+</li>
+<li id="13">
+<code>:static</code>: use a 3-dimensional border intended for
+static controls, i.e., controls that do not handle mouse clicks or
+typed input. Note: some clickable controls still have :static as a
+border option. Users who want to use clickable controls in a
+non-clickable way (for example, a <a href="../../../classes/cg/multi-line-editable-text.htm"><code>multi-line-editable-text</code></a> control
+whose text can be selected and copied but not modified) might want the
+:static option. 
+</li>
+</ul>
+
+<p id="14">
+For <a href="../../../classes/cg/group-box.htm"><code>group-box</code></a> controls the border
+can have the following special properties:
+</p>
+<ul>
+<li id="15">
+<code>:2d</code> Border of the group-box is a plain gray line. 
+</li>
+<li id="16">
+<code>:raised</code> Body of the group-box is raised. 
+</li>
+<li id="17">	
+<code>:raised-edge</code> Border is raised. 
+</li>
+<li id="18">
+<code>:sunken</code> Body of the group-box is sunken. 
+</li>
+<li id="19">
+<code>:sunken-edge</code> Border is sunken. 
+</li>
+</ul>
+
+
+
+
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/border.htm">9.0 version</a></td></tr></table></body></html>

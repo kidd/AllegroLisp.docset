@@ -1,0 +1,58 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>device-file-position</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-file-position.htm">9.0 version</a></td></tr></table><h2 id="2">device-file-position</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+
+<p id="4">
+Returns a positive integer that is the current octet (8-bit byte)
+position of the device represented by the argument stream, or else 
+<code>nil</code>
+if this position cannot be determined. 
+</p>
+
+<p id="5">
+This generic function is 
+<a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>able. The position of
+the stream device is changed to reflect the value given, if
+possible. The value given may be either a positive integer designating
+the position from the start of the file, or else a negative integer,
+whose one's complement designates the position backwards from the end
+of the file. Thus, for example, -1 denotes the end of the file, -2
+denotes the last octet from the end of file, -3 denotes 2 octets from
+the end of the file, etc. 
+</p>
+
+<h3 id="6">Defined methods</h3>
+
+<p id="7"> These apply to <a href="device-file-position.htm"><b>device-file-position</b></a> and its <b>setf</b>.
+</p>
+
+<ul>
+<li id="8">
+On class: <a href="../../classes/excl/simple-stream.htm"><code>simple-stream</code></a>:
+the current position in the buffer is returned or set.
+</li>
+<li id="9">
+On class: <a href="../../classes/excl/string-simple-stream.htm"><code>string-simple-stream</code></a>: the length of the string
+is returned or set.  (On <a href="../../classes/excl/fill-pointer-output-simple-stream.htm"><code>fill-pointer-output-simple-stream</code></a>, the
+fill-pointer is used).
+</li>
+<li id="10">
+On class: <a href="../../classes/excl/file-simple-stream.htm"><code>file-simple-stream</code></a>: a seek operation is used
+to query or set the position.
+</li>
+
+
+</ul>
+
+<p id="11">
+See <a href="../../streams.htm">streams.htm</a> for information on the
+simple-streams implementation in Allegro CL. The older but still
+supported Gray streams implementation is described in
+<a href="../../gray-streams.htm">gray-streams.htm</a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-file-position.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,270 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>editor-workbook</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/editor-workbook.htm">9.0 version</a></td></tr></table><h2 id="2">Editor Workbook</h2>
+
+
+<p id="3">
+The Editor Workbook is a dialog showing one or more editor
+buffers. Each buffer may be open to a file, or may contain text data
+not yet saved to a file. Display the Editor Workbook with <a href="view-menu.htm#editor">View |
+Editor</a>. Open a new buffer with <a href="file-menu.htm#new">File | New</a>. Open an existing text
+file with <a href="file-menu.htm#open">File | Open</a>. Save with <a href="file-menu.htm#save">File |
+Save</a> (you are prompted for a filename if the buffer is not
+already associated with a file). Close with <a href="file-menu.htm#close-pane">File | Close
+Pane</a> when the buffer to be closed is selected. Most of the
+commands on the IDE menu-bar are applicable in the editor, typically
+acting on the symbol or other "word" that the text cursor is on.  The
+<a href="edit-menu.htm">Edit menu</a> is
+especially directed at the editor.
+</p>
+<p id="4">
+When saving a new IDE editor buffer for the first time, a yes-or-no
+dialog will first ask whether you want to add the new file to the
+current project.  (This dialog will not appear if there is no current
+project, or for a form's editor buffer since that is already in the
+project.)  If you answer yes, then the <b>Save File</b> dialog will
+default to the project's default directory, and the file will be added
+to the project.  If you answer no, then the <b>Save File</b> dialog will
+default as it otherwise would, which is generally to the directory in
+which a file was last selected in this dialog, and the file will not
+be added to the current project.
+</p>
+<p id="5">
+Here is the Editor Workbook when Allegro CL and the IDE starts up,
+with one untitled buffer named Untitled. (If the Editor Workbook is
+not visible, it can be displayed with the <a href="view-menu.htm#editor">View |
+Editor</a> command.)
+</p>
+<p id="6">
+<p id="7"><img src="../pictures/ewb.jpg"></p>
+</p>
+<p id="8">
+Editing in an editor buffer is mostly standard (type what you want and
+characters appear at the cursor, selecting text and typing deletes the
+selection, replacing it with what is typed, etc.) The behavior of key
+chords (a modifier key, like Control or Alt pressed with one or more
+character keys) depends on the current Comtab, which is specified on
+the <a href="options-dialog-editor.htm">Editor
+tab</a> of the <a href="options-dialog.htm">Options dialog</a>. The predefined comtabs
+are Host, Emacs, and Brief. Clicking <a href="help-menu.htm#shortcut-keys">Help | Shortcut Keys</a>
+displays a <a href="shortcut-keys-dialog.htm">dialog</a> showing the key
+combinations, the function called by the key combination, and whether
+the source of each keyboard shortcut is the IDE menu-bar, a global
+keyboard shortcut, or the current editor comtab. See <a href="../variables/ide/s_text-edit-comtab_s.htm"><code>*text-edit-comtab*</code></a> to find out
+how to add your own key bindings to the IDE editor's comtab (command
+table).
+</p>
+
+
+<p id="9">
+For a handy mouse click shortcut for copying or moving forms in the
+editor, see <a href="../operators/cg/u/use-mouse-clicks-to-copy-lisp-forms.htm"><b>cg:use-mouse-clicks-to-copy-lisp-forms</b></a>.
+</p>
+
+
+<h3 id="10">
+Compiling and Evaluating Forms
+</h3>
+
+<p id="11">
+Two commands that are used frequently in the IDE Editor are the
+<a href="tools-menu.htm#incremental-compile">Tools | Incremental Compile</a> command
+and the <a href="tools-menu.htm#incremental-evaluation">Tools | Incremental Evaluation</a>
+command. The word "incremental" in these names means that you can
+compile or evaluate individual definitions or other expressions each
+time you modify your code incrementally.
+</p>
+<p id="12">
+The keyboard shortcuts for these commands (when the editor is in Host
+mode) are control-D and control-E.  So typically each time you have
+just modified a defun form or other definition, you can quickly
+recompile that individual definition by first making sure that the
+text cursor is somewhere inside the definition, then typing control-D
+to compile it, and then perhaps retesting the code.
+</p>
+<p id="13">
+If instead you want to evaluate a top-level form, then you would type
+control-E instead -- the values returned by the evaluation will be
+printed to the listener in the Debug Window.  If you are evaluating
+particular forms frequently, evaluating them in the editor (and saving
+them to a file) may be handier than re-entering them in the Debug
+Window or finding them in the Debug Window's command history.
+</p>
+<p id="14">
+When no text is selected, these commands are applied to the top-level
+form that the text cursor is currently inside or after.  (A top-level
+form is simply one that begins with an open parenthesis in the
+leftmost column of the editor buffer.)  Specifically, the command will
+be applied to a top-level form if the text cursor is either
+immediately before its opening parenthesis, or somewhere inside the
+form, or after the form but before the position immediately before the
+next top-level form (if any).
+</p>
+<p id="15">
+When any text is selected, these commands are applied directly to the
+selected text rather than to a top-level form. This is generally more
+useful for evaluation than for compilation. Text can be selected as
+usual by dragging the mouse with the left button down. In addition, a
+handy way to select a lisp form is to double-click immediately before
+the form's opening parenthesis. If multiple expressions are selected,
+then each one is compiled or evaluated in succession. You can even
+use the <a href="edit-menu.htm#select-all">Edit | Select All</a>
+command (control-A) to select all text and
+then compile or evaluate the entire editor buffer. 
+</p>
+<p id="16">
+Another way to evaluate an expression in the editor is to place the
+text cursor just before the expression and then press the Enter key on
+the numeric keypad.  (Or hold down the Alt key and press the main
+Enter key.)  In addition to evaluating the expression, this also moves
+the text cursor just past the expression; this allows you to evaluate
+a sequence of expressions by pressing the numeric keypad's Enter key
+repeatedly. It is OK to repeat this keystroke quickly, because
+each successive evaluation will not be done until the previous one has
+returned. If the Control key is held down while pressing the numeric
+keypad's Enter key, or both Control and Alt are held down while
+pressing the main Enter key, then the form to be evaluated will first
+be copied to the listener as if it had been entered there at the
+prompt; this provides more context for reviewing the output in the
+listener.
+
+</p>
+
+<h3 id="17">The Tab Key in the Editor Workbook</h3>
+
+<p id="18">
+The Tab key in all Comtab modes indents the current line appropriately
+for displaying Lisp text. Thus, if you have entered
+</p>
+<pre id="19">
+(defun foo (x)
+</pre>
+<p id="20">
+pressing Enter moves the cursor to the next line, adding spaces so the
+character typed is just under the `e' in `defun'. If you place the
+cursor at the beginning of the second line and press Tab, the cursor
+moves so the next character will be under the `e' in `defun' but no
+Tab character is input (instead, spaces are input as required). If you
+want an actual Tab character, press Shift-Tab.
+</p>
+
+<h3 id="21">The package in the Editor</h3>
+
+<p id="22">
+If there is either an <code>in-package</code> form (such as
+<code>(in-package :cg-user)</code>) as the first top-level form
+in a buffer, the
+package in the buffer will be the specified package as soon as <b>Find
+Package Specifier</b> is chosen from the Editor's Shortcut Menu
+(described below on this page) or any of the menubar commands <a href="file-menu.htm#save">File |
+Save</a>, <a href="tools-menu.htm#incremental-compile">Tools | Incremental Compile</a>, or
+<a href="tools-menu.htm#incremental-evaluation">Tools | Incremental Evaluation</a>
+are chosen.
+</p>
+
+
+<p id="23">
+The package of the buffer affects symbol completion and whether
+symbols need to be package-qualified in order for the system to
+identify them (for purposes of listing arguments of functions, finding
+documentation pages, etc.)
+</p>
+
+<h3 id="24">The Editor's Shortcut Menu</h3>
+
+<p id="25">
+Shortcut menus that appear when right-clicking in IDE windows. They
+generally offer commands that are already available on the IDE's
+menu-bar, but are considered particularly useful in the context where
+the shortcut menu was invoked (Cut and Paste are on the Editor's
+shortcut menu, for example, as well as on the <a href="edit-menu.htm">Edit</a> menu). However, the Editor's shortcut
+menu also contains a few useful commands that are not found
+elsewhere. the command are appropriate for the type of file being
+edited. Not all these commands appear on the menu for all files.
+</p>
+<ul>
+<li id="26">
+<b>Add File to Project</b>: adds the source code file shown in the
+currently selected editor pane to the current project. If you happen
+to be editing this file already, then this command is easier than
+using the Add button on the Project Manager dialog, which would
+require you to re-specify the file pathname using the file selection
+dialog. (This command will not appear if you are editing a new editor
+buffer that has not yet been saved to a file, or when there is no
+current project.)
+</li>
+<li id="27">
+<b>Find Package Specifier</b>: detects the <code>(in-package
+...)</code> form in the selected editor pane
+and sets the current package of the pane to be that package, so that
+the symbols in source code will be read into the correct package.
+</li>
+<li id="28">
+<b>Select Most Recent</b>: this command exposes the editor buffer most
+recently exposed before the current one. Its shortcut is
+<code>Control+Shift+J</code>. This choice is on the menu in part
+to remind you of the keyboard shortcut.
+</li>
+<li id="29">
+<b>Select Next Most Recent</b>: this command exposes the editor buffer next
+most
+recently exposed before the current one. Its shortcut is
+<code>Control+Shift+K</code>. This choice is on the menu in part
+to remind you of the keyboard shortcut.
+</li>
+<li id="30">
+<b>Select Third Most Recent</b>: this command exposes the editor
+buffer third most recently exposed before the current one. Its
+shortcut is <code>Control+Shift+L</code>. This choice is on the
+menu in part to remind you of the keyboard shortcut.
+</li>
+<li id="31">
+<b>Select Tab On Left</b>: this command exposes the editor buffer just
+to the left of the current one. Its shortcut is
+<code>Control+Shift+,</code>. This choice is on the menu in part
+to remind you of the keyboard shortcut.
+</li>
+<li id="32">
+<b>Select Tab On Right</b>: this command exposes the editor buffer just
+to the right of the current one. Its shortcut is
+<code>Control+Shift+.</code>. This choice is on the menu in part
+to remind you of the keyboard shortcut.
+</li>
+</ul>
+
+<p id="33">
+The last four commands are not particularly useful for selecting from
+the shortcut menu itself, since it would be easier simply to click on the
+desired editor pane's tab instead. They appear on the menu as a
+reminder of their handy keystroke equivalents. For example, pressing
+control-shift-comma in the editor (perhaps more easily remembered as
+control-left-angle-bracket) selects the editor pane to the immediate
+left of the currently selected pane; and pressing control-shift-J
+selects the most recently selected pane. All such keyboard shortcuts
+may be found on the <a href="shortcut-keys-dialog.htm">dialog</a> displayed by choosing
+<a href="help-menu.htm#shortcut-keys">Help | Shortcut Keys</a>.
+</p>
+<p id="34">
+These commands are handy for selecting various editor panes without
+needing to take a hand off the keyboard while typing. They are related
+to the Show Second, Show Third, and Show Fourth commands on the
+<a href="view-menu.htm#manage">View | Manage Windows</a> submenu, though
+those menu-bar commands apply to top-level IDE windows while these
+shortcut menu commands apply to panes within a single top-level
+window. These commands are also available in the Debug Window.
+</p>
+
+<h3 id="35">
+Highlighting the tab of the currently-selected buffer
+</h3>
+
+<p id="36">
+When the IDE configuration option <a href="../operators/ide/highlight-selected-editor-tab.htm"><b>highlight-selected-editor-tab</b></a> is true, the IDE
+editor will always highlight the tab of the currently-selected
+buffer. This option is initially true, as the otherwise visual
+indication of the currently selected tab is rather subtle.
+</p>
+
+
+
+<hr><p id="37"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/editor-workbook.htm">9.0 version</a></td></tr></table></body></html>

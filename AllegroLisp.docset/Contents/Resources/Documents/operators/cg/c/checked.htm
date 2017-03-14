@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>checked</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/checked.htm">9.0 version</a></td></tr></table><h2 id="2">checked</h2>
+
+<p id="3"><b>Arguments: </b><i>
+list-view-item
+</i></p>
+
+<p id="4">
+This property has an effect only on the Windows platform, where it is
+provided by the underlying Microsoft control.
+</p>
+<p id="5">
+Returns the value of the <a href="../c/checked.htm"><b>checked</b></a> property of a <a href="../../../classes/cg/list-view-item.htm"><code>list-view-item</code></a> of a list-view control. The
+value may be set at creation time by passing the :checked initarg to
+<a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or any time
+later by calling <a href="../c/checked.htm"><b>(setf
+checked)</b></a>.
+</p>
+<p id="6">
+This property specifies whether a <a href="../../../classes/cg/list-view-item.htm"><code>list-view-item</code></a> on a <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> control is currently checked. This can
+be true only if the <a href="../s/show-check-boxes.htm"><b>show-check-boxes</b></a> property of
+the <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> is true to
+show the special column of check boxes. The default value
+is <code>nil</code>.
+</p>
+<p id="7">
+Typically an application would call <a href="../c/checked.htm"><b>checked</b></a> on various <a href="../../../classes/cg/list-view-item.htm"><code>list-view-item</code></a>s of a <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> control once the user has exited the
+dialog that contains the <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a>, to see which items the user has
+checked. An application can also call <a href="../c/checked.htm"><b>(setf checked)</b></a> on a <a href="../../../classes/cg/list-view-item.htm"><code>list-view-item</code></a> to set whether that item is
+checked or unchecked.
+</p>
+<p id="8">
+The generic function <a href="../c/checked.htm"><b>(setf checked)</b></a> will also be called whenever
+the end user interactively toggles the checked state of an item by
+clicking on it. An application could add an :after method to catch
+whenever the checked state changes, though it is more typical to give
+the <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> control an
+<a href="../o/on-check.htm"><b>on-check</b></a> function, which will
+be called when the state of any of its check boxes has changed.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/checked.htm">9.0 version</a></td></tr></table></body></html>

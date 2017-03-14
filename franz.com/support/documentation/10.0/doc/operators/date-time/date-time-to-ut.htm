@@ -1,0 +1,201 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>date-time-to-ut</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: util.date-time</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/date-time-to-ut.htm">9.0 version</a></td></tr></table><h2 id="2">date-time-to-ut</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+date-time
+</i>&amp;key <i>defaults</i><i>
+</i></p>
+
+<p id="4">
+This function returns multiple value specifying the extended universal
+time associated with the argument <a href="../../classes/date-time/date-time.htm"><code>date-time</code></a> object (modified, as
+described below, by <i>defaults</i>). This function is
+the inverse of <a href="ut-to-date-time.htm"><b>ut-to-date-time</b></a>. An 'extended
+universal time' is one that has values for years prior to 1900 (see
+below for mroe information).
+</p>
+<p id="5">
+The return values are listed below. The second through seventh are
+valid argument to <a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a> in any Common Lisp because
+the year is modified by some multiple of 400 in order that it be
+greater than 1899. The eighth return value (the time zone) is a valid
+argument to <a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a> if it is a number, but not
+if it is the symbol <code>:time-zone-not-specified</code>. The
+final return value is the number of multiples of 400 needed to add to
+the date-time year needed to bring the year past 1899. 
+</p>
+<p id="6">
+In detail, the nine return values are:
+</p>
+
+<ol>
+<li id="7">
+The <b>extended universal time</b> associated with the date-time and
+defaults arguments.
+</li>
+<li id="8">
+<b>second</b>: value 0-59.
+</li>
+<li id="9">
+<b>minute</b>: value 0-59.
+</li>
+<li id="10">
+<b>hour</b>: value 0-23.
+</li>
+<li id="11">
+<b>ymd-day</b>: the standard universal time specification of the day
+of the month (value 1-31).
+</li>
+<li id="12">
+<b>ymd-month</b>: the standard universal time specification of the
+month (value 1-12).
+</li>
+<li id="13">
+<b>extended-year</b>: if the year specified in the date-time argument
+is before 1900, then this value will be that year plus a multiple of
+400 to make the extended-year be beyond 1900.
+</li>
+<li id="14">
+<b>time-zone</b>: the time zone value or the symbol
+<code>:time-zone-not-specified</code>.
+</li>
+<li id="15">
+<b>year-ut-delta</b>: the value added to the year in the
+<i>date-time</i> argument to calculate the extended-year
+value, the seventh return value.
+</li>
+</ol>
+
+<h4 id="16">
+Extended universal time
+</h4>
+<p id="17">
+The universal-time is actually an extension of the Common Lisp
+universal-time since ISO 8601 allows for dates/times to be specified
+outside the range of those representable by universal-time (i.e.,
+dates before 1900, or times containing fractional seconds).  This
+extended universal-time allows for negative values to represent dates
+before 1900.  In addition, extended universal-times can be non-integer
+rationals representing times with fractional seconds.
+</p>
+<h4 id="18">
+The defaults argument
+</h4>
+<p id="19">
+There are three special date-time designators:
+<code>:now</code>, <code>:today</code>, and
+<code>:zero</code>.  <code>:now</code> means current time,
+<code>:today</code> means the start (00:00:00) of the current
+day, and <code>:zero</code> means the start of Jan 1, 0000.
+</p>
+<pre id="20">
+(require :datetime)
+(use-package :util.date-time)
+
+;;  You will see different values for :now and :today
+(date-time :now) =&gt; #&lt;date-time &quot;2006-07-11T22:28:08&quot; @ #x7185242a&gt;
+(date-time :today) =&gt; #&lt;date-time &quot;2006-07-11T00:00:00&quot; @ #x7185ec6a&gt;
+
+(date-time :zero)  =&gt; #&lt;date-time &quot;0000-01-01T00:00:00&quot; @ #x717dcad2&gt;
+</pre>
+<p id="21">
+These special date-time instances can be used as
+<i>defaults</i>.  The default
+<i>defaults</i> is <code>:zero</code>.  Thus, the
+default behavior is to merge the argument date-time with
+<code>(date-time :zero)</code> to get a complete date-time
+instance that can be converted to universal-time.  You can override
+the default by specifying :today, :now, or any other date-time
+instance.  You can also specify <code>nil</code> as the
+defaults, in which case no merging occurs.
+</p>
+<h3 id="22">
+Examples
+</h3>
+<pre id="23">
+(require :datetime)
+(use-package :util.date-time)
+
+;; Here are two examples showing all the return values
+ (date-time-to-ut "1865-11-06")
+ 
+<b>Returns values:</b>
+
+ -1077724800
+ 0
+ 0
+ 0
+ 6
+ 11
+ 2265
+ :time-zone-not-specified
+ 400
+
+ (date-time-to-ut "1960-04-14T11:20:00+0700")
+
+<b>Returns values:</b>
+
+ 1902370800
+ 0
+ 20
+ 11
+ 14
+ 4
+ 1960
+ -7
+ 0
+
+;; In the remaining examples, we show only the first return value
+;; of DATE-TIME-TO-UT:
+
+ (setq d (date-time &quot;1985-04-12T23:20:50+02:00&quot;))
+=&gt; #&lt;date-time &quot;1985-04-12T23:20:50+02:00&quot; @ ...&gt;
+
+ (setq ut (date-time-to-ut d)) =&gt; 2691192050
+
+
+ (setq d (date-time &quot;1885-04-12T23:20:50+02:00&quot;))
+=&gt; #&lt;date-time &quot;1885-04-12T23:20:50+02:00&quot; @ ...&gt;
+
+ ;; The following returns a negative number since the date is before 1900.
+ ;; 
+ (setq ut (date-time-to-ut d)) =&gt; -464481550
+
+ (ut-to-date-time (date-time-to-ut &quot;1985-04-12&quot;))
+   =&gt; #&lt;date-time &quot;1985-04-12T00:00:00+08:00&quot; @ #x718bad0a&gt;
+
+ (ut-to-date-time (date-time-to-ut &quot;1985-04&quot;))
+   =&gt; #&lt;date-time &quot;1985-04-01T00:00:00+08:00&quot; @ #x718c108a&gt;
+
+ (ut-to-date-time (date-time-to-ut &quot;1985&quot;))
+   =&gt; #&lt;date-time &quot;1985-01-01T00:00:00+08:00&quot; @ #x718c7092&gt;
+
+ ;; Note that the default may not be desirable in the following case:
+ ;;
+ (ut-to-date-time (date-time-to-ut &quot;85-04-12&quot;))
+   =&gt; #&lt;date-time &quot;0085-04-12T00:00:00+08:00&quot; @ #x718ebcba&gt;
+
+ ;; The following are ways to specify different defaults:
+
+ (ut-to-date-time (date-time-to-ut &quot;85-04-12&quot;
+                                    :defaults (merge-date-times &quot;1900&quot; :zero)))
+   =&gt; #&lt;date-time &quot;1985-04-12T00:00:00+08:00&quot; @ #x7191cc8a&gt;
+
+ (ut-to-date-time (date-time-to-ut &quot;85-04-12&quot; :defaults :today))
+   =&gt; #&lt;date-time &quot;2085-04-12T00:00:00+08:00&quot; @ #x71924f5a&gt;
+
+ (ut-to-date-time (date-time-to-ut &quot;85-04-12&quot; :defaults :now))
+   =&gt; #&lt;date-time &quot;2085-04-12T22:36:32+08:00&quot; @ #x7192cce2&gt;
+</pre>
+<p id="24">
+See also <a href="../excl/string-to-universal-time.htm"><b>string-to-universal-time</b></a>, which converts a
+string specifying a date and time (in a variety of formats including
+ISO 8601) to a universal time.
+See <a href="../../date-time.htm">date-time.htm</a> for information on support in
+Allegro CL for parsing and generating time expressions using the ISO
+8601 standard.
+</p>
+
+<hr><p id="25"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/date-time-to-ut.htm">9.0 version</a></td></tr></table></body></html>

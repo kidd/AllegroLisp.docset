@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>orientation</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/orientation.htm">9.0 version</a></td></tr></table><h2 id="2">orientation</h2>
+
+<p id="3"><b>Arguments: </b><i>
+standard-object
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../o/orientation.htm"><b>orientation</b></a> property of the
+argument. This property applies to 
+<a href="../../../classes/cg/trackbar.htm"><code>trackbar</code></a>, <a href="../../../classes/cg/up-down-control.htm"><code>up-down-control</code></a>,
+and <a href="../../../classes/cg/split-bar.htm"><code>split-bar</code></a>
+controls that can be placed vertically or horizontally, and to
+a <a href="../../../classes/cg/printer.htm"><code>printer</code></a>,
+indicating the orientation of the image on the paper. The possible
+values for trackbars, up-down-controls, and
+split-bars are <code>:horizontal</code>
+and <code>:vertical</code>.
+</p>
+<p id="5">
+This property is
+not setfable, excpt for <a href="../../../classes/cg/split-bar.htm"><code>split-bar</code></a>s. For a printer stream, it must
+be specified as the value of the :orientation initarg
+to <a href="../o/open-stream.htm"><b>open-stream</b></a>
+when creating a printer stream (or by letting the end user specify it
+on the print job dialog that is invoked by default at that time). For
+trackbars and up-down-controls, the value must instead be specified
+with the inspector when designing a control (using a form) or with the
+:orientation initarg of <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>. (It can be changed using the
+inspector when designing a form but not for a running control, either
+in the IDE or in an application.)
+</p>
+
+<p id="6">
+When creating a <a href="../../../classes/cg/split-bar.htm"><code>split-bar</code></a>
+programmatically and passing the <i>orientation</i>
+argument as <code>:vertical</code>, you will probably want to
+also pass the <i>cursor-name</i> argument as
+<code>:vertical-splitbar-cursor</code> (or the name of a custom
+cursor), since it will otherwise default to
+<code>:horizontal-splitbar-cursor</code>. (This is not an issue
+when creating a split-bar interactively on a form window.)
+</p>
+
+<p id="7">
+The possible values for a <a href="../../../classes/cg/printer.htm"><code>printer</code></a> stream are <code>:portrait</code>
+and <code>:landscape</code>, where <code>:portrait</code>
+is taller than it is wide, and :landscape is wider than it is tall.
+</p>
+<p id="8">
+<a href="../o/orientation.htm"><b>orientation</b></a> is a
+property of the <a href="../../../classes/cg/up-down-control.htm"><code>up-down-control</code></a>, <a href="../../../classes/cg/trackbar.htm"><code>trackbar</code></a>, <a href="../../../classes/cg/split-bar.htm"><code>split-bar</code></a>, and <a href="../../../classes/cg/printer.htm"><code>printer</code></a> classes.
+</p>
+
+
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/orientation.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>exit</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/exit.htm">9.0 version</a></td></tr></table><h2 id="2">exit</h2>
+
+<p id="3"><b>Arguments: </b><i></i> &amp;optional <i>code</i><i> </i>&amp;key <i>no-unwind quiet</i></p>
+
+<p id="4">
+This exits to the shell or OS, without querying the user, returning
+<i>code</i> to the program which invoked Common
+Lisp. <i>code</i> must be an integer whose range is
+determined by the Operating System, and hence the value may be
+truncated for large integers.
+</p>
+
+<p id="5">
+The keyword argument <i>no-unwind</i> defaults to
+<code>nil</code>. When it is <code>nil</code>
+&nbsp;<a href="exit.htm"><b>exit</b></a> causes
+each process to throw out of its current computation thereby executing
+all outstanding <a href="../../../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a>
+cleanup forms (see <a href="../mp/process-kill.htm"><b>process-kill</b></a>). If an error occurs
+during the execution of an <a href="../../../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a> cleanup form or the process
+becomes inactive, then <a href="exit.htm"><b>exit</b></a>
+could hang forever waiting for the process to die. <a href="exit.htm"><b>exit</b></a> prints the name of processes on which it
+is waiting. Processes which cause <a href="exit.htm"><b>exit</b></a> to hang indefinitely (because the error
+causes the process to enter a break level) can be killed manually from
+another window or editor buffer, or <a href="exit.htm"><b>exit</b></a> can be interrupted with C-c. Note, if
+<a href="exit.htm"><b>exit</b></a> is executed again after
+being interrupted, the <a href="../../../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a> which caused it to hang will
+likely not do so again, because execution will already have exited the
+offending <a href="../../../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a>; for
+this reason, <a href="exit.htm"><b>exit</b></a> could
+possibly be re-evaluated. </p>
+
+<p id="6">The keyword argument <i>quiet</i> defaults to <code>nil</code>. If it is specified true,
+information about what Lisp is doing as it exits, normally printed, is
+suppressed. </p>
+
+<p id="7">If <i>no-unwind</i> is true,
+then <a href="exit.htm"><b>exit</b></a> does not evaluate
+<a href="../../../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a> cleanup
+forms. Therefore, evaluating the form </p>
+
+<code><p id="8">(exit 0 :no-unwind t) </p></code>
+
+<p id="9">
+should always cause Lisp to exit.
+</p>
+
+<p id="10">See also 
+<a href="../../variables/system/s_exit-cleanup-forms_s.htm"><code>*exit-cleanup-forms*</code></a>
+which is a list of forms to evaluated before exiting.</p>
+
+<p id="11">
+See <a href="../../startup.htm#exit-lisp-1">How to exit
+Lisp</a> in <a href="../../startup.htm">startup.htm</a>.
+</p>
+
+<h3 id="12">
+A non-zero code on Windows
+</h3>
+<p id="13">
+For images started on Windows with default command-line arguments, a
+non-zero <b>code</b> will cause the Lisp console to remain alive. In
+this picture, we show an <b>mlisp</b> window after
+evaluating <code>(exit 12 :quiet t :no-unwind t)</code>:
+</p>
+<p id="14"><img src="../../pictures/exit-console.jpg"></p>
+<p id="15">
+There is no active prompt, but all exit messages are preserved. Note
+this happens even if the console is not visible and there is no
+apparent way to make it visible. (There is often no console visible if
+you are running Lisp as a service on Windows.) To ensure
+calling <a href="exit.htm"><b>exit</b></a> with a
+non-zero code in fact causes Lisp to fully exit on Windows, start the
+image with the <b>+M</b> option. See the
+table <a href="../../startup.htm#windows-comlineargs">Command
+line arguments starting with a + [Windows only]</a>
+in <a href="../../startup.htm#command-line-args-1">Command line
+arguments</a> in <a href="../../startup.htm">startup.htm</a> for more
+information.
+</p>
+
+
+
+
+
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/exit.htm">9.0 version</a></td></tr></table></body></html>

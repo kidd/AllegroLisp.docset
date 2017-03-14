@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>gc-parameters</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">gc-parameters</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i></p>
+
+<p id="4">
+This function prints all the gc parameters and switches and their
+current values:
+</p>
+<pre id="5">
+cg-user(5): (sys:gc-parameters)
+gc-monitor [version 100] (multithreaded global gc)
+:helper-threads-requested 4 (limit is 8)
+:packets-in-use-limit 16,777,215    :minimum-recovery-bytes 8,192
+:generation-spread 4     :current-generation 5    :tenure-limit 1
+
+:free-bytes-new-other 131,072       :free-percent-new 25
+:free-bytes-new-pages 131,072       :expansion-free-percent-new 35
+                                    :expansion-free-percent-old 35
+:quantum 32                         :open-old-area-fence 0
+
+(switch :auto-step) t
+(switch :hook-after-gc) t           (switch :clip-new) nil
+(switch :gc-old-before-expand) nil  (switch :next-gc-is-global) nil
+(switch :print) nil                 (switch :stats) t
+(switch :verbose) nil               (switch :dump-on-error) nil
+</pre>
+
+<p id="6">
+The functions <a href="gc-parameter.htm"><b>sys:gc-parameter</b></a> and <a href="gc-switch.htm"><b>sys:gc-switch</b></a> return the value of specific
+parameters and switches (respectively) and for settable values, can be
+used with <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> to
+seet them.
+</p>
+
+<p id="7">
+See <a href="../../gc.htm">gc.htm</a> for more information on the garbage
+collector.  The section <a href="../../gc.htm#gc-params-and-switches-1">System parameters and
+switches</a> in that document describes all parameters and
+switches.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

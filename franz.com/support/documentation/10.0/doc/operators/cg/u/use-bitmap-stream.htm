@@ -1,0 +1,111 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>use-bitmap-stream</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/u/use-bitmap-stream.htm">9.0 version</a></td></tr></table><h2 id="2">use-bitmap-stream</h2>
+
+<p id="3"><b>Arguments: </b><i>
+drawable
+</i></p>
+
+<p id="4">
+Returns (or sets with setf) whether a <a href="../../../classes/cg/drawable.htm"><code>drawable</code></a> uses a
+bitmap-stream on which output is drawn before being copied to the
+visible window of the control. To use a bitmap-stream, an application
+need only turn this property on, either by passing the
+:use-bitmap-stream initarg as true when creating
+the drawable, or calling (setf use-bitmap-stream) later. The drawable
+will automatically create a bitmap-stream of the proper size as
+needed.
+</p>
+<p id="5">
+If a drawable uses a bitmap-stream, it is returned by the <a href="../b/bitmap-stream.htm"><b>bitmap-stream</b></a>
+function. The function <a href="../d/drawable-stream.htm"><b>drawable-stream</b></a>
+applied to a drawable returns the bitmap-stream if there is one.
+</p>
+<p id="6">
+A drawable will work just fine without a bitmap-stream, but a
+bitmap-stream may be used for various special reasons. Here are the
+steps involved for a few of these reasons after turning the
+use-bitmap-stream property on:
+</p>
+<ul>
+<li id="7">
+To store what was drawn once and recopy it quickly to the window
+when needed (as with a bitmap-pane). When you do this, you should:
+<ol>
+<li id="8">
+Do not give the drawable an <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a>
+function. (An on-redisplay function should redraw the image when
+necessary. However, the bitmap-stream acts as a backing store,
+redisplaying automatically when necessary.)
+</li>
+<li id="9">
+Retrieve the bitmap-stream by calling <a href="../b/bitmap-stream.htm"><b>bitmap-stream</b></a> on the drawable.
+</li>
+<li id="10">
+Call <a href="../c/clear-page.htm"><b>clear-page</b></a> on the
+bitmap-stream to erase any old drawing.
+</li>
+<li id="11">
+Draw something on the bitmap-stream.
+</li>
+<li id="12">
+Call <a href="../i/invalidate.htm"><b>invalidate</b></a>
+on the drawable to display the drawing on the visible window.
+</li>
+</ol>
+<p id="13">
+From now on, whenever the drawable is uncovered, its drawing will be
+refreshed from the bitmap-stream.
+</p>
+</li>
+<li id="14">
+To switch quickly from one ad hoc drawing to another.
+<p id="15">
+Simply repeat the above procedure a number of times when needed. This
+avoids the flashing that would be seen by erasing and drawing directly
+on the visible window.
+</p>
+</li>
+<li id="16">
+Animation effects, or changing the drawing at scheduled times.
+<p id="17">
+Supply an <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> function
+along with use-bitmap-stream.
+</p>
+<p id="18">
+Write the on-redisplay function so that it reads parameters that
+change, causing it to draw its drawing differently.
+</p>
+<p id="19">
+When it is time to go to the next version of the drawing, call <a href="../u/update-drawable.htm"><b>update-drawable</b></a> on the
+drawable. This will cause the <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> function
+to be called to draw the new version on the bitmap-stream and then
+copy the drawing quickly to the window.
+</p>
+<p id="20">
+If the parameters are changed quickly, calling <a href="../u/update-drawable.htm"><b>update-drawable</b></a> each
+time, an animation effect can be achieved.
+</p>
+</li>
+</ul>
+<p id="21">
+If use-bitmap-stream is toggled on and off, a new bitmap-stream is
+created only if the most recent one is not large enough either
+horizontally or vertically.  So toggling this property should not be
+inefficient.
+</p>
+<p id="22">
+The bitmap-stream is also grown as needed automatically when the page
+size of the drawable is increased. This includes the case where (1)
+the scrollbar in either direction is not enabled, (2) no explicit page
+size has been given in that direction, and (3) the drawable itself is
+sized larger in that direction; in this case the default page size
+follows the interior size of the drawable, and the bitmap-stream is
+made larger as needed.
+</p>
+
+
+
+
+
+<hr><p id="23"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/u/use-bitmap-stream.htm">9.0 version</a></td></tr></table></body></html>

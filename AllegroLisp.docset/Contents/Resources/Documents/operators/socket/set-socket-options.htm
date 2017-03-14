@@ -1,0 +1,54 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-socket-options</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: socket</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/set-socket-options.htm">9.0 version</a></td></tr></table><h2 id="2">set-socket-options</h2>
+
+<p id="3"><b>Arguments: </b><i>
+socket </i>&amp;key <i>reuse-address broadcast keepalive nodelay oob-inline receive-buffer-size send-buffer-size</i><i>
+</i></p>
+
+<p id="4">
+Sets system socket options for this socket.  The meanings of the
+options are described in the description of <a href="make-socket.htm"><b>make-socket</b></a>.
+</p>
+<p id="5">
+The following are boolean options, and so specifying a
+true value turns them on and specifying <code>nil</code> turns them off. If you do not specify a value for
+one of these options, then the value is not changed.
+</p>
+<ul>
+<li id="6">
+<i>reuse-address</i>
+</li>
+<li id="7">
+<i>broadcast</i>
+</li>
+<li id="8">
+<i>keepalive</i>
+</li>
+<li id="9">
+<i>nodelay</i>
+</li>
+<li id="10">
+<i>oob-inline</i>
+</li>
+</ul>
+
+<p id="11">
+<i>receive-buffer-size</i> and
+<i>send-buffer-size</i> take integer arguments. Again,
+not specifying a value leaves it unchanged.
+</p>
+
+<p id="12">
+Note that certain options only work with certain kinds of sockets
+(e.g. <i>broadcast</i> only works for datagram sockets).
+See the description of <a href="make-socket.htm"><b>make-socket</b></a> for more information on
+what works with what sort of socket.
+</p>
+
+
+<p id="13">
+See <a href="../../socket.htm">socket.htm</a> for information on sockets. 
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/set-socket-options.htm">9.0 version</a></td></tr></table></body></html>

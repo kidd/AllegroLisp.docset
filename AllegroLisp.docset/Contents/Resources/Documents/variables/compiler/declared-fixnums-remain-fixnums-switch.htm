@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>declared-fixnums-remain-fixnums-switch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: compiler</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/declared-fixnums-remain-fixnums-switch.htm">9.0 version</a></td></tr></table><h2 id="2">declared-fixnums-remain-fixnums-switch</h2>
+
+
+<p id="3">As with most compiler switch variables, the value of this variable
+can be <code>t</code>, <code>nil</code>, or a
+function object that accepts five arguments and returns <code>t</code> or <code>nil</code>. The arguments
+passed to the function will be the values of the safety, space, speed,
+debug, and compilation-speed optimization qualities, in that order. <code>nil</code> is equivalent to a function that always returns
+<code>nil</code> and <code>t</code> to a
+function that always returns <code>t</code>.  When the
+value is a function and we say <code>t</code> (or true) or
+<code>nil</code> (or false) in the text below, we mean
+that the function returns, respectively, <code>t</code> or
+<code>nil</code>.
+</p>
+
+
+<p id="4">
+If this switch is true, the compiler will generate code that assumes the
+sums and differences of declared fixnums are fixnums and that the
+negative of a single declared fixnum is a fixnum. This switch
+affects <a href="../../../ansicl/dictentr/unnamed0.htm"><b>+</b></a>
+(e.g. <code>(+ x y)</code>) and also <a href="../../../ansicl/dictentr/unnamed0.htm"><b>+</b></a> analogs like <a href="../../../ansicl/dictentr/11-.htm"><b>1+</b></a> and <a href="../../../ansicl/dictentr/incfdecf.htm"><b>incf</b></a>, and <a href="../../../ansicl/dictentr/-.htm"><b>-</b></a> (e.g. <code>(- x y)</code>
+or <code>(- x)</code>) and also <a href="../../../ansicl/dictentr/-.htm"><b>-</b></a> analogs like <a href="../../../ansicl/dictentr/11-.htm"><b>1-</b></a>, <a href="../../../ansicl/dictentr/incfdecf.htm"><b>decf</b></a> and <a href="../../../ansicl/dictentr/abs.htm"><b>abs</b></a>. 
+</p>
+<p id="5">
+No assumptions are made about the
+results of multiplication, division, shifting, or any operation other
+than <a href="../../../ansicl/dictentr/unnamed0.htm"><b>+</b></a>
+and <a href="../../../ansicl/dictentr/-.htm"><b>-</b></a> and their
+analogs.
+</p>
+<p id="6">
+Initially true only if speed is 3 and safety is 0. <b>Non-compliance
+note</b>: having this switch be true is not compliant with ANSI Common
+Lisp, which requires that fixnum arithmetic work correctly in all
+cases. You may turn this switch off entirely by evaluating:
+</p>
+
+<pre id="7">
+(setf comp:declared-fixnums-remain-fixnums-switch nil)
+</pre>
+
+<p id="8"><strong>Warning</strong>: if this switch returns true during
+compilation but the result of the sum or difference of declared
+fixnums or of changing the sign of a single declared fixnum is not a
+fixnum, the compiled code will silently produce erroneous
+results. Changing the sign includes applying <a href="../../../ansicl/dictentr/abs.htm"><b>abs</b></a> to a negative value
+-- <code>(abs most-negative-fixum)</code> which
+equals <code>(- most-negative-fixnum)</code> is a bignum.
+See <a href="../../compiling.htm#declared-fixnums-2">Declared
+fixnums example</a> for examples of incorrect results silently
+produced because the results of operations on declared fixnums are
+bignums.
+</p>
+
+<p id="9">
+See <a href="../../compiling.htm">compiling.htm</a> for
+information on the compiler.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/declared-fixnums-remain-fixnums-switch.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>on-print-chart-object</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-print-chart-object.htm">9.0 version</a></td></tr></table><h2 id="2">on-print-chart-object</h2>
+
+<p id="3"><b>Arguments: </b><i>
+chart-legend
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../o/on-print-chart-object.htm"><b>on-print-chart-object</b></a> property of
+a <a href="../../../classes/cg/chart-legend.htm"><code>chart-legend</code></a>. The value
+may be set at creation time by passing
+the <code>on-print-chart-object</code> initarg, or any
+time later by calling <a href="../o/on-print-chart-object.htm"><b>(setf on-print-chart-object)</b></a>.
+</p>
+<p id="5">
+A function that returns a label for a chart object in
+the <a href="../../../classes/cg/chart-legend.htm"><code>chart-legend</code></a> of a
+<a href="../../../classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a>.
+</p>
+<p id="6">
+The value of this property should be a function or a function name, or
+else <code>nil</code> to default to <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a>. The function should take a
+chart object ID as a single argument and return a string to display
+for that object.  The default value is <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a>.
+</p>
+<p id="7">
+A chart object ID will be the <code>:id</code> value for the
+object in the <a href="../c/chart-objects.htm"><b>chart-objects</b></a>
+property of the <a href="../../../classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a>, if such a value has been supplied,
+and otherwise will default to the zero-based integer index of the
+object.
+</p>
+<p id="8">
+This property is used only when the <a href="../d/draw-legend.htm"><b>draw-legend</b></a> property of the chart-or-plot is
+true.
+</p>
+<p id="9">
+
+See also <a href="../l/legend-font.htm"><b>legend-font</b></a>,
+<a href="../l/layout-orientation.htm"><b>layout-orientation</b></a> and
+<a href="../o/on-print-major-label.htm"><b>on-print-major-label</b></a>.
+</p>
+<p id="10">
+An alternative to writing an <a href="../o/on-print-chart-object.htm"><b>on-print-chart-object</b></a> function is to supply an
+explicit <code>:label</code> value for each object in
+the <a href="../c/chart-objects.htm"><b>chart-objects</b></a> property of
+the <a href="../../../classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a>.
+</p>
+<p id="11">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>, <a href="../../../classes/cg/plot-widget.htm"><code>plot-widget</code></a>, and
+also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-print-chart-object.htm">9.0 version</a></td></tr></table></body></html>

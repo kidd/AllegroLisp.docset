@@ -1,0 +1,177 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>defproperties</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/defproperties.htm">9.0 version</a></td></tr></table><h2 id="2">defproperties</h2>
+
+<p id="3"><b>Arguments: </b><i>
+class-name 
+</i> &amp;rest <i>properties</i><i>
+</i></p>
+
+<p id="4">
+7.0 release note: the option called <code>:editor-mode</code> in
+earlier releases is now called <code>:editor-type</code>.
+</p>
+<p id="5">
+Defines a set of properties for a class. A property is an attribute of
+an object that defines a high-level means of accessing the attribute
+value. Properties are largely used by the inspector for editing
+objects that have properties, though they are useful programmatically
+as well mostly because a property defines how to cause any appropriate
+side effects when the property value is modified. A property for a
+CLOS object is typically based on a slot of the object, but properties
+are generally independent of any internal representation and can be
+defined for any lisp type. Properties are defined with <a href="../d/define-property.htm"><b>define-property</b></a>. The
+various property initargs are described on that page.
+</p>
+
+<p id="6">
+As an example, below is a part of the <a href="../d/defproperties.htm"><b>defproperties</b></a> expression for the
+existing control class <a href="../../../classes/cg/header-control.htm"><code>header-control</code></a>. Here the properties
+are defined with <a href="../d/define-property.htm"><b>define-property</b></a>. (To make a <a href="../d/defproperties.htm"><b>defproperties</b></a> form less
+verbose, each occurrence of the symbol <a href="../d/define-property.htm"><b>define-property</b></a> within the form may
+be excluded if desired, as shown is the second form.)
+</p>
+<pre id="7">
+(defproperties header-control
+ (define-property available
+   :type boolean
+   :editor-type :toggle)
+ (define-property header-width
+   :type positive-integer
+   :reader default-header-width
+   :writer (setf default-header-width)
+   :editor-type :short-expression)
+ (define-property header-justification
+   :type justification
+   :editor-type :multiple-choice
+   :reader default-header-justification
+   :writer (setf default-header-justification)
+   :choices cg::justification-values)
+ (define-property button-style
+   :type boolean
+   :editor-type :toggle
+   :remake t)
+ (define-property on-range-change
+   :type event-handler
+   :editor-type :function)
+ (define-property on-set-focus
+   :type event-handler
+   :editor-type :function)
+ )
+
+;;  Here is the shorter form with define-property left out:
+
+(defproperties header-control
+ (available
+   :type boolean
+   :editor-type :toggle)
+ (header-width
+   :type positive-integer
+   :reader default-header-width
+   :writer (setf default-header-width)
+   :editor-type :short-expression)
+ (header-justification
+   :type justification
+   :editor-type :multiple-choice
+   :reader default-header-justification
+   :writer (setf default-header-justification)
+   :choices cg::justification-values)
+ (button-style
+   :type boolean
+   :editor-type :toggle
+   :remake t)
+ (on-range-change
+   :type event-handler
+   :editor-type :function)
+ (on-set-focus
+   :type event-handler
+   :editor-type :function)
+ )
+</pre>
+<p id="8">
+Reader and writer examples. This includes examples of calls to <a href="../d/defcomponent.htm"><b>defcomponent</b></a>.
+</p>
+<pre id="9">
+;; This example shows the typical case of defining properties 
+;; for a standard-class, where the accessor methods that 
+;; are automatically created for the size slot are also 
+;; used by default as the reader and writer of the associated 
+;; size property.  This technique of sharing
+;; the name is recommended wherever it is feasible.
+
+(defcomponent foo ()
+  ((size :initarg :size
+     :initform nil
+     :accessor size))
+  (:default-initargs
+   :size :big)
+  (:properties
+   (size
+    :help-string "How big it is."
+    :type (member :big :medium :little nil)
+    :editor-type :multiple-choice
+    :choices '(:big :medium :little))))
+(setq f (make-instance 'foo :size :little))
+(inspect f)
+
+;; ------------------------------------------------------
+;; This example defines a property that computes its 
+;; value each time it is read rather than reading a 
+;; cached value from a slot.
+
+(defcomponent yellow-item-list (single-item-list)
+  ()
+  (:default-initargs
+   :background-color yellow)
+  (:properties
+   (how-many
+    :read-only t)))
+(defmethod how-many ((control yellow-item-list))
+   (length (range control)))
+(setq c (make-instance 'yellow-item-list
+          :range '(a b c d)))
+(inspect c)
+
+;; -----------------------------------------------------------
+;; This example does the same thing for an existing class, using
+;; defproperties instead of defcomponent
+
+(defproperties single-item-list
+ (define-property how-many
+   :read-only t))
+(defmethod how-many ((control single-item-list))
+   (length (range control)))
+(setq d (make-instance 'single-item-list
+          :range '(a b c d e)))
+(inspect d)
+
+;; -----------------------------------------------------------
+;; This example demonstrates defining a property 
+;; on a non-standard class, using an arbitrary place 
+;; to hold the property values (since there is
+;; no slot for the property).
+
+(defproperties integer
+    (define-property roundness))
+(defparameter *integer-roundness* (make-hash-table))
+(defmethod roundness ((integer integer))
+   (gethash integer *integer-roundness* :unknown))
+(defmethod (setf roundness)(value (integer integer))
+   (setf (gethash integer *integer-roundness*) value))
+(setf (roundness 6) :quite)
+(inspect 5)
+(inspect 6)
+</pre>
+
+
+<h2 id="10">
+Properties in the Inspector
+</h2>
+<p id="11">
+If the inspector should treat some instances of a class differently
+than other instances, that can be achieved by adding methods to one or
+more of the following generic functions: <a href="../p/property-reader.htm"><b>property-reader</b></a>, <a href="../p/property-writer.htm"><b>property-writer</b></a>, <a href="../p/property-type.htm"><b>property-type</b></a>, <a href="../p/property-editor-type.htm"><b>property-editor-type</b></a>, <a href="../p/property-choices.htm"><b>property-choices</b></a>, <a href="../p/property-help-string.htm"><b>property-help-string</b></a>, <a href="../p/property-remake.htm"><b>property-remake</b></a>, <a href="../p/property-read-only.htm"><b>property-read-only</b></a>, and <a href="../p/property-hidden.htm"><b>property-hidden</b></a>.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/defproperties.htm">9.0 version</a></td></tr></table></body></html>

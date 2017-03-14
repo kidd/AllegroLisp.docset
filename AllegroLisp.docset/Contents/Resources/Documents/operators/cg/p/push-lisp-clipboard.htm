@@ -1,0 +1,56 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>push-lisp-clipboard</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/push-lisp-clipboard.htm">9.0 version</a></td></tr></table><h2 id="2">push-lisp-clipboard</h2>
+
+<p id="3"><b>Arguments: </b><i>
+format object </i>&amp;key <i>empty-os-clipboard</i><i>
+</i></p>
+
+<p id="4">
+Pushes object onto the clipboard and trims the clipboard to
+<code>(clipboard-history-limit (configuration *system*))</code>
+items if
+necessary (see <a href="../c/clipboard-history-limit.htm"><b>clipboard-history-limit</b></a>, <a href="../c/configuration.htm"><b>configuration</b></a>, and
+<a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>).
+</p>
+<p id="5">
+The new item is also placed into the Windows clipboard,
+ready to be pasted by other applications.
+</p>
+<p id="6">
+The <i>format</i> argument should be one of
+<code>(:text :rich-text :pixmap)</code> and should correspond to
+the type of object being placed onto the clipboard. Any object may be
+passed with the <code>:text</code> format, in which case the
+actual object is placed onto the lisp clipboard stack for pasting
+within Lisp, while a string representation of the object is placed
+onto the Windows clipboard for pasting into other applications.  When
+using the <code>:rich-text</code> format, the object must be a
+string which is a valid piece of rich text, and when using the
+<code>:pixmap</code> format the object must be a Common Graphics
+pixmap, which is placed onto the Windows clipboard using the
+"device-independent bitmap" format.
+</p>
+<p id="7">
+If a window or <code>nil</code> is passed as the
+<i>format</i>, the function will act as if
+<code>:text</code> were passed. (This behavior maintains
+backward compatibility with pre-6.0 releases where the second argument
+had to be a window or <code>nil</code>. The window was not
+useful as an argument, while a format argument is.)
+</p>
+<p id="8">
+If <i>empty-os-clipboard</i> is true (as it is by
+default), then the operating system is first cleared of objects of all
+clipboard formats before adding the new object. This ensures that no
+other objects are left on the OS clipboard with the new object. If
+<i>empty-os-clipboard</i> is <code>nil</code>, then only the object of the specified format is
+replaced on the OS clipboard.
+</p>
+
+<p id="9">
+See <a href="../../../cg/cg-clipboard.htm">cg-clipboard.htm</a>.
+</p>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/push-lisp-clipboard.htm">9.0 version</a></td></tr></table></body></html>

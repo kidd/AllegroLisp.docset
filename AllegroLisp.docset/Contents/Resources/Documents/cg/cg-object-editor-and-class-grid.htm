@@ -1,0 +1,577 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Creating an Object-Editor Dialog or Class-Grid Programmatically</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-object-editor-and-class-grid.htm">9.0 version</a></td></tr></table><h1 id="2">Creating an Object-Editor Dialog or Class-Grid Programmatically</h1><p id="3">This document contains the following sections:</p><a href="#chart-intro-1">1.0 Introduction to object-editors and class-grids</a><br><a href="#creating-1">2.0 Creating object-editors and class-grids</a><br><a href="#oe-cg-example-1">3.0 An example of creating an object-editor and a class-grid</a><br><hr><hr><h2 id="4"><a name="chart-intro-1">1.0 Introduction to object-editors and class-grids</a></h2>
+
+<p id="5">
+Common Graphics includes two types of interface objects that make it
+easy to browse and edit instances of classes. The instances are
+typically stored in databases, but they do not need to be.
+</p>
+<p id="6">
+One of these interface objects is the <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> widget.  This is a specialized
+<a href="../classes/cg/grid-widget.htm"><code>grid-widget</code></a> that has a
+column for each application slot of interest and a row for each
+instance that you tell it to display.
+</p>
+<p id="7">
+The other interface object is the <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> dialog. It has a standalone widget
+for each edited slot of a single currently-displayed instance, as well
+as a number of standard command buttons for displaying different
+instances and saving edits to them and so on.
+</p>
+
+<hr><hr><h2 id="8"><a name="creating-1">2.0 Creating object-editors and class-grids</a></h2>
+
+<p id="9">
+To create these interface objects, you do not need to create the
+individual grid columns or widgets from scratch.  Instead, you specify
+a special expression as the <a href="../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property of the <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> or <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a>. The <a href="../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property is list of slot
+specifications. Each slot specification is a list where the first
+member is the name of a slot to edit, and the rest of the list is a
+plist of attributes that indicate what sort of values are in the slot
+and what sort of widgets should be used to edit them.  A <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> will automatically
+create its grid columns from this specification, and an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> will automatically
+create and arrange its widgets.
+</p>
+<p id="10">
+Typically you would pass an <a href="../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> list when creating either a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> or an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a>, something like this:
+</p>
+
+<pre id="11">
+  :edited-slots
+  '((date-of-birth
+     :edited-type (:date :yyyy/mm/dd)
+     :label "Birth Date")
+    (favorite-color
+     :edited-type (:single-choice (:red :green :blue :yellow))
+     :on-print capitalize-object
+     :label "Fave Color")
+    (best-friend
+     :edited-type (:class-instance patient)
+     :width 140))
+</pre>
+
+<p id="12">
+Though writing a single edited-slots expression is easier than
+defining a set of widgets or grid columns, there are still a fair
+number of options to remember (or look up).  To avoid even writing an
+edited-slots expression, an alternative is to use the IDE's <a href="../ide-menus-and-dialogs/class-interface-editor-dialog.htm">Class Interface
+Editor</a> to specify the edited slots interactively.  This
+document covers the programmatic approach; for the interactive
+approach see the doc page for the <a href="../ide-menus-and-dialogs/class-interface-editor-dialog.htm">Class Interface Editor</a>
+dialog.
+</p>
+
+<hr><hr><h2 id="13"><a name="oe-cg-example-1">3.0 An example of creating an object-editor and a class-grid</a></h2>
+
+<p id="14">
+The code below illustrates making a standalone class-grid and then an
+<a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> that contains
+a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>.  Most of the
+code here is actually for setting up some sample classes with
+instances.  This example uses an AllegroCache database, though that's
+not necessary.
+</p>
+<p id="15">
+You may cut and paste the code from this document or load into an
+editor buffer from
+<b><i>examples/cg/object-editors-and-class-grids.cl</i></b>.
+</p>
+
+<pre id="16">
+(in-package :cg-user)
+
+;;; This will load the CG module that uses AllegroCache (which is
+;;; not present in the IDE by default) if it's not loaded
+;;; already, and also load the newest version of acache itself
+;;; as well if needed.
+(require-cg-acache)
+
+;;; This will create a new AllegroCache database.
+;;; An open database is needed before we create instances
+;;; of persistent classes below.  You could use a different
+;;; path for the database if desired.
+;;; (This code would use an already-open database if there is one,
+;;; so first make sure that you do not have an unrelated
+;;; database open.)
+(unless db.ac:*allegrocache*
+  (db.ac:create-file-database
+   (merge-pathnames &quot;tempdb/&quot; (sys:temporary-directory))))
+
+;;; We need to do a rollback if running through this demo a
+;;; second time, because otherwise the previous set of instances
+;;; will still exist.  But it doesn't hurt to do it the first time
+;;; too.  cg-rollback calls db.ac:rollback and then handles
+;;; any needed side effects in any object-editors and class-grids.
+(cg-rollback :confirm nil)
+
+;;; Let's define a test class for patients.
+(defclass patient ()
+    ((last-name :accessor last-name
+                :initarg :last-name
+                :index :any
+                :initform &quot;&quot;)
+     (first-name :accessor first-name
+                 :initarg :first-name
+                 :initform &quot;&quot;)
+     (access :accessor access
+             :initarg :access
+             :initform nil)
+     (date-of-birth :accessor date-of-birth
+                    :initarg :date-of-birth
+                    :initform &quot;&quot;)
+     (unpaid-balance :accessor unpaid-balance
+                     :initarg :unpaid-balance
+                     :initform &quot;0.00&quot;)
+     (friendly :accessor friendly
+                :initarg :friendly
+                :initform t)
+     (favorite-color :accessor favorite-color
+                     :initarg :favorite-color
+                     :initform &quot;&quot;)
+     (static-note :accessor static-note
+                  :initarg :static-note
+                  :initform &quot;&quot;)
+     (best-friend :accessor best-friend
+                  :initarg :best-friend
+                  :initform nil)
+     (prescriptions :accessor prescriptions
+                    :initarg :prescriptions
+                    :initform nil)
+     )
+  (:metaclass db.ac:persistent-class))
+
+;;; And make some test instances of the patient class.
+(defparameter *patients*
+  (list (make-instance 'patient
+          :first-name &quot;Sarah&quot; :last-name &quot;Somebody&quot;
+          :date-of-birth &quot;1963/01/15&quot;
+          :unpaid-balance &quot;34.89&quot;
+          :friendly t :favorite-color :blue
+          :static-note &quot;Sarah is the first patient, but will get sorted toward the end.&quot;
+          )
+        (make-instance 'patient
+          :first-name &quot;Andy&quot; :last-name &quot;Anybody&quot;
+          :access :partial
+          :date-of-birth &quot;1971/03/02&quot;
+          :unpaid-balance &quot;.09&quot;
+          :friendly nil :favorite-color :yellow
+          :static-note &quot;This description of Andy is so long that it may cause a scrolling-static-text widget that holds it to scroll.&quot;
+          )
+        (make-instance 'patient
+          :first-name &quot;Alice&quot; :last-name &quot;Loom&quot;
+          :access :partial
+          :date-of-birth &quot;1967/05/17&quot;
+          :unpaid-balance &quot;729.95&quot;
+          :friendly nil :favorite-color :blue
+          :static-note &quot;This is a rather unimportant note that's not really about Alice at all.&quot;
+          )
+        (make-instance 'patient
+          :first-name &quot;Helen&quot; :last-name &quot;Nurble&quot;
+          :date-of-birth &quot;1959/04/29&quot;
+          :unpaid-balance &quot;8844.22&quot;
+          :friendly t :favorite-color :red
+          :static-note &quot;This field displays UNEDITABLE text.&quot;
+          )
+        (make-instance 'patient
+          :first-name &quot;Bill&quot; :last-name &quot;Nurby&quot;
+          :date-of-birth &quot;1948/04/29&quot;
+          :unpaid-balance &quot;42000.03&quot;
+          :friendly t :favorite-color :red
+          :static-note &quot;It's later than it's ever been.&quot;
+          )
+        (make-instance 'patient
+          :first-name &quot;Higgledy&quot; :last-name &quot;Piggledy&quot;
+          :access :full
+          :date-of-birth &quot;1968/06/12&quot;
+          :unpaid-balance &quot;123.45&quot;
+          :friendly nil :favorite-color :blue
+          :static-note &quot;I suspect that this is not a real person.&quot;
+          )
+        (make-instance 'patient
+          :first-name &quot;Oof&quot; :last-name &quot;Noof&quot;
+          :access :partial
+          :date-of-birth &quot;1958/02/15&quot;
+          :unpaid-balance &quot;3600.00&quot;
+          :friendly nil :favorite-color :red
+          :static-note &quot;What sort of name is Oof anyway?&quot;
+          )
+        ))
+
+;;; Now we make each patient be the best friend of the previous
+;;; patient.  This points objects to each other by putting actual
+;;; first-class objects (class instances) into the slots of other
+;;; objects.  class-grids and object-editors have some interesting
+;;; interface options for slots that contain class instances.
+(do* ((patients *patients* (rest patients)))
+     ((null patients))
+  (setf (best-friend (first patients))
+    (or (second patients)(first *patients*))))
+
+;;; This bit of code specifies two slots of the patient class
+;;; that should be used to derive a &quot;pretty name&quot; for each
+;;; instance of the class.  These pretty names will be
+;;; printed in menus and in widgets that hold class instances.
+;;; If these slots are not set up, then objects will be print
+;;; according to their print-object methods as usual, though
+;;; these properties allow sorting by string slots without
+;;; a lot of consing.
+(progn
+  (setf (primary-name-slot 'patient) 'last-name)
+  (setf (secondary-name-slot 'patient) 'first-name))
+
+;;; Now that we've set up a class with some instances, let's
+;;; create a class-grid widget for editing the instances.
+
+;;; This form makes a standalone class-grid that edits the patient
+;;; class.  The :edited-slots specification here describes how to
+;;; create a grid column for each application slot to display.
+;;; See the edited-slots property for a full list of the options.
+
+(let* ((width 600)
+       (height 400)
+       (grid (make-instance 'class-grid
+               :column-header-height 40
+               :edited-class 'patient
+               
+               :edited-slots
+               `(
+                 
+                 ;; These columns edit simple strings of any length.
+                 (first-name :edited-type (:variable-char)
+                             :width-in-chars 8)
+                 (last-name :edited-type (:variable-char)
+                            :width 120
+                            :sortable t
+                            
+                            ;; The column header label would default
+                            ;; to &quot;Last Name&quot;, so let's change this one.
+                            :label &quot;Family Name&quot;)
+                 
+                 ;; This pixmap column has an alist that maps application
+                 ;; values like :partial to names of pixmaps like
+                 ;; :key to display for each application value.
+                 (access :edited-type (:pixmap ((nil nil)
+                                                (:partial :key)
+                                                (:full :key-special)))
+                         :sortable t)
+                 
+                 ;; These columns use CG's template-string facility
+                 ;; to restrict input to strings of a certain length
+                 ;; and with certain types of characters at each position.
+                 (date-of-birth :edited-type (:date :yyyy/mm/dd)
+                                :label &quot;Birth Date&quot;)
+                 (unpaid-balance :edited-type (:fixed-numeric 6 2)
+                                 :template-allows-sign t
+                                 :label &quot;Unpaid Balance&quot;)
+                 
+                 ;; A boolean type will be shown as a check-box.
+                 (friendly :edited-type (:boolean)
+                           :sortable t
+                           :label &quot;Friendly?&quot;)
+                 
+                 ;; Here's a list of hardcoded choices that will appear
+                 ;; in a combo-box.
+                 (favorite-color
+                  :edited-type (:single-choice (:red :green :blue :yellow))
+                  :on-print capitalize-object
+                  :label &quot;Fave Color&quot;)
+                 
+                 ;; This column displays a class instance, with a list
+                 ;; of other selectable instances in a combo-box.
+                 ;; Each instance will display its pretty name according
+                 ;; to the primary- and secondary-name-slot that we
+                 ;; specified earlier.
+                 (best-friend
+                  :edited-type (:class-instance patient)
+                  
+                  ;; This is the list of patients that the user can
+                  ;; select as a new best friend.
+                  ;; Alternative:  Don't pass this to make it offer ALL
+                  ;; patients that exist.  (That requires an AllegroCache
+                  ;; class so that all instances can be found.)
+                  :edited-instances ,*patients*
+                  
+                  :width 140)
+                 
+                 ;; This column will indirectly access the birth date
+                 ;; of the best friend of the patient on each row.
+                 ;; The slot indicator is therefore a list of
+                 ;; slot names rather than a single slot name.
+                 ((best-friend date-of-birth)
+                  :edited-type (:date :yyyy/mm/dd)
+                  
+                  ;; A subtle point:  This will make the column exactly
+                  ;; fit the fixed-width string, rather than possibly
+                  ;; defaulting it larger to make the column header string
+                  ;; fit on one line.
+                  :width-in-chars 10
+                  
+                  :label &quot;Best Friend's Birth Date&quot;)
+                 
+                 ;; This column displays text that the end user
+                 ;; cannot edit.
+                 (static-note
+                  :edited-type (:static-text)
+                  :width 160)
+                 )
+               
+               ;; This alternative would set up the rows when creating
+               ;; the grid-widget, instead of adding them afterward
+               ;; as is done below.
+               ;; :value *patients*
+               
+               :right-attachment :right
+               :bottom-attachment :bottom
+               :width width
+               :height height))
+       (dialog (make-window :class-grid-example
+                 :class 'dialog
+                 :dialog-items (list grid)
+                 :interior (make-box-relative 200 200 width height))))
+  (select-window dialog)
+  
+  ;; Add some class instances to the grid.  This set of instances
+  ;; can be changed at any time.  Individual instances could be
+  ;; added incrementally by calling add-class-grid-row.
+  (setf (value grid) *patients*)
+  
+  dialog)
+
+;;; ----------------------------------------------------------
+;;; An alternative to a class-grid is an object-editor dialog.
+;;; The one that we'll make will include more data than that
+;;; class-grid, so first we need to set up a few more application
+;;; classes with instances.
+
+;;; Define a second class for medications.
+(defclass medication ()
+  ((drug-name :accessor drug-name
+              :initarg :drug-name
+              :initform &quot;&quot;)
+   (drug-price :accessor drug-price
+               :initarg :drug-price
+               :initform &quot;0.00&quot;)
+   (drug-warnings :accessor drug-warnings
+                  :initarg :drug-warnings
+                  :initform &quot;&quot;))
+  (:metaclass db.ac:persistent-class))
+
+;;; Make some medication instances.  Each of these represents a product.
+(defparameter *medications*
+  (list
+   (make-instance 'medication
+     :drug-name &quot;Lispitol&quot;
+     :drug-price &quot;23.89&quot;
+     :drug-warnings &quot;Associated with computer addiction.&quot;)
+   (make-instance 'medication
+     :drug-name &quot;Franzeril&quot;
+     :drug-price &quot;1.95&quot;
+     :drug-warnings &quot;May give Bill Gates a headache.&quot;)
+   (make-instance 'medication
+     :drug-name &quot;Objectifin&quot;
+     :drug-price &quot;29.95&quot;
+     :drug-warnings &quot;Sometimes leads to modularity.&quot;)
+   (make-instance 'medication
+     :drug-name &quot;Dynamicine&quot;
+     :drug-price &quot;299.00&quot;
+     :drug-warnings &quot;May increase free time to kill.&quot;)
+   (make-instance 'medication
+     :drug-name &quot;Parenthezol&quot;
+     :drug-price &quot;123.45&quot;
+     :drug-warnings &quot;Can reduce concern about syntax.&quot;)
+   (make-instance 'medication
+     :drug-name &quot;Macrozine&quot;
+     :drug-price &quot;14.89&quot;
+     :drug-warnings &quot;Causes feelings of superiority.&quot;)
+   ))
+
+;;; Use the drug-name slot for the pretty name of a medication.
+(setf (primary-name-slot 'medication) 'drug-name)
+
+;;; Define a prescription class, where an instance will point to
+;;; the medication that it's for and also to the patient for
+;;; which it is prescribed.
+(defclass prescription ()
+  ((medication :accessor medication
+               :initarg :medication
+               :initform nil)
+   (patient :accessor patient
+            :initarg :patient
+            :initform nil)
+   (refills :accessor refills
+            :initarg :refills
+            :initform &quot;0&quot;))
+  (:metaclass db.ac:persistent-class))
+
+;;; Generate some random prescriptions for each patient.
+;;; (Don't worry about how this works; we're just setting up
+;;; sample data here.)
+(do* ((count 0 (1+ count))
+      (patients *patients* (rest patients))
+      patient)
+     ((null patients))
+  (setq patient (first patients))
+  (do* ((medications *medications* (rest medications))
+        (medication (first medications)(first medications))
+        (prescriptions nil))
+       ((null medications))
+    (when (or (zerop (random 2))
+              
+              ;; Make sure that each person has at least
+              ;; two prescriptions.
+              (&lt;= (+ (length medications)
+                     (length prescriptions))
+                  2))
+      
+      (push (make-instance 'prescription
+              :medication medication
+              :patient patient
+              :refills (random 3))
+            prescriptions))
+    (setf (prescriptions patient) prescriptions)))
+
+;;; And now the astounding finale.  This last form creates
+;;; an object-editor dialog with a separate widget for
+;;; editing each interesting slot of its edited class.
+;;; The :edited-class and :edited-slots arguments here are
+;;; basically the same as what were passed for the
+;;; standalone class-grid above; so this is a different
+;;; view of the same data, but with some additional data.
+
+;;; This dialog also contains a class-grid for
+;;; editing the list of prescriptions for the currently
+;;; displayed patient.  The grid's columns are specified
+;;; here as a nested :edited-slots specification inside
+;;; the :edited-slots expression for the whole dialog.
+;;; (See the end of this form for the prescriptions.)
+
+(make-window :test
+  :class 'object-editor
+  :scrollbars :vertical
+  :exterior (make-box-relative
+             60 60 700
+             
+             ;; This dialog height will be overridden
+             ;; by a computed height that makes
+             ;; all of the widgets fit vertically.
+             600)
+  
+  ;; A layout-spacing object can be used to override some of
+  ;; the default spacing parameters.
+  :layout-spacing (make-instance 'layout-spacing
+                    :layout-widget-spacing 4   ;; this is the default
+                    :layout-outer-margin 12)
+  
+  ;; Change this value to t to include a special grid at the bottom
+  ;; of the object-editor dialog that lists all of the edited class'
+  ;; instances.
+  :include-table-of-all-instances nil
+  
+  ;; You can pass any subset of these standard buttons here.
+  ;; Or you could add your own widgets that call the exported
+  ;; functions that these built-in buttons call.
+  :command-buttons
+  '(:first-button :previous-button :next-button :last-button
+                  :select-button :search-button
+                  :save-button :revert-button :new-button :delete-button
+                  :commit-button :rollback-button)
+  
+  ;; This dialog will edit instances of the patient class.
+  :edited-class 'patient
+  
+  ;; This tells the dialog to edit a specific set of patient instances.
+  ;; Alternative:  Comment out this line to edit all instances
+  ;; (which would require an AllegroCache database so that
+  ;; all instances can be found).
+  :edited-instances *patients*
+  
+  ;; Each entry in the large edited-slots property will create
+  ;; a widget to edit the value in the named slot.
+  :edited-slots
+  `(
+    (first-name :edited-type (:variable-char))
+    (last-name :edited-type (:variable-char)
+               :width 200
+               :label &quot;Family Name&quot;)
+    (access :edited-type (:pixmap ((nil nil)
+                                   (:partial :key)
+                                   (:full :key-special))))
+    (date-of-birth :edited-type (:date :yyyy/mm/dd)
+                   :label &quot;Birth Date&quot;)
+    (unpaid-balance :edited-type (:fixed-numeric 6 2)
+                    :template-allows-sign t
+                    :fixed-width-font t
+                    :label &quot;Unpaid Balance&quot;)
+    (friendly :edited-type (:boolean)
+              :width 120
+              :label &quot;Friendly?&quot;)
+    (favorite-color
+     
+     ;; A new column of widgets will begin with this widget,
+     ;; to save space vertically.
+     :new-column t
+     
+     :edited-type (:single-choice (:red :green :blue :yellow))
+     :on-print capitalize-object
+     :label &quot;Fave Color&quot;)
+    (static-note
+     :height 44
+     :edited-type (:static-text-multi-line))
+    
+    ;; This :class-instance case will create a combo-box
+    ;; whose range is a list of instances of the patient class.
+    (best-friend
+     :edited-type (:class-instance patient)
+     
+     ;; If *patients* is specified here, then that specific
+     ;; list of instances will be the choices, and otherwise all
+     ;; instances of the class will be used.
+     ;; Alternative: Comment this line out to make it
+     ;; offer ALL patients as the choices.
+     :edited-instances ,*patients*
+     )
+    
+    ;; An indirection to a slot of the object in the best-friend slot.
+    ((best-friend date-of-birth)
+     :edited-type (:date)
+     :fixed-width-font t
+     :label &quot;Friend's Bday&quot;)
+    
+    ;; The prescriptions slot holds a list of the prescriptions
+    ;; for a patient, so we can shows those prescriptions in a
+    ;; class-grid by specifying the edited type as a
+    ;; table of prescription instances.
+    (prescriptions
+     :edited-type (:table-of-class-instances prescription)
+     
+     ;; These additional button widgets will allow the end user
+     ;; to create new prescriptions for a patient, or to delete
+     ;; some of a patient's prescriptions.
+     :include-create-button t
+     :include-delete-button t
+     
+     ;; This nested edited-slots form determines which prescription slots
+     ;; should be grid columns in this class-grid on this object-editor.
+     :edited-slots
+     ((medication :edited-type (:class-instance medication)
+                  :edited-instances ,*medications*)
+      (refills :edited-type (:fixed-numeric 1 0)
+               :horizontal-justification :center
+               :label &quot;Num Refills&quot;)
+      
+      ;; These entries indirectly access slots of the medication of
+      ;; a prescription.  So the grid columns will show attributes
+      ;; of the medication of a prescription for the patient that's
+      ;; currently displayed on the object-editor dialog.
+      ((medication drug-price)
+       :edited-type (:fixed-numeric 6 2))
+      ((medication drug-warnings)
+       :edited-type (:variable-char)
+       :width 200)))
+    
+    ))
+
+</pre>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-object-editor-and-class-grid.htm">9.0 version</a></td></tr></table></html>

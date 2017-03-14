@@ -1,0 +1,461 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-command-line-arguments</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/with-command-line-arguments.htm">9.0 version</a></td></tr></table><h2 id="2">with-command-line-arguments</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(</i> &amp;rest <i>option-lists</i><i>) (restvar
+</i>&amp;key <i>command-line-arguments usage posixly-correct long-abbrev</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+This macro was redefined in release 6.2. The change is
+upward-compatible so that
+<a href="with-command-line-arguments.htm"><b>with-command-line-arguments</b></a> calls defined
+using the earlier macro/description should work as before.
+</p>
+<p id="5">
+The old-format lambda list for this macro is:
+</p>
+
+<p id="6"><b>Arguments: </b><i>
+(optstring </i> &amp;rest <i>varlist</i><i>) (restvar 
+</i>&amp;key <i>command-line-arguments usage</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="7">
+Any arguments that followed the old format are accepted in the new
+macro (which accepts more than one <i>option-list</i>
+and accepts more keyword arguments). 
+</p>
+
+<p id="8">
+This macro makes the task of parsing command line arguments easier, in
+the style similar to the UNIX <b>getopt(3)</b> and
+<b>getopt(1)</b>. During parsing, command line arguments are scanned
+from left to right.  An argument named <b>--</b> terminates option
+scanning. This macro works on both UNIX and Windows platforms. It
+works on Windows as it does on UNIX. Windows users should, like UNIX
+users refer to UNIX documentation on this (you can enter <b>getopt(1)</b>
+and <b>getopt(3)</b> into the Google (tm) search engine to find such
+documentation). We believe, however, that this documentation is
+stand-alone and should be sufficient for you to understand all the
+issues surrounding command line arguments and their use.
+</p>
+<p id="9">
+The main task of <a href="with-command-line-arguments.htm"><b>with-command-line-arguments</b></a> is to bind Lisp
+variables to the given command line arguments.
+</p>
+<p id="10">
+<i>option-lists</i>, the first argument, is a list of
+(for the old form) an option-string and any number of variable names
+or (for the new form) a list of lists described below. Note
+that <a href="with-command-line-arguments.htm"><b>with-command-line-arguments</b></a> will signal an
+error if a command line argument (option) is found without a
+corresponding entry in the <i>option-lists</i>.
+</p>
+<h4 id="11">
+The old form specification of option-lists
+</h4>
+<p id="12">
+The old form, which preserves for compatibility with the older version
+of this macro, is therefore (in the lambda-list specification above,
+the parentheses around <i>option-lists</i> are the
+parentheses shown here):
+</p>
+<pre id="13">
+  (option-string [variable-names]*)
+</pre>
+<p id="14">
+<i>option-string</i> is a <b>getopt(3)</b> style
+string describing the expected
+options. <i>variable-names</i> are the symbols to which
+values are bound. The order of the options in
+<i>option-string</i> is the order in which the variables
+are bound. From the complete example below, we have
+</p>
+<pre id="15">
+("ab:c" aflag bflag cflag)
+</pre>
+<p id="16">
+The <b>getopt(3)</b> allows one character for each option, so the
+options in the example are `a', `b', and `c'. The corresponding
+variables are <code>aflag</code>, <code>bflag</code>, and
+<code>cflag</code>.
+</p>
+<h4 id="17">
+The new form specification of option-lists
+</h4>
+<p id="18">
+In the first update (in March 2003), the new form specification was
+<code>(option style varname [companion])</code>. This has been
+superseded as follows:
+</p>
+<p id="19">
+In the new form, <i>option-lists</i> is a list of items
+with the following form:
+</p>
+<pre id="20">
+  (name style varname [modifiers ...])
+</pre>
+<p id="21">
+<i>name</i> is a string naming the
+argument, such as "a" or "foo". 
+</p>
+<p id="22">
+<i>style</i> must be either <code>:short</code> or
+<code>:long</code>. For <code>:short</code> options, the
+string must be of length 1 (e.g., "a" for the command line option
+<b>-a</b>). For <code>:long</code> options, the string can be
+any length (e.g., "foo" for <b>--foo</b>). Long options are typically
+specified on a command line preceded with two dashes (hence
+<b>--foo</b>) while short options are preceded with one dash (hence
+<b>-a</b>). However, the <i>long-abbrev</i> keyword
+argument can allow single dashes to precede long options.
+</p>
+<p id="23">
+<i>varname</i> is a symbol to which a value is
+bound. This should be a Lisp symbol, for example
+<code>aflag</code> or <code>foo</code>.
+</p>
+<p id="24">
+<i>modifiers</i> may be unspecified or one or more of
+the following keyword selections:
+</p>
+<ul>
+<li id="25">
+<code>:required-companion</code> (<code>:required</code>
+is accepted to mean <code>:required-companion</code>) or
+<code>:optional-companion</code> (<code>:optional</code>
+is accepted to mean <code>:optional-companion</code>), either of
+which indicate a companion argument is accepted (and is required or
+optional). A companion argument is often a value or a modifier of some
+sort, see the examples below. If <i>modifiers</i> does
+not include either <code>:required-companion</code> or
+<code>:optional-companion</code>, the option cannot have a
+companion argument.
+</li>
+<li id="26">
+<code>:allow-multiple-options</code>: when this appears as a
+modifier, the option being described can appear multiple times in the
+command line. The value bound to <i>varname</i> will
+reflect the presence or absence of this modifier as follows:
+<ul>
+<li id="27">
+If <code>:required-companion</code> or
+<code>:optional-companion</code> is also a modifier, then
+<i>varname</i> is bound to a list of the values
+corresponding to the given command-line values.
+</li>
+<li id="28">
+If neither <code>:required-companion</code> or
+<code>:optional-companion</code> is also a modifier, then
+<i>varname</i> is bound to a number indicating the
+number of times the option is specified in the command line (or
+<code>nil</code>, not 0, if it does not appear at all).
+</li>
+</ul>
+<p id="29">
+If <code>:allow-multiple-options</code> is not specified as a
+modifier, an error is signaled if an option appears more than once.
+</p>
+</li>
+</ul>
+
+<p id="30">
+Consider the following example which does not allow multiple options:
+</p>
+
+<pre id="31">
+        ("foo" :long foo :required-companion)
+        ("a" :short aflag :required-companion)   
+</pre>
+<p id="32">
+The required-companion arguments can be specified in the following
+ways:
+</p>
+<pre id="33">
+        --foo bar
+        --foo=bar
+        -abar
+        -a bar
+</pre>
+<p id="34">
+In each case the companion argument is "bar". Note that long form
+options are separated from their companions by a space or by
+<b>=</b>. Short form options are separated by a space or are not
+separated. The fact that no separation is allowed for short form
+options can lead to ambiguity. See the discussion of the
+<i>long-abbrev</i> keyword argument below for details.
+</p>
+<p id="35">
+Now consider these examples which do (for some options) allow multiple
+options:
+</p>
+<pre id="36">
+;;  Option `o' allows multiple options, and requires companions
+;;  so the `oflag' variable is bound to a list of the companion 
+;;  values specified:
+cl-user(13): (sys:with-command-line-arguments
+                 (("o" :short oflag :required-companion 
+                   :allow-multiple-options))
+                 (rest :command-line-arguments '("-ofoo" "-o" "bar"))
+               oflag)
+("foo" "bar")
+
+;;  Option `x' does not allow multiple options but option `v' does.
+;;  Neither accepts companions. `xflag' is either T or NIL while
+;;  `vflag' is a number, indicating how many times it appears
+;;  (if it does not appear, `vflag' is NIL, not 0):
+cl-user(14): (sys:with-command-line-arguments
+                 (("x" :short xflag)
+                  ("v" :short vflag :allow-multiple-options))
+                 (rest :command-line-arguments '("-v" "-x" "-v"))
+               (list vflag xflag))
+(2 t)
+cl-user(15): (sys:with-command-line-arguments
+                 (("x" :short xflag)
+                  ("v" :short vflag :allow-multiple-options))
+                 (rest :command-line-arguments '("-x"))
+               (list vflag xflag))
+(nil t)
+
+;;  The same specification as just above, but `x' is specified
+;;  twice, causing an error:
+cl-user(16): (sys:with-command-line-arguments
+                 (("x" :short xflag)
+                  ("v" :short vflag :allow-multiple-options))
+                 (rest :command-line-arguments '("-v" "-x" "-v" "-x"))
+               (list vflag xflag))
+Error: Option `x' cannot be specified more than once.
+
+Restart actions (select using :continue):
+ 0: Return to Top Level (an "abort" restart).
+ 1: Abort entirely from this process.
+[1] cl-user(17): :reset
+
+;;  The same specification as just above. `x' is not specified and
+;;  `v' is specified three times with `-vvv':
+cl-user(18): (sys:with-command-line-arguments
+                 (("x" :short xflag)
+                  ("v" :short vflag :allow-multiple-options))
+                 (rest :command-line-arguments '("-vvv"))
+               (list vflag xflag))
+(3 nil)
+;;  Here `v' has an optional-companion, and appears as `"-v" "2" "-vv"'.
+;;  Note that `-vv' is `v' appearing once with companion "v" rather than
+;;  `v' appearing twice (an unavoidable ambiguity discussed further
+;;  below):
+
+cl-user(19): (sys:with-command-line-arguments
+                 (("x" :short xflag)
+                  ("v" :short vflag
+                       :optional-companion :allow-multiple-options))
+                 (rest :command-line-arguments '("-v" "2" "-vv"))
+               (list vflag xflag))
+(("2" "v") nil)
+
+;;  Again `v' has an optional-companion and is specified with
+;;  and without a companion value. The unspecified value appears
+;;  as the empty string in the values of v list (`x' also appears 
+;;  once):
+cl-user(20): (sys:with-command-line-arguments
+                 (("x" :short xflag)
+                  ("v" :short vflag
+                       :optional-companion :allow-multiple-options))
+                 (rest :command-line-arguments '("-v" "2" "-v" "-x"))
+               (list vflag xflag))
+(("2" "") t)
+cl-user(23): 
+</pre>
+<p id="37">
+Although either form, old or new, can be used for the
+<i>option-lists</i>, the new form is preferred since it
+offers long form arguments and does not require positional
+synchronization of the options in <i>option-string</i>
+with the variables given by [<i>variable-names</i>]*.
+</p>
+<h4 id="38">
+The other arguments to with-command-line-arguments
+</h4>
+<p id="39">
+<i>restvar</i> should be a symbol. It is bound to all
+command line arguments that are not options. A command line argument
+of <b>--</b> terminates option scanning and causes all remaining
+arguments to be put into <i>restvar</i>. The order of
+arguments in <i>restvar</i> will have the same order as
+the arguments on the command line, or in the value of the keyword
+<i>command-line-arguments</i>.
+</p>
+<p id="40">
+The <i>command-line-arguments</i> keyword argument is
+used to initialize the command line arguments. If not given, then the
+function <a href="command-line-arguments.htm"><b>command-line-arguments</b></a>, called with a true
+value for the <i>application</i> keyword argument, is
+used to retrieve the actual command line arguments given to the
+invoked image.
+</p>
+<p id="41">
+The <i>posixly-correct</i> keyword argument, ignored in
+the old form, says what to do when a non-option is encountered in the
+left to right scan of the command line arguments. If
+<i>posixly-correct</i> is non-<code>nil</code>, then processing of the command line terminates
+when a non-option is seen, otherwise the non-option is put into
+<i>restvar</i>.
+</p>
+<p id="42">
+The <i>usage</i> keyword argument, if specified, should be a
+string. This string is printed when errors are found while parsing the
+command line arguments according to the given specification.
+(Possible errors would be not supplying a companion argument,
+supplying an unknown command line argument, etc.)
+</p>
+<p id="43">
+The <i>long-abbrev</i> keyword argument, ignored in the
+old form, allows long form arguments to be specified with a single
+<b>-</b>. Otherwise they must be specified with double dashes,
+<b>--</b>.
+</p>
+<p id="44">
+Allowing a single dash to specify a long form argument can introduce
+ambiguity. Consider the following case illustrated by a partial
+<a href="with-command-line-arguments.htm"><b>with-command-line-arguments</b></a> form:
+</p>
+<pre id="45">
+(sys:with-command-line-arguments
+    (("foo" :long foo :optional-companion)
+     ("f" :short aflag :required-companion))
+    (:long-abbrev t) ...) 
+</pre>
+
+<p id="46">
+Now suppose the argument <b>-foo</b> is provided. Does this mean the
+long form argument <b>-foo</b> or the short form argument <b>-f</b>
+with companion (or value) <b>oo</b>?  Both interpretations are valid,
+and so the argument is ambiguous. When
+<i>long-abbrev</i> is specified true, the system will
+always assume that an argument is a long form argument if it can be so
+intrepreted. If the argument cannot be interpreted as a long form
+argument, the short form argument interpretation will be
+used. Programmers should avoid any possibility of ambiguity, of
+course. Again, if <i>long-abbrev</i> is <code>nil</code>, short form and long form arguments are
+designated differently and there can be no ambiguity in
+interpretation. The downside is that it may be harder for users of an
+application to specify arguments correctly (that is to remember which
+require two dashes and which require one).
+</p>
+<p id="47">
+Here is the example above shown in a script:
+</p>
+<pre id="48">
+cl-user(1): (system:with-command-line-arguments
+		(("foo" :long foo :optional-companion)
+		 ("f" :short fflag :optional-companion))
+		(rest :command-line-arguments
+		      '("-foo") :long-abbrev nil)
+	      (list foo fflag rest))
+(nil "oo" nil)
+
+;;  -foo is parsed as a short option since the long form "foo"
+;;  must be specified --foo.
+
+cl-user(2): (system:with-command-line-arguments
+		(("foo" :long foo :optional-companion)
+		 ("f" :short fflag :optional-companion))
+		(rest :command-line-arguments '("-foo")
+		      :long-abbrev t)
+	      (list foo fflag rest))
+(t nil nil)
+
+;;  -foo is parsed as a long option.
+</pre>
+
+<h4 id="49">
+The body argument to with-command-line-arguments
+</h4>
+
+<p id="50">
+<i>body</i> is a list of forms, executed in a lexical
+environment where the variables discussed above are bound for use by
+the macro's body.
+</p>
+<h4 id="51">
+Examples using with-command-line-arguments
+</h4>
+<p id="52">
+Here are some more examples of the new form:
+</p>
+<pre id="53">
+cl-user(15): (sys:with-command-line-arguments
+                 (("foo" :long foo :required-companion)
+                  ("bar" :long bar :optional-companion)
+                  ("baz" :long baz nil)
+                  ("a" :short aflag :required-companion)
+                  ("b" :short bflag :optional-companion)
+                  ("c" :short cflag nil))
+                 (rest :long-abbrev t
+                       :command-line-arguments
+                       '("--foo" "xxx" "--bar" "-afoo" "-b" "-c" "1" "2" "3"))
+               (format t "foo=~a, bar=~a, baz=~a, a=~a, b=~a, c=~a, rest=~a~%"
+                       foo bar baz aflag bflag cflag rest))
+foo=xxx, bar=t, baz=nil, a=foo, b=t, c=t, rest=(1 2 3)
+nil
+cl-user(16): (sys:with-command-line-arguments
+                 (("foo" :long foo :required-companion)
+                  ("bar" :long bar :optional-companion)
+                  ("baz" :long baz nil)
+                  ("a" :short aflag :required-companion)
+                  ("b" :short bflag :optional)
+                  ("c" :short cflag nil))
+                 (rest :long-abbrev t
+                       :command-line-arguments
+                       '("--foo=xxx" "--bar" "-a" "foo" "-b" "-c" "1" "2" "3"))
+               (format t "foo=~a, bar=~a, baz=~a, a=~a, b=~a, c=~a, rest=~a~%"
+                       foo bar baz aflag bflag cflag rest))
+foo=xxx, bar=t, baz=nil, a=foo, b=t, c=t, rest=(1 2 3)
+nil
+cl-user(17): (sys:with-command-line-arguments
+                 (("foo" :long foo :required-companion)
+                  ("f" :short fflag :required-companion)
+                  ("foo2" :long foo2 :required-companion))
+                 (rest :command-line-arguments
+                       '("--foo" "xxx" "--foo2=blah" "-foo" "foo"))
+               (format t "foo=~a, foo2=~a, f=~a, rest=~a~%"
+                       foo foo2 fflag rest))
+foo=xxx, foo2=blah, f=oo, rest=(foo)
+nil
+cl-user(18): (sys:with-command-line-arguments
+                 (("f" :short fflag :required-companion))
+                 (rest :command-line-arguments '("-foo" "xxx" "foo"))
+               (format t "f=~a, rest=~a~%"
+                       fflag rest))
+f=oo, rest=(xxx foo)
+nil
+cl-user(19): 
+</pre>
+<p id="54">
+<b>Note</b>: the <i>command-line-arguments</i> keyword
+would normally not be used since the actual command line arguments
+would come from the command line of the running application.
+</p>
+<p id="55">
+Here is an example of the old form:
+</p>
+<pre id="56">
+cl-user(18): (sys:with-command-line-arguments
+                 ("ab:c" aflag bflag cflag)
+                 (rest :command-line-arguments
+                       '("-a" "-b" "xxx" "1" "2" "3"))
+               (format t "a=~a, b=~a, c=~a, rest=~a~%"
+                       aflag bflag cflag rest))
+a=t, b=xxx, c=nil, rest=(1 2 3)
+nil
+cl-user(19): 
+</pre>
+
+<p id="57">
+See <a href="../../startup.htm#command-line-args-1">Command
+line arguments</a> in <a href="../../startup.htm">startup.htm</a> for a list
+of command-line arguments accepted by Allegro CL.
+</p>
+
+<hr><p id="58"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/with-command-line-arguments.htm">9.0 version</a></td></tr></table></body></html>

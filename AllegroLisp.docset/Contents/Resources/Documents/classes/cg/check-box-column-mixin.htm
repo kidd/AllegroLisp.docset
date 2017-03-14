@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>check-box-column-mixin</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/check-box-column-mixin.htm">9.0 version</a></td></tr></table><h2 id="2">check-box-column-mixin</h2>
+
+<p id="3">
+A non-instantiable class that can be mixed with the <a href="grid-column.htm"><code>grid-column</code></a> class to
+create grid columns whose cells act like <a href="check-box.htm"><code>check-box</code></a> controls. Each cell in
+the column will implement the pseudo-control if the row of that cell
+is an instance of a <a href="grid-row.htm"><code>grid-row</code></a> subclass that mixes in the
+<a href="widget-row-mixin.htm"><code>widget-row-mixin</code></a> class.
+</p>
+<p id="4">
+To ensure that this mixin class' methods take precedence over other
+methods that specialize on <a href="grid-column.htm"><code>grid-column</code></a>, this mixin class generally should
+appear first in a <a href="../../../ansicl/dictentr/defclass.htm"><b>defclass</b></a>
+expression's list of superclasses, as in:
+</p>
+<pre id="5">
+(defclass my-check-box-column
+  (check-box-column-mixin my-subclass-of-grid-column) ...)
+</pre>
+<p id="6">
+The <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> method provided
+by this mixin will call <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> to determine whether to draw the
+check mark. If <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a>
+returns <code>nil</code>, it will not draw a check mark,
+and otherwise it will.
+</p>
+<p id="7">
+When the user clicks the check-box gadget displayed in the cell, the
+<a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a> method
+provided by this mixin calls <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a> with a value of
+either <code>t</code> or <code>nil</code> so
+as to change the domain value represented by the cell. Alternately
+the user may press the spacebar or the enter key to simulate clicking
+the check-box.
+</p>
+<p id="8">
+The <a href="../../operators/cg/t/title-reader.htm"><b>title-reader</b></a>
+property of the column should be used to determine the string to
+display in each check-box cell. The <a href="../../operators/cg/c/click-must-be-on-gadget.htm"><b>click-must-be-on-gadget</b></a> property
+may be used to determine where the user must click within the cell to
+activate the cell's gadget.
+</p>
+<p id="9">
+See the section <b>Built-In Grid Cell Widgets</b> on the page for the
+<a href="grid-widget.htm"><code>grid-widget</code></a> class for an
+overview of the grid column mixins.
+</p>
+
+<p id="10">
+A quicker but less object-oriented alternative to using the <a href="widget-column-mixin.htm"><code>widget-column-mixin</code></a> classes is to
+write <a href="../../operators/cg/c/cell-widget.htm"><b>cell-widget</b></a> methods.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/check-box-column-mixin.htm">9.0 version</a></td></tr></table></body></html>

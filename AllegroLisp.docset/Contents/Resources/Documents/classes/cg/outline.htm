@@ -1,0 +1,170 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>outline</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/outline.htm">9.0 version</a></td></tr></table><h2 id="2">outline</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of an outline control.
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+Instance of the outline class. This control acts as a multiple-item
+list, with added functionality to display its items in a hierarchy and
+to display only selected subtrees of the hierarchy. The items
+displayed are instances of the <a href="outline-item.htm"><code>outline-item</code></a> class.
+</p>
+<p id="7">
+The outline can be navigated via the arrow keys and the PAGE UP/PAGE
+DOWN keys.  Scrollbars appear along the length of the control when the
+list exceeds the size of the frame.
+</p>
+<h3 id="8">
+Adding an outline control to your form
+</h3>
+<p id="9">
+Click the outline tool on the Component toolbar. Move the mouse cursor
+to the part of the form where you want to place the control, and click
+again. The control will appear with colored resizing handles.
+</p>
+<h3 id="10">
+Resizing and moving the control
+</h3>
+<p id="11">
+Controls can only be resized and moved on forms during the design
+stage; the size and location of everything is fixed on a running form.
+</p>
+<p id="12">
+Resize the control by clicking the mouse cursor and dragging one of
+the handles to the new size-point. Release the mouse key when you are
+satisfied with the new size.  Note: resizing the outline won't mean
+proportional changes in the size of the characters inside the
+list. Change the <a href="../../operators/cg/f/font.htm"><b>font</b></a> property if you want to change
+the size of the actual characters displayed.
+</p>
+<p id="13">
+Move the control by clicking anywhere on it except a resizing handle
+and dragging it to a new location on the form. Release the mouse key
+when you are ready to place the control.
+</p>
+
+<h3 id="14">
+Creating an outline widget programmatically
+</h3>
+
+<p id="15">
+Here is an example of writing code from scratch to create an outline
+widget, rather than building one interactively on a form.  The keyword
+arguments here such as <code>:range</code> correspond to
+properties such as the <a href="../../operators/cg/r/range.htm"><b>range</b></a>
+property that would be displayed in the inspector for an outline on a
+form, and which you can modify by calling <a href="../../operators/cg/r/range.htm"><b>(setf range)</b></a>.
+</p>
+<p id="16">
+The nested tree of <code>:range</code> arguments shown here
+demonstrates how to specify the whole tree of <a href="outline-item.htm"><code>outline-item</code></a>s at once; an alternative is to
+write <a href="../../operators/cg/r/range-on-open.htm"><b>range-on-open</b></a> methods
+that create each item's child items lazily when the item is opened by
+the user.  Another alternative would be to call <a href="../../operators/cg/r/range.htm"><b>(setf range)</b></a> on
+individual outline-item objects.  For more complete examples, see the
+"Outline Widget" examples in the <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator Dialog</a>.
+</p>
+<p id="17">
+There are many functions for manipulating outline widgets.  A good way
+to find documentation links to all of them is by searching for
+"outline" in the <a href="../../ide-menus-and-dialogs/common-graphics-tree-of-knowledge.htm">Allegro Tree of
+Knowledge</a> dialog displayed by
+the <a href="../../ide-menus-and-dialogs/help-menu.htm#common-graphics-tree">Help | Tree of Knowledge</a> menu
+command. One generic function for outline widgets is
+<a href="../../operators/cg/h/handle-home-key-shortcuts.htm"><b>handle-home-key-shortcuts</b></a>, which allows
+keys in the middle of the keyboard (J, K, D, F, T, and B) to have the
+same effect as keys often on the right, like the arrow keys, Home, and
+End.
+</p>
+
+<pre id="18">
+(in-package :cg-user)
+(make-window 'outline-dialog
+  :class 'dialog
+  :interior (make-box-relative 100 200 240 140)
+  :dialog-items
+  (list (make-instance 'outline
+          :font (make-font-ex nil "MS Sans Serif" 11 nil)
+          :left 20 :top 20 :width 200 :height 100
+          :name :my-outline
+          :value :top-1
+          :range
+          (list (make-instance 'outline-item
+                  :value :top-1
+                  :state :open
+                  :selected t
+                  :range
+                  (list (make-instance 'outline-item 
+                          :value :middle-1
+                          :state :open
+                          :range
+                          (list
+                           (make-instance 'outline-item 
+                             :value :bottom-11
+                             :state :closed)
+                           (make-instance 'outline-item
+                             :value :bottom-12
+                             :available nil
+                             :state :closed)
+                           (make-instance 'outline-item
+                             :value :bottom-13
+                             :state :closed
+                             :font
+                             (make-font-ex
+                              nil "Courier" 15 '(:bold :italic)))))
+                        (make-instance 'outline-item
+                          :value :middle-2
+                          :state :open
+                          :range
+                          (list
+                           (make-instance 'outline-item
+                             :value :bottom-21
+                             :state :closed
+                             :foreground-color red)
+                           (make-instance 'outline-item
+                             :value :bottom-22
+                             :state :closed)
+                           (make-instance 'outline-item
+                             :value :bottom-23
+                             :state :closed
+                             :background-color yellow)))))
+                (make-instance 'outline-item
+                  :value :top-2
+                  :state :open
+                  :range
+                  (list (make-instance 'outline-item
+                          :value :biff
+                          :state :closed
+                          :background-color cyan)
+                        (make-instance 'outline-item
+                          :value :boff
+                          :state :closed
+                          :range nil)))))))
+</pre>
+
+<p id="19">
+See also <a href="../../cgide.htm#code-creating-controls-1">About how to get sample code for
+creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="20">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/outline.htm">9.0 version</a></td></tr></table></body></html>

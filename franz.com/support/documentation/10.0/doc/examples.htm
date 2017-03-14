@@ -1,0 +1,257 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Examples using Allegro CL</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/examples.htm">9.0 version</a></td></tr></table><h1 id="2">Examples using Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#intro-1">1.0 Examples introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#cgide-ex-2">1.1 Common Graphics and IDE examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#aclrpc-ex-2">1.2 Allegro CL RPC examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#addcaps-ex-2">1.3 The AddCaps application</a><br>&nbsp;&nbsp;&nbsp;<a href="#aserve-ex-2">1.4 AllegroServe examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#checklinks-ex-2">1.5 The checklinks tool</a><br>&nbsp;&nbsp;&nbsp;<a href="#dll-ex-2">1.6 Lisp as a DLL example</a><br>&nbsp;&nbsp;&nbsp;<a href="#jlinker-ex-2">1.7 jLinker examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#soap-ex-2">1.8 SOAP examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#ssl-ex-2">1.9 SSL examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#snpp-ex-2">1.10 The simple network paging protocol example</a><br>&nbsp;&nbsp;&nbsp;<a href="#encap-streams-ex-2">1.11 Encapsulating streams examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#testapp-ex-2">1.12 The skeleton test application</a><br>&nbsp;&nbsp;&nbsp;<a href="#tserver-ex-2">1.13 An example using Telnet to communicate with a running Lisp process</a><br>&nbsp;&nbsp;&nbsp;<a href="#unix-shared-lib-ex-2">1.14 Lisp as a Unix Shared Library</a><br>&nbsp;&nbsp;&nbsp;<a href="#xmlrpc-ex-2">1.15 XML-RPC examples</a><br><hr><hr><h2 id="4"><a name="intro-1">1.0 Examples introduction</a></h2>
+
+<p id="5">
+This document discusses examples provided with Allegro CL. Example
+code, often with additional documentation, are located in the
+<i>examples/</i> subdirectory of the Allegro CL
+directory. The additional documentation is typically in a file with a
+name like <i>readme.txt</i>. If no such file is present,
+the documentation should be found in the comments in the source files.
+</p>
+<p id="6">
+Examples serve various purposes. Two important purposes are (1)
+illustration, and (2) convenience. Examples are illustrative of the
+features of Allegro CL, showing how they may be used, and of proper
+coding practice. And examples can be useful in themselves, doing
+something close to what you might want to do, thus saving you the
+trouble to devise the algorithm and write (most of) the code for doing
+it. Of course, examples which do both are best, but not always the
+easiest to provide.
+</p>
+
+<p id="7">
+There are other sources of examples for Allegro CL, and new ones are
+added from time to time. Among the other sources are:
+</p>
+<ul>
+<li id="8">
+The <a href="http://franz.com/support/tech_corner/">Tech Corner</a> in
+the <a href="http://franz.com/support/">Support</a> section of the
+<a href="http://franz.com/">Franz Inc. Web Site</a> regularly
+discusses examples, typically using special features of Allegro CL.
+</li>
+<li id="9">
+The <a href="http://franz.com/support/tutorials/">Tutorials</a> in
+the <a href="http://franz.com/support/">Support</a> section of the
+<a href="http://franz.com/">Franz Inc. Web Site</a> provide simple
+tutorials showing how to use various features of Allegro CL.
+</li>
+<li id="10">
+<a href="http://github.com/franzinc/">http://github.com/franzinc/</a>
+has many examples, all open source, for various utilities and other
+things written in Lisp.
+</li>
+<li id="11">
+There are also brief examples in the various Allegro CL essay
+documents (see <a href="introduction.htm">introduction.htm</a> for a list of essays).
+</li>
+</ul>
+<p id="12">
+Note that the subdirectories of <i>examples/</i> that
+are Windows-only are typically not included with the Unix
+distributions and those that are Unix-only are typically not included
+with the Windows distribution.
+</p>
+<p id="13">
+In general, licensed users of Allegro CL may use example code freely in
+their applications, so long as the source is identified.
+</p>
+
+<p id="14">
+The following directories contain examples. Note that there may be
+additional examples (perhaps in additional directories) that are not
+mentioned. New examples are often added when new functionality is
+provided between releases and this document is not always updated.
+</p>
+
+
+
+<hr><h2 id="15"><a name="cgide-ex-2">1.1 Common Graphics and IDE examples</a></h2>
+
+<p id="16">
+The Examples tab of the <a href="ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog (displayed with the
+<a href="ide-menus-and-dialogs/help-menu.htm#navigator">Help |
+Navigator</a> menu command when running the IDE on Windows) has a
+list of examples for Common Graphics and the Integrated Development
+Environment (IDE).
+</p>
+<p id="17">
+The Interface Builder Tutorial (see the Tutorial tab of the <a href="ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog,
+displayed with the <a href="ide-menus-and-dialogs/help-menu.htm#tutorial">Help | Dialog-Building Tutorial</a> menu command)
+is a worked out application that illustrates Common Graphics
+programming techniques.
+</p>
+
+
+<p id="18">
+There are <i>cg/</i> and <i>ide/</i> subdirectories of
+<i>examples/</i>. The code is referenced by the tools mentioned above.
+</p>
+
+
+
+
+<hr><h2 id="19"><a name="aclrpc-ex-2">1.2 Allegro CL RPC examples</a></h2>
+
+<p id="20">
+The Allegro CL RPC (Remote Procedure Call) facility provides a way
+for two Lisp programs to communicate. See
+<a href="rpc.htm">rpc.htm</a>. Examples of the facility are in
+<i>examples/aclrpc/</i>.
+</p>
+
+
+
+<hr><h2 id="21"><a name="addcaps-ex-2">1.3 The AddCaps application</a></h2>
+
+<p id="22">
+This application allows you to organize, view, and add captions to
+(whence "AddCaps") to images stored as computer files. The files are
+in <i>examples/addcaps/</i>. Note that you must be
+licensed to produce applications in order to use these files.
+</p>
+
+
+
+<hr><h2 id="23"><a name="aserve-ex-2">1.4 AllegroServe examples</a></h2>
+
+<p id="24">
+AllegroServe is a Web Server facility, as described in <a href="aserve/aserve.html">aserve/aserve.html</a>. There
+are various examples in <i>examples/aserve/</i>
+</p>
+
+
+
+<hr><h2 id="25"><a name="checklinks-ex-2">1.5 The checklinks tool</a></h2>
+
+<p id="26">
+The utility defined in <i>examples/checklinks/</i>
+produces an executable which checks a collection of HTML files for
+broken links.  Note that you must be licensed to produce applications
+in order to use these files.
+</p>
+
+
+
+<hr><h2 id="27"><a name="dll-ex-2">1.6 Lisp as a DLL example</a></h2>
+
+<p id="28">
+See <a href="dll.htm">dll.htm</a> for information on the Lisp as a DLL
+example (Windows only, of course) found in
+<i>examples/dll/</i>.
+</p>
+
+
+
+<hr><h2 id="29"><a name="jlinker-ex-2">1.7 jLinker examples</a></h2>
+
+<p id="30">
+The jLinker facility provides a way to execute Java from Lisp. See
+<a href="jlinker.htm">jlinker.htm</a>. Examples of the facility are in
+<i>examples/jlinker/</i>.
+</p>
+
+
+
+
+<hr><h2 id="31"><a name="soap-ex-2">1.8 SOAP examples</a></h2>
+
+<p id="32">
+The SOAP module is documented in 
+<a href="soap.htm">soap.htm</a>. An example is in
+<i>examples/soap/</i>.
+</p>
+
+
+
+<hr><h2 id="33"><a name="ssl-ex-2">1.9 SSL examples</a></h2>
+
+<p id="34">
+The SSL (Secure Socket Layer) facility is documented in <a href="socket.htm#ssl-1">Secure Socket Layer (SSL)</a> in
+<a href="socket.htm">socket.htm</a>. <i>examples/ssl/</i> has
+a sample pem file.
+</p>
+
+
+
+
+<hr><h2 id="35"><a name="snpp-ex-2">1.10 The simple network paging protocol example</a></h2>
+
+<p id="36">
+The simple network paging protocol examples in
+<i>examples/snpp/</i> produces a program which will
+produce an executable which can be used to page over the
+network. There are two Lisp source files (<i>snpp.cl</i>
+and <i>deliver.cl</i>) and a
+<i>Makefile</i>.  Note that you must be licensed to
+produce applications in order to use these files.
+</p>
+
+
+
+<hr><h2 id="37"><a name="encap-streams-ex-2">1.11 Encapsulating streams examples</a></h2>
+
+<p id="38">
+The examples in the <i>examples/streams/</i> directory
+illustrate the use of encapsulating streams. They are described in
+<a href="streams.htm#encapsulation-examples-2">Examples of
+stream encapsulations</a> in <a href="streams.htm">streams.htm</a>.
+</p>
+
+
+
+
+
+<hr><h2 id="39"><a name="testapp-ex-2">1.12 The skeleton test application</a></h2>
+
+<p id="40">
+The files in the <i>examples/testapp/</i> directory make a
+skeleton application using <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, the application building
+function in Allegro CL. The files show how you can automate the
+application generation procedure, and provides a sample makefile. Note
+that you must be licensed to produce applications in order to use
+these files.
+</p>
+
+
+
+<hr><h2 id="41"><a name="tserver-ex-2">1.13 An example using Telnet to communicate with a running Lisp process</a></h2>
+
+<p id="42">
+This example is for Unix only. If you arrange to have a running Lisp
+application set up a server process to listen for telnet connections
+via the socket interface, you can then telnet into the running Lisp,
+usually for debugging but also for other purposes. The code in
+<i>examples/tserver.cl/</i> shows you how to do this.
+</p>
+
+
+
+<hr><h2 id="43"><a name="unix-shared-lib-ex-2">1.14 Lisp as a Unix Shared Library</a></h2>
+
+<p id="44">
+See <a href="unix-shared-library.htm">unix-shared-library.htm</a> for information on the
+Lisp as a Unix Shared Library example (Unix only, of course) found in
+<i>examples/unix-shared-library/</i>.
+</p>
+
+
+
+
+<hr><h2 id="45"><a name="xmlrpc-ex-2">1.15 XML-RPC examples</a></h2>
+
+<p id="46">
+The new Allegro CL XML-RPC utility implements classes and functions to
+support the XML-RPC protocol for remote function calls through HTTP
+connections. Th directory <i>examples/xml-rpc/</i>
+contains an example using XML-RPC. See <a href="xml-rpc.htm">xml-rpc.htm</a>. The
+examples are fairly elementary and are designed to show how the facility
+works.
+</p>
+
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/examples.htm">9.0 version</a></td></tr></table></html>

@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>data-slot</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/data-slot.htm">9.0 version</a></td></tr></table><h2 id="2">data-slot</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-column
+</i></p>
+
+<p id="4">
+Returns the name of a slot that holds values to be displayed in cells
+of a <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>, or else
+<code>nil</code> if this property is not being used.  The
+value may be set at creation time by passing the
+<i>data-slot</i> initarg, or any time later by calling
+<a href="../d/data-slot.htm"><b>(setf
+data-slot)</b></a>. The default value is <code>nil</code>.
+</p>
+<p id="5">
+This property will be used when reading cell values only if the
+default <a href="../r/read-cell-value.htm"><b>read-cell-value</b></a> method
+is not overridden and the <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a> has no <a href="../d/data-reader.htm"><b>data-reader</b></a> function. It will be used when
+writing cell values only if the default <a href="../w/write-cell-value.htm"><b>write-cell-value</b></a> method is not overriden and the
+<a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a> has no <a href="../d/data-writer.htm"><b>data-writer</b></a> function.
+</p>
+<p id="6">
+If this property is used, then when a grid cell is drawn, the value to
+display is found by calling <a href="../../../../ansicl/dictentr/slot-val.htm"><b>slot-value</b></a> with the <a href="../d/data-object.htm"><b>data-object</b></a> of the <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a> along with this slot name. If the user
+interactively edits the value in a grid cell, the new value is written
+back into application data by calling <a href="../../../../ansicl/dictentr/slot-val.htm"><b>(setf slot-value)</b></a> with the <a href="../d/data-object.htm"><b>data-object</b></a> of the <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a> along with this slot name
+and the new value.
+</p>
+<p id="7">
+It is usually preferable to use <a href="../d/data-reader.htm"><b>data-reader</b></a> and <a href="../d/data-writer.htm"><b>data-writer</b></a> functions because they will trigger
+the usual side effects of a slot's reader and writer functions.  But
+<a href="../d/data-slot.htm"><b>data-slot</b></a> can be useful for
+slots that do not have reader and writer functions, or when these
+functions are not known.
+</p>
+<p id="8">
+A special feature of a <a href="../d/data-slot.htm"><b>data-slot</b></a> value is that it may indirectly access
+a slot of an object that's stored in a slot of the grid-row's <a href="../d/data-object.htm"><b>data-object</b></a>.  This is done by using a
+value that is a list of slot names rather than a single slot name.
+The first slot name in the list should be a slot of the grid-row's
+<a href="../d/data-object.htm"><b>data-object</b></a>, the second slot
+name in the list should be a slot of the object that is found in the
+first slot, and so on.  For example, if the <a href="../d/data-object.htm"><b>data-object</b></a> of each grid row is a patient
+object, and this grid column is editing the hospital of each patient,
+then the column's <a href="../d/data-slot.htm"><b>data-slot</b></a>
+might be the list <code>(hospital ceo phone-number)</code> to
+access the phone number slot of the object that's in the CEO slot of
+the object that's in the hospital slot of the patient of each grid
+row.  A <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> makes
+use of this feature internally, but an application could use it
+directly as well.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/data-slot.htm">9.0 version</a></td></tr></table></body></html>

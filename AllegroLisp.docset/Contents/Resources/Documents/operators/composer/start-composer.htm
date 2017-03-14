@@ -1,0 +1,51 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>start-composer</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: composer</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/composer/start-composer.htm">9.0 version</a></td></tr></table><h2 id="2">start-composer</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>host load-init-file init-filename</i><i>
+</i></p>
+
+<p id="4">
+<b>UNIX only.</b>
+</p>
+
+<p id="5">
+This function starts Allegro Composer. You must be running Allegro CL
+as a subprocess of Emacs (started with the <b>fi:common-lisp</b> emacs
+command) or startup of Composer will fail. You can also start Allegro Composer
+with the <code>Start Composer</code>
+item on the Composer menu on the Emacs menu bar.
+</p>
+
+<p id="6">
+The <i>host</i> keyword argument specifies the machine
+running X windows where Composer windows will be displayed. This
+argument defaults to the value of the DISPLAY environment variable. It
+is untypical to have to specify this argument because the Emacs
+process presumably knows the display (since the Emacs window is
+typically displayed there) and passes it to Allegro CL. If specified,
+the value should be a string of the form
+"[machine]:[display].[screen]" where [machine] is
+the X host, [display] is an integer (typically 0) specifying the
+display on that machine, and [screen] is an integer (typically 0)
+specifying the screen in that display. Specifying a [screen] is
+optional. Typical values are thus "franz:0" and "franz:0.0".
+</p>
+
+<p id="7">
+The <i>load-init-file</i> specifies whether the Composer
+init file should be loaded (if present -- it is not an error to
+specify this argument true even if no init file exists). The init
+filename is the value of the variable <a href="../../variables/composer/s_composer-init-filename_s.htm"><code>*composer-init-filename*</code></a>, but if the
+<i>init-filename</i> is non-<code>nil</code>, its value should be a string naming a file
+(which need not exist) and that file (if there) is loaded as the init
+file.
+</p>
+
+<p id="8"> 
+See <a href="../../composer.htm">composer.htm</a> for
+general information on Allegro Composer.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/composer/start-composer.htm">9.0 version</a></td></tr></table></body></html>

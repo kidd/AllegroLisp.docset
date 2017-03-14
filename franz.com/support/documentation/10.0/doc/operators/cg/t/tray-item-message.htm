@@ -1,0 +1,54 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>tray-item-message</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/tray-item-message.htm">9.0 version</a></td></tr></table><h2 id="2">tray-item-message</h2>
+
+<p id="3"><b>Arguments: </b><i>tray-item window message</i></p>
+
+<p id="4">
+This generic function is called whenever a mouse event occurs over the
+icon for a tray-item in the system tray.  It is not useful for an
+application to call this function, but an application may define
+<a href="../t/tray-item-message.htm"><b>tray-item-message</b></a>
+methods to handle mouse events on its tray-items in some arbitrary
+way.  The default method that specializes on tray-item and basic-pane
+does nothing.
+</p>
+<p id="5">
+<i>tray-item</i> will be the tray-item whose icon was
+under the mouse cursor when the mouse event occurred.  An application
+would typically define and use a subclass of the built-in <a href="../../../classes/cg/tray-item.htm"><code>tray-item</code></a> class so
+that it can specialize a <a href="../t/tray-item-message.htm"><b>tray-item-message</b></a> method on that
+subclass.
+</p>
+<p id="6">
+<i>window</i> will be the window that was specified in
+the most recent call to <a href="../a/add-tray-item.htm"><b>add-tray-item</b></a> for this tray-item.
+This is the window that receives the messages for this tray-item, and
+therefore <a href="../t/tray-item-message.htm"><b>tray-item-message</b></a> will be called in
+the creation-process of that window.
+</p>
+<p id="7">
+<i>message</i> will be the value of one of the message
+constants <a href="../../../variables/cg/mouse-moved.htm"><code>mouse-moved</code></a>, <a href="../../../variables/cg/mouse-left-down.htm"><code>mouse-left-down</code></a>,
+<a href="../../../variables/cg/mouse-left-up.htm"><code>mouse-left-up</code></a>, <a href="../../../variables/cg/mouse-double-click.htm"><code>mouse-double-click</code></a>,
+<a href="../../../variables/cg/mouse-middle-down.htm"><code>mouse-middle-down</code></a>, <a href="../../../variables/cg/mouse-middle-up.htm"><code>mouse-middle-up</code></a>,
+<a href="../../../variables/cg/mouse-right-down.htm"><code>mouse-right-down</code></a>, or <a href="../../../variables/cg/mouse-right-up.htm"><code>mouse-right-up</code></a>.
+</p>
+<p id="8">
+Here is a problem on Windows that we apparently cannot avoid: If your
+<a href="../t/tray-item-message.htm"><b>tray-item-message</b></a> method calls
+<a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a> when handling a
+down click such as <a href="../m/mouse-right-down.htm"><b>mouse-right-down</b></a>, and the tray item's associated
+window was the selected window before the click was done, then the
+call to <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a> returns
+immediately without letting the user choose a menu-item. Therefore, if
+the associated window is a visible window (which therefore might be
+selected), you should pop up menus only on up clicks such as <a href="../m/mouse-right-up.htm"><b>mouse-right-up</b></a>.
+</p>
+<p id="9">
+See the description of
+the <a href="../../../classes/cg/tray-item.htm"><code>tray-item</code></a>
+class for an example.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/tray-item-message.htm">9.0 version</a></td></tr></table></body></html>

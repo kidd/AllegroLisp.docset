@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>marker-lines</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/marker-lines.htm">9.0 version</a></td></tr></table><h2 id="2">marker-lines</h2>
+
+<p id="3"><b>Arguments: </b><i>
+chart-axis
+</i></p>
+
+<p id="4">
+Returns the <a href="../m/marker-lines.htm"><b>marker-lines</b></a>
+property of a <a href="../../../classes/cg/chart-axis.htm"><code>chart-axis</code></a>
+object, which is associated with a <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> or <a href="../../../classes/cg/plot-widget.htm"><code>plot-widget</code></a> control. The value may be set at
+creation time by passing the :marker-lines initarg
+to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or any time
+later by calling <a href="../m/marker-lines.htm"><b>(setf marker-lines)</b></a>.
+</p>
+<p id="5">
+Marker lines are straight line segments or thicker bands that are
+drawn perpendicular to a chart axis. Each line or band is drawn
+outward from a specified value (for a line) or range of values (for a
+band) along the axis, to highlight an arbitrary set of values.
+</p>
+<p id="6">
+An example would be a chart of economic statistics, where the
+<a href="../i/item-axis.htm"><b>item-axis</b></a> represents time and
+has bands extending from it to mark where recessions have occurred in
+the past.
+</p>
+<p id="7">
+There are no entries in the chart legend for <a href="../m/marker-lines.htm"><b>marker-lines</b></a>. Their meaning could be noted in
+the subtitle or footnote text of a chart.
+</p>
+<p id="8">
+The value of the property should be a list of lists, where each
+sublist is a property list that describes one line or band to draw
+perpendicular to the axis. Here are the valid keys for each property
+list, and the type of value to specify for each one:
+</p>
+<ul>
+<li id="9">
+<b><code>:value</code></b>: every sublist should have
+a <code>:value</code> entry that specifies the point along the
+axis at which to draw a line or band. The value should be a real
+number (either an integer or not).
+</li>
+<li id="10">
+<b><code>:value-to</code></b>: if there is
+a <code>:value-to</code> entry, then a band will be drawn
+between the <code>:value</code> value to
+the <code>:value-to</code> value. Otherwise a line will be drawn
+at the <code>:value</code> value. The value should be a real
+number (either an integer or not).
+</li>
+<li id="11">
+<b><code>:color</code></b>: this is the color in which to draw
+the line or band. The value should be an RGB object
+(see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>) or a symbol
+whose value is an RGB. When unspecified, the color will default to
+<a href="../../../variables/cg/red.htm"><code>red</code></a> for lines and
+<a href="../../../variables/cg/light-gray.htm"><code>light-gray</code></a> for bands.
+</li>
+<li id="12">
+<b><code>:line-width</code></b>: this is the thickness (measured
+in pixels) with which to draw the line, when
+no <code>:value-to</code> is specified for a band. The value
+should be a positive integer. When unspecified, it defaults to 1.
+</li>
+<li id="13">
+<b><code>:line-dashing</code></b>: this is the dashing style
+with which to draw the line, when no <code>:value-to</code> is
+specified for a band. The value should be one of the keyword symbols
+that are valid values for the <a href="../l/line-dashing.htm"><b>line-dashing</b></a> property of a stream, such as
+<code>:solid</code> or <code>:dash</code>. When
+unspecified, it defaults to <code>:solid</code>.
+</li>
+</ul>
+<p id="14">
+Here is a sample value of the <a href="../m/marker-lines.htm"><b>marker-lines</b></a> property of an axis that would draw
+two lines and two bands:
+</p>
+
+<pre id="15">
+((:value 3.5 :color blue :line-width 5 :line-dashing :dot)
+ (:value 6)
+ (:value 7 :value-to 8.5)
+ (:value 10.4 :value-to 15 :color cyan))
+</pre>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/marker-lines.htm">9.0 version</a></td></tr></table></body></html>

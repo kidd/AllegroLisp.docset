@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*read-init-files*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_read-init-files_s.htm">9.0 version</a></td></tr></table><h2 id="2">*read-init-files*</h2>
+
+<p id="3">
+This variable is used when Lisp is starting up to determine whether
+the initialization files ~/<i>.clinit.cl</i>, ~/<i>clinit.cl</i>, [current-directory]/<i>.clinit.cl</i>,
+[current-directory]/<i>clinit.cl</i>, and <i>sys:siteinit.cl</i> should
+be read. The command-line arguments -q and -qq can suppress reading
+of these files when this variable is true as
+described in <a href="../../startup.htm#command-line-args-1">Command line arguments</a> in
+<a href="../../startup.htm">startup.htm</a>.
+</p>
+
+<p id="4">
+The following table shows the possible values of this variable and
+their effects:
+</p>
+
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="456">
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><p id="5" ALIGN="CENTER">Value</p></td>
+    <td WIDTH="79%" VALIGN="TOP"><p id="6" ALIGN="CENTER">Effect</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="79%" VALIGN="TOP">Read all initialization files.</td>
+  </tr>
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="79%" VALIGN="TOP">Do not read any initialization file.</td>
+  </tr>
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><code>:no-home</code></td>
+    <td WIDTH="79%" VALIGN="TOP">Read <em>[current-directory]</em>/[.]<i>clinit.cl</i>
+    and <i>sys:siteinit.cl</i> only.</td>
+  </tr>
+</table>
+</div>
+
+<p id="7">
+Because command-line arguments are processed before initialization
+files are read, and -e arguments are processed before -q or -qq, this
+variable can be reset with a -e argument (see the discussion of
+command-line arguments in <a href="../../startup.htm#command-line-args-1">Command line arguments</a> in
+<a href="../../startup.htm">startup.htm</a>).
+</p>
+
+<p id="8">
+See <a href="../../startup.htm#init-files-1">Initialization and
+the sys:siteinit.cl and [.]clinit.cl files</a> in
+<a href="../../startup.htm">startup.htm</a> for more information on reading
+initialization files. That section defines the current directory, from
+where one of the init files might be read. Also defined is the home
+directory on Windows. See also <a href="s_init-file-names_s.htm"><code>*init-file-names*</code></a> whose value is a list of
+strings naming the files to be looked for in the home and current
+directories.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_read-init-files_s.htm">9.0 version</a></td></tr></table></body></html>

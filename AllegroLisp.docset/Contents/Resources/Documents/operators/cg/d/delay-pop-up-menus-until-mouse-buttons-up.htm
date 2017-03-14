@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>delay-pop-up-menus-until-mouse-buttons-up</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/delay-pop-up-menus-until-mouse-buttons-up.htm">9.0 version</a></td></tr></table><h2 id="2">delay-pop-up-menus-until-mouse-buttons-up</h2>
+
+<p id="3"><b>Arguments: </b><i>
+cg-configuration
+</i></p>
+
+<p id="4">
+When the value of this configuration option is true, then if
+pop-up-menu is called while any mouse button is down, the menu will
+not appear until all mouse buttons have been released.  The pop-up
+menu code does this by simply calling <a href="../w/wait-for-mouse-buttons-up.htm"><b>wait-for-mouse-buttons-up</b></a> before showing the
+menu.  When <code>nil</code>, there is no delay.
+</p>
+<p id="5">
+The default value is <code>nil</code> on Windows and true
+on GTK (Linux and Mac).  On GTK, we have not found a way to prevent a
+mouse button release event from selecting an item on a pop-up menu
+that was invoked while a mouse button is down.  That behavior can lead
+to the user not seeing the menu altogether, or even selecting an
+arbitrary item if the menu is placed under the mouse cursor but does
+not appear until the mouse button has already been released.  By
+defaulting this option to true on GTK, the menu will not appear while
+any mouse buttons are down, and therefore a mouse button up event will
+never select an item.  You could set this option
+to <code>nil</code> if you would rather be able to select
+an item more quickly on mouse button up.
+</p>
+<p id="6">
+This option does not appear on the IDE's <a href="../../../ide-menus-and-dialogs/options-dialog.htm">Options dialog</a>, but could be set
+to <code>nil</code> programmatically with the following
+form:
+</p>
+
+<pre id="7">
+(setf (delay-pop-up-menus-until-mouse-buttons-up
+        (configuration *system*))
+      nil)
+</pre>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/delay-pop-up-menus-until-mouse-buttons-up.htm">9.0 version</a></td></tr></table></body></html>

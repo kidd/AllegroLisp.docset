@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>encode-extended-time</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table><h2 id="2">encode-extended-time</h2>
+
+<p id="3"><b>Arguments: </b><i>
+second minute hour date month year </i> &amp;optional <i>time-zone</i><i>
+</i></p>
+<p id="4">
+This extension of <a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a> accepts years
+prior to 1900 and may (therefore) return negative numbers. When the
+year is 1900 or later, the value returned is the same as that returned
+by <a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a>.
+</p>
+<h3 id="5">
+Handling of two digit years
+</h3>
+<p id="6">
+<a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a>
+treats two-digit years (like 04 or 99 or 55 -- one digit years are
+considered two digit years with the first digit 0) as the year ending
+in those digits nearest the current year (see <a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a> for the exact
+formula). In 2015, year 4 means 2004, year 99 means 1999, and year 55
+means 2055. In 2050, 4 still means 2004, 55 still means 2055,
+but 99 means 2099.
+</p>
+<p id="7">
+<a href="encode-extended-time.htm"><b>encode-extended-time</b></a>
+accepts any year, including one and two digit years from 0 to 99 (and
+from -99 to -1 but those are not legal year values for
+<a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a>). Therefore, one or two
+digit years are taken as absolute years, not relative to the current
+year.
+</p>
+<h3 id="8">
+Year 0 and calendar type
+</h3>
+<p id="9">
+The standard calendar has positive years (referred to as Common Era or
+CE years) and negative years (refered to as Before Common Era or BCE
+years) but no year 0. Extended time allows for a year 0, and so you
+must subtract 1 from any non-positive year to get the correct BCE
+value.  It also assumes that the Gregorian calandar extends back
+forever.  (The Gregorian calendar is the modern calendar used more or
+less throughout the world, though many places also use other
+calendars, particularly when calculating religious dates.) In fact, it
+was adopted in 1582 CE and so dates prior to that year will not
+necessarily correspond to the dates found in documents and
+inscriptions prior to 1582 CE.
+</p>
+<pre id="10">
+;; For values in the universal time range (after midnight, January 1, 
+;; 1900 GMT) ENCODE-UNIVERSAL-TIME and ENCODE-EXTENDED-TIME return 
+;; the same values so long as a 4 (or more) digit year is specified:
+cg-user(35): (encode-universal-time 0 0 10 15 4 2015 8)
+3638109600
+cg-user(36): (encode-extended-time 0 0 10 15 4 2015 8)
+3638109600
+
+;; For values outside the universal time range, ENCODE-UNIVERSAL-TIME 
+;; errors and ENCODE-EXTENDED-TIME returns a negative value:
+cg-user(37): (encode-universal-time 0 0 10 15 4 1850 8)
+Error: Illegal year: 1850.
+[condition type: simple-error]
+cg-user(38): (encode-extended-time 0 0 10 15 4 1850 8)
+-1568786400
+
+;; For two digit years, ENCODE-UNIVERSAL-TIME returns the value for
+;; a year within 50 years of the current year, while
+;; ENCODE-EXTENDED-TIME assumes the actual two-digit year and so
+;; returns a negative value:
+cg-user(39): (encode-universal-time 0 0 10 15 4 15 8)
+3638109600
+cg-user(40): (encode-extended-time 0 0 10 15 4 15 8)
+-59475794400
+
+;; ENCODE-EXTENDED-TIME accepts negative year. This is for 10:00 AM
+;; March 15, 44 BCE. The ides of March. Caesar is being or is about
+;; to be assassinated in Rome. (But see note in example on the
+;; <a href="decode-extended-time.htm"><b>DECODE-EXTENDED-time</b></a> page.)
+cg-user(41): (encode-extended-time 0 0 10 15 3 -43 -1)
+-61308802800
+cg-user(42): 
+</pre>
+<p id="11">
+See also <a href="decode-extended-time.htm"><b>decode-extended-time</b></a>, <a href="string-to-universal-time.htm"><b>string-to-universal-time</b></a>, and
+<a href="universal-time-to-string.htm"><b>universal-time-to-string</b></a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table></body></html>

@@ -1,0 +1,891 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>About drawing graphics in Common Graphics</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-drawing.htm">9.0 version</a></td></tr></table><h1 id="2">About drawing graphics in Common Graphics</h1><p id="3">This document contains the following sections:</p><a href="#draw-on-1">1.0 What to draw on</a><br>&nbsp;&nbsp;&nbsp;<a href="#on-windows-2">1.1 Drawing on windows in general</a><br>&nbsp;&nbsp;&nbsp;<a href="#on-particular-windows-2">1.2  Considerations for drawing on particular kinds of windows</a><br>&nbsp;&nbsp;&nbsp;<a href="#on-the-screen-2">1.3 Drawing on the screen</a><br>&nbsp;&nbsp;&nbsp;<a href="#on-bitmap-streams-2">1.4 Drawing on bitmap-streams</a><br>&nbsp;&nbsp;&nbsp;<a href="#on-printers-2">1.5 Drawing on printers</a><br><a href="#drawing-coordinates-1">2.0 Coordinates</a><br><a href="#drawing-functions-1">3.0 Drawing functions</a><br>&nbsp;&nbsp;&nbsp;<a href="#drawing-lines-etc-2">3.1 Drawing lines, filling areas, and erasing</a><br>&nbsp;&nbsp;&nbsp;<a href="#drawing-style-2">3.2 The current drawing style</a><br>&nbsp;&nbsp;&nbsp;<a href="#text-and-fonts-2">3.3 Drawing text and fonts</a><br>&nbsp;&nbsp;&nbsp;<a href="#pixmaps-and-icons-2">3.4 Drawing pixmaps and icons</a><br><a href="#animation-1">4.0 Animation</a><br><p id="4">
+This document is an overview of Common Graphics functionality for
+drawing arbitrary graphical output in an application, including lines
+and curves, filled areas, pixmaps (bitmaps), and text. (Despite the
+name, "Common Graphics" also includes windowing and event-handling
+functionality and other facilities needed for a complete user
+interface.) This page points to a variety of individual graphical
+functions that you can link to for further information.
+</p><hr><hr><h2 id="5"><a name="draw-on-1">1.0 What to draw on</a></h2>
+
+<p id="6">
+An application can draw in any window, as well as on certain special
+objects such as the screen itself, printers, and memory bitmaps that
+may be used to temporarily hold output to be copied to a visible
+window later. A given drawing function such as <a href="../operators/cg/d/draw-line.htm"><b>draw-line</b></a> will work essentially the
+same no matter which type of object it is drawn on.
+</p>
+
+<hr><h2 id="7"><a name="on-windows-2">1.1 Drawing on windows in general</a></h2>
+
+<p id="8">
+When a window is the drawing destination, a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method generally
+should be used to encapsulate the drawing code.  And certain types of
+windows have other particular constraints, as explained in this and
+the following sections.
+</p>
+<p id="9">
+The following techniques can be used on (almost) all windows.
+</p>
+
+<h3 id="10">redisplay-window</h3>
+
+<p id="11">
+After calling <a href="../operators/cg/m/make-window.htm"><b>make-window</b></a> to create a window in
+which to draw, an application could immediately start calling drawing
+functions such as <a href="../operators/cg/d/draw-line.htm"><b>draw-line</b></a> on the window. But
+instead, an application normally should write a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method for the
+window, and place all of the code that draws in the window into the
+<a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a>
+method.
+</p>
+<p id="12">
+The reason for always using a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method is that
+whenever part of the interior of a window becomes uncovered, its
+<a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a>
+method will be called automatically to redraw the window's contents
+that was erased from the screen when the window became covered. If
+drawing is done outside a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method, then in
+the general case an application will not know when the output that was
+drawn has been lost.
+</p>
+<p id="13">
+To define a custom <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method, you should
+(as usual) first define your own window subclass and add the method to
+that, to avoid adding methods to built-in classes. The following
+example shows the basic technique for defining a custom window class
+and what gets drawn in the windows that are instantiated from it. A
+<a href="../classes/cg/frame-window.htm"><code>frame-window</code></a>
+is the simplest type of window to draw on, and is subclassed here.
+</p>
+
+<pre id="14">
+(defclass my-window (frame-window)())
+
+(defmethod redisplay-window ((window my-window) &optional box)
+  (declare (ignore box))
+  (call-next-method)
+  (draw-line window (make-position 0 0)(make-position 1000 1000)))
+
+(make-window :one :class 'my-window)
+</pre>
+
+<p id="15">
+When the call to <a href="../operators/cg/m/make-window.htm"><b>make-window</b></a> is done, the window is
+created and is "uncovered" for the first time, and so Common Graphics
+calls the <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method, which
+simply draws a line in the window.  This method will be called in the
+future whenever the window's interior is partly uncovered.
+</p>
+<p id="16">
+The method above calls <code>(call-next-method)</code>. This
+calls the default <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method, defined on
+<a href="../classes/cg/basic-pane.htm"><code>basic-pane</code></a>,
+which simply erases the entire background of the window
+interior. Without this call, whatever had been on the screen before
+the window was uncovered would remain in the window interior, with our
+line being drawn directly on top of this screen garbage. So a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method
+is responsible for drawing the entire window contents.
+</p>
+<p id="17">
+To achieve the same effect as calling
+<code>(call-next-method)</code>, a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method could
+instead pass the box argument to <a href="../operators/cg/e/erase-contents-box.htm"><b>erase-contents-box</b></a> to draw the
+uncovered part of the window interior in the window's current <a href="../operators/cg/b/background-color.htm"><b>background-color</b></a>.
+</p>
+<p id="18">
+The optional <i>box</i> argument to <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> specifies a
+rectangular portion of the window interior that includes all of the
+parts that were uncovered. This argument is ignored above, but may be
+used for efficiency. See <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> for details.
+</p>
+
+<h3 id="19">invalidate</h3>
+
+<p id="20">
+An application should never call <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> itself, allowing
+Common Graphics to call it when needed instead. If you know that a
+window needs to be redrawn for some reason that Common Graphics can't
+know about (such as if its contents should change), then you should
+call the function <a href="../operators/cg/i/invalidate.htm"><b>invalidate</b></a> on the window. This
+tells Common Graphics that the window interior (or some part of it) is
+out of date, and Common Graphics will call <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> itself.
+</p>
+<p id="21">
+The reason for this design is that when an application and/or Common
+Graphics notices that a window needs to be redrawn, this may be
+noticed multiple times or in multiple places in the code. If <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> were
+called in each case, the window would be redrawn multiple times when
+it only needs to be redrawn once. This not only slows down the
+application, but can cause annoying flashing effects. The general
+solution to this problem in Common Graphics (in the operating system
+design actually) is to not call <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> immediately when
+<a href="../operators/cg/i/invalidate.htm"><b>invalidate</b></a> is
+called, but instead to wait until the window's thread is done
+responding to events, and then to call <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> the minimum
+necessary number of times to account for all of the queued
+invalidations.
+</p>
+
+<h3 id="22">update-window</h3>
+
+<p id="23">
+When using the above techniques involving <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> and invalidate, it
+may happen that a window does not redraw itself as soon as desired,
+because the gesture that uncovered the window also executed code that
+consumes considerable time, and <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> is called only
+afterwards. If this is a problem, an application can call <a href="../operators/cg/u/update-window.htm"><b>update-window</b></a> on the
+window at the time that it should be redrawn. This causes <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> to be
+called immediately rather than after the currently running code has
+completed.
+</p>
+
+
+
+<hr><h2 id="24"><a name="on-particular-windows-2">1.2  Considerations for drawing on particular kinds of windows</a></h2>
+
+<h3 id="25">frame-with-single-child windows</h3>
+
+<p id="26">
+If you were to substitute <a href="../classes/cg/non-refreshing-window.htm"><code>non-refreshing-window</code></a> for <a href="../classes/cg/frame-window.htm"><code>frame-window</code></a> in the
+initial example in <a href="#on-windows-2">Section 1.1 Drawing on windows in general</a>, you
+would not see a line drawn in the window. The reason is that this
+window class is a subclass of <a href="../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a>, and so
+creating an instance with <a href="../operators/cg/m/make-window.htm"><b>make-window</b></a> automatically creates a
+second window in the interior of the new window to serve as a main
+pane. Anything drawn on the <a href="../classes/cg/non-refreshing-window.htm"><code>non-refreshing-window</code></a> returned by
+<a href="../operators/cg/m/make-window.htm"><b>make-window</b></a> will
+not be seen because it is covered entirely by the pane. Instead you
+must call <a href="../operators/cg/f/frame-child.htm"><b>frame-child</b></a> to find the pane, and
+draw on the pane.
+</p>
+<p id="27">
+The reason for this design is not that you cannot draw on a frame
+window, since you can draw on any window. Instantiating a <a href="../classes/cg/non-refreshing-window.htm"><code>non-refreshing-window</code></a>
+is mainly useful if you want to add a toolbar or status-bar to the
+window. If you add a toolbar to a <a href="../classes/cg/frame-window.htm"><code>frame-window</code></a> and then draw on the
+<a href="../classes/cg/frame-window.htm"><code>frame-window</code></a>,
+you would need to know how tall the toolbar is in order to draw below
+it. And scrolling the window (if it has scrollbars) would scroll the
+toolbar right off the window. A <a href="../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a> window, on
+the other hand, would place its toolbar alongside the <a href="../operators/cg/f/frame-child.htm"><b>frame-child</b></a> pane,
+allowing you to draw on the pane right at the top as usual, and the
+pane window will have the scrollbars rather than the frame window so
+that scrolling leaves the toolbar in place.
+</p>
+<p id="28">
+To update the first example to work with a <a href="../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a> class, you
+would need to subclass the window class of the pane, since that is
+where you need to define a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method. This means
+that you also need to add a <a href="../operators/cg/d/default-pane-class.htm"><b>default-pane-class</b></a> method to tell
+the frame window what class to use for its pane window, and so you
+must also subclass the frame window class in order to add this method.
+</p>
+<p id="29">
+Here's the example as updated to work with a custom <a href="../classes/cg/non-refreshing-window.htm"><code>non-refreshing-window</code></a>
+subclass.
+</p>
+
+<pre id="30">
+(defclass my-frame (non-refreshing-window)())
+
+(defclass my-pane (non-refreshing-pane)())
+
+(defmethod default-pane-class ((window my-frame))
+  'my-pane)
+
+(defmethod redisplay-window ((window my-pane) &optional box)
+  (declare (ignore box))
+  (call-next-method)
+  (draw-line window (make-position 0 0)(make-position 1000 1000)))
+
+(let* ((window (make-window :one :class 'my-frame :scrollbars t)))
+  (add-toolbar window)
+  (add-common-status-bar window)
+  window)
+</pre>
+
+<p id="31">
+The functions <a href="../operators/cg/a/add-toolbar.htm"><b>add-toolbar</b></a> and <a href="../operators/cg/a/add-common-status-bar.htm"><b>add-common-status-bar</b></a> are called
+here to illustrate how the drawing still begins at the upper-left
+corner of the drawing area (the pane window) rather than being
+obscured by the (empty) toolbar.
+</p>
+<p id="32">
+Note also how scrolling the window downward draws more of the line
+that had extended off the bottom of the window. Scrolling is another
+case of part of the window being uncovered, and the <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method is called
+automatically to redraw the window at its new scroll position. Common
+Graphics will automatically shift the part of the drawing that was
+already visible and which will still be visible after the scroll, and
+then call <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> with a box
+argument that covers only the newly-scrolled-on part of the drawing.
+The scrolling of the line will look smooth even though we draw the
+whole line, because the <a href="../operators/cg/c/clipping-box.htm"><b>clipping-box</b></a> of the window is set
+to the box argument during the call to <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a>, so that the
+shifted part of the line is not erased and then redrawn.
+</p>
+<p id="33">
+An application does not need to concern itself with the current
+<a href="../operators/cg/s/scroll-position.htm"><b>scroll-position</b></a>
+of a window. Instead the app draws on the logical canvas that is
+scrolled across the window, and Common Graphics maps what is drawn to
+the visible window based on its current <a href="../operators/cg/s/scroll-position.htm"><b>scroll-position</b></a>.
+</p>
+<p id="34">
+The <a href="../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog has a less trivial
+example of drawing on a <a href="../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a> window,
+called "Custom Windows: subclassing and event-handling".
+</p>
+
+<h3 id="35">Bitmap-panes and bitmap-windows</h3>
+
+<p id="36">
+A <a href="../classes/cg/bitmap-window.htm"><code>bitmap-window</code></a> is another <a href="../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a> window
+class, and instantiates a <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> as the <a href="../operators/cg/f/frame-child.htm"><b>frame-child</b></a>. A <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> is a
+special window that uses a backing-store memory bitmap to remember
+what was drawn in it when it becomes covered.  It has a built-in
+<a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a>
+method that simply copies the memory bitmap to the visible window when
+it is uncovered.  Therefore, when using a <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> you should not add a
+<a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a>
+method. But you do need to draw directly on the window to produce the
+drawing that the window will remember from then on. So a <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> is an
+exception to the rule of calling invalidate rather than
+drawing directly on the window.
+</p>
+<p id="37">
+A <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>
+is useful when redrawing the window contents from scratch in a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method
+each time the window is uncovered is not fast enough, since doing a
+single copy from the backing-store pixel array is usually faster than
+this. The drawback is that a lot of memory is used for the memory
+bitmap, and so you generally don't want to use <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>s except when needed.
+</p>
+<p id="38">
+If the contents of a <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> need to change, you can
+call <a href="../operators/cg/c/clear-page.htm"><b>clear-page</b></a>
+to draw the window's background in the window's current <a href="../operators/cg/b/background-color.htm"><b>background-color</b></a>, and
+then begin a new drawing. <a href="../operators/cg/c/clear-page.htm"><b>clear-page</b></a> calls <a href="../operators/cg/e/erase-contents-box.htm"><b>erase-contents-box</b></a> on the <a href="../operators/cg/p/page-box.htm"><b>page-box</b></a> of the window to
+erase the entire scrollable canvas (or page) of the window. Erasing
+only the visible-box of a <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> would not be sufficient
+if the window is scrollable, because a <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> also
+remembers the contents that are currently scrolled out of view.
+</p>
+
+<h3 id="39">The drawable control</h3>
+
+<p id="40">
+The <a href="../classes/cg/drawable.htm"><code>drawable</code></a>
+control is a widget that is provided simply to display an arbitrary
+drawing on a widget that exists among other widgets. You could instead
+add a regular child window to a dialog and draw on that, but the
+<a href="../classes/cg/drawable.htm"><code>drawable</code></a>
+control may be useful when you want to treat the drawing window as a
+widget, such as by dragging it around on a form being laid out
+interactively, or allowing the user to tab to it.
+</p>
+<p id="41">
+You draw on a <a href="../classes/cg/drawable.htm"><code>drawable</code></a> control just as you would
+on a regular window, except that you place the drawing code into an
+<a href="../operators/cg/o/on-redisplay.htm"><b>on-redisplay</b></a>
+function rather than into a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method. A <a href="../classes/cg/drawable.htm"><code>drawable</code></a> control may
+alternately have a backing store memory bitmap similar to that of a
+<a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>,
+if you turn on its use-bitmap-stream property. The <a href="../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog has
+a complete example of using a <a href="../classes/cg/drawable.htm"><code>drawable</code></a> control.
+</p>
+
+<h3 id="42">Other widget windows</h3>
+
+<p id="43">
+Normally an application would not draw on the window of an arbitrary
+widget (an instance of the class <a href="../classes/cg/dialog-item.htm"><code>dialog-item</code></a>), because each widget
+is designed to be drawn in a standard way that it knows about and
+handles itself. But since it is possible to draw on any window, you
+can draw on a widget if you really want to. The one constraint (if the
+window is of the class <a href="../classes/cg/widget-window.htm"><code>widget-window</code></a> rather than <a href="../classes/cg/lisp-widget-window.htm"><code>lisp-widget-window</code></a>) is
+that the calls to drawing functions must be wrapped in a call to
+<a href="../operators/cg/w/with-device-context.htm"><b>with-device-context</b></a>, since Common
+Graphics does not give a permanent device context to widgets supplied
+by the operating system. Such custom drawing would probably be done in
+a <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> :after method to
+add some sort of annotation to what the main <a href="../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> for the control
+normally draws.
+</p>
+
+<h3 id="44">text-edit-pane</h3>
+
+<p id="45">
+Though <a href="../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> appears in the
+Common Graphics class hierarchy as a regular window, it is internally
+an operating system control, and therefore knows how to draw itself
+and normally is not drawn on by an application. It still can be drawn
+on as with any OS control, though, and in fact the IDE editor draws
+parenthesis matching marks in text-edit-panes.
+</p>
+
+
+
+
+
+<hr><h2 id="46"><a name="on-the-screen-2">1.3 Drawing on the screen</a></h2>
+
+<p id="47">
+The screen itself may be drawn on, though this is generally dangerous
+because it draws over whatever windows happen to lie at the specified
+screen positions (even if they are in other applications), and these
+windows will not know that they have been obscured and so they will
+not refresh themselves. Generally, an application would need to be
+careful that it draws only over its own windows while they are in
+front and that it refreshes these windows at some point by calling
+invalidate on each of them. (Drawing on the screen will even draw over
+window frames, which is not otherwise possible in Common
+Graphics. Such drawing could be removed later by passing the :frame
+argument to <a href="../operators/cg/i/invalidate.htm"><b>invalidate</b></a>.)  The screen is
+returned by <code>(screen *system*)</code> (see <a href="../operators/cg/s/screen.htm"><b>screen</b></a> and <a href="../variables/cg/s_system_s.htm"><code>*system*</code></a>).
+</p>
+<p id="48">
+One way to draw on the screen that is relatively safe is to use the
+<a href="../variables/cg/po-xor.htm"><code>po-xor</code></a> (or
+<a href="../variables/cg/po-invert.htm"><code>po-invert</code></a>)
+paint-operation. If something is drawn twice this way, the second time
+will erase what was drawn the first time, but not if someone (such as
+another application) draws something in the same place between the two
+calls. So caution is still warranted. The Common Graphics functions
+such as <a href="../operators/cg/g/get-line.htm"><b>get-line</b></a>
+and <a href="../operators/cg/g/get-screen-box.htm"><b>get-screen-box</b></a> use this technique
+to temporarily draw a rubberband line or box anywhere on the
+screen. The "Grabbing pixmaps from the screen" example in the <a href="../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog
+calls get-screen-box to allow you to capture a pixmap from anywhere on
+the screen.
+</p>
+
+
+
+
+
+<hr><h2 id="49"><a name="on-bitmap-streams-2">1.4 Drawing on bitmap-streams</a></h2>
+
+
+<p id="50">
+A <a href="../classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a> is a memory bitmap
+that is never visible but on which you can draw just as you would on a
+window. (A pixmap, on the other hand cannot be drawn on.)  <a href="../classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a>s may be
+useful for storing drawings that are to be very quickly copied at
+various times to visible windows by calling <a href="../operators/cg/c/copy-stream-area.htm"><b>copy-stream-area</b></a>.  A <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> uses an
+internal memory bitmap that is similar to a bitmap-stream, and the
+<a href="../classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a>
+class is provided for similar uses that don't quite fit the typical
+bitmap-pane model. Call <a href="../operators/cg/o/open-stream.htm"><b>open-stream</b></a> rather than make-window
+to create a <a href="../classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a>. The <a href="../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog has
+a complete example called "Bitmap-streams: custom backing store".
+</p>
+
+
+
+
+
+<hr><h2 id="51"><a name="on-printers-2">1.5 Drawing on printers</a></h2>
+
+
+<p id="52">
+You can draw on a printer stream just as you would draw on a window.
+There are a few special considerations: You must call <a href="../operators/cg/n/new-page.htm"><b>new-page</b></a> to advance to a
+new page; the paper is not ejected until you close the stream; the
+pixel resolution may be very different than the screen and vary widely
+between printers (see <a href="../operators/cg/s/stream-units-per-inch.htm"><b>stream-units-per-inch</b></a> and <a href="../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a>), and
+getting the right margins is a bit tricky due to the coordinates being
+relative to a "hardware margin" (see <a href="../variables/cg/s_default-printer-left-margin_s.htm"><code>*default-printer-left-margin*</code></a>).
+And you call <a href="../operators/cg/o/open-stream.htm"><b>open-stream</b></a> rather than <a href="../operators/cg/m/make-window.htm"><b>make-window</b></a> to open a
+printer stream.  There are a couple of printer examples in the <a href="../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog
+that address these issues. See also <a href="../operators/cg/w/with-output-to-printer.htm"><b>with-output-to-printer</b></a>.
+</p>
+
+
+
+
+<hr><hr><h2 id="53"><a name="drawing-coordinates-1">2.0 Coordinates</a></h2>
+
+<p id="54">
+Drawing functions accept arguments that use a coordinate system called
+"stream coordinates".  By default, the position 0,0 in stream
+coordinates is at the top left of the entire "page" (or canvas) that
+is scrollable in a window (when the destination is a window), and the
+unit of distance is pixels.  So drawing a line from 0,3 to 100,3 will
+draw a horizontal line that is 100 pixels long and which has one end
+near the top-left corner of the window interior whenever the window is
+scrolled to its top-left position. Common Graphics handles the
+scrolling for you, so that you can effectively draw directly on the
+scrollable canvas without worrying about the current <a href="../operators/cg/s/scroll-position.htm"><b>scroll-position</b></a>.
+</p>
+<p id="55">
+The 0,0 origin may be moved by calling the setf of <a href="../operators/cg/s/stream-origin.htm"><b>stream-origin</b></a>, but this is not
+typically useful.  The unit of distance may be changed by calling the
+setf of <a href="../operators/cg/s/stream-units-per-inch.htm"><b>stream-units-per-inch</b></a> if the stream
+is a <a href="../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a>; this is mainly
+useful to make the resolution of a printer stream match that of the
+screen so that the same coordinates may be used to draw on either a
+window or a printer. For more information about coordinate systems,
+see <a href="cg-coordinates.htm">cg-coordinates.htm</a>.
+</p>
+<p id="56">
+Coordinates are usually passed to drawing functions by first grouping
+them into position and box objects. These are created by calling
+<a href="../operators/cg/m/make-position.htm"><b>make-position</b></a> and
+<a href="../operators/cg/m/make-box.htm"><b>make-box</b></a>, or
+allocated temporarily by using <a href="../operators/cg/w/with-positions.htm"><b>with-positions</b></a>, <a href="../operators/cg/w/with-boxes.htm"><b>with-boxes</b></a>, and <a href="../operators/cg/w/with-positions-and-boxes.htm"><b>with-positions-and-boxes</b></a>. (The
+"with-" macros may be used to reduce the consing of many temporary
+position and box objects). There are also many functions for combining
+position and box objects in various ways, such as <a href="../operators/cg/p/position+.htm"><b>position+</b></a>, <a href="../operators/cg/b/box-move.htm"><b>box-move</b></a>, and <a href="../operators/cg/i/inside-box-p.htm"><b>inside-box-p</b></a>.
+</p>
+<p id="57">
+A window's coordinate system applies only to its interior; there is no
+way to draw on the frame of a window except by drawing directly on the
+screen (see above).
+</p>
+
+
+<hr><hr><h2 id="58"><a name="drawing-functions-1">3.0 Drawing functions</a></h2>
+
+Common Graphics allows you to draw lines, polygons, various curved
+shapes, pixmaps (bitmaps), and text, and to fill various shapes.
+There are many functions that may be found in the Help | Tree of
+Knowledge dialog under Common Graphics --&gt; Graphics; this section
+mentions some of the functions as an overview.
+
+<hr><h2 id="59"><a name="drawing-lines-etc-2">3.1 Drawing lines, filling areas, and erasing</a></h2>
+
+<p id="60">
+To draw straight or curved lines, call such functions as <a href="../operators/cg/d/draw-line.htm"><b>draw-line</b></a>, 
+<a href="../operators/cg/d/draw-to-x-y.htm"><b>draw-to-x-y</b></a>, 
+<a href="../operators/cg/d/draw-polygon.htm"><b>draw-polygon</b></a>, <a href="../operators/cg/d/draw-circle.htm"><b>draw-circle</b></a>, <a href="../operators/cg/d/draw-ellipse-arc.htm"><b>draw-ellipse-arc</b></a>, and
+<a href="../operators/cg/d/draw-bezier-curve.htm"><b>draw-bezier-curve</b></a> (the
+latter for Bezier curves). To fill whole areas denoted by such lines
+rather than drawing the line only, call functions such as <a href="../operators/cg/f/fill-box.htm"><b>fill-box</b></a>, <a href="../operators/cg/f/fill-polygon.htm"><b>fill-polygon</b></a>, and <a href="../operators/cg/f/fill-ellipse-sector.htm"><b>fill-ellipse-sector</b></a>.  A
+more versatile type of fill is done by the function <a href="../operators/cg/f/flood-fill.htm"><b>flood-fill</b></a>.
+</p>
+<p id="61">
+Lines and areas may be "erased" by calling such functions as <a href="../operators/cg/e/erase-line.htm"><b>erase-line</b></a>, <a href="../operators/cg/e/erase-contents-polygon.htm"><b>erase-contents-polygon</b></a>,
+and <a href="../operators/cg/e/erase-ellipse-sector.htm"><b>erase-ellipse-sector</b></a>. But keep in
+mind that these functions are actually just drawing or filling the
+line or area using the current <a href="../operators/cg/b/background-color.htm"><b>background-color</b></a> of the window
+rather than the current <a href="../operators/cg/f/foreground-color.htm"><b>foreground-color</b></a> as the drawing and
+filling functions do. Common Graphics does not remember "objects" that
+were drawn for each of the drawing and filling functions in order to
+selectively remove them from a drawing. So it usually makes sense to
+use these functions only if no other part of the drawing overlaps what
+is being "erased". Erasing is more commonly done to whole rectangular
+areas by calling such functions as <a href="../operators/cg/c/clear-page.htm"><b>clear-page</b></a> and <a href="../operators/cg/e/erase-contents-box.htm"><b>erase-contents-box</b></a>.
+</p>
+
+
+
+
+
+<hr><h2 id="62"><a name="drawing-style-2">3.2 The current drawing style</a></h2>
+
+<p id="63">
+A function such as <a href="../operators/cg/d/draw-line.htm"><b>draw-line</b></a> takes arguments only for
+the stream to draw on and the endpoints to draw between. To control
+other aspects of the line such as its width and color, an application
+calls other functions and macros beforehand to establish the current
+drawing style context that is used by all of the actual drawing
+functions.
+</p>
+<p id="64">
+In most cases there is a function for changing some aspect of the
+current drawing style permanently (or until it is changed again), and
+an associated macro for changing it only temporarily, guaranteeing
+that the style will be returned to whatever it was previously when the
+body of the macro call is exited. For line width, for example, the
+function <a href="../operators/cg/l/line-width.htm"><b>(setf line-width)</b></a> changes the current line
+width indefinitely, while the macro <a href="../operators/cg/w/with-line-width.htm"><b>with-line-width</b></a> changes it only
+during the body of the macro call. The function <a href="../operators/cg/l/line-width.htm"><b>line-width</b></a> returns the line width
+currently in effect.
+</p>
+<p id="65">
+Other functions and macros for establishing the current drawing style
+include:
+</p>
+<ul>
+<li id="66">
+<a href="../operators/cg/b/background-color.htm"><b>background-color</b></a>
+(and <a href="../operators/cg/w/with-background-color.htm"><b>with-background-color</b></a>)
+</li>
+<li id="67">
+<a href="../operators/cg/c/clipping-box.htm"><b>clipping-box</b></a> (and
+<a href="../operators/cg/w/with-clipping-box.htm"><b>with-clipping-box</b></a>)
+</li>
+<li id="68">
+<a href="../operators/cg/f/font.htm"><b>font</b></a> (and <a href="../operators/cg/w/with-font.htm"><b>with-font</b></a>)
+</li>
+<li id="69">
+<a href="../operators/cg/f/foreground-color.htm"><b>foreground-color</b></a>
+(and <a href="../operators/cg/w/with-foreground-color.htm"><b>with-foreground-color</b></a>)
+</li>
+<li id="70">
+<a href="../operators/cg/l/line-dashing.htm"><b>line-dashing</b></a> (and
+<a href="../operators/cg/w/with-line-dashing.htm"><b>with-line-dashing</b></a>)
+</li>
+<li id="71">
+<a href="../operators/cg/p/paint-operation.htm"><b>paint-operation</b></a>
+(and <a href="../operators/cg/w/with-paint-operation.htm"><b>with-paint-operation</b></a>)
+</li>
+</ul>
+
+<p id="72">
+Several style parameters may be combined into a single "graphic
+context" object (see <a href="../operators/cg/c/copy-graphics-context.htm"><b>copy-graphics-context</b></a>), though the
+functions for individual parameters are probably handier in most
+cases.
+</p>
+
+<p id="73">
+On the Windows platform, an enhanced drawing style can be achieved by
+binding the variables <a href="../variables/cg/s_antialiasing_s.htm"><code>*antialiasing*</code></a>, <a href="../variables/cg/s_color-gradient-filling_s.htm"><code>*color-gradient-filling*</code></a>,
+<a href="../variables/cg/s_color-gradient-intensity_s.htm"><code>*color-gradient-intensity*</code></a>,
+<a href="../variables/cg/s_color-gradient-direction_s.htm"><code>*color-gradient-direction*</code></a>, 
+<a href="../variables/cg/s_color-gradient-blend_s.htm"><code>*color-gradient-blend*</code></a>,
+and <a href="../variables/cg/s_alpha-blending_s.htm"><code>*alpha-blending*</code></a>.
+</p>
+
+<p id="74">
+Each drawing style parameter affects all of the drawing functions
+where it makes sense. The current <a href="../operators/cg/f/foreground-color.htm"><b>foreground-color</b></a> of a window, for
+example, is used for drawing lines and filling shapes as well as for
+drawing text (covered below), but not for drawing pixmaps, which
+define their own colors. The <a href="../operators/cg/f/foreground-color.htm"><b>foreground-color</b></a> of a window is
+usually an RGB color object, created with <a href="../operators/cg/m/make-rgb.htm"><b>make-rgb</b></a>, but may also be nil to
+mean use a default color. It may also be an integer to index into a
+palette; palettes are probably no longer necessary now that everyone
+seems to run in true-color mode, but for more information see
+<a href="cg-color-palettes.htm">cg-color-palettes.htm</a>. The value cannot be
+an HLS color. You can create HLS colors (see <a href="../operators/cg/m/make-hls.htm"><b>make-hls</b></a>) but must run them through
+<a href="../operators/cg/h/hls-to-rgb.htm"><b>hls-to-rgb</b></a> and
+use the resulting RGB color.
+</p>
+
+
+
+
+<hr><h2 id="75"><a name="text-and-fonts-2">3.3 Drawing text and fonts</a></h2>
+
+<h3 id="76">Drawing text</h3>
+
+
+<p id="77">
+Text is sometimes not thought of as graphical output, since so-called
+"non-graphical" computer terminals can display it. But in fact
+drawing a string in Common Graphics is drawing a graphic just as
+drawing a polygon is, and text may be mixed freely with other
+graphical output.
+</p>
+<p id="78">
+The main Common Graphics function for drawing a string is <a href="../operators/cg/d/draw-string-in-box.htm"><b>draw-string-in-box</b></a>. But
+since every object on which you can draw (a window, screen,
+bitmap-stream, or printer) is also a Common Lisp stream, any Common
+Lisp stream output function such as <a href="../../ansicl/dictentr/format.htm"><b>format</b></a> or <a href="../../ansicl/dictentr/writepri.htm"><b>princ</b></a> may also be used to draw in a Common
+Graphics window or other stream. Common Graphics streams are set up as
+"interactive" streams, and so it should not be necessary to call
+<a href="../../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> or <a href="../../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a>; the strings should
+instead always appear as soon as they are drawn.
+</p>
+
+<h3 id="79">The current position</h3>
+
+<p id="80">
+The Common Lisp stream output functions always start drawing at the
+"current position" of a window, as set by <a href="../operators/cg/m/move-to.htm"><b>move-to</b></a> or the <a href="../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of <a href="../operators/cg/c/current-position.htm"><b>current-position</b></a>. They also set the
+current position of the stream afterwards where the text output ended;
+therefore, drawing multiple strings in a row will concatenate them end
+to end, similar to a text terminal (though with no forced line
+wrapping). When a newline is printed to a Common Graphics stream, the
+current position is moved to the <a href="../operators/cg/l/left-margin.htm"><b>left-margin</b></a> of the stream and
+downward by the <a href="../operators/cg/l/line-height.htm"><b>line-height</b></a> of the stream.
+</p>
+<p id="81">
+The current position is also used by certain other functions such as
+<a href="../operators/cg/d/draw-to.htm"><b>draw-to</b></a>, though
+in those cases it is probably more straightforward to use
+corresponding functions such as <a href="../operators/cg/d/draw-line.htm"><b>draw-line</b></a> that do not depend on the
+current position.
+</p>
+
+<h3 id="82">Fonts</h3>
+
+<p id="83">
+Text is always drawn in a Common
+Graphics stream using the stream's current font.
+A Common
+Graphics stream always has a current font, which is returned by calling
+font. A stream's default font could be used, but typically an
+application will want to specify its own fonts, often mixing a number
+of fonts in a single window.
+</p>
+<p id="84">
+A font is created by calling make-font-ex.  (If an existing equivalent
+font is found, make-font-ex returns that font rather than creating a
+new font object, so <a href="../operators/cg/m/make-font-ex.htm"><b>make-font-ex</b></a> may be called
+frequently without concern of excessive consing.) <a href="../operators/cg/f/font-faces.htm"><b>font-faces</b></a> returns a list of the
+faces that may be passed to <a href="../operators/cg/m/make-font-ex.htm"><b>make-font-ex</b></a>. <a href="../operators/cg/f/font-sizes.htm"><b>font-sizes</b></a> returns the available
+sizes for a particular face, though a vector font (such as a TrueType
+font) may be any size, unlike a raster font. <a href="../operators/cg/a/ask-user-for-font.htm"><b>ask-user-for-font</b></a> also returns a
+font object, as chosen interactively by the user. Functions such as
+<a href="../operators/cg/a/ansi-var-font.htm"><b>ansi-var-font</b></a> and
+<a href="../operators/cg/a/ansi-fixed-font.htm"><b>ansi-fixed-font</b></a>
+return suggested default fonts.
+</p>
+<p id="85">
+Once a font object is in hand, it may be assigned to a window by
+calling either <a href="../operators/cg/w/with-font.htm"><b>with-font</b></a> or the <a href="../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of <a href="../operators/cg/f/font.htm"><b>font</b></a>. Text that is drawn with
+either <a href="../operators/cg/d/draw-string-in-box.htm"><b>draw-string-in-box</b></a> or the Common
+Lisp stream output functions will then appear in this font. Functions
+such as <a href="../operators/cg/s/stream-string-width.htm"><b>stream-string-width</b></a> and <a href="../operators/cg/l/line-height.htm"><b>line-height</b></a> may be called
+before a string is actually drawn to determine how much space the
+string would use up.
+</p>
+<p id="86">
+A number of functions return font attributes that may be helpful in
+deciding what font to use or how much space a font will require.  Some
+of the functions, such as <a href="../operators/cg/f/font-family.htm"><b>font-family</b></a>, <a href="../operators/cg/f/font-face.htm"><b>font-face</b></a>, <a href="../operators/cg/f/font-size.htm"><b>font-size</b></a>, and <a href="../operators/cg/f/font-style.htm"><b>font-style</b></a>, may be called on a font
+object directly. To use other functions, such as <a href="../operators/cg/f/font-ascent.htm"><b>font-ascent</b></a>, <a href="../operators/cg/f/font-leading.htm"><b>font-leading</b></a>, <a href="../operators/cg/f/font-fixed-width-p.htm"><b>font-fixed-width-p</b></a>, and <a href="../operators/cg/f/font-vector-p.htm"><b>font-vector-p</b></a>, you must
+first assign the font to a stream, then retrieve a fontmetrics object
+from the stream (by calling either <a href="../operators/cg/f/fontmetrics.htm"><b>fontmetrics</b></a> or <a href="../operators/cg/n/nfontmetrics.htm"><b>nfontmetrics</b></a>), and then call the
+function on the fontmetrics object.
+</p>
+
+
+
+
+<hr><h2 id="87"><a name="pixmaps-and-icons-2">3.4 Drawing pixmaps and icons</a></h2>
+
+<p id="88">
+A <i>pixmap</i>, also known as a <i>bitmap</i> or <i>raster image</i>,
+is a rectangular array of pixels that is copied as a block. Common
+Graphics includes pixmap objects to encapsulate such images. A pixmap
+may be loaded from a .bmp file by calling <a href="../operators/cg/l/load-pixmap.htm"><b>load-pixmap</b></a>, or created on the fly
+with <a href="../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>. A pixmap is drawn on
+a stream by calling copy-to-stream. Pixmaps are described in detail in
+<a href="cg-pixmaps.htm">cg-pixmaps.htm</a>.
+</p>
+<p id="89">
+A rectangular area of one stream may be copied to another stream by
+calling <a href="../operators/cg/c/copy-stream-area.htm"><b>copy-stream-area</b></a>, without using
+pixmap objects.
+</p>
+<p id="90">
+An <i>icon</i> is a pixmap-like object that may be used in special
+places such as window title-bars and the Windows Taskbar. They are
+covered in <a href="cg-icons.htm">cg-icons.htm</a>.
+</p>
+
+
+
+<hr><hr><h2 id="91"><a name="animation-1">4.0 Animation</a></h2>
+
+<p id="92">
+Common Graphics does not offer much direct support for animation, but
+there are a few facilities that may be of help.
+</p>
+<p id="93">
+There is a <a href="../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> example showing how to do
+limited animation in a <a href="../classes/cg/drawable.htm"><code>drawable</code></a> control; this code is also
+shown on the page for the drawable class. This example uses the
+optional backing store of the drawable to quickly update the image to
+each next frame.  A timer is used to update the image at regular
+intervals.
+</p>
+<p id="94">
+Similar techniques could be used with a regular window, such as
+drawing the next frame of an animation on an unseen <a href="../classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a>, then
+using copy-to-stream to copy that next image to a visible window
+whenever a timer fires. This usage of backing store avoids flashing
+that would result if the next frame were drawn directly on the visible
+window. This type of backing store can be done automatically by using
+the <a href="../operators/cg/d/double-buffered.htm"><b>double-buffered</b></a>
+window property or the <a href="../operators/cg/w/with-double-buffering.htm"><b>with-double-buffering</b></a> macro.  Timers are
+detailed in <a href="cg-timers.htm">cg-timers.htm</a>.
+</p>
+<p id="95">
+A <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>
+has this sort of behavior built in when the <a href="../operators/cg/w/with-delayed-redraw.htm"><b>with-delayed-redraw</b></a> macro is used
+with it. If the code to draw the next frame of an animation on a
+<a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> is
+placed within a call to <a href="../operators/cg/w/with-delayed-redraw.htm"><b>with-delayed-redraw</b></a>, then the
+output will be sent to the <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>'s backing-store memory
+bitmap but not to the visible window itself. Then when the <a href="../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> is next
+redisplayed (either by passing <code>:invalidate t</code> to
+<a href="../operators/cg/w/with-delayed-redraw.htm"><b>with-delayed-redraw</b></a> or by calling
+<a href="../operators/cg/i/invalidate.htm"><b>invalidate</b></a>
+explicitly later), then the backing store will be copied quickly to
+the visible window to reveal the next image.
+</p>
+
+<h3 id="96">
+Example
+</h3>
+
+<p id="97">
+Here is an example of a simple animation to inform the user that
+something is still happening during a busy loop. It uses the <a href="../operators/cg/d/double-buffered.htm"><b>double-buffered</b></a> property to
+illustrate smooth (non-flashy) updating of a drawing.
+</p>
+<p id="98">
+It also illustrates how to draw frames at a particular speed.  Here 30
+frames a second are drawn, though you would probably want to use fewer
+in a real application if it were only to inform the user of progress,
+as in this example.  Otherwise it would likely slow down the real task
+significantly, and the real task's main loop would probably not come
+around that often to check whether it's time for another frame.
+</p>
+
+<pre id="99">
+;;  TYPO NOTE: in earlier versions of this document, 
+;;  'notification-window' was consistently misspelled 'notifcation-window'.
+;;  Because the misspelling was consistent, the code worked. We have 
+;;  corrected the misspelling but users who grabbed the old code
+;;  may find inconsistent behavior.
+
+(defclass notification-window (dialog)
+  
+  ;; Define this class for a window to be shown while
+  ;; the application is in a busy loop doing some work.
+  ;; Give it a couple of slots to hold information about
+  ;; the animation in the window.
+  ((task-count :initform 0 :accessor task-count)
+   (animation-count :initform 0 :accessor animation-count)
+   (animation-pixmap :initform nil :accessor animation-pixmap)))
+
+(defmethod redisplay-window ((window notification-window)
+                             &amp;optional clipping-box)
+  (declare (ignore clipping-box))
+  
+  ;; This will be called each time we invalidate the window
+  ;; to make it update its displayed information.
+  
+  ;; The default redisplay-window method will erase whatever was
+  ;; drawn on the window already (which in this case is our
+  ;; drawing at the previous animation step).
+  (call-next-method)
+  
+  ;; Determine where to draw the picture at this animation step.
+  ;; The dx value will make Melvin move back and forth.
+  (let* ((count (incf (animation-count window)))
+         
+         ;; Using 40 steps to make Melvin move back and forth one
+         ;; time and drawing 30 frames a second will cause Melvin's
+         ;; movement cycle every one and third seconds.
+         (steps-each-way 20)
+         (total-steps (* 2 steps-each-way))
+         
+         (dx (abs (- (mod (+ count steps-each-way)
+                          total-steps)
+                     steps-each-way)))
+         
+         ;; Find the pixmap just one time lazily.
+         (pixmap (or (animation-pixmap window)
+                     (setf (animation-pixmap window)
+                       (find-pixmap :melvin))))
+         
+         (margin 12)
+         (double-margin (* 2 margin)))
+    
+    ;; These scratch positions and boxes are for efficiency,
+    ;; to avoid consing these objects every time and creating
+    ;; garbage to be collected.
+    (with-positions-and-boxes (pos1 pos2)(box1)
+      (nmake-position pos1 (+ double-margin dx) double-margin)
+      
+      ;; Draw the pixmap at the current dx offset.
+      (copy-to-stream pixmap window pos1)
+      
+      ;; Draw an informative string.
+      (with-font (window (make-font-ex nil &quot;Arial&quot; 20))
+        (move-to-x-y window double-margin
+                     (+ double-margin (height pixmap)
+                        margin))
+        (format window &quot;Now at loop ~a.  Please wait ...&quot;
+          (task-count window)))
+      
+      ;; Draw a box around both.
+      ;; These three picture elements will all appear
+      ;; at the same time because the double-buffered
+      ;; property is enabled for the window.
+      (nmake-box box1
+        margin margin
+        (+ (position-x (ncurrent-position window pos2))
+           margin)
+        (+ (position-y (ncurrent-position window pos2))
+           (line-height window)
+           margin))
+      (with-line-width (window (floor margin 4))
+        (draw-box window box1))
+      ))))
+
+;;; Evaluate this form to run the animation, and close
+;;; the window to stop it.
+(let* ((window (make-window :working-message
+                 :class 'notification-window
+                 
+                 ;; This tells the window to use a backing store
+                 ;; memory pixmap to avoid flashing whenever it is
+                 ;; redrawn.  See double-buffered .
+                 :double-buffered t
+                 
+                 :title &quot;Close This Window to Cancel&quot;
+                 :scrollbars nil
+                 :centered t
+                 :width 500
+                 :height 160))
+       (thirtieth-second (round internal-time-units-per-second 30))
+       (next-time (+ (get-internal-real-time)
+                     thirtieth-second))
+       (task-count 0)
+       now-time)
+  (select-window window)
+  (loop
+    
+    ;; The application's real work would be done right here.
+    ;; Our example simply increments a number.
+    (incf task-count)
+    
+    ;; Periodically check whether it's time to do
+    ;; the next animation step.
+    
+    ;; If your real task is in a busy loop, then you'll
+    ;; need to call process-pending-events to allow
+    ;; asynchronous window messages to come in and be
+    ;; handled.  Alternately the animation could be
+    ;; done in a separate process than the real task,
+    ;; though you may want to set the mp:process-quantum
+    ;; of the real task's process to a shorter time to
+    ;; allow the animation to run more often.  When using
+    ;; a separate process, a timer could be used to regulate
+    ;; the speed, rather than checking the current real
+    ;; time in a loop as we do here.
+    (process-pending-events)
+    
+    ;; For this demonstration, we'll exit our busy loop
+    ;; when the user has closed the window.  In a real app,
+    ;; it might happen whenver the real task is done.
+    (unless (windowp window)
+      (return))
+    
+    ;; This will update the animation if a thirtieth of a
+    ;; second has passed since the previous animation step.
+    (when (&gt;= (setq now-time (get-internal-real-time))
+              next-time)
+      (incf next-time thirtieth-second)
+      (setf (task-count window) task-count)
+      (invalidate-window window)
+      
+      ;; This cause the window to be redrawn now, rather
+      ;; then when the next window messages are handled
+      ;; after this loop returns.
+      (update-window window))))
+</pre>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-drawing.htm">9.0 version</a></td></tr></table></html>

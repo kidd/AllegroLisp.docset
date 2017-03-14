@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>has-range-on-open</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/has-range-on-open.htm">9.0 version</a></td></tr></table><h2 id="2">has-range-on-open</h2>
+
+<p id="3"><b>Arguments: </b><i>
+outline-item
+</i></p>
+
+<p id="4">
+This <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a> property allows an
+outline-item to avoid displaying a leaf pixmap when a custom <a href="../r/range-on-open.htm"><b>range-on-open</b></a> method is
+expected to supply child items for it later when it is opened.
+</p>
+<p id="5">
+<a href="../h/has-range-on-open.htm"><b>has-range-on-open</b></a>
+returns <code>nil</code> by default, but may be set to
+true if needed by calling <a href="../h/has-range-on-open.htm"><b>(setf has-range-on-open)</b></a> or, more
+typically, by passing the <code>:has-range-on-open</code>
+initarg to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> when
+creating an <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a>.
+</p>
+<p id="6">
+An application should set this property to true if the item has no
+child items initially but a <a href="../r/range-on-open.htm"><b>range-on-open</b></a> method that the
+application has supplied for this outline is expected to return one or
+more child items for this item. If no custom <a href="../r/range-on-open.htm"><b>range-on-open</b></a> method is supplied
+for this outline, then there is no need to set the value of the
+<a href="../h/has-range-on-open.htm"><b>has-range-on-open</b></a>
+property.
+</p>
+<p id="7">
+An <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a> will display its
+<a href="../o/outline-item-leaf-pixmap.htm"><b>outline-item-leaf-pixmap</b></a> (rather
+than its <a href="../o/outline-item-opened-pixmap.htm"><b>outline-item-opened-pixmap</b></a> or its
+<a href="../o/outline-item-closed-pixmap.htm"><b>outline-item-closed-pixmap</b></a>) when it
+currently has no child items (that is, its <a href="../r/range.htm"><b>range</b></a> is <code>nil</code>) and when its <a href="../h/has-range-on-open.htm"><b>has-range-on-open</b></a> property is
+<code>nil</code>.  Otherwise it will display its opened or
+closed pixmap, depending on its current state (assuming that <a href="../d/draw-icons.htm"><b>draw-icons</b></a> is enabled for
+the outline). The plus or minus pixmap is also displayed whenever the
+leaf pixmap is not displayed (assuming that <a href="../d/draw-plus-minus.htm"><b>draw-plus-minus</b></a> is enabled for the
+outline).
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/has-range-on-open.htm">9.0 version</a></td></tr></table></body></html>

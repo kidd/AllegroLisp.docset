@@ -1,0 +1,460 @@
+<html>
+
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<meta NAME="GENERATOR" CONTENT="Microsoft FrontPage 3.0">
+<title>IDE User Guide, Chapter 5: Components</title>
+</head>
+
+<body LINK="#0000ff">
+
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+  <tr>
+    <td bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3">
+      <tr>
+        <td align="left" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td>
+      </tr>
+    </table>
+    </td>
+    <td align="right"><b>Allegro CL version 9.0</b></td>
+  </tr>
+</table>
+
+<h1><a NAME="begin"></a>5. Components</h1>
+
+<p>This document contains the following sections:</p>
+
+<blockquote>
+  <p><a href="#sec-5-1">5.1 Adding a component to a form</a><br>
+  <a href="#sec-5-2">5.2 Component overhead</a><br>
+  <a href="#sec-5-3">5.3 The types of components</a><br>
+  <a href="#sec-5-4">5.4 Component properties</a><br>
+  <a href="#sec-5-5">5.5 Programmatic considerations</a><br>
+  <a href="#sec-5-6">5.6 Properties common to most visible components</a><br>
+  <a href="#sec-5-7">5.7 Positioning components</a><br>
+  <a href="#sec-5-8">5.8 Components that work together</a></p>
+</blockquote>
+
+<p>
+This is chapter 5 of the User Guide for the Allegro CL 10.0 Integrated
+Development Environment (IDE).
+</p>
+
+<p>The chapters of the IDE User Guide are:</p>
+
+<blockquote>
+  <p><a href="ide_user_guide_1.htm">Chapter 1: Introduction to the IDE</a> <br>
+  <a href="ide_user_guide_3.htm">Chapter 2: The Allegro CL Development Environment (IDE)</a><br>
+  <a href="ide_user_guide_3.htm">Chapter 3: An example</a><br>
+  <a href="ide_user_guide_4.htm">Chapter 4: Projects</a><br>
+  <strong>Chapter 5: Components</strong> (this chapter)<br>
+  <a href="ide_user_guide_6.htm">Chapter 6: Designing a user interface using forms</a><br>
+  <a href="ide_user_guide_7.htm">Chapter 7: Menus</a><br>
+  <a href="ide_user_guide_8.htm">Chapter 8: Events</a></p>
+</blockquote>
+
+<p>A <em>component</em> is an object used in developing the user
+interface to your application. This broad definition includes forms
+and things that can be put on forms. Informally, components are
+things that can be placed on forms. Visible components that can be
+placed on forms are called controls or widgets.
+</p>
+
+<p>Recall the steps in designing a window in your application's user interface are: 
+
+<ol>
+  <li>Creating a form </li>
+  <li>Modifying the properties of a form </li>
+  <li>Adding components to the form </li>
+  <li>Modifying the properties of the components </li>
+  <li>Adding event handlers to components on a form </li>
+</ol>
+
+<p>Creating a form is described in chapter 4 and chapter 6.</p>
+
+<h3><a NAME="sec-5-1"></a>5.1 Adding a component to a form</h3>
+
+<p>
+When viewing a form window that is selected, first click in the
+interior of the form to expose the Widget Palette. (Or use
+the <a href="../../ide-menus-and-dialogs/form-menu.htm#show-widget-palette">Form
+| Show Widget Palette</a>.) Then click
+on the button in the Widget Palette corresponding to the control of
+interest. In the illustration, we have identified the Button and
+Single-item-list controls: 
+</p>
+
+<p><img src="wp-but-sil.jpg"></p>
+
+<p>Then click and release on the form to position the component with default size and
+upper left corner where you click or click and drag on the form until the rubber band box
+is the size you want. If you click and drag, the clicked on point is a corner but which
+corner depends on the direction you drag. That places the component on the form. While the
+component on the form is selected, the Inspector displays information about the component
+and can be used to customize the component as you want. The component can also be resized
+using the sizing handles around the component while it is selected. </p>
+
+<p>Once a component is placed on a form being designed, it can be moved and resized using
+the mouse. As it moves about, alignment cues appear between it and other components
+allowing you to align it precisely with respect to other components on the form.</p>
+
+<h3><a NAME="sec-5-2"></a>5.2 Component overhead</h3>
+
+<p>Because every control (visible component) has an associated window, controls are
+expensive to use in terms of memory usage and speed. To the extent possible, programmers
+should minimize the number of controls that they use. For example, if you want to create a
+toolbar, each button on the toolbar could be a picture button. Or, all the buttons could
+be included in a single multi-picture button control. The latter method is preferred
+because multi-picture buttons have one window rather than a window for each button.</p>
+
+<h3><a NAME="sec-5-3"></a>5.3 The types of components</h3>
+
+<p>Most components display something and accept input in some fashion. We have divided the
+available components into several categories: </p>
+<strong>
+
+<p>Components that present choices</strong><b>. </b>The first two allow more than one
+choice while the remaining three allow<b> </b>one selection only. 
+
+<dir>
+  <blockquote>
+    <p><a href="../../classes/cg/check-box.htm"><strong>check-box</strong></a>: on or off
+    only, but siblings do not affect possible values. <br>
+    <a href="../../classes/cg/multi-item-list.htm"><strong>multi-item-list</strong></a>:
+    displays one or more choices, any number of which can be selected.<br>
+    <a href="../../classes/cg/single-item-list.htm"><strong>single-item-list</strong></a>:
+    displays one or more choices, only one of which can be selected.<br>
+    <a href="../../classes/cg/radio-button.htm"><strong>radio-button</strong></a>: on or off
+    only; only one can be chosen from several grouped together.<br>
+    <a href="../../classes/cg/combo-box.htm"><strong>combo-box</strong></a>: Similar to a
+    single-item list, but typically only the title is displayed until clicked on, when the
+    rest drops down like a menu.</p>
+  </blockquote>
+</dir>
+
+<p><strong>Buttons</strong>. 
+
+<dir>
+  <strong><blockquote>
+    <p><a href="../../classes/cg/button.htm">button</a></strong>: displays text and can be
+    clicked on.<br>
+    <a href="../../classes/cg/cancel-button.htm"><strong>cancel-button</strong></a>: a variety
+    of button typically used to cancel an action.<br>
+    <a href="../../classes/cg/default-button.htm"><strong>default-button</strong></a>: a
+    variety of button typically used to accept or continue.<br>
+    <a href="../../classes/cg/picture-button.htm"><strong>picture-button</strong></a>:
+    displays a picture rather than text<br>
+    <a href="../../classes/cg/multi-picture-button.htm"><strong>multi-picture-button</strong></a>:
+    displays many pictures, each acting as a button.</p>
+  </blockquote>
+</dir>
+<strong>
+
+<p>Components that display or accept text</strong> 
+
+<dir>
+  <blockquote>
+    <p><a href="../../classes/cg/editable-text.htm"><strong>editable-text</strong></a>:
+    displays one line of text which can be edited by the user.<br>
+    <a href="../../classes/cg/rich-edit.htm"><strong>rich-edit</strong></a>: displays
+    formatted text that can be edited by the user (associated are the <a
+    href="../../classes/cg/rich-edit-ruler.htm"><b>rich-edit-ruler</b></a>, <a
+    href="../../classes/cg/rich-edit-multipic.htm"><b>rich-edit-multipic</b></a>, <a
+    href="../../classes/cg/font-face-combo-box.htm"><b>font-face-combo-box</b></a>, and <a
+    href="../../classes/cg/font-size-combo-box.htm"><b>font-size-combo-box</b></a>).<br>
+    <a href="../../classes/cg/lisp-text.htm"><strong>lisp-text</strong></a>: displays Lisp
+    source code.<br>
+    <a href="../../classes/cg/static-text.htm"><strong>static-text</strong></a>: displays text
+    that cannot be edited.<br>
+    <a href="../../classes/cg/multi-line-editable-text.htm"><strong>multi-line-editable-text</strong></a>:
+    displays multiple lines of editable text. <br>
+    <strong><a href="../../classes/cg/multi-line-lisp-text.htm">multi-line-lisp-text</a></strong>:
+    displays Lisp source code.</p>
+  </blockquote>
+</dir>
+
+<p><strong>Components that display graphics</strong> 
+
+<dir>
+  <blockquote>
+    <p><strong><a href="../../classes/cg/drawable.htm">drawable</a>:</strong> a control that
+    can be drawn on with drawing routines.<br>
+    <a href="../../classes/cg/static-picture.htm"><strong>static-picture</strong></a>:
+    displays a picture.<br>
+    <a href="../../classes/cg/picture-button.htm"><strong>picture-button</strong></a>: see
+    above under Button controls.<br>
+    <a href="../../classes/cg/multi-picture-button.htm"><strong>multi-picture-button</strong></a>:
+    see above under Button controls.</p>
+  </blockquote>
+</dir>
+
+<p><strong>Components that scroll</strong> 
+
+<dir>
+  <strong><blockquote>
+    <p><a href="../../classes/cg/horizontal-scroll-bar.htm">horizontal-scroll-bar</a></strong>:
+    controls application-defined horizontal scrolling.<br>
+    <a href="../../classes/cg/vertical-scroll-bar.htm"><strong>vertical-scroll-bar</strong></a>:
+    controls application-defined vertical scrolling.</p>
+  </blockquote>
+</dir>
+
+<p><strong>Common Controls</strong>. These are standard Windows controls. 
+
+<dir>
+  <strong><blockquote>
+    <p><a href="../../classes/cg/header-control.htm">header-control</a></strong>: a horizontal
+    bar with divisions suitable for a title.<br>
+    <a href="../../classes/cg/progress-indicator.htm"><strong>progress-indicator</strong></a>:
+    thermometer like control to show progress, not user settable.<br>
+    <a href="../../classes/cg/trackbar.htm"><strong>track-bar</strong></a>: a user-settable
+    gauge with pointer.<br>
+    <a href="../../classes/cg/up-down-control.htm"><strong>up-down-control</strong></a>: can
+    control (up and down) the value in editable text widget.<br>
+    <a href="../../classes/cg/tab-control.htm"><strong>tab-control</strong></a>: A rectangular
+    control with one or more rows of tabs, each associated with a rectangular area upon which
+    other components can be placed.<br>
+    <a href="../../classes/cg/list-view.htm"><strong>list-view</strong></a>: a columnar
+    display of items. The display can be sorted by the elements of any column.</p>
+  </blockquote>
+</dir>
+
+<p><strong>Allegro controls</strong>. This are specific to Allegro CL. 
+
+<dir>
+  <strong><blockquote>
+    <p><a href="../../classes/cg/group-box.htm">group-box</a></strong>: provides a visual
+    grouping of other controls.<br>
+    <a href="../../classes/cg/grid-widget.htm"><strong>grid-widget</strong></a>: a powerful
+    display for grid layouts.<br>
+    <a href="../../classes/cg/outline.htm"><strong>outline</strong></a>: a control that
+    graphically shows a hierarchical structure.<br>
+    <a href="../../classes/cg/dropping-outline.htm"><strong>dropping-outline</strong></a>:
+    similar to <a href="../../classes/cg/outline.htm">outline</a>, but only the title is
+    visible and the rest is displayed when clicked on.<br>
+    <a href="../../classes/cg/multi-picture-button.htm"><strong>multi-picture-button</strong></a>:
+    a component that simulates (but is much cheaper than) a collection of picture buttons.<br>
+    <a href="../../classes/cg/split-bar.htm"><strong>split-bar</strong></a>:
+   a component used for separating and grouping other controls.<br>
+    <a href="../../classes/cg/chart-widget.htm"><strong>chart-widget</strong></a>:
+   a component that displays charts.<br>
+    <a href="../../classes/cg/plot-widget.htm"><strong>plot-widget</strong></a>:
+   a component that displays graphs.<br>
+    <a href="../../classes/cg/calendar.htm"><strong>calendar</strong></a>:
+   a component that displays a calendar. This is similar to the Windows
+   calendar widegt but is implemented in Common Graphics.</p>
+  </blockquote>
+</dir>
+
+<h3><a NAME="sec-5-4"></a>5.4 Component properties</h3>
+
+<p>Each pre-defined component has many properties which determine the appearance and
+behavior of the component. Certain properties are common to all components while others
+are specific to components of specific types and others apply to one component only.
+Properties may have the same name (and general purpose) but the specifics may differ
+between different components. Thus, both the <a href="../../classes/cg/group-box.htm">group-box</a>
+and the <a href="../../classes/cg/multi-item-list.htm">multi-item-list</a> have <a
+href="../../operators/cg/b/border.htm">border</a> properties, but the possible values
+differ and the range of possible appearances differ correspondingly.</p>
+
+<p>When a component on a form being designed is selected, the Inspector window shows the
+properties (on the left) and the current value of the property (on the right) for the
+component. Here we show the properties of a multi-item-list:</p>
+
+<p><img src="insp-mil.jpg" width="354" height="370" alt="insp-mil.jpg (21843 bytes)"></p>
+
+<p>You can change the value of a property by clicking on the value field (unless the
+property is read-only). The component on the form changes immediately when a property is
+changed. If you are running a form, the running window is not affected by changes made to
+components in its associated form. When files associated with a project are saved, the new
+values specified to the inspector will be reflected in the newly saved source. When you
+run a form or project, you are prompted to save all unsaved modifications, then the
+project is compiled and loaded, and, when running the project, the init function is run
+(the init function is not run when running the form). The default init function creates
+and displays the window associated with the main form only. You cannot (conveniently) use
+the inspector to change a property of a component in a running window. You must make the
+change, and re-run the project. You can make the change while the project is running or
+not..</p>
+
+<p>Every component supplied with Allegro CL is described on its own page in the online
+help system. (Every component is associated with a class and the class and the component
+are described on the same page.) The online help is intended to provide the most
+information about a component and how programmers can affect its behavior and appearance.
+The purpose of this section is to provide an overview of component properties and to give
+hints and pointers about what the issues are when working with components. </p>
+
+<h3><a NAME="sec-5-5"></a>5.5 Programmatic considerations</h3>
+
+<p>For most properties, the same symbol names the property and the function that accesses
+and (if settable) with <strong>setf</strong> sets the property value. Thus the <a
+href="../../operators/cg/n/name.htm">name</a> property is accessed by the <a
+href="../../operators/cg/n/name.htm">name</a> function and set with <b>(setf name)</b>.
+Most properties can be specified when a component is created programmatically (look at a <em>.bil</em>
+file to see examples). The initarg for the property is usually the keyword with the same
+name, thus <code>:name</code> for the name property, but not always. See the description
+of <a href="../../operators/cg/i/initarg.htm">initarg</a> in online help.</p>
+
+<p>Instances of components are created with <strong>cl:make-instance</strong>. To create a
+<a href="../../classes/cg/multi-item-list.htm">multi-item-list</a>, you do</p>
+
+<pre>(make-instance 'multi-item-list ...)</pre>
+
+<p>Property initargs can be specified in the <strong>make-instance</strong> form. As we
+said, to see code that creates a component and places it on a dialog, start a new project
+(for testing), place the components of interest on the project's form, save the project
+and look at <em>form</em>n<em>.bil</em> in whatever directory the project was saved. (form<em>n</em>
+is the name of the form, form1, form2, etc. unless you specifically change the name).</p>
+
+<h3><a NAME="sec-5-6"></a>5.6 Properties common to most visible components</h3>
+
+<p>Just because two components have properties with the same name, that does not mean that
+the property behaves the same way or can have the same values &#150; we gave the example
+of the <a href="../../operators/cg/b/border.htm">border</a> property for group-boxes and
+multi-item-lists above. Here we provide a general discussion of properties common to many
+components. The online documentation gives specific information on properties of
+components. 
+
+<ul>
+  <b>
+  <li>The <a href="../../operators/cg/n/name.htm">name</a> property</b>. All components are
+    named by symbols (typically keywords). When a new component is created (a new form or a
+    new component placed on a form) the name property is given the value
+    :&lt;component-name&gt;&lt;unique-number&gt;. Thus the first form displayed when Allegro
+    CL starts is named :form1. If a new form is opened, it will have name :form2. The first
+    radio button used has the name :radio-button-1, the next :radio-button-2, and so on. These
+    names can be used with functions such as <a href="../../operators/cg/f/find-sibling.htm">find-sibling</a>
+    to get a programmatic handle on the object. </li>
+  <b>
+  <li>Size, placement, and attachment properties</b>. All visible components have widths and
+    heights and are located somewhere on their parent (a window on the screen or in its parent
+    window, a control in its parent window, etc.) The properties <a
+    href="../../operators/cg/h/height.htm">height</a>, <a
+    href="../../operators/cg/w/width.htm">width</a>, <a href="../../operators/cg/l/left.htm">left</a>,
+    and <a href="../../operators/cg/t/top.htm">top</a> specify the dimensions and placement.
+    The <a href="../../operators/cg/l/left.htm">left</a> and <a
+    href="../../operators/cg/t/top.htm">top</a> are the location of the upper-left corner of
+    the bounding box. The attachment properties: <a
+    href="../../operators/cg/t/top-attachment.htm">top-attachment</a>, <a
+    href="../../operators/cg/b/bottom-attachment.htm">bottom-attachment</a>, <a
+    href="../../operators/cg/r/right-attachment.htm">right-attachment</a>, and <a
+    href="../../operators/cg/l/left-attachment.htm">left-attachment</a> control how the
+    position and size of a component are affected when the parent is resized. See the online
+    help topics for left-, right-, top-, and bottom-attachment. </li>
+  <b>
+  <li>Appearance properties</b>. The <a href="../../operators/cg/b/background-color.htm">background</a>
+    and <a href="../../operators/cg/f/foreground-color.htm">foreground</a> colors can be set
+    in most (but not all) components. (The appearance of buttons is set by Windows and is not
+    under program control. You can use a picture button if colors are important on a button.)
+    Specifying t as a color means inherit the color from the parent. The <a
+    href="../../operators/cg/b/border.htm">border</a> property specifies the border of the
+    component and the font property specifies how text (if there is any on the component) will
+    appear. The <a href="../../operators/cg/a/available.htm">available</a> property often
+    affects appearance (unavailable components are often dimmed) but its main effect is
+    programmatic. </li>
+  <b>
+  <li>Navigation properties</b>. Navigation refers to moving among or accessing components
+    using the keyboard only. The two standard ways to do this are pressing tab to move focus
+    among components and pressing Alt and a letter to select a specific component. When a
+    window with controls is selected, pressing tab causes the focus to cycle among the
+    controls whose tabstop property is true. The <a
+    href="../../operators/cg/t/tab-position.htm">tab-position</a> property specifies the order
+    of the movement. Clicking <a
+    href="../../ide-menus-and-dialogs/form-menu.htm#set-tab-order">Form | Set Tab Order</a>
+    displays a dialog that allows specifying tab order and tab order can also be set by the <a
+    href="../../operators/cg/t/tab-position.htm">tab-position</a> property of the component.
+    Note that <a href="../../classes/cg/multi-line-editable-text.htm">multiline-editable-text</a>
+    components assume tab is a text input if the <a href="../../operators/cg/t/tabstop.htm">tabstop</a>
+    property is turned off so pressing tab while a multiline-editable-text component has focus
+    does not move to another component in that case. </li>
+</ul>
+
+<dir>
+  <p>You can specify access keys for many components with a <a
+  href="../../operators/cg/t/title.htm">title</a>, typically by putting a tilde (~) before
+  the letter you want to be the access key in the value of the title property. The tilde
+  does not print but causes the following letter to be underlined. Alt plus that letter, or
+  just that letter can have effects similar to setting focus on the control with the mouse.</p>
+</dir>
+
+<h3><a NAME="sec-5-7"></a>5.7 Positioning components</h3>
+
+<p>While a form is being designed, clicking on a component selects it. An indication of
+being selected is the sizing handles around the component. These allow the control to be
+resized with the mouse. The component can also be moved with the mouse. As components are
+moved, alignment cues appear as the component moves into alignment with other controls on
+the form, allowing you to line components up precisely as you want.</p>
+
+<p>Note that when you are designing a form, the attachment properties do not work. For
+example, if a component has <a href="../../operators/cg/r/right-attachment.htm">right-attachment</a>
+<code>:right</code>, expanding the window to the right (by placing the mouse over the
+right side until a double-headed horizontal arrow cursor appears, clicking down and moving
+the mouse &#150; all this is standard Windows behavior), the component should resize as
+the window resizes. However, when you resize a form, the components on the form do not
+resize regardless of the value of their attachment properties. This is intentional. On a
+form, you should be able to size the form and all components as you want them to look when
+the window first appears. If changing the size of the form changes component sizes as
+well, the design process would be tedious.</p>
+
+<h3><a NAME="sec-5-8"></a>5.8 Components that work together</h3>
+
+<p>Some controls including scrollbars (<a
+href="../../classes/cg/horizontal-scroll-bar.htm">horizontal-scroll-bar</a> and <a
+href="../../classes/cg/vertical-scroll-bar.htm">vertical-scroll-bar</a>) and <a
+href="../../classes/cg/up-down-control.htm">up-down-control</a>s are often associated with
+another control, though most components that are scrollable have their own
+(system-supplied) scrollbars, so scrollbar controls usually affect some attribute other
+than positioning. An <a href="../../classes/cg/up-down-control.htm">up-down-control</a>
+will automatically associate itself with an <a href="../../classes/cg/editable-text.htm">editable-text</a>
+control placed next it on a form (the editable text control becomes the <a
+href="../../operators/cg/b/buddy-widget.htm">buddy-widget</a> of the <a
+href="../../classes/cg/up-down-control.htm">up-down-control</a>). Scrollbars, however,
+never automatically associate themselves with another control. The program (that is you as
+the programmer) has to use the <a href="../../operators/cg/o/on-change.htm">on-change</a>
+event handler of the scrollbar to produce whatever effect you want when a scrollbar is
+modified by a user.</p>
+
+<p>The default range of an <a href="../../classes/cg/up-down-control.htm">up-down-control</a>
+is (0 100). Change the value of the <a href="../../classes/cg/editable-text.htm">editable-text</a>
+widget to (say) 1 by clicking on the extended editor button and entering 1 in the editor
+window that appears. </p>
+
+<p>Now run the form (by clicking on <a
+href="../../ide-menus-and-dialogs/run-menu.htm#run-form">Run Form</a> or <a
+href="../../ide-menus-and-dialogs/run-menu.htm#run-project">Run Project</a> in the <a
+href="../../ide-menus-and-dialogs/run-menu.htm">Run</a> menu). You can change the value in
+the <a href="../../classes/cg/editable-text.htm">editable-text</a> control by editing it
+directly (as usual) but also by clicking on the up or down arrow in the <a
+href="../../classes/cg/up-down-control.htm">up-down-control</a>.</p>
+
+<p>Go to <a href="ide_user_guide_6.htm">chapter 6</a>. Go to <a href="#begin">beginning</a>
+of this chapter.</p>
+
+<hr>
+
+<p><small>Copyright (c) 1998-2015, Franz Inc. Berkeley, CA., USA. All rights reserved.</small><br>
+<small>Documentation for Allegro CL version 10.0. This is the initial (unrevised) page.</small><br>
+<small>Created 2015.1.25.</small></p>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+  <tr>
+    <td bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3">
+      <tr>
+        <td align="left" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td>
+      </tr>
+    </table>
+    </td>
+    <td align="right"><b>Allegro CL version 10.0</b></td>
+  </tr>
+</table>
+</body>
+</html>

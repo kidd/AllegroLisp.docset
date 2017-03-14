@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>fasl-read</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/fasl-read.htm">9.0 version</a></td></tr></table><h2 id="2">fasl-read</h2>
+
+<p id="3"><b>Arguments: </b><i>file</i></p>
+
+<p id="4">This function loads the data previously written to a file using
+<a href="fasl-write.htm"><b>fasl-write</b></a>. The return value
+is a list of the data items written to the file. The list will have
+one element for each invocation of <a href="fasl-write.htm"><b>fasl-write</b></a> used in creating the file. The data
+returned is independent of the value of <a href="../../../ansicl/dictentr/package.htm"><code>*package*</code></a> when <a href="fasl-read.htm"><b>fasl-read</b></a> is called.</p>
+
+<p id="5">The <i>file</i> argument must be a filename specified
+as for <a href="../../../ansicl/dictentr/load.htm"><b>load</b></a>.  Standard load
+search-list processing is done on this name to find a file to load
+(see <a href="../../loading.htm#search-lists-1">Search
+lists</a> in <a href="../../loading.htm">loading.htm</a>). The file that is
+loaded must have been written using <a href="fasl-write.htm"><b>fasl-write</b></a>.
+</p>
+<h3 id="6">
+Version warning: a fasl file from one version of Allegro CL is usually
+unreadable in another
+</h3>
+<p id="7">
+The fasl file format often changes in new releases and in general,
+fasl files written by a release will <b>not</b> be readable in a later
+release. Therefore, all data written to a fasl file should also be
+available in another readable format (such as a text file). The
+purpose of the fasl reader/writer is to allow data storage and
+retrieval in a single Allegro CL release on a single platform (fasl
+files written on one platform also may not be readable on
+another). Its advantage is that data does not have to be converted to
+its printed representation prior to being written (that conversion
+takes a significant amount of time for complex objects). Long term
+data storage should be in a generally readable format.
+</p>
+<p id="8">
+Floating-point numbers can be stored as octal values which
+can be read back exactly and are portable across versions and platforms. See 
+<a href="single-float-to-shorts.htm"><b>single-float-to-shorts</b></a> and
+<a href="double-float-to-shorts.htm"><b>double-float-to-shorts</b></a>.
+</p>
+<h3 id="9">
+Application note
+</h3>
+<p id="10">
+<a href="fasl-read.htm"><b>fasl-read</b></a> and <a href="fasl-write.htm"><b>fasl-write</b></a> require the compiler so
+they are not available in application images without the compiler.
+</p>
+
+<p id="11">
+See <a href="../../miscellaneous.htm#fasl-read-write-1">The fasl
+reader/writer</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a>, and
+see <a href="fasl-write.htm"><b>fasl-write</b></a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/fasl-read.htm">9.0 version</a></td></tr></table></body></html>

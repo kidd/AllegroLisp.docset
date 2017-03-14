@@ -1,0 +1,59 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>cursor</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/cursor.htm">9.0 version</a></td></tr></table><h2 id="2">cursor</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window-or-dialog-item-or-hotspot
+</i></p>
+
+<p id="4">
+Returns the current mouse cursor of
+<i>window-or-dialog-item-or-hotspot</i>, which
+determines the appearance of the mouse cursor whenever it is inside
+that window, control, or hotspot. <a href="../c/cursor.htm"><b>(setf cursor)</b></a> will
+set the current mouse cursor.
+</p>
+<p id="5">
+The value may be either an instance of the <a href="../../../classes/cg/cursor.htm"><code>cursor</code></a> class or an integer that is
+the value of one of the built-in mouse cursor variables such as
+<a href="../../../variables/cg/cross-cursor.htm"><code>cross-cursor</code></a>. The value may also be
+<code>nil</code>, which for a window means to remove the
+mouse cursor completely when it is inside the window, and for a
+dialog-item means to use the default cursor for that control, which is
+usually the arrow cursor. For a <a href="../../../classes/cg/hotspot.htm"><code>hotspot</code></a>, <code>nil</code> means to
+use the parent window's cursor.  The value may also be the keyword
+<code>:default</code>, which means to use the default cursor for
+either a window or a dialog-item.  The default value is
+<code>:default</code> for a window and <code>nil</code> for a dialog-item or hotspot. The default cursor
+image is typically an arrow cursor (see <a href="../../../variables/cg/arrow-cursor.htm"><code>arrow-cursor</code></a>).
+</p>
+<p id="6">
+The custom cursor of a window is used only in the interior of the
+window, and it is not possible to set the cursor for the frame area of
+a window. Similarly, certain areas of some controls, such as the
+column headers of a <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> control or the body of a
+<a href="../../../classes/cg/tab-control.htm"><code>tab-control</code></a>,
+are not customizable and will not show the custom cursor that is
+assigned to the control.
+</p>
+<p id="7">
+To use different mouse cursors in different areas of a single window's
+interior, you can write a <a href="../m/mouse-moved.htm"><b>mouse-moved</b></a> method that specializes
+on the window's class and which calls <a href="../c/cursor.htm"><b>(setf cursor)</b></a> on the
+window, passing a different cursor depending on the
+<i>cursor-position</i> argument that was passed to
+<a href="../m/mouse-moved.htm"><b>mouse-moved</b></a>.
+Alternately, you could write a <a href="../c/cursor.htm"><b>cursor</b></a> method that returns a
+different cursor based on the value returned by a call to <a href="../n/ncursor-position.htm"><b>ncursor-position</b></a> or
+<a href="../c/cursor-position.htm"><b>cursor-position</b></a>.
+</p>
+<p id="8">
+See the section on Mouse Cursors in <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a>
+for more infomation.
+</p>
+
+
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/cursor.htm">9.0 version</a></td></tr></table></body></html>

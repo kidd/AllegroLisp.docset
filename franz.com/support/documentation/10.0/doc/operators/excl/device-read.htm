@@ -1,0 +1,126 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>device-read</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-read.htm">9.0 version</a></td></tr></table><h2 id="2">device-read</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream buffer start end blocking
+</i></p>
+
+<p id="4">
+If <i>buffer</i> is <code>nil</code>, and
+<i>start</i> and <i>end</i> are not eql,
+then the appropriate buffer slot must be used as the buffer to read
+into, and the <i>end</i> argument (which will be <code>nil</code>) must be taken as if it were specified the number
+of octets in the buffer. Any manipulation of buffers, including
+replacement of the buffer slot with a new one of the same size, can be
+done before returning.
+</p>
+<p id="5">
+If <a href="read-octets.htm"><b>read-octets</b></a> is used to
+implement <a href="device-read.htm"><b>device-read</b></a>, and
+if <i>buffer</i> is passed as <code>nil</code>, then <a href="read-octets.htm"><b>read-octets</b></a> will automatically provide the
+buffer.
+</p>
+<p id="6">
+An attempt is made to fill the buffer from <em>start</em> to
+<em>end</em> with data coming from the device. The number of octets
+(8-bit bytes) actually read is returned, or else an error or other
+exceptional situation encode in the following way:
+</p>
+<ul>
+<li id="7"><b>-1:</b> EOF. This condition is latched into the stream until 
+reset by some operation such as file-position.</li>
+<li id="8">&gt;<b>-2</b> Soft EOF. This value can be returned for a device that
+might read beyond an eof, such as a terminal (after typing a Control-D).
+The strategy processes the EOF, but does not leave the stream in that
+state; the next read will cause another device-read.</li>
+<li id="9">
+<b>-3:</b> Special return value for a no-hang query. If the start and end
+arguments are eql and if blocking is nil, then a 0 return means no
+data will be read, and a -3 value means data would have been read.</li>
+<li id="10"><b>(- -10 errno):</b> the value of the error return from the system 
+operation. For example, -19 represents an errno value of 9, 
+which is EBADF (bad file number) on most systems.</li>
+</ul>
+
+<p id="11">
+The <em>blocking</em> argument also allows asynchronous reads. If
+<em>blocking</em> is true, then the read waits
+until at least one byte can be read (or, if the scheduler is running,
+the thread waits until at least one byte can be read, allowing other
+threads to continue meanwhile). If <em>blocking</em> is <code>nil</code>, then the read transfers as much as it can
+immediately and returns the number of bytes read. See <a href="../../streams.htm#block-non-block-3">Blocking behavior in
+simple-streams</a> in <a href="../../streams.htm">streams.htm</a>.
+</p>
+
+<p id="12">
+Note that there is no device-level <a href="../../../ansicl/dictentr/listen.htm"><b>listen</b></a> operation. The higher-level streams API
+implements <a href="../../../ansicl/dictentr/listen.htm"><b>listen</b></a> as a query
+to its buffer possibly followed by a <a href="device-read.htm"><b>device-read</b></a> with <em>blocking</em> set to
+false. If there is no data on the stream, all is well, and the read
+returns with 0 bytes, allowing a <a href="../../../ansicl/dictentr/listen.htm"><b>listen</b></a> operation to return with <code>nil</code>. But if there is data on the stream, then it will
+be read into the given buffer and the higher level operation must take
+care not to lose this data.
+</p>
+<p id="13">
+<em>buffer</em> (if not <code>nil</code>) must be a
+specialized simple-array of one dimension. It can be of any size and
+specialized element-type (its upgraded-element-type must not be
+<code>t</code>). If the element-type is not octet (8-bit
+byte, signed or unsigned) then the endianness order of bits or bytes
+is that of the natural order of the native machine. Thus, with an
+element-type of <code>(unsigned-byte 32)</code> on a
+little-endian machine, a read of the four bytes
+<code>#x12</code>, <code>#x34</code>,
+<code>#x56</code>, and <code>#x78</code> with
+<em>start</em> of 0 will be read into the element as the word
+<code>#x78563412</code>. The same byte stream read into a
+big-endian machine will form the word <code>#x12345678</code>.
+</p>
+<p id="14">
+Note that no checking is done to match the byte-count to
+element-widths; if three bytes only are read into a four-byte element,
+the fourth byte is left alone. It is up to the strategy-level
+programmer (see the end of section <a href="../../streams.htm#ss-description-2">Simple-stream Description</a>) to ensure
+that endianness is matched against the stream, and that data widths
+are received as expected.
+</p>
+
+<h3 id="15">Defined methods</h3>
+
+
+<ul>
+<li id="16">
+On classes: <a href="../../classes/excl/single-channel-simple-stream.htm"><code>single-channel-simple-stream</code></a> and <a href="../../classes/excl/dual-channel-simple-stream.htm"><code>dual-channel-simple-stream</code></a>: for
+both methods, after checking for null buffer and end args, <a href="read-octets.htm"><b>read-octets</b></a> is called
+directly and the resulting values returned.
+</li>
+<li id="17">
+On classes: <a href="../../classes/excl/null-simple-stream.htm"><code>null-simple-stream</code></a>: 
+nothing is called, and -1 is always returned.
+</li>
+<li id="18">
+On classes: <a href="../../classes/excl/terminal-simple-stream.htm"><code>terminal-simple-stream</code></a>: 
+A return value of -1 (latching eof) is
+turned into -2 (non-latching eof).
+</li>
+
+</ul>
+
+<p id="19">
+Note that the supplied <a href="device-read.htm"><b>device-read</b></a> and <a href="device-write.htm"><b>device-write</b></a> functions do not generate errors
+themselves, but pass them back to the higher level for
+processing. This allows <a href="read-octets.htm"><b>read-octets</b></a> and <a href="write-octets.htm"><b>write-octets</b></a> to pass errors back as well, as
+the implementation of a higher level (encapsulating) 
+<a href="device-read.htm"><b>device-read</b></a> and <a href="device-write.htm"><b>device-write</b></a>.
+</p>
+
+
+<p id="20">
+See <a href="../../streams.htm">streams.htm</a> for information on the
+simple-streams implementation in Allegro CL. The older but still
+supported Gray streams implementation is described in
+<a href="../../gray-streams.htm">gray-streams.htm</a>.
+</p>
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-read.htm">9.0 version</a></td></tr></table></body></html>

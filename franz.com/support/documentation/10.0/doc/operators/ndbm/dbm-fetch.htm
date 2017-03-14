@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>dbm-fetch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dbi.ndbm</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ndbm/dbm-fetch.htm">9.0 version</a></td></tr></table><h2 id="2">dbm-fetch</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ndbm key
+</i>&amp;key <i>external-format if-does-not-exist return</i><i>
+</i></p>
+
+<p id="4">
+<a href="dbm-fetch.htm"><b>dbm-fetch</b></a> retrieves
+content from the database specified by <i>ndbm</i>
+(which should be a value returned by <a href="dbm-open.htm"><b>dbm-open</b></a>).  <i>key</i> is
+used to locate the data. If <i>key</i> is a string, it
+will be internally converted to a usb8 array according to the
+<i>external-format</i> keyword argument (or, if not
+supplied, the default determined by <a href="dbm-open.htm"><b>dbm-open</b></a> will be used). If the key does
+not exist in the database and:
+</p>
+<ul>
+<li id="5">
+<i>if-does-not-exist</i> is <code>nil</code>
+(the default), then <a href="dbm-fetch.htm"><b>dbm-fetch</b></a> returns <code>nil</code>.
+</li>
+<li id="6">
+<i>if-does-not-exist</i> is <code>:error</code>,
+then <a href="dbm-fetch.htm"><b>dbm-fetch</b></a> signals
+an error.
+</li>
+</ul>
+
+<p id="7">
+If the key is found, then <a href="dbm-fetch.htm"><b>dbm-fetch</b></a> returns the corresponding data.
+If the <i>return</i> keyword argument is
+<code>:string</code>, then the data will be converted to a
+string according to the <i>external-format</i> keyword
+argument (or the default determined by <a href="dbm-open.htm"><b>dbm-open</b></a>).  If <i>return</i>
+is <code>:usb8</code>, the the data will be returned as a usb8
+array.  If <i>return</i> is not specified, then the data
+will be returned in whatever format was specified as the default to
+<a href="dbm-open.htm"><b>dbm-open</b></a>.
+</p>
+
+<p id="8">
+See <a href="../../ndbm.htm">ndbm.htm</a> for information on the NDBM
+facility.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ndbm/dbm-fetch.htm">9.0 version</a></td></tr></table></body></html>

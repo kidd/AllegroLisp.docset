@@ -1,0 +1,77 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>align-branch-targets-switch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: compiler</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/align-branch-targets-switch.htm">9.0 version</a></td></tr></table><h2 id="2">align-branch-targets-switch</h2>
+
+<p id="3">As with most compiler
+switch variables, the value of this variable can
+be <code>t</code>, <code>nil</code>, or a
+function object that accepts five arguments and
+returns <code>t</code>
+or <code>nil</code>. The arguments passed to the function
+will be the values of the safety, space, speed, debug, and
+compilation-speed optimization qualities, in that
+order. <code>nil</code> is equivalent to a function that
+always returns
+<code>nil</code> and <code>t</code> to a
+function that always returns <code>t</code>.  When the
+value is a function and we say <code>t</code> (or true) or
+<code>nil</code> (or false) in the text below, we mean
+that the function returns, respectively, <code>t</code> or
+<code>nil</code>. This switch additionally may return
+certain integers which are true values (meaning the switch will affect
+compilation on platforms where it has effect) but provide finer
+control on that effect.
+</p>
+<p id="4">
+This switch affects compilation on x86 64-bit systems and Panasonic
+IPP3 systems only (the IPP3 implementation is not a publically
+released port). On all other platforms, this switch is ignored.
+</p>
+<p id="5">
+The issue addressed by this switch is the following. The final stage of the Lisp compiler is the
+in-core assembler, which works very similarly to any other assembler
+for the architecture it serves.  Code is usually in-line, and when
+possible, optimization phases before the assembler phase will remove
+as many branches as possible.  But branches are inevitable, and
+architectures are generally optimized for branches that land on evenly
+aligned byte boundaries, due to instruction fetch and optimization
+implementations.
+</p>
+<p id="6">
+For AMD64 architecture, it is recommended that assembler labels which
+are the target of branches be placed on 32-byte boundaries, and that
+no more than 3 branches be placed in any one 16-byte segment of code.
+There are many intricacies, but we have decided to halve the alignment
+performed by default, so labels are aligned to 16 bytes and are forced
+there by a series of nop instructions.  This is actually as large as
+can be done in a 64-bit lisp, since code vectors, along with all other
+Lisp objects, are aligned to 16-byte boundaries themeselves.  The
+IPP3, which is a 32-bit lisp, aligns to 8 byte boundaries for the same
+reason.
+</p>
+<p id="7">
+There are currently three kinds of branches which might be affected by
+alignment: backward branches,  Forward bracnches of more than 16
+bytes, and forward branches of less than 16 bytes.
+</p>
+<p id="8">
+If this switch returns nil, then none of these targets are aligned.
+If it returns a value of true which is not a fixnum, then all backward
+and longer-than-16-byte forward branches are aligned.
+</p>
+<p id="9">
+If this switch is set to a fixnum value, or if it is set to a function of
+the 5 optimization qualities and returns a fixnum value, then it is
+interpreted as a bitwise value whose least significant bit (the 1 bit)
+signifies whether backward-branches should be aligned, the 2 bit
+signifies whether long forward branches should be aligned, and the 4
+bit signifies whether short branches should be aligned. In each of
+these cases, if the bit is 1, then the alignment is performed, and if
+it is 0, then the alignment is not performed.
+</p>
+
+<p id="10">
+Initially true if speed is 3 and compilation-speed is 0 or 1.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/align-branch-targets-switch.htm">9.0 version</a></td></tr></table></body></html>

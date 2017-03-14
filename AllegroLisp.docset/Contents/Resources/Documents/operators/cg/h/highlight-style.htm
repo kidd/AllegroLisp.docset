@@ -1,0 +1,51 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>highlight-style</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/highlight-style.htm">9.0 version</a></td></tr></table><h2 id="2">highlight-style</h2>
+
+<p id="3"><b>Arguments: </b><i>
+hotspot
+</i></p>
+
+<p id="4">
+Returns the type of highlighting that the built-in <a href="../h/highlight-hotspot.htm"><b>highlight-hotspot</b></a> method will use to highlight
+<i>hotspot</i> when the mouse cursor is over its <a href="../h/hotspot-region.htm"><b>hotspot-region</b></a>. <i>hotspot</i>
+should be a <a href="../../../classes/cg/hotspot.htm"><code>hotspot</code></a>
+instance, as created with <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>.  The highlight style may be
+specified by passing the <code>:highlight-style</code> initarg
+to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or by
+calling <a href="../h/highlight-style.htm"><b>(setf
+highlight-style)</b></a> any time later.
+</p>
+<p id="5">
+The default value is <code>:invert</code>, which inverts the
+screen colors in the <a href="../h/hotspot-region.htm"><b>hotspot-region</b></a>.  An alternate style is
+<code>:outline</code>, which inverts only the edge of the
+region.  By "inverts" we mean that the <a href="../h/hotspot-region.htm"><b>hotspot-region</b></a> is filled or drawn while the
+<a href="../p/paint-operation.htm"><b>paint-operation</b></a> of the
+hotspot's parent window is set to <a href="../../../variables/cg/po-xor.htm"><code>po-xor</code></a>.  This allows the highlighting to be
+erased without knowledge of the "real" object that is drawn in the
+window where the hotspot lies. Though the highlighting is drawn with
+the <a href="../f/foreground-color.htm"><b>foreground-color</b></a> of the
+window set to the <a href="../c/color.htm"><b>color</b></a> of
+the hotspot, this will be the resulting color only where the window
+background is white, due to the way that <a href="../../../variables/cg/po-xor.htm"><code>po-xor</code></a> works.
+</p>
+<p id="6">
+The other valid value is <code>nil</code>, in which case
+the default <a href="../h/highlight-hotspot.htm"><b>highlight-hotspot</b></a>
+method does nothing at all.  The hotspot is still sensitive to the
+mouse, but does not add any visual indication of this as the mouse
+moves over it.
+</p>
+<p id="7">
+If neither of the built-in highlighting styles is adequate, an
+application could instead supply its own <a href="../h/highlight-hotspot.htm"><b>highlight-hotspot</b></a> method that ignores the
+hotspot's <a href="../h/highlight-style.htm"><b>highlight-style</b></a>
+property and draws some other sort of highlighting.
+</p>
+
+
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/h/highlight-style.htm">9.0 version</a></td></tr></table></body></html>

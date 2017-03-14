@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-tests</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: util.test</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/util.test/with-tests.htm">9.0 version</a></td></tr></table><h2 id="2">with-tests</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(</i>&amp;key  (<i>name</i> "unnamed")<i>)
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+The <i>body</i> should be test forms. At the
+end of execution of the body, a report is generated which summarizes
+successes and failures.
+</p>
+<p id="5">
+<strong>with-tests</strong> binds <a href="../../variables/util.test/s_test-successes_s.htm"><code>*test-successes*</code></a>, 
+<a href="../../variables/util.test/s_test-errors_s.htm"><code>*test-errors*</code></a>, and
+<a href="../../variables/util.test/s_test-unexpected-failures_s.htm"><code>*test-unexpected-failures*</code></a>
+to 0 before the execution of <i>body</i> and the printing
+of the results.
+</p>
+
+<p id="6">
+<i>name</i> is printed with the results -- &quot;Begin
+&lt;name&gt; test&quot;, so &quot;Begin unnamed test&quot; if
+unspecified.
+</p>
+
+<p id="7">
+<b>Multip[rocessing note:</b> when tests run in multiple threads, the
+counters bound by an occurrence of the <a href="with-tests.htm"><b>with-tests</b></a> macro accumulate counts only
+from tests running in the same thread.  If code within the scope of a
+<a href="with-tests.htm"><b>with-tests</b></a> macro starts
+another thread where tests may also run, the latter tests will
+increment the global counters (or some other <a href="with-tests.htm"><b>with-tests</b></a> scope).
+</p>
+
+<p id="8">
+See <a href="../../test-harness.htm">test-harness.htm</a> for information on the Allegro
+CL test harness.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/util.test/with-tests.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,69 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>dns-response</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: socket</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/socket/dns-response.htm">9.0 version</a></td></tr></table><h2 id="2">dns-response</h2>
+
+<p id="3">
+The class of a DNS response object. When <a href="../../operators/socket/dns-query.htm"><b>dns-query</b></a> is called with the
+<i>decode</i> argument <code>nil</code>, the
+response from the nameserver is returned in its raw form. The response
+is represented by a <a href="dns-response.htm"><code>dns-response</code></a> object which contains
+pointers to <a href="dns-rr.htm"><code>dns-rr</code></a>
+objects. It has the following slots and accessors:
+</p>
+
+<ul>
+
+<li id="4"><code>id</code>, accessor is <a href="../../operators/socket/dns-response-id.htm"><b>dns-response-id</b></a>. The number of the query
+for which this is a response. Each query is given a unique number by
+<a href="../../operators/socket/dns-query.htm"><b>dns-query</b></a> so that it
+can associate responses with queries.
+</li>
+<li id="5"><code>flags</code>, accessor is <a href="../../operators/socket/dns-response-flags.htm"><b>dns-response-flags</b></a>. The characteristics
+of the response are described by a set of flags represented in this
+slot by a list of keyword symbols. The set of flags can be found in
+rfc1035, the document describing the DNS specification (see <a href="../../dns.htm#dns-intro-1">The Allegro CL Domain Naming System
+Package</a> in <a href="../../dns.htm">dns.htm</a> for a link to
+rfc1035).
+</li>
+
+<li id="6"><code>flags-value</code>, accessor is <a href="../../operators/socket/dns-response-flags-value.htm"><b>dns-response-flags-value</b></a>. An integer
+that is the raw form of the flags value.
+</li>
+<li id="7"><code>answer</code>, accessor is <a href="../../operators/socket/dns-response-answer.htm"><b>dns-response-answer</b></a>. A list of <a href="dns-rr.htm"><code>dns-rr</code></a> objects which
+comprise the answer to the query. If there are no answers then that
+is significant as well as that tells you that what you're asking for
+either doesn't exist or can't be computed at this time.
+</li>
+<li id="8"><code>authority</code>, accessor is <a href="../../operators/socket/dns-response-authority.htm"><b>dns-response-authority</b></a>. DNS permits
+nameservers to cache information and this is in fact critical to
+prevent nameserver overloading. What this means though is that the
+same information can be stored in a large collection of nameservers.
+However for any piece of information there is always a set of
+nameservers that are the authoritative nameservers for that
+information. This field in the dns-response lists the nameservers that
+are the authority for answering the dns-query that was posed.  The
+nameservers are returned as a list of <a href="dns-rr.htm"><code>dns-rr</code></a> objects.
+</li>
+<li id="9">
+<code>additional</code>, accessor is <a href="../../operators/socket/dns-response-additional.htm"><b>dns-response-additional</b></a>. Some queries
+return answers which would immediately prompt another query. For
+example a <code>:type :mx</code> dns-query to find a mail
+exchanger for a name returns a set of mail exchanger machine names.
+After receiving those names the program will almost certainly want to
+find the IP addresses for those machine names. Thus the DNS system can
+anticipate the follow up query and can return in the additional slot a
+list of <a href="dns-rr.htm"><code>dns-rr</code></a>'s
+that would be returned by the followup query. In the <code>:type
+:mx</code> query the additional slot usually contains a list of
+those mail exchangers machine names and their IP addresses. There is
+no guarantee that that information will be provided in the additional
+slot
+</li>
+
+</ul>
+
+<p id="10">
+See <a href="../../dns.htm">dns.htm</a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/socket/dns-response.htm">9.0 version</a></td></tr></table></body></html>

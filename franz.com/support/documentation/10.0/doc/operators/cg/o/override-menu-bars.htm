@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>override-menu-bars</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/override-menu-bars.htm">9.0 version</a></td></tr></table><h2 id="2">override-menu-bars</h2>
+
+<p id="3"><b>Arguments: </b><i>
+comtab
+</i></p>
+
+<p id="4">
+This comtab property determines which command is executed when the
+user types the keychord of a comtab command, if that keychord is also
+a global keyboard shortcut or a shortcut in a menu-bar that applies to
+the same window.
+</p>
+<p id="5">
+If this property is true, then the comtab's key bindings will take
+precedence over menu-bar shortcuts (see <a href="../e/event-synonym.htm"><b>event-synonym</b></a>) and global shortcuts (see
+add-global-keyboard-accelerator).  If it is <code>nil</code>, then menu-bar shortcuts and global shortcuts
+take precedence over the comtab. The default value is <code>nil</code>.
+</p>
+<p id="6">
+<a href="../o/override-menu-bars.htm"><b>override-menu-bars</b></a> returns the
+current value of this property for a specified comtab (command table).
+The value may be set either by passing the :override-menu-bars initarg
+to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> when creating
+the comtab, or any time later by calling <a href="../o/override-menu-bars.htm"><b>(setf
+override-menu-bars)</b></a>.  The default value is <code>nil</code>.
+</p>
+<h3 id="7">
+In the IDE Editor
+</h3>
+<p id="8">
+The IDE editor is a case where the <a href="../o/override-menu-bars.htm"><b>override-menu-bars</b></a> option has been enabled.
+When the IDE editor is selected, the editor's comtab (see <a href="../../../variables/ide/s_text-edit-comtab_s.htm"><code>*text-edit-comtab*</code></a>) and the IDE
+menu-bar's keyboard shortcuts are both in effect. The IDE menu-bar
+defines many keyboard shortcuts, and so if you wanted to add some
+custom editing commands to the IDE editor, then you may find it
+difficult to find keychords that are not already used by the editor's
+comtab or the IDE menu-bar. But since the <a href="../o/override-menu-bars.htm"><b>override-menu-bars</b></a> property of <a href="../../../variables/ide/s_text-edit-comtab_s.htm"><code>*text-edit-comtab*</code></a> is <code>t</code>, it can override shortcuts that are in the IDE
+menu-bar. Typing reused keychords in the IDE editor will invoke the
+editor's comtab commands, whereas typing the keychords in any other
+IDE window will invoke the IDE menu-bar commands.  See <a href="../../../variables/ide/s_text-edit-comtab_s.htm"><code>*text-edit-comtab*</code></a> for an
+example.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/override-menu-bars.htm">9.0 version</a></td></tr></table></body></html>

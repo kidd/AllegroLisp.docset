@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-tray-item</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-tray-item.htm">9.0 version</a></td></tr></table><h2 id="2">add-tray-item</h2>
+
+<p id="3"><b>Arguments: </b><i>tray-item </i>&amp;key <i>window</i></p>
+
+<p id="4">
+Adds the specified <i>tray-item</i> to the system tray
+unless it is there already, in which case nothing is done.  <a href="../i/in-tray-p.htm"><b>in-tray-p</b></a> returns whether
+a tray-item is currently in the tray, and <a href="../r/remove-tray-item.htm"><b>remove-tray-item</b></a> removes a
+tray-item from the tray.  A tray-item may be added and removed any
+number of times.
+</p>
+<p id="5">
+<i>tray-item</i> must be an instance of the <a href="../../../classes/cg/tray-item.htm"><code>tray-item</code></a> class, as
+created with <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>.
+</p>
+<p id="6">
+If <i>window</i> is specified, it should be the window
+that will be passed to <a href="../t/tray-item-message.htm"><b>tray-item-message</b></a> when mouse events
+occur on the tray-item.  If <code>nil</code>, then the
+application's frontmost top-level window whose state is either :normal
+or :maximized will be used; an error will be signaled if there is no
+such window.
+</p>
+<p id="7">
+An application would typically specify an icon for the tray-item
+before adding it to the tray.  See <a href="../t/tray-item-icon.htm"><b>tray-item-icon</b></a>.
+</p>
+<p id="8">
+It is recommended that <a href="../r/remove-tray-item.htm"><b>remove-tray-item</b></a> be called on the
+tray-item before the application exits or its window is closed.  This
+is not necessary, but the icon may otherwise continue to appear in the
+tray until the end user moves the mouse over it.
+</p>
+<p id="9">
+See the description of
+the <a href="../../../classes/cg/tray-item.htm"><code>tray-item</code></a>
+class for an example.
+</p>
+
+<h3 id="10">
+GTK Note
+</h3>
+
+<p id="11">
+Tray items are not implemented on the GTK platform, where we see no
+way to implement them.  You should use <code>#+mswindows</code>
+to conditionalize any tray-item code.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-tray-item.htm">9.0 version</a></td></tr></table></body></html>

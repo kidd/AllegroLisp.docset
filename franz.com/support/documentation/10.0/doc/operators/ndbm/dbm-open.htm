@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>dbm-open</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dbi.ndbm</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ndbm/dbm-open.htm">9.0 version</a></td></tr></table><h2 id="2">dbm-open</h2>
+
+<p id="3"><b>Arguments: </b><i>
+filename </i>&amp;key <i>if-exists if-does-not-exist default-return external-format mode store-null-terminators</i><i>
+</i></p>
+
+<p id="4">
+<a href="dbm-open.htm"><b>dbm-open</b></a> opens or
+creates an ndbm database.  <i>filename</i> specifies
+the base filename for the database (notes on this below).
+</p>
+
+<p id="5">
+The keyword arguments are:
+</p>
+<ul>
+<li id="6">
+<i>if-exists</i>: the value may be
+<code>:append</code> (the default),
+<code>:overwrite</code>, or <code>:supersede</code>.
+<code>:append</code> and <code>:overwrite</code> are
+synonymous and indicate that an existing database should be opened.
+<code>:supersede</code> means that any existing database should
+be erased and a fresh database should be created.
+</li>
+<li id="7">
+<i>if-does-not-exist</i>: the value may be
+<code>:error</code> (the default) or <code>:create</code>.
+<code>:error</code> means that an error will be generated if
+the database does not exist. <code>:create</code> means that a
+fresh database will be created if one does not exist.
+</li>
+<li id="8">
+<i>default-return</i>: this argument specifies the
+default data type to return from <a href="dbm-fetch.htm"><b>dbm-fetch</b></a>. Internally, NDBM databases
+simply work with byte arrays.  However, it is often convenient to work
+with strings.  If <i>default-return</i> is
+<code>:string</code> (the default), then database data will be
+converted to strings before being returned from <a href="dbm-fetch.htm"><b>dbm-fetch</b></a> (unless the return type is
+specified in the call to <a href="dbm-fetch.htm"><b>dbm-fetch</b></a>).  If
+<i>default-return</i> is <code>:usb8</code>, then
+<a href="dbm-fetch.htm"><b>dbm-fetch</b></a> will return
+usb8 vectors (that is, (unsigned-byte 8) vectors) unless the return
+type is specified in the call to <a href="dbm-fetch.htm"><b>dbm-fetch</b></a>.
+</li>
+<li id="9">
+<i>external-format</i>: this argument specifies the
+default external format to use when storing/retrieving strings from
+the database.  If not supplied, then <code>(locale-external-format
+*locale*)</code> will be used. (See <a href="../excl/locale-external-format.htm"><b>locale-external-format</b></a> and <a href="../../variables/excl/s_locale_s.htm"><code>*locale*</code></a>.)
+</li>
+<li id="10">
+<i>mode</i>: this argument is defined by the open(2)
+system call documentation on each system. No value need be specified,
+as the default value is generally suitable.
+</li>
+<li id="11">
+<i>store-null-terminators</i>: if this argument is true
+(the default), then when strings are used as keys or data, their null
+terminating bytes are included in the data stored in the database.
+</li>
+</ul>
+
+<p id="12">
+This function returns an ndbm object.
+</p>
+
+<h3 id="13">
+<a name="filename-note">Note about the filename</a>
+</h3>
+
+<p id="14">
+Your operating system's implementation of NDBM may augment the
+supplied filename and open/create additional files to support the
+database. For example, many implementations take the base
+<i>filename</i> and make two files:
+<i>filename.dir</i> and <i>file.pag</i>.
+Always use just the base <i>filename</i> when calling
+<a href="dbm-open.htm"><b>dbm-open</b></a>.
+</p>
+
+<p id="15">
+See <a href="../../ndbm.htm">ndbm.htm</a> for information on the NDBM
+facility.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ndbm/dbm-open.htm">9.0 version</a></td></tr></table></body></html>

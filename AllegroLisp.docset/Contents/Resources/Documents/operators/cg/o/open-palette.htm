@@ -1,0 +1,90 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>open-palette</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/open-palette.htm">9.0 version</a></td></tr></table><h2 id="2">open-palette</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream rgb-vector
+</i> &amp;optional <i>animated-entries</i><i>
+</i></p>
+
+<p id="4">
+Creates and returns a palette and returns a handle to that palette
+(i.e. an integer) that is appropriate to assign to
+<i>stream</i>. <i>stream</i> should be a
+<a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+Generally this palette will be compatible with all windows, and
+<code>(screen *system*)</code> (see <a href="../s/screen.htm"><b>screen</b></a> and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>) may be used as a value
+for <i>stream</i>.  Palettes should be needed
+only if Windows is running in 256-color mode or less and the standard
+VGA colors are not sufficient.
+</p>
+<p id="5">
+<i>rgb-vector</i> should be a vector of up to 256 rgb
+colors. For example, the following form returns a vector of six colors
+using predefined colors (<a href="../../../variables/cg/cyan.htm"><code>cyan</code></a>, <a href="../../../variables/cg/red.htm"><code>red</code></a>, <a href="../../../variables/cg/black.htm"><code>black</code></a>, and <a href="../../../variables/cg/white.htm"><code>white</code></a>) and new colors created with
+<a href="../m/make-rgb.htm"><b>make-rgb</b></a>:
+</p>
+<pre id="6">
+(setq cv (vector cyan (make-rgb :blue 10 :red 33) 
+                 red (make-rgb :green 154 :red 0 :blue 99)
+                 black white))
+</pre>
+<p id="7">
+<i>animated-entries</i> should be a list of indices of
+<i>rgb-vector</i> which are candidates for
+animation. See <a href="../a/animate-color-number.htm"><b>animate-color-number</b></a>. The Operating
+System is instructed not to share these colors.
+</p>
+<p id="8">
+With <code>cv</code> as defined just above, create a suitable
+palette for <code>(screen *system*)</code> (see <a href="../s/screen.htm"><b>screen</b></a> and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>) with
+</p>
+<pre id="9">
+(setq my-palette (open-palette (screen *system*) cv))
+</pre>
+<p id="10">
+Note that this function does not assign the returned palette to
+<i>stream</i>. That must be done with <a href="../p/palette.htm"><b>(setf
+palette)</b></a>.
+</p>
+<p id="11">
+<b>Efficiency note</b>: When a window is closed or a palette is
+removed from it by calling <a href="../p/palette.htm"><b>(setf palette)</b></a>, Common Graphics does not
+automatically close the palette to clean up its operating system
+resources.  The reason is that other windows could be using the same
+palette (now or in the future), so Common Graphics does not know when
+it is safe to close it. Therefore, if an application creates many
+palettes, it may need to call <a href="../c/close-palette.htm"><b>close-palette</b></a> to close each one to
+prevent the operating system from running out of palette resources.
+This should be done only when each palette is no longer being used by
+any window. The resources are cleaned up when Lisp exits.
+</p>
+<p id="12">
+<b>Warning</b>: the palette handle returned by this function is an
+address. This address will be valid so long as the current invocation
+of Lisp is running but may not be valid if the image is dumped (with
+<a href="../../excl/dumplisp.htm"><b>dumplisp</b></a>) and
+rerun (it may be valid if rerun on the same machine, it is less likely
+to be valid on a different machine running the same operating system,
+it is very unlikely to be valid on a different machine running a
+different operating system). Therefore, palettes should be initialized
+each time Allegro CL (or an Allegro CL application) is run.
+</p>
+
+<p id="13">
+For information on when palettes are useful (or necessary) see
+<a href="../../../cg/cg-color-palettes.htm">cg-color-palettes.htm</a>.
+</p>
+
+<h3 id="14">
+GTK Note
+</h3>
+
+<p id="15">
+Palettes have not yet been implemented on the GTK platform.
+Calling the palette-related functions on GTK will have no effect.
+</p>
+
+
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/open-palette.htm">9.0 version</a></td></tr></table></body></html>

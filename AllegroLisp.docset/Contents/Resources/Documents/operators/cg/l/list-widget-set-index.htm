@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>list-widget-set-index</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/l/list-widget-set-index.htm">9.0 version</a></td></tr></table><h2 id="2">list-widget-set-index</h2>
+
+<p id="3"><b>Arguments: </b><i>
+list-widget index </i> &amp;optional <i>off-p</i><i>
+</i>&amp;key <i>trigger-on-change</i><i>
+</i></p>
+
+<p id="4">
+Changes the selection status of <i>list-widget</i>'s
+item at the given <i>index</i>. If
+<i>off-p</i> is true the item will
+be deselected; otherwise it will be selected.
+</p>
+
+<p id="5">
+If <b><i>trigger-on-change</i></b> is true, then the
+value is changed by calling <a href="../v/value.htm"><b>(setf value)</b></a>, which will call the widget's
+<a href="../o/on-change.htm"><b>on-change</b></a> function for a new
+value.  If <code>nil</code>, then the value slot is set
+directly and the <a href="../o/on-change.htm"><b>on-change</b></a>
+function will never run.  The default is <code>nil</code>
+for backward compatibility, though it is typically best to pass this
+argument as true.
+</p>
+<p id="6">
+The return value is undefined. (In releases prior to 8.1, when there
+was no <i>trigger-on-change</i> argument, this function
+returned true if the change was effective and <code>nil</code> if there was an error. The return value can no
+longer be interpreted to indicate success or failure.)
+</p>
+
+
+<p id="7">
+If <i>list-widget</i> is a <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a> and the index that
+is passed is -1, then all of the items are deselected if
+<i>off-p</i> is true and are selected if
+<i>off-p</i> is <code>nil</code>. <i>off-p</i> defaults to <code>nil</code>.
+</p>
+<p id="8">
+<i>list-widget</i> can be a <a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a>, a <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>, or a
+<a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/l/list-widget-set-index.htm">9.0 version</a></td></tr></table></body></html>

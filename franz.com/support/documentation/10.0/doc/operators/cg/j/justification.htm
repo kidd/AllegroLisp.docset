@@ -1,0 +1,69 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>justification</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/j/justification.htm">9.0 version</a></td></tr></table><h2 id="2">justification</h2>
+
+<p id="3"><b>Arguments: </b><i>
+standard-object
+</i></p>
+
+<p id="4">
+Returns (or sets with <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>) how text will be positioned horizontally
+on object. The value should be one of the symbols :left, :center, or
+:right.
+</p>
+<p id="5">
+<a href="../j/justification.htm"><b>justification</b></a> is
+a property of the <a href="../../../classes/cg/list-view-column.htm"><code>list-view-column</code></a>, <a href="../../../classes/cg/header-info.htm"><code>header-info</code></a>, <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> (see
+note below), <a href="../../../classes/cg/multi-line-editable-text.htm"><code>multi-line-editable-text</code></a>, <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a>, and
+<a href="../../../classes/cg/button.htm"><code>button</code></a> classes.
+</p>
+<p id="6">
+<b>Note on editable-text on Windows</b>: according to Microsoft, this
+option will work for a single-line text editing control
+(the <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> in Common Graphics)
+only in Windows 2000 or later. In Windows NT
+4.0 the control will presumably remain left-justified, though we have
+observed alternate justification working in Windows NT 4.0 Service
+Pack 6.
+</p>
+<p id="7">
+<b>Note on static-text on GTK</b>: To use <code>:center</code>
+or <code>:right</code> justification in a static-text widget on
+Linux and a Mac, the <a href="../w/wrapping.htm"><b>wrapping</b></a>
+property must be <code>nil</code>.  If you want multiple
+lines of text, you can insert newline characters into the value
+string.
+</p>
+<p id="8">
+<b>Note on text-edit-panes on Windows</b>: If object is an instance of <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> (such
+as a <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a>), <a href="../j/justification.htm"><b>justification</b></a> returns the paragraph
+justification of the selected text of the argument. The possible
+values are :left, :center, or :right.
+</p>
+<p id="9">
+The <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> function for a
+<a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>
+sets the paragraph justification of the selected text.
+</p>
+<p id="10">
+On Windows, the <a href="../j/justification.htm"><b>justification</b></a> property may not be
+changed on an existing control, and must instead be specified with the
+inspector when designing a control (using a form) or with the
+:resizable initarg of <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>. (It can be changed using the
+inspector when designing a form but not for a running control, either
+in the IDE or in an application.)
+</p>
+<p id="11">
+A text-edit-pane argument must be an instance of
+a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>. It cannot be a
+<a href="../../../classes/cg/text-edit-window.htm"><code>text-edit-window</code></a> or a <a href="../../../classes/cg/rich-edit.htm"><code>rich-edit</code></a> control
+(apply <a href="../w/window.htm"><b>window</b></a> to
+a <a href="../../../classes/cg/rich-edit.htm"><code>rich-edit</code></a>
+control to get a value suitable as an argument to this function).
+</p>
+<p id="12">
+See <a href="../../../cg/cg-rich-text.htm">cg-rich-text.htm</a> for information about
+rich text editing in Common Graphics.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/j/justification.htm">9.0 version</a></td></tr></table></body></html>

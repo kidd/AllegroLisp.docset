@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>defforeign-list</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/defforeign-list.htm">9.0 version</a></td></tr></table><h2 id="2">defforeign-list</h2>
+
+<p id="3"><b>Arguments: </b><i>
+forms </i>&amp;key <i>print</i><i>
+</i></p>
+
+<p id="4">
+This function is obsolete and maintained for backwards compatibility
+only. There is no real equivalent in the redesigned interface. <a href="defforeign.htm"><b>defforeign</b></a> has been
+replaced by the macro <a href="def-foreign-call.htm"><b>def-foreign-call</b></a>. All new code
+should use that macro, calling it repeatedly if a number of foreign
+functions must be defined.
+</p>
+
+<p id="5">This function allows you to define many foreign functions at once. It may be more
+convenient but it is no faster than calling <a href="defforeign.htm"><b>defforeign</b></a>
+many times. This function returns the number of <i>unsuccessful</i> definitions so a
+returned value of 0 means that all definitions were successful. The following definition
+is functionally equivalent to the definition of <a href="defforeign-list.htm"><b>defforeign-list</b></a>.</p>
+
+<blockquote>
+  <pre id="6">(defun simple-defforeign-list (list-of-arg-lists)
+   (let ((errors 0))
+   (dolist (arg-list list-of-arg-lists errors)
+   (unless (apply #'ff:defforeign arg-list)
+   (incf errors))))) </pre>
+</blockquote>
+
+<p id="7">Each <i>arg-list</i> argument must be a list of the
+arguments that would be passed to <a href="defforeign.htm"><b>defforeign</b></a>. Note that the
+individual lists are processed in an <a href="../../../ansicl/dictentr/apply.htm"><b>apply</b></a> form and thus the elements in the
+individual lists are <i>not</i> evaluated as they would be if the same
+values were passed directly to <a href="defforeign.htm"><b>defforeign</b></a>. For example, if you
+want elements of the lists evaluated, you must backquote the entire
+list of <i>arg-lists</i> and put commas before those
+elements which require evaluation. </p>
+
+<p id="8">
+See <a href="../../ftype.htm">ftype.htm</a> for
+information on foreign types in Allegro CL and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/defforeign-list.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,35 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>list-view-item-position</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/l/list-view-item-position.htm">9.0 version</a></td></tr></table><h2 id="2">list-view-item-position</h2>
+
+<p id="3"><b>Arguments: </b><i>
+list-view-item </i> &amp;optional <i>position</i><i>
+</i></p>
+
+<p id="4">
+This function returns a position object indicating the distance of the
+upper-left corner of a <a href="../../../classes/cg/list-view-item.htm"><code>list-view-item</code></a> from the inner
+upper-left corner of its <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> control. If the
+<i>position</i> argument is non-nil, then it should be
+a position object which will be destructively modified and returned,
+in order to avoid consing a new position object to return.
+</p>
+<p id="5">
+<a href="../l/list-view-item-position.htm"><b>(setf list-view-item-position)</b></a>
+may be called to programmatically move a list-view-item. This is
+probably useful only when the <a href="../l/layout-style.htm"><b>layout-style</b></a> is either :small-icon
+or :large-icon. Note that <a href="../l/list-view-item-position.htm"><b>(setf list-view-item-position)</b></a>
+does not have the optional position argument. If the <a href="../a/auto-arrange.htm"><b>auto-arrange</b></a> property of the
+list-view control has been turned on, then moving an item will result
+in all of the items immediately being arranged once again into a
+rectangular array, with the moved item being placed at the position
+closest to the arbitrary position to which it was moved.
+</p>
+
+
+<p id="6">
+See <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a>.
+</p>
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/l/list-view-item-position.htm">9.0 version</a></td></tr></table></body></html>

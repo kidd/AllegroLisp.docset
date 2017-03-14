@@ -1,0 +1,246 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pop-up-menus-for-many-sorted-choices</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pop-up-menus-for-many-sorted-choices.htm">9.0 version</a></td></tr></table><h2 id="2">pop-up-menus-for-many-sorted-choices</h2>
+
+
+
+<p id="3"><b>Arguments: </b><i>
+choices </i>&amp;key  (<i>on-print</i> (quote princ-to-string)) (<i>stream</i> (screen *system*))<i> position</i><i>
+</i></p>
+
+
+<p id="4"><b>Arguments: </b><i>
+choices </i>&amp;key  (<i>on-print</i> (quote princ-to-string)) (<i>stream</i> (screen *system*))<i> position case-insensitive on-help</i><i>
+</i></p>
+
+
+<p id="5">
+This function takes a list of pre-sorted
+<b><i>choices</i></b> and presents them to the user as a
+series of pop-up menus (by calling <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a> one or more times). The main purpose
+of this function is to make it easy to select one of many choices.
+</p>
+<p id="6">
+This function is challenging to describe. We will start with a simple
+example where we do not use the keyword arguments, then we will
+describe the arguments in more detail, then we have a more complex
+example.
+</p>
+<p id="7">
+<b><i>choices</i></b> must be list of objects arranged
+so their printnames (as created by the function which is the value of
+the <i>on-print</i> argument) are in alphanumeric
+order. Just to use strings (assuming default
+<i>on-print</i>), <code>("Jones" "Smith" "Smits"
+"Watson" "Williams" "Wilson")</code> is a suitable
+value. <code>("Smith" "Smits" "Watson" "Williams" "Jones"
+"Wilson")</code> is not. (The menu presenting algorithm may get
+confused if the printnames are out of order.) So this call:
+</p>
+
+<pre id="8">
+(pop-up-menus-for-many-sorted-choices '("Jones" "Smith" "Smits"
+                                        "Watson" "Williams" "Wilson"))
+</pre>
+
+<p id="9">
+causes this menu to be displayed:
+</p>
+
+<p id="10"><img src="../../../pictures/pumfmsc-1.jpg"></p>
+
+<p id="11">
+Note that, for reasons having to do with how multiprocessing in the
+IDE is done, clicks away from the menu and keystrokes are not seen by
+the menu, so this example menu cannot be dismissed -- you must follow
+it through to a choice. In the example below, things are set up so the
+menu can be dismissed and keystrokes can be used to choose items. Here
+we are only interested in showing what the choices are in the cascade
+of menus displayed.
+</p>
+<p id="12">
+In our choices, we have three initial characters, <b>J</b>, <b>S</b>,
+and <b>W</b>, so there are three choices in the initial menu. Each new
+menu will have as many choices as there are different characters in
+the position of the remaining choices at the position where they start
+to differ. 
+</p>
+<p id="13">
+The choices are <b>Jones</b>, <b>Smit...</b>, and
+<b>W...</b>. <b>Jones</b> has no ellipsis (...) because there
+is only one choice beginning with <b>J</b> so if you select it, you
+get it. the other two have ellipses because there are
+multiple choices. The ellipsis starts where the characters
+diverge (after <b>Smit</b> or after <b>W</b>). We select <b>W...</b>
+and this new menu is displayed:
+</p>
+
+<p id="14"><img src="../../../pictures/pumfmsc-2.jpg"></p>
+
+<p id="15">
+Now the choices are <b>Watson</b> and <b>Wil...</b>. If you choose
+<b>Watson</b>, that object is returned. If you choose <b>Wil...</b>,
+you get a final menu with choices <b>Williams</b> and <b>Wilson</b>
+(not illustrated). 
+</p>
+
+<p id="16">
+So, a pop-up menu will be shown for each character position for which
+there remain multiple choices that have different characters at that
+position.  When there is a single remaining choice for a character at
+the current character position, then that choice will appear on the
+menu and the user may select it directly.  When there are multiple
+remaining choices for a particular next character, then the menu-item
+for that character will show just the character followed by an
+ellipsis, and selecting that menu-item will show a further pop-up menu
+for the remaining choices that have the selected character at that
+position.
+</p>
+<p id="17">
+The keyboard shortcut on each menu will be the unique character at the
+current character position that either selects a final choice or
+presents a further menu for that character.  This means that a choice
+can be made quickly by typing the characters of the desired choice
+wherever there is an ambiguity, until the choice has been fully
+disambiguated.  Note that using the keyboard shortcuts requires a
+proper <i>stream</i> argument, as detailed below (In our
+simple example above, no <i>stream</i> argument
+specified so shortcuts did not work.)
+</p>
+<p id="18">
+<b><i>choices</i></b> is a list of arbitrary values from
+which the user may select a choice.  The choices must already be
+sorted alphanumerically by the strings that are returned by the
+<i>on-print</i> function; otherwise the menu may be
+confused.  One of the elements of this list is returned if the user
+makes a selection, or <code>nil</code> is returned
+immediately if the user cancels from any menu.
+</p>
+<p id="19">
+<b><i>on-print</i></b> is a function that returns
+strings that will appear in the menu. It should take a single
+argument, which is one of the elements of the
+<i>choices</i> list, and should return a string to
+represent it.  The default value is <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a>.  This function will be called
+many times when there are many choices, and so it is most efficient if
+it returns an existing string rather than consing a new one on each
+call.  This argument could be identity if the choices are already
+strings.
+</p>
+<p id="20">
+<b><i>stream</i></b> is either the screen or else a
+window that will serve as the owner of the pop-up menus.  On the
+Windows platform (and perhaps elsewhere in the future), the keyboard
+shortcuts for the menu items will work only if this argument is a
+window that was created in the process that is calling <a href="../p/pop-up-menus-for-many-sorted-choices.htm"><b>pop-up-menus-for-many-sorted-choices</b></a>.
+The default is the screen, and so the keyboard shortcuts would never
+work unless this argument is passed.
+</p>
+
+
+<p id="21">
+<b><i>position</i></b> is the position relative to the
+upper-left interior corner of the window (or screen) at which the
+upper-left corner of the pop-up menus will appear. The default is the
+current position of the mouse cursor.x Successive menus will always
+appear at the same position as the first one, rather than defaulting
+again to the new mouse cursor position.
+</p>
+
+
+<p id="22">
+<b><i>case-insensitive</i></b> should be a boolean value
+that indicates whether the choices (after
+the <i>on-print</i> function has converted them to the
+strings to be presented) are sorted in a case-insensitve way. The
+choices will then be separated into multiple menus accordingly. The
+default is <code>nil</code>, meaning a case-sensitive
+order.
+</p>
+<p id="23">
+<b><i>on-help</i></b>, if specified, should be a
+funcallable object (a function object or function name)
+or <code>nil</code>.  The default
+is <code>nil</code>.  A function may be used for
+displaying status bar messages as the user highlights individual menu
+items.  The function should take a single argument, which will be one
+of the values in the choices list, and it should return a string that
+can be displayed in a status bar.  The strings will be displayed in
+the status bar of the specified stream, if it has a status bar, or
+else in the status bar of the first ancestor window of that stream
+that has a status bar, if any.
+</p>
+
+<h2 id="24">
+An Example
+</h2>
+
+<p id="25">
+Below is a complete example that uses an owner window so that keyboard
+shortcuts will work.  The user's most recent choice is displayed in
+the window.  Methods are defined on a window subclass so that the
+initial menu may be shown either by right-clicking the window or by
+pressing the spacebar when the window is selected.  The mouse or
+keyboard may then be used to select choices.
+</p>
+<p id="26">
+The short list of choices is (:apple :blueberry :cherry :chocolate
+:cranberry).  There is only one choice that begins with "a", so
+"apple" appears on the initial menu and may be chosen immediately.
+Likewise with "blueberry" for "b".  But there are multiple choices
+beginning with "c", and so the third menu item will show "c ...", and
+choosing that item will show a second menu of all choices that being
+with "c".  If "c" is chosen, then the second menu will show "ch ..."
+for the two remaining choices that begin with "ch", followed by
+"cranberry" since it is the only remaining choice that begins with
+"cr".
+</p>
+<p id="27">
+When using the keyboard to select choices most quickly, :apple could
+be selected by pressing the spacebar to show the first menu, and then
+pressing the "a" key.  :cranberry can be selected by typing space, c,
+r, while :chocolate requires space, c, h, o.
+</p>
+
+<pre id="28">
+(defclass menu-test-window (frame-window)
+  ((current-food :accessor current-food
+                 :initform nil)))
+
+(defun select-a-food (window cursor-position)
+  (let* ((choice (pop-up-menus-for-many-sorted-choices
+                  '(:apple :blueberry :cherry :chocolate :cranberry)
+                  :stream window
+                  :position cursor-position)))
+    (when choice
+      (setf (current-food window) choice)
+      (invalidate window))))
+
+(defmethod redisplay-window ((window menu-test-window) &optional box)
+  (declare (ignore box))
+  (clear-page window)
+  (let* ((food (current-food window)))
+    (when food
+      (with-font (window (make-font-ex nil "Arial" 24 '(:bold)))
+        (draw-string-in-box window (princ-to-string food) nil nil
+                            (visible-box window) :center :center)))))
+
+(defmethod mouse-right-down ((window menu-test-window)
+                             mouse-buttons cursor-position )
+  (declare (ignore mouse-buttons))
+  (select-a-food window cursor-position))
+
+(defmethod virtual-key-down ((window menu-test-window)
+                             mouse-buttons key-code)
+  (declare (ignore mouse-buttons))
+  (case key-code
+    (#.vk-space (select-a-food window #.(make-position 0 0)))
+    (t (call-next-method))))
+
+(make-window :menu-sequence-test
+  :class 'menu-test-window
+  :title "Right-Click or Space"
+  :exterior (make-box-relative 200 200 300 200))
+</pre>
+
+<hr><p id="29"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pop-up-menus-for-many-sorted-choices.htm">9.0 version</a></td></tr></table></body></html>

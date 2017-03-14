@@ -1,0 +1,86 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>re-let</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/re-let.htm">9.0 version</a></td></tr></table><h2 id="2">re-let</h2>
+
+<p id="3"><b>Arguments: </b><i>
+regexp  string bindings
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+<i>regexp</i> and <i>bindings</i> are the
+same as of <a href="re-lambda.htm"><b>re-lambda</b></a>. <i>string</i> must be
+an expression that evaluates to a string. This macro evaluates
+<i>string</i>, matches it with
+<i>regexp</i>, and if it matches, bind variables with
+(sub)matches according to <i>bindings</i>, then
+evaluates <i>body</i>. If <i>string</i>
+doesn't match <i>regexp</i>, <i>body</i>
+is not evaluated and <code>nil</code> is returned.
+</p>
+
+<p id="5">
+See also <a href="re-case.htm"><b>re-case</b></a> and <a href="re-lambda.htm"><b>re-lambda</b></a>.
+</p>
+
+
+<h3 id="6">
+Example
+</h3>
+
+<pre id="7">
+cl-user(4): (setq f
+	      (re-lambda &quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;
+		  ((foo 1) (bar 2) (baz 3))
+		(list foo bar baz)))
+#&lt;Interpreted Function (unnamed) @ #x71ed7892&gt;
+cl-user(5): (funcall f &quot;foo the bar&quot;)
+(&quot;foo&quot; &quot;the&quot; &quot;bar&quot;)
+cl-user(6): (re-let &quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;
+		&quot;foo the bar&quot;
+		((foo 1) (bar 2) (baz 3))
+	      (list foo bar baz))
+(&quot;foo&quot; &quot;the&quot; &quot;bar&quot;)
+cl-user(7): 
+
+
+cl-user(9): (re-case &quot;foo the barmy&quot;
+	      (&quot;foo a (.*)&quot; ((it 1)) (list it))
+	      (&quot;foo the (.*)&quot; ((it 1)) (list it))
+	      (t :no-match))
+(&quot;barmy&quot;)
+cl-user(10): (re-case &quot;foo a barmy&quot;
+	      (&quot;foo a (.*)&quot; ((it 1)) (list it))
+	      (&quot;foo the (.*)&quot; ((it 1)) (list it))
+	      (t :no-match))
+(&quot;barmy&quot;)
+cl-user(11): (re-case &quot;foo xx barmy&quot;
+	      (&quot;foo a (.*)&quot; ((it 1)) (list it))
+	      (&quot;foo the (.*)&quot; ((it 1)) (list it))
+	      (t :no-match))
+:no-match
+cl-user(12): 
+
+cl-user(29): (re-let &quot;(abc|def)(.*)&quot; &quot;defabc&quot;
+                     ((a 0) (b 1) (c 2))
+               (list a b c))
+(&quot;defabc&quot; &quot;def&quot; &quot;abc&quot;)
+cl-user(30): 
+</pre>
+
+
+
+<p id="8">
+The symbol naming this operator is 
+also exported from the regexp package.
+</p>
+
+
+<p id="9">
+See <a href="../../regexp.htm#regexp-new-1">The new regexp2
+module</a> in <a href="../../regexp.htm">regexp.htm</a> for further
+information on this macro and the <b>regexp2</b> module.
+</p>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/re-let.htm">9.0 version</a></td></tr></table></body></html>

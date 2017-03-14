@@ -1,0 +1,71 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>receive-from</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: socket</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/receive-from.htm">9.0 version</a></td></tr></table><h2 id="2">receive-from</h2>
+
+<p id="3"><b>Arguments: </b><i>
+sock size </i>&amp;key <i>buffer extract</i><i>
+</i></p>
+
+<p id="4">
+This generic function is used to read from a datagram socket. You must
+specify a size bigger than the size of the message you expect (usually
+the rest of the datagram will be thrown away if it doesn't all
+fit).
+</p>
+
+<p id="5">
+If the <i>buffer</i> argument is given then it should be
+a Lisp vector of some raw type (like <code>(unsigned-byte
+8)</code> but definitely not <code>t</code>) of at
+least <i>size</i> bytes that will be used to read in the
+datagram. If <i>buffer</i> is not given then a fresh
+buffer will be created (of the type appropriate to the format of the
+socket).
+</p>
+
+<p id="6">
+The <i>buffer</i> argument may be a
+<code>character</code> vector. In this case <a href="receive-from.htm"><b>receive-from</b></a> will create a temporary buffer of
+type <code>(unsigned-byte 8)</code> into which to read the
+octets and then <a href="../excl/octets-to-string.htm"><b>octets-to-string</b></a> will be used to convert those
+octets to characters. If you want to save the creation of this
+temporary array for each call to <a href="receive-from.htm"><b>receive-from</b></a> you should pass an
+<code>(unsigned-byte 8)</code> array in as the buffer. When
+using an 8-bit character Lisp (e.g., alisp8 or mlisp8-- see <a href="../../startup.htm#executable-names-1">Allegro CL Executables:
+alisp, alisp8, mlisp, mlisp8, allegro, allegro-ansi</a> in
+<a href="../../startup.htm">startup.htm</a>), no temporary buffer is created and no
+conversion occurs.
+</p>
+
+<p id="7">
+If <i>extract</i> is unspecified or <code>nil</code> then the first value returned is the buffer used
+to read the data. If <i>extract</i> is true then the
+first value returned is a subsequence of the buffer, that subsequence
+being that part of the buffer that contains the data just read.</p>
+
+<p id="8">
+The second value returned is the number of bytes read by 
+<a href="receive-from.htm"><b>receive-from</b></a>.
+</p>
+
+
+
+<p id="9">
+In the case of an <code>:internet</code> socket, the third value
+returned is the 32-bit internet address or the IPv6 address of the
+sender of the data and the fourth value is the port number.
+</p>
+
+<p id="10">
+In the case of a <code>:file</code> socket, the third (and last)
+value returned is the filename of the sender's socket (or
+<code>""</code> if there is no filename).
+</p>
+
+<p id="11">
+See
+<a href="../../socket.htm">socket.htm</a> for general
+information on sockets in Allegro CL.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/receive-from.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-typep-transformer</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/add-typep-transformer.htm">9.0 version</a></td></tr></table><h2 id="2">add-typep-transformer</h2>
+
+<p id="3"><b>Arguments: </b><i>type function</i></p>
+
+<p id="4">This function is called for its side effects. The return value has
+no meaning. This function tells the compiler that a <a href="../../../ansicl/dictentr/typep.htm"><b>typep</b></a> form:</p>
+
+<code><p id="5">(typep x 'type)</p></code>
+
+<p id="6">can be transformed into the form:</p>
+
+<code><p id="7">(funcall predicate x)</p></code>
+
+<p id="8">The compiler will make the transformation where possible.</p>
+
+<p id="9"><i>type</i> must be a type, typically defined by the
+user with <a href="../../../ansicl/dictentr/deftype.htm"><b>deftype</b></a>.
+<i>predicate</i> should be a function object or a symbol
+naming a function. That function must accept any Lisp object as a
+single argument and return <code>nil</code> if the object
+is not of type <i>type</i>, true if
+it is of type <i>type</i>.  <a href="remove-typep-transformer.htm"><b>remove-typep-transformer</b></a> removes the
+transform.
+</p>
+
+<p id="10">
+See <a href="../../compiling.htm">compiling.htm</a> for general information on
+compiling and see <a href="../../compiling.htm#adding-typep-trans-2">Adding typep-transformers</a> in that
+document for more information on typep transforms.
+</p>
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/add-typep-transformer.htm">9.0 version</a></td></tr></table></body></html>

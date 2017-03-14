@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*default-cg-message-timeout*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/s_default-cg-message-timeout_s.htm">9.0 version</a></td></tr></table><h2 id="2">*default-cg-message-timeout*</h2>
+
+<p id="3">
+The value of this variable is the number of milliseconds that a Common
+Graphics thread will wait before timing out with an error when it
+sends a message to a window that was created in another thread. The
+default is 3000 (a generous three seconds), but it is still possible
+for a message timeout to occur if the second thread is busy for longer
+than this period, because of running code that was triggered by a
+single event or by a number of events that were all queued up before
+the first thread sent the message. Many Common Graphics functions
+internally send messages to the window on which they are invoked or to
+that window's relatives.
+</p>
+<p id="4">
+Message timeouts are possible in a generated Common Graphics
+application only if it starts up additional Common Graphics
+threads. (By default, an application generated from a project uses
+only a single thread, without starting up multiprocessing at all.)
+When multiple Common Graphics threads are used, possible timeouts can
+still be prevented by not mixing windows that are created in different
+threads into a single window hierarchy, and not calling code in one
+thread that accesses windows created in another thread. Timeouts are
+still possible in the IDE, since it uses multiple Common Graphics
+threads that sometimes mix windows into a single hierarchy but the
+likelihood should be very low at the default value of this variable.
+</p>
+<p id="5">
+If you write an application where message timeouts are possible, you
+may want to set this variable to a smaller value during development
+and testing than in your shipped product, to increase the likelihood
+of catching timeouts that may occur when the shipped product is run on
+slower or busier machines.  If you experience message timeouts in the
+IDE, you may want to use a larger value than the default.
+</p>
+<p id="6">
+This special variable is not bound per-thread initially (and thus is
+not on the <a href="s_default-cg-bindings_s.htm"><code>*default-cg-bindings*</code></a> list), so
+setting its value in any thread will affect all threads. But it may
+instead be bound in a particular thread to control only the amount of
+time that that thread will wait when sending a message to a window in
+any other thread within the dynamic scope of that binding.
+</p>
+
+
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/s_default-cg-message-timeout_s.htm">9.0 version</a></td></tr></table></body></html>

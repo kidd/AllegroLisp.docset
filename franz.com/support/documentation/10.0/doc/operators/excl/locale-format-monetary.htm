@@ -1,0 +1,91 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>locale-format-monetary</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/locale-format-monetary.htm">9.0 version</a></td></tr></table><h2 id="2">locale-format-monetary</h2>
+
+<p id="3"><b>Arguments: </b><i>stream value use-int-symbol suppress-dp
+</i> &amp;optional  (<i>locale</i> *locale*)<i>
+</i></p>
+
+<p id="4">
+Arguments:
+</p>
+<ul>
+<li id="5">
+<i>stream</i> is a stream.
+</li>
+<li id="6">
+<i>value</i> is a number.
+</li>
+<li id="7">
+<i>use-int-symbol</i> is a boolean.
+</li>
+<li id="8">
+<i>suppress-dp</i> is a boolean.
+</li>
+<li id="9">
+<i>locale</i> is a locale.
+</li>
+</ul>
+<p id="10">
+This function outputs <i>value</i> to
+<i>stream</i> as a monetary amount appropriate to the
+specified locale.
+</p>
+<p id="11">
+If <i>use-int-symbol</i> is true, then the locale's
+international currency symbol (locale-int-curr-symbol) is used,
+otherwise the locale's currency-symbol (locale-currency-symbol) value
+is used.
+</p>
+<p id="12">
+If <i>suppress-dp</i> is true, then the decimal-point is
+not displayed if the locale's appropriate monetary fractional digits
+specification is zero. Note: It is an error for value to be a
+non-integer when being displayed with a locale where the fractional
+digits specification is zero.
+</p>
+<p id="13">
+The function <a href="locale-format-monetary.htm"><b>locale-format-monetary</b></a> can be
+invoked using the format ~/ directive. The locale argument can be
+supplied using format's ~v construct. The use-int-symbol argument is
+specified using the colon modifier. The suppress-dp argument is
+specified using the at-sign modifer.
+</p>
+<h3 id="14">
+Examples: 
+</h3>
+
+<pre id="15">
+;; [assuming *locale* is (find-locale "en_US")]
+
+(locale-format-monetary *terminal-io* 1045.67 nil nil)  
+  prints `$1,045.67'
+
+(locale-format-monetary *terminal-io* 1045.67 t nil)
+  prints `USD 1,045.67'
+
+(locale-format-monetary *terminal-io* 1045.67 t nil :fr_FR)
+  prints `FRF 1 045,6700'
+
+(format t "~v/locale-format-monetary/" :en_US 1045.67)
+  prints `$1,045.67'
+
+(format t "~v/locale-format-monetary/" :fr_FR 1045.67)
+  prints `F1 045,6700'
+
+(format t "~v:/locale-format-monetary/" :fr_FR 1045.67)
+  prints `FRF 1 045,6700'
+
+(format t "~v:/locale-format-monetary/" :ja_JP 1045)
+  prints `JPY 1,045.'
+
+(format t "~v@:/locale-format-monetary/" :ja_JP 1045)
+  prints `JPY 1,045'
+</pre>
+
+<p id="16">
+See <a href="../../iacl.htm#localization-1">Localization support
+in Allegro CL</a> in <a href="../../iacl.htm">iacl.htm</a>.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/locale-format-monetary.htm">9.0 version</a></td></tr></table></body></html>

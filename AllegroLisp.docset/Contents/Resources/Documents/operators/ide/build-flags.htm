@@ -1,0 +1,118 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>build-flags</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/build-flags.htm">9.0 version</a></td></tr></table><h2 id="2">build-flags</h2>
+
+<p id="3"><b>Arguments: </b><i>
+project
+</i></p>
+
+<p id="4">
+Returns a list of keyword symbols indicating whether each of several
+boolean properties of the specified <i>project</i> is
+enabled. The valid keywords for the list are:
+</p>
+<ul>
+<li id="5">
+<code>:allow-runtime-debug</code> (included in initial value)
+</li>
+<li id="6">
+<code>:allow-build-debug</code>
+</li>
+<li id="7">
+<code>:purify</code> 
+</li>
+<li id="8">
+<code>:runtime-bundle</code> (included in initial value)
+</li>
+<li id="9">
+<code>:us-government-use</code>
+</li>
+</ul>
+
+<p id="10">
+The two symbols included in the initial value of the list are
+indicated. 
+</p>
+<p id="11">
+The <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of this
+function may be called to establish the set of build-flags for a
+project programmatically, but these values are usually viewed and set
+interactively on the <a href="../../ide-menus-and-dialogs/project-manager-dialog-build.htm">Build</a> tab and the <a href="../../ide-menus-and-dialogs/project-manager-dialog-advanced.htm">Advanced</a> tab of the
+<a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog instead. Note that not all checkboxes on those
+tabs correspond to build flags.
+</p>
+<p id="12">
+Here is a table that shows the Project Manager tab and widget label of
+the widget that corresponds to each build-flags keyword:
+</p>
+
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8">
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP"><p id="13" ALIGN="CENTER"><strong>build-flags keyword</strong></p></td>
+    <td WIDTH="25%" VALIGN="TOP"><p id="14" ALIGN="CENTER"><strong>Tab</strong></p></td>
+    <td WIDTH="25%" VALIGN="TOP"><p id="15" ALIGN="CENTER"><strong>Widget label in the Project Manager</strong></p></td>
+    <td WIDTH="25%" VALIGN="TOP"><p id="16" ALIGN="CENTER"><strong>Effect</strong></p></td>
+  </tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><code>:allow-runtime-debug</code></td>
+<td WIDTH="25%" VALIGN="TOP"><a href="../../ide-menus-and-dialogs/project-manager-dialog-build.htm">Build</a></td>
+<td WIDTH="25%" VALIGN="TOP">Enable Debugging of Runtime Errors</td>
+<td WIDTH="25%" VALIGN="TOP">
+Causes the console window to be available in the standalone
+application for debugging until the application is ready to ship. See
+the section <b>Enable Debugging of Runtime Errors</b> on the page for
+<a href="../../ide-menus-and-dialogs/project-manager-dialog-build.htm">Build</a> tab of the <a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog for details.
+</td>
+</tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP"><code>:allow-build-debug</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="../../ide-menus-and-dialogs/project-manager-dialog-build.htm">Build</a></td>
+    <td WIDTH="25%" VALIGN="TOP">Enable Debugging of Build Error</td>
+    <td WIDTH="25%" VALIGN="TOP">Allows interactive debugging of an 
+    error that occurs in the lisp that is generating the standalone 
+    application.  Note that the build console may not close itself 
+    when this option is selected.</td>
+  </tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP"><code>:purify</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="../../ide-menus-and-dialogs/project-manager-dialog-advanced.htm">Advanced</a></td>
+    <td WIDTH="25%" VALIGN="TOP">Purify</td>
+    <td WIDTH="25%" VALIGN="TOP">Use the purify option</td>
+  </tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP"><code>:runtime-bundle</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="../../ide-menus-and-dialogs/project-manager-dialog-advanced.htm">Advanced</a></td>
+    <td WIDTH="25%" VALIGN="TOP">Deliver a Runtime Bundle</td>
+    <td WIDTH="25%" VALIGN="TOP">Include the runtime bundle (see 
+    <a href="../../delivery.htm#including-modules-2">Including 
+    all desired modules</a> in <a href="../../delivery.htm">delivery.htm</a>).</td>
+  </tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP"><code>:us-government-use</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><a href="../../ide-menus-and-dialogs/project-manager-dialog-advanced.htm">Advanced</a></td>
+    <td WIDTH="25%" VALIGN="TOP">For US Government use</td>
+    <td WIDTH="25%" VALIGN="TOP">Causes an additional copyright notice
+    (specifically for the United states Government) to be displayed.</td>
+  </tr>
+</table>
+</div>
+
+<p id="17">
+Generally, if the check-box widget in the dialog is checked, then the
+associated keyword will be present in the build-flags list. 
+</p>
+<p id="18">
+See the documentation for the <a href="../../ide-menus-and-dialogs/project-manager-dialog-build.htm">Build</a> tab and the <a href="../../ide-menus-and-dialogs/project-manager-dialog-advanced.htm">Advanced</a> tab of the
+<a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog for information on the meaning of these flags.
+See also the <a href="../../cg/ide-ug/ide_user_guide_4.htm">projects
+chapter</a> in the IDE User Guide.
+</p>
+
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/build-flags.htm">9.0 version</a></td></tr></table></body></html>

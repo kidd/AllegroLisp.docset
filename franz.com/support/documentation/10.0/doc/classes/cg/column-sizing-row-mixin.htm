@@ -1,0 +1,69 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>column-sizing-row-mixin</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/column-sizing-row-mixin.htm">9.0 version</a></td></tr></table><h2 id="2">column-sizing-row-mixin</h2>
+
+<p id="3">
+A <a href="grid-row.htm"><code>grid-row</code></a>
+that is an instance of this class allows the user to interactively
+change the width of <a href="grid-column.htm"><code>grid-column</code></a>s where they cross the
+<a href="grid-row.htm"><code>grid-row</code></a>.  The
+<a href="../../operators/cg/r/resizable.htm"><b>resizable</b></a>
+property of a column must also be true before interactive resizing is
+possible for that column.  In other words, a column may be
+interactively resized at a particular cell if the column is a <a href="../../operators/cg/r/resizable.htm"><b>resizable</b></a> one and the row
+at that cell is an instance of <a href="column-sizing-row-mixin.htm"><code>column-sizing-row-mixin</code></a>.
+</p>
+<p id="4">
+This feature is typically used only in a row that serves as a set of
+column headers, so that the special column-sizing mouse cursor does
+not appear frequently as the user moves the mouse over the body of the
+grid (which might be distracting), and/or to prevent the user from
+inadvertantly resizing a column slightly if they click too near a
+cell's border when they mean to click in its interior.  Nevertheless,
+it may sometimes be desirable to use this class for multiple rows, or
+even every row, of a grid.
+</p>
+<p id="5">
+The user uses this feature by moving the mouse cursor to the righthand
+border of a cell in a <a href="../../operators/cg/r/resizable.htm"><b>resizable</b></a> column where it crosses a
+<a href="column-sizing-row-mixin.htm"><code>column-sizing-row-mixin</code></a> row.  The
+mouse cursor will change to indicate where resizing may be initiated;
+this area ranges from the rightmost edge of the border to <a href="../../variables/cg/s_grid-border-mouse-slack_s.htm"><code>*grid-border-mouse-slack*</code></a> pixels to
+the left of that.  The user may click and drag horizontally in this
+area to resize the <a href="grid-column.htm"><code>grid-column</code></a>.  If the <a href="../../operators/cg/u/uniform-resizing.htm"><b>uniform-resizing</b></a> property
+of the grid section is true, then all of the columns in the clicked
+<a href="grid-column-section.htm"><code>grid-column-section</code></a>
+will be sized to the specified size, though if the control key is held
+down then the behavior of the <a href="../../operators/cg/u/uniform-resizing.htm"><b>uniform-resizing</b></a> property is
+reversed.  The drag may be canceled either by pressing the Escape key
+before releasing the mouse button or by releasing the mouse button to
+the left of the left side of the column (which would otherwise makes
+its width be negative).
+</p>
+<p id="6">
+This class must be mixed with <a href="grid-row.htm"><code>grid-row</code></a> (or one of its subclasses)
+to make an instantiable class.  It is best to specify such mixin
+classes ahead of the <a href="grid-row.htm"><code>grid-row</code></a> class in the list of
+superclasses for a new class, so that the small amount of special
+behavior from the mixin class will override the more general behavior
+of the <a href="grid-row.htm"><code>grid-row</code></a> class.  For example:
+</p>
+<pre id="7">
+(defclass my-column-sizing-row (column-sizing-row-mixin grid-row)())
+</pre>
+<p id="8">
+The above default mouse click behavior may be overridden by custom
+<a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a>
+methods.
+</p>
+<p id="9">
+The width of a <a href="grid-column.htm"><code>grid-column</code></a> is stored as its
+<a href="../../operators/cg/s/section-size.htm"><b>section-size</b></a>
+property.  See also <a href="../../operators/cg/s/stretch-subsection.htm"><b>stretch-subsection</b></a>.
+</p>
+<p id="10">
+See the <a href="grid-widget.htm"><code>grid-widget</code></a> class
+for an overview of writing grid-widget code.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/column-sizing-row-mixin.htm">9.0 version</a></td></tr></table></body></html>

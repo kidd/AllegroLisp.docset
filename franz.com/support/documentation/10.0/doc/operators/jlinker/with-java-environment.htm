@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-java-environment</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/with-java-environment.htm">9.0 version</a></td></tr></table><h2 id="2">with-java-environment</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+All calls to Java must be made with a current Java environment.
+</p>
+<p id="5">
+A Java environment is available by default
+</p>
+<ul>
+<li id="6">
+in the Lisp process in which <a href="jlinker-init.htm"><b>jlinker-init</b></a> was called
+</li>
+<li id="7">
+in an immediate callback from Java <code>(LispCall style -1 0 1
+2)</code>
+</li>
+
+<li id="8">
+in the body of a function registered with <a href="jregister-handler.htm"><b>jregister-handler</b></a> when it is called in
+response to a registered event
+</li>
+
+<li id="9">
+within the body of this macro
+</li>
+</ul>
+
+<p id="10">
+A LispCall made with style 3 or 4 <code>(STYLE_ASYNC_BR or
+STYLE_ASYNC_GO)</code> does not provide a default Java environment.
+Any calls to Java from such a Lisp function must be within an explicit
+<a href="with-java-environment.htm"><b>with-java-environment</b></a> form.
+</p>
+<p id="11">
+Since the creation of the environment may involve some overhead when
+running in native mode, it is best to place calls to this macro in the
+outermost context where calls to Java are expected.
+</p>
+<p id="12">
+If the socket implementation is used exclusively, then this macro may
+be omitted.
+</p>
+
+<p id="13">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/with-java-environment.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,273 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>command-line-argument-count</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/command-line-argument-count.htm">9.0 version</a></td></tr></table><h2 id="2">command-line-argument-count</h2>
+
+<p id="3"><b>Arguments: </b><i></i>&amp;key <i>application</i></p>
+
+
+<p id="4">
+This function and its relatives, <a href="command-line-arguments.htm"><b>command-line-arguments</b></a> and <a href="command-line-argument-count.htm"><b>command-line-argument-count</b></a> provide
+information about the command line that invoked Allegro CL. Their
+precise behavior depends on the value of the
+<i>application</i> keyword argument.
+</p>
+<p id="5">
+The command line includes the following, in the order specified: 
+</p>
+<ol>
+<li id="6">
+The executable name. This may include directory information
+(i.e. <code>/usr/local/acl/mlisp</code>) or may not (just
+<code>mlisp</code>).
+</li>
+<li id="7">
+Command-line arguments prefixed by a +. these are used on Windows
+only.
+</li>
+<li id="8">
+command-line arguments prefixed by a - and, when appropriate, the
+values of those arguments.
+</li>
+<li id="9">
+the special marker <code>--</code> (a
+double dash).
+</li>
+<li id="10">
+any arguments whatsoever that follow the
+double-dash.
+</li>
+</ol>
+
+<p id="11">
+See <a href="../../startup.htm#command-line-args-1">Command
+line arguments</a> in <a href="../../startup.htm">startup.htm</a> for a list
+of command-line arguments accepted by Allegro CL.
+</p>
+
+
+<h3 id="12">
+When the value of the :application keyword argument is true
+</h3>
+
+<p id="13">
+The application arguments are the executable name (number 1 in the
+list above) and the ones which follow the double dash (number 5 in the
+list above). Consider that those arguments are collected as strings in
+a list called the
+<code>list-of-application-arguments</code>. When
+<i>application</i> is true (it defaults to <code>t</code>), the command-line argument information functions
+behave as follows:
+</p>
+
+<ul>
+<li id="14">
+<a href="command-line-argument.htm"><b>command-line-argument</b></a> with
+argument <i>n</i> returns the (0 based) nth element of
+the <code>list-of-application-arguments</code>. It is an error
+to specify a value for n equal to or greater than the length of
+<code>list-of-application-arguments</code>.
+</li>
+<li id="15">
+<a href="command-line-arguments.htm"><b>command-line-arguments</b></a>
+returns the list <code>list-of-application-arguments</code>.
+</li>
+<li id="16">
+<a href="command-line-argument-count.htm"><b>command-line-argument-count</b></a> returns the length of the list <code>list-of-application-arguments</code>.
+</li>
+</ul>
+
+<h4 id="17">
+Examples when :application is true
+</h4>
+
+<pre id="18">
+;;  Lisp was started on UNIX with the command line
+;;  (we assume the mlisp executable is in a directory
+;;  included in the PATH environment variable):
+% mlisp -qq -- init 5 safe
+
+(sys:command-line-argument-count :application t)
+  RETURNS 4
+(sys:command-line-argument-count)  ;; :application defaults to T
+  RETURNS 4
+(sys:command-line-arguments)
+  RETURNS ("mlisp" "init" "5" "safe")
+;;  or perhaps (/usr/local/acl70/mlisp init 5 safe)
+;;  assuming mlisp is in /usr/local/acl70/: the directory
+;;  may or may not be included.
+(sys:command-line-argument 0)
+  RETURNS "mlisp"  ;; or perhaps "/usr/local/acl70/mlisp"
+(sys:command-line-argument 1)
+  RETURNS "init"
+(sys:command-line-argument 2)
+  RETURNS "5"
+(sys:command-line-argument 3)
+  RETURNS "safe"
+(sys:command-line-argument 4)
+  ERROR    ;;  the first argument to sys:command-line-argument
+           ;;  must be less than the number of arguments
+           ;;  as returned by sys:command-line-argument-count
+
+;;  Lisp was started on WINDOWS with the command line
+% mlisp.exe +co -qq -- init 5 safe
+;;  The values returned by the command-line argument functions are the
+;;  same as on UNIX (except "mlisp.exe" or 
+;;  "C:\\Program Files\\acl70\\mlisp.exe" replaces "mlisp" or 
+;;  "/usr/local/acl70/mlisp".
+
+</pre>
+
+
+
+<h3 id="19">
+When the value of the :application keyword argument is nil
+</h3>
+
+<p id="20">
+All arguments except those beginning with + are considered
+command-line arguments by these functions when
+<i>application</i> is <code>nil</code>. That
+includes the executable name (number 1 in the list above), the -
+arguments and their values (number 3 in the list above), the double
+dash (number 4 in the queue above), and arguments which follow the
+double dash (number 5 in the list above). Consider that those
+arguments are collected as strings in a list called the
+<code>list-of-arguments</code>. When
+<i>application</i> is <code>nil</code>, the
+command-line argument information functions behave as follows:
+</p>
+
+<ul>
+<li id="21">
+<a href="command-line-argument.htm"><b>command-line-argument</b></a> with
+argument <i>n</i> returns the (0 based) nth element of
+the <code>list-of-arguments</code>. It is an error to specify a
+value for n equal to or greater than the length of
+<code>list-of-arguments</code>. Note the + arguments are ignored
+and will not be returned for any value of <i>n</i>. The
+double dash, if present, is considered and will be returned for some
+value of <i>n</i>.
+</li>
+<li id="22">
+<a href="command-line-arguments.htm"><b>command-line-arguments</b></a>
+returns the list <code>list-of-arguments</code>. Note the +
+arguments are ignored and thus not included, while the double dash, if
+present, is included.
+</li>
+<li id="23">
+<a href="command-line-argument-count.htm"><b>command-line-argument-count</b></a> returns the
+length of the list <code>list-of-arguments</code>. Note the +
+arguments are ignored and thus not counted, while the double dash is
+counted as an argument.
+</li>
+</ul>
+
+<h4 id="24">
+Examples when :application is nil
+</h4>
+
+<pre id="25">
+;;  Lisp was started on UNIX with the command line
+;;  (we assume the mlisp executable is in a directory
+;;  included in the PATH environment variable):
+% mlisp -qq -- init 5 safe
+
+(sys:command-line-argument-count :application nil)
+  RETURNS 6
+(sys:command-line-arguments :application nil)
+  RETURNS ("mlisp" -qq -- "init" "5" "safe")
+;;  or perhaps (/usr/local/acl70/mlisp -qq -- init 5 safe)
+;;  assuming mlisp is in /usr/local/acl70/: the directory
+;;  may or may not be included.
+(sys:command-line-argument 0)
+  RETURNS "mlisp"  ;; or perhaps "/usr/local/acl70/mlisp"
+(sys:command-line-argument 1)
+  RETURNS "-qq"
+(sys:command-line-argument 2)
+  RETURNS "--"
+(sys:command-line-argument 3)
+  RETURNS "init"
+(sys:command-line-argument 4)
+  RETURNS "5"
+(sys:command-line-argument 5)
+  RETURNS "safe"
+(sys:command-line-argument 6)
+
+  ERROR    ;;  the first argument to sys:command-line-argument
+           ;;  must be less than the number of arguments
+           ;;  as returned by sys:command-line-argument-count
+
+;;  Lisp was started on WINDOWS with the command line
+% mlisp.exe +co -qq -- init 5 safe
+;;  The values returned by the command-line argument functions are the
+;;  same as on UNIX (except "mlisp.exe" or 
+;;  "C:\\Program Files\\acl70\\mlisp.exe" replaces "mlisp" or 
+;;  "/usr/local/acl70/mlisp". The command-line argument functions
+;;  always ignore the + arguments.
+</pre>
+
+<h3 id="26">
+Anomolies when :application is true
+</h3>
+
+<p id="27">
+If the Allegro CL image was created with <a href="../excl/dumplisp.htm"><b>dumplisp</b></a> (or <a href="../excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or <a href="../excl/generate-application.htm"><b>generate-application</b></a>) with the
+<i>ignore-command-line-arguments</i> argument
+true (the default is <code>nil</code>), then arguments are not processed by Allegro CL
+when it starts up and all arguments (regardless of whether a `--'
+appears on the command line) are handled by these functions and the
+value of the <i>application</i> keyword argument has no
+effect.
+</p>
+
+
+<h3 id="28">
+Anomolies when :application is nil
+</h3>
+
+<p id="29">
+The system may tack on arguments in addition to those you
+specified. In particular, when using the Emacs-Lisp interface, the
+arguments <code>-e (start-emacs-lisp-interface t)</code> may be
+added (to start in connection between Lisp and Emacs). Do not be
+surprised is you see these additional arguments. The system never adds
+arguments after a -- (double dash).
+</p>
+
+<h3 id="30">
+The path of the executable
+</h3>
+
+<p id="31">
+Note that the zeroth argument is the name of the executable as entered
+in the command line, with or without path information. That is, the
+0th argument may be, say, "mlisp" (without path information) or may
+be, say, "/usr/local/acl70/mlisp" (with path information). If path
+information is not provided and you need it, evaluating
+</p>
+
+<pre id="32">
+(translate-logical-pathname (concatenate 'string "sys:"
+(sys:command-line-argument 0)))
+</pre>
+
+<p id="33">
+will typically work. (But that form signals an error when path
+information is provided.)
+</p>
+
+<h3 id="34">
+Uses of command-line arguments
+</h3>
+
+<p id="35">
+You may use this information as you see fit. One possible use, for
+example, is to have some function defined and run (perhaps in the
+initialization file <i>.clinit.cl</i>) which takes some action (such
+as loading specific files) based on the values of the
+arguments. Recall again that + arguments are ignored and so their
+presence or absence cannot be used to affect behavior once Lisp has
+started.
+</p>
+
+<hr><p id="36"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/command-line-argument-count.htm">9.0 version</a></td></tr></table></body></html>

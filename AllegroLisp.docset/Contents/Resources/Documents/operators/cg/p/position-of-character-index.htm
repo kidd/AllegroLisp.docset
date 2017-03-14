@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>position-of-character-index</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/position-of-character-index.htm">9.0 version</a></td></tr></table><h2 id="2">position-of-character-index</h2>
+
+<p id="3"><b>Arguments: </b><i>
+text-edit-pane index
+</i>&amp;key <i>bottom position-to-return</i><i>
+</i></p>
+
+<p id="4">
+Returns the pixel position of the character at
+<i>index</i> in <i>text-edit-pane</i>.
+</p>
+<p id="5">
+The returned position object is in stream coordinates, meaning that it
+is measured from the upper-left corner of the scrollable contents of
+the window, and so the value will not be affected by the current
+scroll-position of the window.
+</p>
+<p id="6">
+<i>text-edit-pane</i> should be a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> or <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a>.
+</p>
+<p id="7">
+<i>index</i> should be a non-negative integer indicating
+a character, where 0 indicates the first character in the window,
+<code>(file-position text-edit-pane)</code> indicates the
+character immediately to the right of the text cursor, and
+<code>(file-length text-edit-pane)</code> indicates the
+hypothetical character just after the last character. (See <a href="../../../../ansicl/dictentr/file-pos.htm"><b>file-position</b></a> and <a href="../../../../ansicl/dictentr/file-len.htm"><b>file-length</b></a>.)
+</p>
+<p id="8">
+If <i>bottom</i> is <code>nil</code>, as it
+is by default, then the returned position is of the upper-left corner
+of the character cell. If <i>bottom</i> is true, then
+it is the lower-left corner instead.
+</p>
+<p id="9">
+If <i>position-to-return</i> is <code>nil</code>, as it is by default, then a new position object
+is consed and returned.  Otherwise
+<i>position-to-return</i> may be a position object, in
+which case it is filled in and returned in order to avoid consing a
+position object.
+</p>
+<p id="10">
+For a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> with a fixed-width
+font, the returned value could alternately be derived by calling such
+functions as <a href="../l/line-height.htm"><b>line-height</b></a>, <a href="../l/line-number-from-char.htm"><b>line-number-from-char</b></a>, and <a href="../c/char-from-line-number.htm"><b>char-from-line-number</b></a>.
+So this function is most useful for a <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a>, which typically has
+differing line heights and character widths.
+</p>
+<p id="11">
+See also <a href="../c/character-index-at-position.htm"><b>character-index-at-position</b></a>.
+</p>
+<p id="12">
+This example would return the pixel position of the bottom-right corner
+of the very last character's character cell:
+</p>
+<pre id="13">
+(position-of-character-index
+  my-text-edit-pane (file-length my-text-edit-pane)
+  :bottom t)
+</pre>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/position-of-character-index.htm">9.0 version</a></td></tr></table></body></html>

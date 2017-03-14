@@ -1,0 +1,206 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>menu-editor-dialog</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/menu-editor-dialog.htm">9.0 version</a></td></tr></table><h2 id="2">Menu Editor</h2>
+
+<p id="3"><img src="../pictures/menu-ed.jpg"></p>
+<p id="4">
+The menu editor allows you to design menus for Window menu bars. It
+does not support designing of pop-up menus.
+</p>
+<p id="5">
+This is a modal dialog. You must click on OK or Cancel (or click on
+the close box, equivalent to Cancel) before doing anything else in the
+IDE.
+</p>
+<p id="6">
+This dialog is displayed in two ways. 
+</p>
+<ol>
+<li id="7">
+From the <a href="inspect-dialog.htm">Inspector</a> window inspecting a
+form. Click on the extended editor button in the <a href="../operators/cg/m/menu.htm"><b>menu</b></a> field when a form is
+inspected.
+</li>
+<li id="8">
+Using the <a href="form-menu.htm#edit-menu-bar">Edit Menu Bar</a> menu command on the <a href="form-menu.htm">Form</a> menu. This command will
+only be present when the current form already has a menu bar. If the
+current form does not have a menu bar, <a href="form-menu.htm#add-menu-bar">Add Menu Bar</a> will be on
+the <a href="form-menu.htm">Form</a>
+menu. Choose that to add a menu bar. Doing so also displays
+the Menu Editor dialog.
+</li>
+</ol>
+<p id="9">
+Menu bars can be removed from a form by making the value of the
+<a href="../operators/cg/m/menu.htm"><b>menu</b></a> property <code>nil</code>
+(using the <a href="inspect-dialog.htm">Inspector</a>) or by choosing <a href="form-menu.htm#remove-menu-bar">Form |
+Remove Menu Bar</a>.
+</p>
+<p id="10">
+Menus are displayed using an outline control. The first level (all the
+way to the left) identifies menus on the menu bar. An item in an
+indented level is either a menu-item (if it is a leaf in the outline)
+or a submenu (if the item itself has subitems). Clicking right on a
+value in this outline now selects the value and shows a shortcut menu
+of appropriate commands for it.
+</p>
+<p id="11">
+The remainder of the dialog has the following fields and components.
+</p>
+<ul>
+<li id="12">
+<b>The toolbar</b>: The toolbar has seven buttons. 
+<ul>
+<li id="13">
+<b>The PLUS button</b>: clicking this adds a new item to the menu, just below
+the selected item.
+</li>
+<li id="14">
+<b>The X button</b>: deletes the selected item of the menu. All subitems of
+the deleted item will also be removed.
+</li>
+<li id="15">
+<b>The X* button</b>: delete all items. This results in the null
+menubar which does not display on the window. This is roughly
+equivalent to changing the menu property of the form to <code>nil</code>. A confirmatory dialog is displayed when you
+click this button, to ensure that you really want to delete all items.
+</li>
+<li id="16">
+<b>The left arrow button</b>: unindent by one level (if possible) the
+current item.
+</li>
+<li id="17">
+<b>The right arrow button</b>: indent by one level (if possible) the
+current item.
+</li>
+<li id="18">
+<b>The up arrow button</b>: move the current item above the item at
+the same level above it. A subitem cannot be moved above the item it
+is indented from. Thus, this button will not move a subitem of one
+item to become a subitem of a different item.
+</li>
+<li id="19">
+<b>The down arrow button</b>: move the current item below the next
+item at the same level.
+</li>
+</ul>
+</li>
+<li id="20">
+<b>The name field</b>: Displays the symbol naming the menu. We
+recommend that menus (and other objects) be named by unique
+keywords. The name can be used by functions such as <a href="../operators/cg/f/find-named-object.htm"><b>find-named-object</b></a> to get a
+programmatic handle on an object.
+</li>
+<li id="21">
+<b>The menu hierarchy field</b>: Displays the menubar structure as an
+outline. Items wholly to the left name menus on the menubar. The
+contents of a menu on the menubar are the items indented one level in
+below a menu. Any item that has further indented items below it names
+submenus. The outline can be manipulated by the buttons on the toolbar
+described above.
+</li>
+<li id="22">
+<b>The Menu Item field</b>: The controls in this area describe the
+currently-selected item.
+<ul>
+<li id="23">
+<b>Item name</b>: a symbol (using a keyword is recommended) which
+provides a programmatic handle for the item.
+</li>
+<li id="24">
+<b>Title</b>: a string (quotation marks are assumed and should not be
+entered) which will be displayed as the title of the item, on the menu
+bar or as an element of a menu. A tilde (~) preceding a character will
+cause the character to be underlined (the tilde will not be
+displayed). Pressing Alt plus that character is equivalent to
+selecting the menu item.
+</li>
+<li id="25">
+<b>Value</b>: active only for items that are not menus (i.e. leaves of
+the outline). The value can be any Lisp object. It is not seen by
+users but is programmatically available when handling menu selections
+by users. (The value of a menu is the menu object. This is displayed
+but cannot be changed when the currently-selected item is a menu.)
+</li>
+<li id="26">
+<b>On click</b>: active only for menus. The function that is called
+when an item from the menu is chosen. This function is called with the
+arguments the menu, the chosen menu item, and the window containing
+the menu bar. The default, <a href="../operators/cg/f/funcall-menu-item-with-window.htm"><b>funcall-menu-item-with-window</b></a>
+applies the menu-item value (which presumably names a function) to the
+window. Another predefined function is <a href="../operators/cg/f/funcall-menu-item.htm"><b>funcall-menu-item</b></a> (with arguments
+menu, menu-item, and stream).
+</li>
+<li id="27">
+<b>Help string</b>: a string which will be (or can be) displayed in
+the status bar when an item is selected (i.e. the mouse is over it but
+not yet clicked).
+</li>
+<li id="28">
+<b>Available</b>: if checked, the menu item will be available. If
+unchecked, the item will be unavailable. That means that it will be
+grayed out in the menu when the menu is displayed and that choosing it
+has no effect.
+</li>
+<li id="29">
+<b>Selected</b>: if checked, a check mark appears in the menu next to
+the title. Any number of items can be selected. The check mark is
+designed to convey information; it has no other programmatic effect.
+</li>
+<li id="30">
+<b>Help-String Tooltips</b>: (only available when a menu is selected):
+if checked, the help-string of any menu-item on the selected menu will
+be presented as a tooltip just below the menu if the user holds the
+mouse cursor over the menu-item for <a href="../operators/cg/m/menu-tooltip-delay.htm"><b>menu-tooltip-delay</b></a> milliseconds.
+See <a href="../operators/cg/s/show-help-strings-as-tooltips.htm"><b>show-help-strings-as-tooltips</b></a>.
+</li>
+<li id="31">
+<b>The Synonym field</b>: This area only applies to items which are
+not menus. A synonym is a key or a combination of a key and one or
+more modifiers. Entering this combination (when the window has focus)
+is equivalent to choosing the associated menu item. Specify a synonym
+by choosing a key from the drop-down list and checking as many
+modifiers as desired. The list includes the numeric keys (on
+  the main part of the keyboard) and the numeric keypad keys.
+</li>
+</ul>
+</li>
+</ul>
+
+<h3 id="32">
+The default menus 
+</h3>
+<p id="33">
+The default menu-bar that gets attached by the inspector to a form
+calls four sample functions from its File menu. These functions are
+exported, but are not available at runtime since a real application
+would want to implement its own custom version of these functions. The
+sources are given in the Help page for these default functions, to
+assist developers in writing their own functions.
+</p>
+<p id="34">
+(Note that the default Edit menu items for cutting and pasting are
+useful as is at runtime and so are available in runtime.)
+</p>
+<p id="35">
+The functions are:
+</p>
+<ul>
+<li id="36">
+<a href="../operators/cg/n/new-text-editor.htm"><b>new-text-editor</b></a>
+</li>
+<li id="37">
+<a href="../operators/cg/o/open-text-file.htm"><b>open-text-file</b></a>
+</li>
+<li id="38">
+<a href="../operators/cg/s/save-text-file.htm"><b>save-text-file</b></a>
+</li>
+<li id="39">
+<a href="../operators/cg/s/save-as-text-file.htm"><b>save-as-text-file</b></a>
+</li>
+</ul>
+
+
+
+
+<hr><p id="40"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/menu-editor-dialog.htm">9.0 version</a></td></tr></table></body></html>

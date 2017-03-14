@@ -1,0 +1,476 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>class-interface-editor-dialog</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/class-interface-editor-dialog.htm">9.0 version</a></td></tr></table><h2 id="2">Class Interface Editor</h2>
+
+<p id="3">
+The IDE's Class Interface Editor dialog is used to interactively
+create a graphical user interface (GUI) for editing the instances of a
+class. Typically this user interface is for editing information in an
+AllegroCache database, though it could be used to edit arbitrary class
+instances.
+</p>
+<p id="4">
+You can use the Class Interface Editor to edit either an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> dialog or a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> widget.  An
+object-editor dialog contains a widget for each slot of interest,
+while a class-grid widget contains a grid column for each slot
+instead.  These interface objects will automatically create and lay
+out their widgets or grid columns according high-level parameters that
+you specify interactively.
+</p>
+<p id="5">
+Specifically, the Class Interface Editor lets you specify the value of
+the <a href="../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property of
+an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> or <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>.  You could alternately
+specify this property programmatically; see the doc page for the
+<a href="../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property as well
+as the document <a href="../cg/cg-object-editor-and-class-grid.htm">cg-object-editor-and-class-grid.htm</a>.
+</p>
+
+<h2 id="6">
+Bringing Up the Class Interface Editor
+</h2>
+
+<p id="7">
+The Class Interface Editor is normally used on a form window in a
+project so that code for recreating the interface objects is saved
+with the project.  So starting from scratch you would create a new
+project with the <a href="file-menu.htm#new-project">File | New
+Project</a> command.  Then you would create
+either (1) an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a>
+form or (2) a generic form with a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> on it.
+</p>
+<p id="8">
+<b>To create an object-editor form</b>, use the <a href="file-menu.htm#new-form">File | New
+Form</a>
+command as usual.  The key step is to select object-editor in the
+Window Class widget of the New Form dialog that appears.  You will
+then be asked to enter the name of a class for the object-editor to
+edit.  You must enter a class name at this time or the new form will
+not be created.  It's OK to type in the name of a class that doesn't
+exist yet, though, such as a class in a database that you haven't
+opened yet.
+</p>
+<p id="9">
+<b>To create a standalone class-grid on a generic form</b>, first use
+the File | New Form command to create some other type of form,
+typically a dialog.  Then click on the Class Grid button in the
+Components Toolbar (the button shows a grid with header cells plus a
+red "C" in the body) and then click on the form window.  This will
+create a sample class-grid for the class test-person.  You may want to
+run the form with its sample property values to see how it works.
+Once you've done that, you will probably want to inspect the widget
+and change its value property to nil to remove the sample rows.  Then
+change the edited-class property to be the name of a class to edit,
+since you are not prompted for that as with an object-editor.
+</p>
+<p id="10">
+In case you were wondering, a class-grid can also be used on an
+object-editor, but that's done in a different way that's covered
+toward the end of this document.
+</p>
+<p id="11">
+Now that you have an object-editor form or a class-grid on a form,
+there are three ways to invoke the Class Interface Editor dialog on
+it:
+</p>
+<ol>
+<li id="12">
+
+Right-click the object-editor form or class-grid and select <b>Edit
+Class Interface</b> from the pop-up menu.
+
+</li>
+<li id="13">
+
+Inspect the object-editor or class-grid, select the <a href="../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property, and click the small
+button on the right end of that inspector row.
+
+</li>
+<li id="14">
+
+For an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> only,
+select the module for the object-editor form on the Project Manager's
+General tab, and then click on the button in the Project Manager's
+toolbar whose tooltip is <b>Edit Class Interface</b>. (The two
+horizontal green bars on this button represent two single-line text
+widgets aligned in a column on an object-editor, if you appreciate
+minimalism.)
+
+</li>
+</ol>
+
+<p id="15">
+Here is a Class Interface Editor editing the class <b>dialog</b>, just
+for illustration:
+</p>
+<p id="16"><img src="../pictures/class-int-ed.jpg"></p>
+
+<h2 id="17">
+Including Particular Slots in the User Interface
+</h2>
+<p id="18">
+When the Class Interface Editor appears, a list of all of the slots of
+the edited class will appear in the <b>Slots</b> widget at the left.
+If this is a new object-editor or class-grid, then all slot names will
+be grayed out because no slots have been selected yet for inclusion in
+the user interface.
+</p>
+<p id="19">
+Click on the name of a slot that you would like to include in the
+interface, and then click the <b>Include</b> check-box near the top of
+the Class Interface Editor.  This will make the rest of the widgets in
+the Widget group-box available so that you can specify how that slot
+should be edited by the end user.  The slot name will also turn from
+gray to black in the list of all slots, though you can't see that
+while the slot is selected.
+</p>
+<p id="20">
+You may now specify how this slot will appear in the interface.  For
+example, in the <b>Label</b> widget you could type a string to display
+beside the widget for the slot on an object-editor, or in a column
+header for the slot in a class-grid.  If you leave the label widget
+blank, the default label will be the slot name with dashes converted
+to spaces, and each word capitalized.
+</p>
+
+<h2 id="21">
+Specifying the Data Type (and Widget Type) for Each Slot
+</h2>
+
+<p id="22">
+The most interesting part of the Class Interface Editor is in the
+<b>Data Type</b> group-box.  Here is where you specify what sort of
+data is in an edited slot, and therefore what type of widget or grid
+column should be used for editing the slot.  The <b>Type Name</b>
+widget is where you select the main data type for the slot.  When you
+select a main type, one or more additional widgets may appear just
+below; these widgets allow you to specify various options for the
+selected type.
+</p>
+<p id="23">
+The data type choices are not lisp types, but rather types that
+pertain to how the value may be edited.  There are several different
+data type choices that are used for lisp strings, for example.
+</p>
+<p id="24">
+The default type for any slot is <b>Variable Char</b>, which means
+that the value may be a string of any length.  If you are creating an
+<a href="../classes/cg/object-editor.htm"><code>object-editor</code></a>, then a
+simple <a href="../classes/cg/editable-text.htm"><code>editable-text</code></a> widget
+will be created for editing that slot.  If you are creating a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>, then an <a href="../classes/cg/editable-text-column-mixin.htm"><code>editable-text-column-mixin</code></a>&nbsp;
+<a href="../classes/cg/grid-column.htm"><code>grid-column</code></a> will be created
+for the slot.
+</p>
+<p id="25">
+If you change the type in the <b>Type Name</b> widget to <b>Fixed
+Char</b>, then a <b>Max Characters</b> widget will appear.  This
+widget allows you to specify the maximum number of characters that a
+string in this slot can have.  An <a href="../classes/cg/editable-text.htm"><code>editable-text</code></a> widget will still be created for
+the slot, but it will have a <a href="../operators/cg/t/template-string.htm"><b>template-string</b></a> that restricts the user to
+entering the specified number of characters.
+</p>
+<p id="26">
+There are a variety of other choices for the data type.  For example,
+<b>Boolean</b> will create a <a href="../classes/cg/check-box.htm"><code>check-box</code></a>, <b>Single Choice</b> a <a href="../classes/cg/combo-box.htm"><code>combo-box</code></a>, <b>Multiple Choice</b> a
+<a href="../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a> (for an
+<a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> only), and
+<b>Pixmap</b> will create a <a href="../classes/cg/static-picture.htm"><code>static-picture</code></a> (or a <a href="../classes/cg/pixmap-column-mixin.htm"><code>pixmap-column-mixin</code></a> column in a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>).  These choices are
+documented more fully on the doc page for the <a href="../operators/cg/e/edited-slots.htm"><b>edited-slots</b></a> property, but here are notes on how
+to specify a couple of the less obvious ones on the Class Interface
+Editor:
+</p>
+<ul>
+<li id="27">
+
+<b>Single Choice and Multiple Choice</b>: For these types a multi-line
+text-editing widget will appear on the Class Interface Editor where
+you can enter a set of hardcoded choices from which the end user can
+select values.  If you check the <b>Choices Are Strings</b> check-box,
+then each line of text that you enter will be used as one choice, and
+the choice will be a that actual string.  If <b>Choices Are
+Strings</b> is not checked, then lisp objects (typically symbols and
+numbers) will be read from the text that you entered until the end of
+the text is reached, and those lisp objects will be the choices.
+
+</li>
+<li id="28">
+
+<b>Pixmap and Static Pixmap</b>: this is the one where it is least
+obvious how to specify the options.  The multi-line text-editing
+widget will appear as with <b>Single Choice and Multiple Choice</b>,
+but you need to enter values carefully in a certain format.  Each line
+of text is used to map an arbitrary slot value to a pixmap to
+represent it.  A line of text should contain text that will be read as
+two lisp values, where the first value is the arbitrary slot value and
+the second value is the name of a pixmap that has been cached by
+calling cached-pixmap.  If a user value is a string then it should
+have double quote characters around it here.  If a user value is not a
+"readable constant" then the Class Interface Editor cannot be used to
+specify a pixmap interface for it.  So entering the following text
+would cause the pixmap named <code>:key</code> to be displayed
+for the slot value <code>:partial</code>, the pixmap named
+<code>:key-special</code> to be displayed for the slot value
+<code>:full</code>, and the pixmap named
+<code>:melvin</code> to be displayed for the slot value "Melvin
+Ferd" (the string):
+
+<pre id="29">
+    :partial :key
+    :full :key-special
+    "Melvin Ferd" :melvin
+</pre>
+
+<p id="30">
+If the <b>Pixmaps Will Strech</b> check-box is checked then the
+pixmaps will be stretched larger or smaller as needed to fill the
+available space in the widget or grid cell, and otherwise they will be
+drawn at their normal sizes.
+</p>
+</li>
+</ul>
+
+<h2 id="31">
+Ordering Widgets and Grid Columns
+</h2>
+
+<p id="32">
+The Class Interface Editor will create widgets or grid columns in the
+order that they appear in the list of all slots (ignoring the slots
+that are not included).  This will be widgets from top to bottom in an
+object-editor dialog, or grid columns from left to right in a
+class-grid.  You can therefore change the order in the list of slots
+to control the widget order.  The <b>Move All Included Slots to the
+Top</b> button may by handy to use first in order to group all of the
+currently-included slots together at the top of the list.  You can
+then move individual slots using the Up and Down buttons, or more
+quickly by left-clicking and dragging slot names to new positions.
+</p>
+<p id="33">
+If you are creating an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> rather than a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>, then there will also be a <b>New
+Column</b> check-box.  By default, an object-editor will lay out its
+widgets in a single vertical column.  The exception is that if you
+check the <b>New Column</b> check-box for a particular slot, then a
+new column of widgets will be started at the widget for that slot.
+That can save space vertically.
+</p>
+
+<h2 id="34">
+Modifying the Created Widgets and Reinvoking the Class Interface Editor
+</h2>
+
+<p id="35">
+Pressing the <b>OK</b> button will exit the Class Interface Editor,
+which will then automatically create or update widgets or grid columns
+as needed to match your specifications.  You can then edit the widgets
+further using the inspector just as you would widgets on a regular
+form, and move and resize the widgets or grid-columns with the mouse.
+You can even add other arbitrary widgets to an object-editor form.
+The Class Interface Editor doesn't have facilities for specifying
+properties like a widget's size or font because that would be
+redundant with the more general tools.
+</p>
+<p id="36">
+After editing the created widgets of an object-editor directly, you
+can invoke the Class Interface Editor again at any time.  A
+reinvocation will never resize an existing widget unless you change
+the data type so that a different type of widget will be substituted.
+It will not undo general property changes that you have made in the
+inspector.  And by default the only widgets that it will move are any
+new widgets that it adds for additonal slots that you tell it to
+include; these new widgets will be arranged below all widgets that
+existed already (other than the lower row of command buttons, which
+will still be kept at the bottom).  Added widgets will be aligned with
+each other but not with the pre-existing widgets.
+</p>
+<p id="37">
+If you check the <b>Redo Entire Widget Layout</b> check-box before
+exiting the Class Interface Editor, then it will move all widgets
+(other than any that you created by hand) to align them just as if you
+had created them all at once.  Existing widgets will still not be
+resized.  So if you have begun moving widgets around directly on the
+object-editor form, then you should not check <b>Redo Entire Widget
+Layout</b> thereafter, or else it will undo any direct moving of
+widgets that you have done.  On the other hand, if you have not yet
+moved any widgets directly on the form then you probably DO want to
+check <b>Redo Entire Widget Layout</b> on each re-invocation of the
+Class Interface Editor in order to keep all widgets nicely aligned,
+and in the same order as in the Slots widget.  This check-box is never
+turned on by default to make it less likely that you will accidentally
+leave it enabled and undo your careful hand-positioning of widgets.
+This check-box will not appear when editing a class-grid because the
+grid columns will always be arranged to match the order in the Slots
+widget.
+</p>
+
+<h2 id="38">
+Including Standard Command Buttons on an Object-Editor
+</h2>
+
+<p id="39">
+If you are creating an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> rather than a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>, then there will be a <b>Buttons</b>
+widget in the lower right corner.  Here you can select any subset of
+several built-in command buttons that let the user do things such as
+selecting an instance to display in various ways, or reverting from
+the current edits.  These buttons call exported functions, so
+alternately you could add your own widgets to the object-editor form
+later and make them call these same functions.  The set of buttons and
+the functions they call are documented on the page for the <a href="../operators/cg/c/command-buttons.htm"><b>command-buttons</b></a> property.
+</p>
+
+<h2 id="40">
+The Primary and Secondary Name Slots
+</h2>
+
+<p id="41">
+These widgets let you specify one or two slots whose values will be
+used as a "pretty name" for an instance.  The pretty name will be
+displayed in widgets that hold class instances, and in menus for
+selecting instances.  The drop-down lists for these widgets let you
+select any slot.
+</p>
+<p id="42">
+These widgets usually edit values for the <a href="../operators/cg/e/edited-class.htm"><b>edited-class</b></a> of the object-editor or class-grid
+that you are editing in the Class Interface Editor.  An exception is
+that if a slot uses one of the data types for class instances (see
+further below), then the Primary and Secondary Name Slots widgets will
+edit values for that slot's class whenever it is selected in the list
+of all slots.
+</p>
+<p id="43">
+For more information see <a href="../operators/cg/p/primary-name-slot.htm"><b>primary-name-slot</b></a> and <a href="../operators/cg/s/secondary-name-slot.htm"><b>secondary-name-slot</b></a>.
+</p>
+
+<h2 id="44">
+Other Widgets on the Class Interface Editor
+</h2>
+
+<p id="45">
+The <b>Fixed-Width Font</b> check-box will be checked by default
+whenever you select a data type that requires a fixed number of
+characters.  You can override that default by toggling this check-box
+yourself.  A widget will use the current global CG <a href="../operators/cg/f/fixed-font.htm"><b>fixed-font</b></a> when this check-box is checked, or
+the current <a href="../operators/cg/p/proportional-font.htm"><b>proportional-font</b></a>
+otherwise.  (You could change a widget's font in the inspector as
+usual after the widget gets automatically created.)
+</p>
+<p id="46">
+If you are creating an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> rather than a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>, then there will an Include <b>Table
+of All Instances</b> check-box.  If you check this widget, then a
+special class-grid will be included at the very bottom of the dialog.
+This class-grid will have a row for every instance of the edited class
+(and so would probably not be very useful if there is a huge number of
+instances).  The end user can edit instances here as an alternative to
+doing so in the main part of the dialog.  Selecting an instance in the
+grid will display it in the rest of the dialog as well.
+</p>
+
+
+<p id="47">
+If you are creating a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>, then there will be a few other
+widgets.  Three of these are check boxes for whether the grid column
+will be resizable, proportional, and/or sortable.  A resizable
+<a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> column allows
+the user to change its width by dragging the right edge of its header
+cell.  A proportional column will be resized proportionally when the
+width of the <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>
+itself changes.  And a sortable grid column allows the user to sort
+the grid rows by that column's values by clicking the column's header
+cell.
+</p>
+<p id="48">
+One other widget for class-grids that will appear, though only for
+certain data types, is the <b>Printer</b> widget.  Its value should be
+the name of a function that takes a data value and returns the string
+to display for it.  It defaults to <b>princ-to-string</b>.
+</p>
+
+
+<h2 id="49">
+Miscellaneous Other Notes
+</h2>
+
+<p id="50">
+In the list of all slots, a persistent slot whose index attribute is
+<code>:any</code> will display a yellow key with a single prong,
+and an index attribute of <code>:any-unique</code> will display
+a green key with two prongs.
+</p>
+
+<h2 id="51">
+Getting Fancy: Indirect Editing of Objects That Are In Slots
+</h2>
+
+<p id="52">
+The data type choices for slots that hold class instances are of
+particular interest in the Class Interface Editor.  In the <b>Type
+Name</b> widget, if you select Class Instance, Static Class Instance,
+or Table of Class Instances, then a Class widget will appear where you
+can enter the class whose instances the slot holds.  Any classes that
+are defined in the currently open AllegroCache database will be listed
+in the drop-down list for easy selection; otherwise you can type in
+the name of the class.  You will then be able to add widgets or grid
+columns that edit slots of these instances indirectly.
+</p>
+<p id="53">
+For example, if you are creating an object-editor that edits instances
+of the <code>patient</code> class, and a patient has a
+<b>doctor</b> slot that holds an instance of the
+<code>doctor</code> class, then you could select the doctor slot
+in the list at the left, set its main data type to Class Instance, and
+its Class to doctor.  At this time a blue arrow will appear beside the
+doctor slot in the list of all slots.  Clicking this arrow will reveal
+a sublist containing the slots of the doctor class.  If you then
+specify a widget for the phone-number slot of the doctor class, then
+the object-editor for the patient class will include a widget for the
+phone number of the doctor of the currently-displayed patient.  (If
+you don't want the end user to be able to change the doctor's phone
+number while editing a patient, then you should probably specify the
+Static Text type for that slot.)
+</p>
+<p id="54">
+If a slot holds a list of instances of some class, and you are
+creating an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a>
+rather than a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a>,
+then you can specify the Table of Class Instances type for that slot.
+This will create a class-grid on the object-editor, where the grid
+will have a row for each instance in the list.
+</p>
+<p id="55">
+For example, the <code>patient</code> class could have a
+<b>prescriptions</b> slot that holds a list of instances of the
+prescription class.  If you are creating an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> for the patient class, then you
+could select the prescriptions slot in the list of all slots, then set
+its main data type to Table of Class Instances and its Class to
+prescription.  This will create a <a href="../classes/cg/class-grid.htm"><code>class-grid</code></a> on the <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a> for patient that displays a row
+for each prescription of the currently-displayed patient.
+</p>
+<p id="56">
+This sort of indirection can be carried to any practical number of
+levels.  For example, the prescriptions table could have a column for
+the medicine of the prescription of the patient and an indirect column
+for the manufacturer of the medicine of the prescription of the
+patient.  In the Class Interface Editor, a new level of slot names
+will be made available for selection whenever you specify one of the
+class instance data types at a preceding level.
+</p>
+<p id="57">
+When specifying a Table of Class Instances on an <a href="../classes/cg/object-editor.htm"><code>object-editor</code></a>, there is also a list of buttons
+that you can select that go along with the <a href="../classes/cg/grid-widget.htm"><code>grid-widget</code></a> that gets created.  These buttons
+will create, delete, add, or remove instances in the list of instances
+that the table's slot contains.  This allows the end user to edit the
+actual list of instances, rather than only to edit each instance
+that's in the list already.  The <b>Create</b> button allows the user
+to create an instance and add it to the list, while the <b>Add</b>
+button allows the user to select an existing instance from a menu and
+add it to the list.  Similarly, the <b>Delete</b> button will remove
+an instance from the list and delete the instance, while the
+<b>Remove</b> button simply removes the instance from the list without
+deleting the instance itself.  In the prescriptions table example, the
+<b>Create</b> and <b>Delete</b> buttons are more appropriate because a
+prescription is unique to a particular patient. If the table held a
+list of medicine instances instead, where there is only a single
+instance for each medicine product, then the <b>Add</b> and
+<b>Remove</b> buttons would be more appropriate.
+</p>
+
+<hr><p id="58"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/class-interface-editor-dialog.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>center-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/center-window.htm">9.0 version</a></td></tr></table><h2 id="2">center-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window </i>&amp;key <i>on-parent return-only width height</i><i>
+</i></p>
+
+<p id="4">
+Moves a window so that it is centered over the interior of its owner
+or parent.  Returns a box that indicates the new <a href="../e/exterior.htm"><b>exterior</b></a> of the window.
+</p>
+<p id="5">
+<i>window</i> should be an instance of the <a href="../../../classes/cg/basic-pane.htm"><code>basic-pane</code></a> class or one
+of its subclasses.
+</p>
+<p id="6">
+If <i>on-parent</i> is true, then the window is centered
+over its <a href="../p/parent.htm"><b>parent</b></a>,
+and otherwise it is centered over its <a href="../o/owner.htm"><b>owner</b></a>.  The default is <code>nil</code>.  (The parent and owner of a window are different
+only when the window is a top-level owned window, in which case the
+parent is the screen and the owner is the owner window.)
+</p>
+<p id="7">
+If <i>return-only</i> is true, then the window is
+actually not moved at all, but the box to where it would have been
+moved is still returned.  If <code>nil</code> (the
+default), then the window is moved and its new exterior box is
+returned.
+</p>
+<p id="8">
+<i>width</i> and <i>height</i> may each be
+<code>nil</code> (the default) to use the current width or
+height of the window, or else a positive integer to indicate a new
+width or height to which to resize the window while centering it.
+</p>
+<p id="9">
+See also the <code>:centered</code> argument to <a href="../m/make-window.htm"><b>make-window</b></a> and the
+<a href="../c/centered.htm"><b>centered</b></a>
+property.
+</p>
+
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/center-window.htm">9.0 version</a></td></tr></table></body></html>

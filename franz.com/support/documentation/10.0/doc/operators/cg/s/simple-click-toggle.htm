@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>simple-click-toggle</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/simple-click-toggle.htm">9.0 version</a></td></tr></table><h2 id="2">simple-click-toggle</h2>
+
+<p id="3"><b>Arguments: </b><i>
+
+multi-item-list-or-outline
+</i></p>
+
+
+
+<p id="4">
+Returns whether <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a> or <a href="../../../classes/cg/outline.htm"><code>outline</code></a> control requires the user to hold down
+the control key while clicking an item in order to toggle the selected
+state of that single item. If <code>nil</code>, a simple
+left click will deselect all other items (which is typical Windows
+behavior); if true, a simple left click will toggle the clicked item
+only. Note that holding down the shift key while clicking to select a
+whole range of values (also typical Windows behavior) is possible only
+when this property is <code>nil</code>. The default value
+is <code>nil</code> for
+<a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>
+and <code>t</code> for <a href="../../../classes/cg/outline.htm"><code>outline</code></a>.
+</p>
+<p id="5">
+For a <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>, this
+property must be specified with the :simple-click-toggle initarg
+to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> when creating
+the multi-item-list instance; it cannot be changed later. For
+an <a href="../../../classes/cg/outline.htm"><code>outline</code></a>, this property
+is used only when the <a href="../m/multiple-selections.htm"><b>multiple-selections</b></a> property is true.
+</p>
+<p id="6">
+<a href="../s/simple-click-toggle.htm"><b>simple-click-toggle</b></a> is a property
+of the <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>
+and <a href="../o/outline.htm"><b>outline</b></a> classes.
+</p>
+
+
+<p id="7">
+<b>GTK note</b>: It's not feasible to implement this option for the
+<a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a> widget on
+GTK. The widget will always behave as if <a href="../s/simple-click-toggle.htm"><b>simple-click-toggle</b></a>
+were <code>nil</code>.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/simple-click-toggle.htm">9.0 version</a></td></tr></table></body></html>

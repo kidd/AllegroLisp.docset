@@ -1,0 +1,130 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>verify-type-declarations-switch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: compiler</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/verify-type-declarations-switch.htm">9.0 version</a></td></tr></table><h2 id="2">verify-type-declarations-switch</h2>
+
+<p id="3">As with most compiler switch variables, the value of this variable
+can be <code>t</code>, <code>nil</code>, or a
+function object that accepts five arguments and returns <code>t</code> or <code>nil</code>. The arguments
+passed to the function will be the values of the safety, space, speed,
+debug, and compilation-speed optimization qualities, in that order. <code>nil</code> is equivalent to a function that always returns
+<code>nil</code> and <code>t</code> to a
+function that always returns <code>t</code>.  When the
+value is a function and we say <code>t</code> (or true) or
+<code>nil</code> (or false) in the text below, we mean
+that the function returns, respectively, <code>t</code> or
+<code>nil</code>.</p>
+<p id="4">
+Code compiled with this switch true will have additional runtime type
+checking done of any lambda or <b>let</b> bindings of a declared
+variable and any setqs to that variable to ensure that the value is of
+the correct type. If the variable is bound to an inappropriate value,
+a continuable type-error is generated.
+</p>
+<p id="5">
+The declared types are checked in the following three places:
+</p>
+<ol>
+<li id="6">
+The binding of a lexical variable in a lambda form
+</li>
+<li id="7">
+The binding of a lexical variable in a <a href="../../../ansicl/dictentr/letlet.htm"><b>let</b></a> form
+</li>
+<li id="8">
+The <a href="../../../ansicl/dictentr/setq.htm"><b>setq</b></a>'ing of a
+lexical variable
+</li>
+</ol>
+<p id="9">
+Further:
+</p>
+<ul>
+<li id="10">
+The variable must be lexical (currently closed-over and special
+variables are excluded).
+</li>
+<li id="11">
+The declaration must be in effect during the operation where the check
+might be performed (this excludes free declarations after the fact,
+but does not exclude <b>setq</b>'s within the scope of the free
+declaration).
+</li>
+<li id="12">
+The <a href="verify-type-declarations-switch.htm"><code>comp:verify-type-declarations-switch</code></a>
+must return true at the point of the binding or set. Like
+<a href="trust-declarations-switch.htm"><code>comp:trust-declarations-switch</code></a>, a
+declaration at the beginning of a lambda or <b>let</b> form has a
+scope which includes the bindings of the lambda/<b>let</b> variables
+to be bound.
+</li>
+</ul>
+
+<h3 id="13">
+Example
+</h3>
+
+<p id="14">
+As we note below, in the default this switch is true when safety is
+greater than 1. Speed 3/Safety 2, used in this example, makes this
+switch and the various trust-* switches true in the default.
+</p>
+
+<pre id="15">
+cl-user(1): (compile
+              (defun foo (x y)
+                (declare (optimize (speed 3) (safety 2)) (integer x))
+                (setq x y)
+                (let ((z x))
+                  (declare (fixnum z))
+                  z)))
+foo
+nil
+nil
+cl-user(2): (foo 10 20)
+20
+cl-user(3): (foo 10 (1+ most-positive-fixnum))
+Error: about to bind z to 536870912, which is not of type
+       (integer -536870912 536870911).
+  [condition type: type-error]
+
+Restart actions (select using :continue):
+ 0: store the value anyway.
+ 1: Return to Top Level (an "abort" restart).
+ 2: Abort entirely from this (lisp) process.
+[1] cl-user(4): :cont
+536870912
+cl-user(5): (foo 10 20.0)
+Error: about to setq x to 20.0, which is not of type (integer * *).
+  [condition type: type-error]
+
+Restart actions (select using :continue):
+ 0: store the value anyway.
+ 1: Return to Top Level (an "abort" restart).
+ 2: Abort entirely from this (lisp) process.
+[1] cl-user(6): :res
+cl-user(7): (foo 10.0 20)
+Error: about to bind function argument x to 10.0, which is not of type
+       (integer * *).
+  [condition type: type-error]
+
+Restart actions (select using :continue):
+ 0: store the value anyway.
+ 1: Return to Top Level (an "abort" restart).
+ 2: Abort entirely from this (lisp) process.
+[1] cl-user(8): 
+</pre>
+
+<p id="16">
+Initially true if safety is greater than 1. This means that (optimize
+(speed 3) (safety 2)) is (with default values) the only safety/speed
+combination that turns on both this switch and <a href="trust-declarations-switch.htm"><code>trust-declarations-switch</code></a>
+and <a href="trust-dynamic-extent-declarations-switch.htm"><code>trust-dynamic-extent-declarations-switch</code></a>.
+</p>
+
+<p id="17">
+See <a href="../../compiling.htm">compiling.htm</a> for
+information on the compiler.
+</p>
+
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/compiler/verify-type-declarations-switch.htm">9.0 version</a></td></tr></table></body></html>

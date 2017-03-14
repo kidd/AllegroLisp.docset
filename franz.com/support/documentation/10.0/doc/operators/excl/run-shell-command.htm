@@ -1,0 +1,1187 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>run-shell-command</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/run-shell-command.htm">9.0 version</a></td></tr></table><h2 id="2">run-shell-command</h2>
+
+<p id="3"><b>Arguments: </b><i>command </i>&amp;key <i>input output error-output separate-streams</i> (<i>wait</i> t)<i> if-input-does-not-exist if-output-exists if-error-output-exists show-window environment directory uid gid effective initgroups-user</i> (<i>share-open-files</i> t)</p>
+
+<h2 id="4">
+Introductory comments
+</h2>
+
+<p id="5">
+The <code>:osi</code> module (see <a href="../../os-interface.htm#osi-functionality-1">Operating System
+Interface Functionality</a> in
+<a href="../../os-interface.htm">os-interface.htm</a>) has these new operators relating
+to running subprocesses: the function <a href="../../os-interface.htm#command-output-op-bookmarkxx"><b>command-output</b></a>
+and the macros <a href="../../os-interface.htm#with-command-output-op-bookmarkxx"><b>with-command-output</b></a> and <a href="../../os-interface.htm#with-command-io-op-bookmarkxx"><b>with-command-io</b></a>. They are
+higher-level than <a href="run-shell-command.htm"><b>run-shell-command</b></a> and <a href="shell.htm"><b>shell</b></a> and are now recommended when the
+interaction with the subprocess requires input or produces output that
+must be captured. The new operators do not have separate description
+pages. They are described in <a href="../../os-interface.htm#osi-process-uid-gid-2">OSI process/uid/gid interface
+functions</a> in <a href="../../os-interface.htm">os-interface.htm</a>.
+</p>
+
+
+<p id="6">
+This function, originally written and named for Unix machines, is
+badly misnamed for Windows, because on Windows, you can only run
+programs. Shell commands, such as <strong>dir</strong>, are not
+acceptable as a value of the <i>command</i>
+argument. See <a href="#windows">below</a> in this entry for
+discussion on this point.
+</p>
+
+<p id="7">
+Also note that there is often a Lisp tool equivalent to a
+command. (For example, the Lisp function <a href="../../../ansicl/dictentr/director.htm"><b>directory</b></a> can be used in place of
+<strong>dir</strong> on Windows and <strong>ls</strong> on Unix. See
+below under the heading <strong>run-shell-command and Windows</strong> 
+for why "dir"
+cannot be the value of the <i>command</i> argument.) It
+is always preferable to use Lisp tools where possible.
+</p>
+<p id="8">
+This is particularly true in an application delivered to others. The
+action of spawning a process, which might involve spawning a shell,
+may have consequences on another user's machine which you (the
+application developer) do not expect, and these consequences may
+interfere with the operation of your application in ways that are
+difficult to debug.
+</p>
+
+<p id="9">
+This is a powerful but complicated function, which has many options
+and modes of behavior. We have tried to provide sufficient internal
+links to navigate about this description. All necessary information is
+here somewhere, so if you scroll done you will likely find what you
+need. 
+</p>
+
+<h2 id="10">
+0. Beginning of function documentation: input to and output from the command and return values
+</h2>
+
+<p id="11">
+The process spawned by this function will generally have (always on
+UNIX, console apps on Windows) standard input, standard output, and
+standard error. If you want input beyond what is part of
+the <i>command</i> argument, you need to get a handle on
+the standard input. If you want to capture (and possibly redirect) the
+output or the error output, you need to get a handle on standard
+output and standard error.
+</p>
+<p id="12">
+You can, as we describe in the discussion of
+the <i>input</i>, <i>output</i>,
+and <i>error-output</i> keyword
+arguments <a href="#in-out-err">below</a>, set things up yourself, by
+specifying streams or file pathnames. And, when
+the <i>wait</i> keyword argument
+is <code>nil</code>, you can have <a href="run-shell-command.htm"><b>run-shell-command</b></a> set up Lisp streams to
+connect to process's input, output, and error-output. In that case,
+the created streams are among the multiple values returned
+by <a href="run-shell-command.htm"><b>run-shell-command</b></a>, as we
+describe next in the discussion of return values.
+</p>
+<p id="13">
+This function returns either one value when the
+<i>wait</i> argument is true (it defaults to <code>t</code>), or three or four values when
+<i>wait</i>
+is <code>nil</code>. When <i>wait</i> is
+<code>nil</code>, the number of values depends on the
+value of the
+<i>separate-streams</i> argument
+(described <a href="#separate-streams">below</a>).
+</p>
+<p id="14">
+When commands display information (such as <b>ls</b> displaying file
+and directory information), that information is not what is returned
+by <a href="run-shell-command.htm"><b>run-shell-command</b></a>. When <i>wait</i>
+is true (the default), the single return value is the exit status of
+the spawned process. When
+<i>wait</i> is <code>nil</code>, the
+multiple return values are 2 or 3 values which can be streams
+or <code>nil</code> and a final value which is the pid
+(process id number) of the spawned process. Output from the command is
+sent to whatever the standard out of the spawned process is connected
+to.
+</p>
+
+<h2 id="15">
+1A. Return value when :wait is t (the default)
+</h2>
+
+<p id="16">
+When <a href="run-shell-command.htm"><b>run-shell-command</b></a> is
+called with the wait keyword argument is true (or unspecified since
+the default is <code>t</code>), then the single return
+value is the exit status of the spawned process. You must set up
+handling of the spawned process's input, output, and error-output
+using the <i>input</i>, <i>output</i>,
+and <i>error-output</i> keyword arguments as
+described <a href="#in-out-err">below</a>. Here are two examples
+showing what we mean. These examples use <b>printenv</b> and so do not
+work on Windows, but they do illustrate thr return value.
+</p>
+<pre id="17">
+;; The command is 'printenv DISPLAY'. First we call it with
+;; :wait t (just for emphasis, :wait defaults to t):
+
+cl-user(131): (run-shell-command "printenv DISPLAY" :wait t)
+192.132.95.16:12.0
+0
+
+;; The DISPLAY value is printed BUT NOT RETURNED. What is returned
+;; is the single value 0, the exit status of the call to printenv.
+;; This is made clear by the following:
+
+cl-user(133): (multiple-value-list (run-shell-command "printenv DISPLAY"))
+192.132.95.16:12.0
+(0)
+
+;; Here we let :wait simply default to t. Again the DISPLAY value is
+;; printed, but, as trhe singleton list of return values -- (0) -- shows,
+;; not returned. The output is being sent to the standard out of the Lisp
+;; process, which the spawned process inherits. 
+
+;; In our final example, we send the process output to a stream open to 
+;; a file:
+
+cl-user(136): (with-open-file (s "test.txt" :direction :output
+			       :if-exists :supersede)
+		(run-shell-command "printenv DISPLAY" :output s))
+0
+
+;; And here are the contents of the file:
+
+cl-user(137): (run-shell-command "cat test.txt")
+192.132.95.16:12.0
+0
+cl-user(138): 
+</pre>
+
+<h2 id="18">
+1B. Return values when :wait is nil
+</h2>
+
+<p id="19">
+If you specify <code>:wait nil</code>, be sure to also
+see <a href="#wait-nil-2"> More on the :wait argument</a> below for
+information on reaping the process when it completes.
+</p>
+<p id="20">
+When <i>wait</i> is
+specified <code>nil</code>, <a href="run-shell-command.htm"><b>run-shell-command</b></a> returns three or four
+values: three when the <i>separate-streams</i> keyword
+argument is <code>nil</code>, four
+when <i>separate-streams</i> is true. The
+<i>separate-streams</i> argument is discussed in this
+section and in its own section <a href="#separate-streams">below</a>).
+</p>
+<p id="21">
+When the value of the <i>wait</i> keyword argument is
+specified <code>nil</code>, then you can have
+<a href="run-shell-command.htm"><b>run-shell-command</b></a> create
+streams for any or all of the spawned process's standard input, output,
+and error-output. Any created streams must be made available, and this
+is done by returning them. (<a href="run-shell-command.htm"><b>run-shell-command</b></a> returns immediately when
+wait is nil, and so any returned streams are available at once.)
+</p>
+<p id="22">
+The interface is complex and admittedly non-intuitive (but it has been
+around so long that it cannot be easily changed). Just keep in mind
+that multiple values are returned, that the last return value is the
+pid of the spawned process's pid, and that the earlier return values
+are either streams set up by <a href="run-shell-command.htm"><b>run-shell-command</b></a>
+or <code>nil</code>.
+</p>
+<p id="23">
+The streams that <a href="run-shell-command.htm"><b>run-shell-command</b></a> might set up are
+individual streams for the spawned process's standard in and out, a
+bidirectional stream for both standard in and out, and/or an
+individual stream for the spawned process's error output.
+</p>
+<p id="24">
+<a href="run-shell-command.htm"><b>run-shell-command</b></a> will set
+up a stream for standard input when <i>input</i> is
+<code>:stream</code>, for standard output
+when <i>output</i> is <code>:stream</code>, and
+for error output when <i>error-output</i>
+is <code>:stream</code>. If both input and output
+are <code>:stream</code>, a single bidirection stream is set up
+for both unless the <i>separate-streams</i> keyword
+argument is specified true, in which case different streams are set up
+for input and output. <a href="run-shell-command.htm"><b>run-shell-command</b></a> will not itself set up a
+stream for input, output, or error output when,
+respectively, <i>input</i>, <i>output</i>,
+and <i>error-output</i> have any value other than
+<code>:stream</code>. The other allowable values for those
+arguments are discussed <a href="#in-out-err">below</a>.
+</p>
+<a name="wait-nil-templates"></a>
+<p id="25">
+Here are some sample calling templates to illustrate the range of
+possible return values. Unspecified keyword arguments (indicated by
+suspension points -- ...) do not affect the indicated return values.
+</p>
+<pre id="26">
+;;  First a reminder about calls with :wait t.
+;;  When the :wait argument is true (as it is by default), 
+;;  a single value is returned. Here are two examples with :wait t.
+;;  The second signals an error since none of :input, :output, or
+;;  :error-output can be :stream when :wait is true.
+
+(run-shell-command <i>command</i> :wait t ...)
+ <b>RETURNS as a single value</b> the exit status of the spawned
+    process which executes <i>command</i> (note that the default value
+    of :wait is T so ':wait t' need not be specified)
+
+(run-shell-command <i>command</i> :wait t 
+                   :input :stream
+                   :output :stream
+                   :error-output :stream
+                   ...)
+ <b>ERROR</b>: none of :input, :output, or :error-output can be :stream
+    when :wait is t.
+</pre>
+<p id="27">
+In all remaining examples, <i>wait</i>
+is <code>nil</code> and multiple values are
+returned. <i>input</i>, <i>output</i>, and
+<i>error</i> can each have the
+value <code>:stream</code> or other values
+described <a href="#in-out-err">below</a>.  For showing what is
+returned, it only matters whether each of the
+arguments <i>input</i>, <i>output</i>, and
+<i>error</i> is <code>:stream</code> or not, so we
+show the value as :stream, or [some value other than :stream], or
+[any value including :stream]. 
+</p>
+<p id="28">
+<a href="run-shell-command.htm"><b>run-shell-command</b></a>,
+when <i>wait</i> is <code>nil</code>,
+returns three values when the <i>separate-streams</i>
+keyword argument is <code>nil</code> (the default), and
+returns four values when <i>separate-streams</i> is
+true. <i>separate-streams</i> refers to streams for
+input and output: when <code>nil</code>, a single stream
+is set up for input, or output, or both (a bidirectional stream in
+that case; when true, separate streams are set up.
+</p>
+
+<pre id="29">
+;; separate-streams is nil in the first set of examples:
+
+(run-shell-command <i>command</i> 
+                   :input [some value other than :stream]
+                   :output [some value other than :stream]
+                   :error-output [some value other than :stream]
+                   :separate-streams nil :wait nil ...)
+ <b>RETURNS three values</b>
+ nil
+ nil
+ the process id of the spawned process
+
+(run-shell-command <i>command</i> 
+                   :input :stream 
+                   :output [some value other than :stream]
+                   :error-output [some value other than :stream]
+                   :separate-streams nil :wait nil ...)
+ <b>RETURNS three values</b>
+ a stream (which acts as standard input to the spawned process)
+ nil
+ the process id of the spawned process
+
+(run-shell-command <i>command</i> 
+                   :input [some value other than :stream]
+                   :output :stream
+                   :error-output [some value other than :stream]
+                   :separate-streams nil :wait nil ...)
+ <b>RETURNS three values</b>
+ a stream (which acts as standard output from the spawned process)
+ nil
+ the process id of the spawned process
+
+(run-shell-command <i>command</i> 
+                   :input :stream 
+                   :output :stream
+                   :error-output [some value other than :stream]
+                   :separate-streams nil :wait nil ...)
+ <b>RETURNS three values</b>
+ bi-directional-stream (standard in and standard out of spawned process)
+ nil
+ the process id of the spawned process
+
+(run-shell-command <i>command</i> 
+                   :input [any value including :stream]
+                   :output [any value including :stream]
+                   :error-output :stream
+                   :separate-streams nil :wait nil ...)
+ <b>RETURNS three values:</b>
+ stream-or-nil (stream if either :input or :output is :stream)
+ stream (for standard error of the spawned process)
+ the process id of the spawned process
+
+;;  <b>In the next example, <i>separate-streams</i> is
+;;  <code>t</code> and four values are returned.</b>
+
+(run-shell-command <i>command</i> :separate-streams t :wait nil ...)
+ <b>RETURNS four values:</b>
+ stream-or-nil (a stream to standard input if :input is :stream, nil otherwise)
+ stream-or-nil (a stream to standard output if :output is :stream, nil otherwise)
+ stream-or-nil (a stream to error-output if :error-output is :stream, nil otherwise)
+ the process id of the spawned process
+
+;; In this next example, we create a stream ourselves and use it for
+;; :output. Note that RUN-SHELL-COMMAND returns NIL for the output stream
+;; value (second returned value since separate-streams is true)
+;; even though output is actually a stream, since RUN-SHELL-COMMAND
+;; itself set up the stream:
+
+cl-user(139): (with-open-file (s "test.txt" :direction :output
+			       :if-exists :supersede)
+		(run-shell-command "printenv DISPLAY" :output s :wait nil
+				   :separate-streams t))
+nil
+nil
+nil
+13147
+cl-user(140): 
+
+</pre>
+
+<h2 id="30">
+2. The command argument
+</h2>
+
+<p id="31">
+The <b><i>command</i></b> argument can be a string
+containing a shell command (in Unix) or a program (in Windows). On
+Unix only, <i>command</i> can be a simple vector
+(element type t).
+</p>
+
+<ul>
+<li id="32">
+If <i>command</i> is a string, a shell is spawned which
+parses and executes the command.
+</li>
+<li id="33">
+If <i>command</i> is a simple vector (Unix only), its
+elements should be coercible to strings. The zeroth element and the
+remainder of the vector, converted to C strings, are passed as the two
+arguments to execvp() (and thus bypassing the intermediate shell
+process despite the name of this function). This is faster than
+spawning a shell and it avoids processing of shell initialization
+files such as .cshrc. Further, a shell will treat certain characters
+(such as quotes, asterisks, question marks, semicolons, spaces) as
+special. Such special treatment is a potential security risk if part
+of the command string contains untrusted input.
+</li>
+</ul>
+
+
+<p id="34">
+Here are two Unix invocations, one using a vector and one a string:
+</p>
+
+<pre id="35">
+(run-shell-command #("ls" "ls" "-l" "dcl"))
+(run-shell-command "ls -l dcl") 
+</pre>
+
+<p id="36">
+Note that when command is a string, and <i>wait</i>
+is <code>nil</code>, the returned process-id will be that
+of the shell, not the command itself, unless the command is prefaced
+with the shell `exec' built-in command. Thus 
+</p>
+
+<pre id="37">
+(run-shell-command "ls" :wait nil)
+</pre>
+
+<p id="38">
+will return the process-id of the shell in which ls is run while
+</p>
+
+<pre id="39">
+(run-shell-command "exec ls" :wait nil)
+</pre>
+
+<p id="40">
+will return the process-id of <strong>ls</strong> as will
+</p>
+
+<pre id="41">
+(run-shell-command #("ls" "ls") :wait nil)
+</pre>
+
+<a name="in-out-err"></a>
+<h2 id="42">3. input, output, and error-output keyword arguments</h2>
+
+<p id="43">
+The values of <i>input</i>, <i>output</i>,
+and <i>error-output</i> keyword arguments control what
+the spawned process will use as standard input (file descriptor 0),
+standard output (file descriptor 1) and standard error (file
+descriptor 2). The values can be
+</p>
+
+<ul>
+<li id="44">
+<code>nil</code> - inherit standard input, output or error
+(respectively) from Lisp. Note that this is Unix standard input and
+output inherited from the Lisp process and is unrelated to the Lisp
+variables <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-input*</code></a> and <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>.
+</li>
+<li id="45">
+a pathname (or string) - open the file specified by the pathname (or
+string) and use the resulting stream;
+</li>
+<li id="46">
+a stream - use the stream. The stream must be of a kind that has a
+Unix file descriptor in the appropriate direction. (Remember that
+`input' and `output' from the point of view of the spawned process are
+the opposite when viewed from Lisp. A stream which is the value of
+<i>output</i> will receive data from the spawned
+process; that which is the value of <i>input</i> will
+transmit data to the spawned process.) Examples include a stream open
+to a file or a hardware device or a Unix socket. A string output
+stream, for example, is not an appropriate value;
+</li>
+<li id="47">
+the keyword <code>:stream</code> - create a stream and return it
+to the Lisp program. Since waiting and having a stream open to a
+process can cause the process to hang, <code>:wait</code> must
+be <code>nil</code>; if <code>:wait</code> is
+<code>t</code>, an error will result. (When
+<code>:stream</code> is specified, the actual stream is not
+available to the program until <a href="run-shell-command.htm"><b>run-shell-command</b></a> returns, at which time it is
+really too late to be useful when <code>:wait</code> is <code>t</code>.)
+</li>
+</ul>
+
+<p id="48">
+<i>error-output</i> has an additional allowed value:
+<code>:output</code>, which directs standard error to the same
+place as standard output (file descriptor 1 rather than 2).
+</p>
+
+<p id="49">
+The default value in all cases is <code>nil</code>.
+</p>
+
+<h2 id="50">4. The directory keyword argument</h2>
+
+<p id="51">
+The <i>directory</i> keyword argument can be used to
+specify the directory in which the command runs. It defaults to
+<code>nil</code>, which results in the command being run
+in the directory returned by <a href="current-directory.htm"><b>current-directory</b></a>. If its value is a directory
+pathname or namestring, the command is run in that directory.
+</p>
+
+<a name="wait-nil-2"></a>
+<h2 id="52">5. More on the :wait argument</h2>
+
+
+<p id="53">
+<i>wait</i> may be <code>t</code> or <code>nil</code>. If <i>wait</i> is <code>t</code>, Lisp will wait for the command to exit before
+resuming. If <i>wait</i> is <code>nil</code>, Lisp will start the process and then resume
+without waiting for it to finish. The default for
+<i>wait</i> is <code>t</code>.
+</p>
+
+<p id="54">
+Note that if <i>wait</i> is specified as <code>nil</code>, then the process will remain in the system after
+it completes until either Lisp exits or Lisp executes <a href="../system/reap-os-subprocess.htm"><b>reap-os-subprocess</b></a> to inquire
+about the exit status. To prevent the system becoming clogged with
+processes, a program that spawns a number of processes with :wait set
+to <code>nil</code> must be sure to call <a href="../system/reap-os-subprocess.htm"><b>reap-os-subprocess</b></a> after each process
+finishes. Further, the streams returned by <b>run-shell-command</b>
+must be closed (the system will not close them automatically).
+</p>
+
+<p id="55">
+Also see <a href="#kill-proc">Killing a process started with
+:wait nil</a> below.
+</p>
+
+<h2 id="56">6. The :if-* arguments</h2>
+
+<p id="57">
+The keyword arguments <i>if-input-does-not-exist</i>,
+<i>if-output-exists</i> and
+<i>if-error-output-exists</i> are used when
+<i>input</i>, <i>output</i> or
+<i>error-output</i> are pathnames (or strings naming
+files).
+</p>
+
+<p id="58">
+Lisp uses <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> to open a
+stream to the file identified by the pathname (or string) and the
+values of <i>if-input-does-not-exist</i>,
+<i>if-output-exists</i> and
+<i>if-error-output-exists</i> are passed to the <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> function as the value of its
+<i>if-does-not-exist</i> parameter (for
+<i>input</i>) and the <i>if-exists</i>
+parameter (for <i>output</i> and
+<i>error-output</i>.) 
+</p>
+
+<p id="59">
+The permissible values for <i>if-does-not-exist</i> are
+<code>:error</code>, <code>:create</code> and <code>nil</code>. 
+</p>
+<p id="60">
+Those for <i>if-output-exists</i> and
+<i>if-error-output-exists</i> are
+<code>:error</code>, <code>:overwrite</code>,
+<code>:append</code>, <code>:supersede</code> and <code>nil</code>. The default is <code>:error</code> in all
+cases.
+</p>
+
+<a name="separate-streams"></a>
+<h2 id="61">7. The separate-streams keyword argument</h2>
+
+<p id="62">
+The <i>separate-streams</i> keyword argument causes
+separate streams to be created and returned (rather than a single,
+bi-directional stream) when <i>input</i> and
+<i>output</i> are both <code>:stream</code>.  When
+<i>separate-streams</i> is true, four values are
+returned, for the <i>input</i> stream, the
+<i>output</i> stream, and the
+<i>error-output</i> stream.
+</p>
+<p id="63">
+In all cases, <code>nil</code> will be returned in place
+of a stream if the relevant argument is not <code>:stream</code>
+(see the call templates Again, the allowed values are
+described <a href="#wait-nil-templates">above</a>). 
+</p>
+<p id="64">
+The value of <i>separate-streams</i> only matters when
+the value of the <i>wait</i> is <code>nil</code>.
+</p>
+
+<h2 id="65">8. The environment keyword argument</h2>
+
+<p id="66">
+The value of <i>environment</i> should be an association
+list of names and values or a list of lists, where the name is the
+first element of the list and the value is the second (further
+elements are ignored). Names and values should be strings. Each name
+should be the name of an environment variable to set in the process
+being spawned, and the corresponding value should be the desired value
+for that variable. The environment variable is only set in the process
+being spawned, and is not set in the process executing
+the <a href="run-shell-command.htm"><b>run-shell-command</b></a>, nor
+is it remembered in future calls to <a href="run-shell-command.htm"><b>run-shell-command</b></a>.
+</p>
+<p id="67">
+<a href="run-shell-command.htm"><b>run-shell-command</b></a> adds
+the specified environment variables and values to the
+existing environment and passes that to the subprocess it is
+starting. Specifying an environment name that already exists will
+cause that name's value to be replaced with the new value specified.
+</p>
+<p id="68">
+4096 bytes is allocated for storing new names and values.
+</p>
+
+<p id="69">
+In the following example, we show that the DISPLAY environment
+variable has a value, but that value is changed in the spawned process
+when we specify <code>:environment '(("DISPLAY"
+"111.222.33.444:0"))</code>, and that the change is not remembered.
+</p>
+
+<pre id="70">
+cl-user(6): (run-shell-command "printenv DISPLAY")
+192.132.95.213:0
+0
+cl-user(7): (run-shell-command "printenv DISPLAY"
+                               :environment 
+                               '(("DISPLAY" "111.222.33.444:0")))
+111.222.33.444:0
+0
+cl-user(8): (run-shell-command "printenv DISPLAY")
+192.132.95.213:0
+0
+cl-user(9): 
+</pre>
+
+<a name="windows"></a>
+<h2 id="71">9. run-shell-command and Windows</h2>
+
+<p id="72">
+On all Windows OS's, <a href="run-shell-command.htm"><b>run-shell-command</b></a> executes programs but does
+not invoke shell commands. The function is therefore misnamed for
+Windows. It is called <a href="run-shell-command.htm"><b>run-shell-command</b></a> to provide cross-platform
+compatibility between Windows and Unix. It does behave differently on
+Windows and Unix. The difference is related to differences between
+UNIX and Windows.
+</p>
+
+<p id="73">
+On Unix <a href="run-shell-command.htm"><b>run-shell-command</b></a>
+spawns a Unix process and runs the executable program or Unix shell
+command provided as argument to the function. On Windows, the argument
+to <a href="run-shell-command.htm"><b>run-shell-command</b></a> command
+is started directly and so works with programs but the Windows command
+shell is not invoked and so <a href="run-shell-command.htm"><b>run-shell-command</b></a> &nbsp;<em>does not
+work with shell commands</em>. An example of a program is
+Notepad. Either of these forms will start Notepad on Windows:
+</p>
+
+<pre id="74">
+(run-shell-command "notepad") 
+(run-shell-command "notepad.exe") 
+</pre>
+
+
+<p id="75">
+To run a DOS shell command, the argument to <a href="run-shell-command.htm"><b>run-shell-command</b></a> has to start the shell and
+tell it to run the command. 
+</p>
+
+
+<p id="76">
+Here is an example:
+</p>
+
+
+<p id="77">
+On Windows the name of the shell is cmd.exe. Here is an example of
+using <a href="run-shell-command.htm"><b>run-shell-command</b></a> on
+Windows:
+</p>
+
+<pre id="78">
+(run-shell-command "cmd /c start \"c:\\Program Files\\\"") 
+</pre>
+<p id="79">
+which opens a command prompt in the <b>c:\\Program Files\\</b> directory.
+</p>
+<p id="80">
+This displays the Windows explorer and avoids cmd altogether:
+</p>
+<pre id="81">
+(run-shell-command "explorer c:\\acl")
+</pre>
+
+<p id="82">
+Also:
+</p>
+
+<ul>
+  <li id="83">The first argument to <a href="run-shell-command.htm"><b>run-shell-command</b></a> has to be a string (the
+    Unix version will accept a vector of strings). </li> 
+<li id="84">The
+    <a href="run-shell-command.htm"><b>run-shell-command</b></a> 
+    command will be started
+    directly and the Windows command shell will not be invoked to
+    start the command. Because the Windows shell is not involved, you
+    cannot include shell operators in the command (e.g.<code>
+    &lt;&lt;, &lt;, &gt;</code>, and | ). </li> 
+<li id="85">If the keyword
+    arguments <i>input</i>, <i>output</i>
+    and <i>error-output</i> are given stream values,
+    then that stream must be open to a file on the disk. In particular
+    a stream such as 
+    <a href="../../../ansicl/dictentr/terminal.htm"><code>*terminal-io*</code></a>
+     will not be accepted
+    here, nor will a socket stream nor a stream returned by a previous
+    <a href="run-shell-command.htm"><b>run-shell-command</b></a>. </li> 
+<li id="86">You can start a DOS
+    (Console mode) or a Windows program with
+    <a href="run-shell-command.htm"><b>run-shell-command</b></a>.
+    
+    <strong>Note</strong>: Windows programs are unlikely to use standard input, output or
+    error. </li>
+  <li id="87">When you use streams to communicate with a spawned process, keep in mind that the
+    streams are operating in a raw mode that doesn't translate a carriage-return linefeed to a
+    linefeed on input, and a linefeed to a carriage return followed by a linefeed on output. </li>
+</ul>
+
+<h2 id="88">10. The :show-window keyword argument (Windows only)</h2>
+
+<p id="89">
+The <i>show-window</i> keyword argument only has effect
+on Windows. The value controls how the window created by the program
+run by <a href="run-shell-command.htm"><b>run-shell-command</b></a>
+first appears. The value can be an integer. The integer should be the
+value of one of the SW_ constants defined in the <b>winuser.h</b>
+include file that is part of the Windows SDK. The symbolic value
+should be preferred over an integer, however, since this will be
+portable in the face of changes to the Windows SDK header files and
+use on other operating systems. The value can also be one of the
+following symbols:
+</p>
+
+<ul>
+<li id="90">
+<code>nil</code>: let the process itself determine how it
+will show its window.
+</li>
+<li id="91">
+<code>:normal</code>: display a window in neither a maximized
+nor minimized state. Same as integer value SW_NORMAL.
+</li>
+<li id="92">
+<code>:showna</code>: show but do not select (i.e. display the
+window but do not bring it to the front). Same as integer value
+SW_SHOWNA. <b>Warning</b>: this value may work inconsistently on
+different versions of Windows.  Use <code>:minimized</code> to ensure the window is
+not in front but is accessible, or <code>:hide</code> if
+accessing the window is never important. 
+</li>
+<li id="93">
+<code>:hide</code>: hide the window completely. It doesn't even
+appear in the task bar. Same as integer value SW_HIDE.
+</li>
+<li id="94">
+<code>:minimized</code>: display the window as an icon in the
+task bar. Same as integer value SW_MINIMIZED.
+</li>
+<li id="95">
+<code>:maximized</code>: display the window as a full screen
+maximized window. Same as integer value SW_MAXIMIZED. Console windows
+can not be maximized, however.
+</li>
+</ul>
+
+
+<h2 id="96">11. The :share-open-files keyword argument (Windows only)</h2>
+
+<p id="97">
+When <i>share-open-files</i> is true (the default
+value), behavior is as it has been before this argument was added: all
+open file handles that could be shared will be shared.
+</p>
+<p id="98">
+When <i>share-open-files</i> is specified as <code>nil</code>, then the <i>input</i>,
+<i>output</i>, and <i>error-output</i>
+keyword arguments must also be <code>nil</code> (which is
+their default). In this case no open file handles will be shared and
+the spawned process will open its own standard io handles if it needs
+them.
+</p>
+
+<h2 id="99">12. Threads and streams on Windows</h2>
+
+<p id="100">
+On Windows, Allegro CL starts an operating system thread for each
+output stream created, to be a transfer agent for the data. This
+thread cannot exit until it knows all the data has been transferred
+from the external shell process to the Lisp world. This will happen if
+the external process finishes and the agent has read all the data it
+produced, or if the stream is explicitly closed on the Lisp
+side. Since the Lisp portion of the stream has a limited buffer space,
+there may well be data still to be read long after the external
+process finishes; the agent cannot transfer all the data to the Lisp
+buffer until Lisp activity makes room for it by reading the earlier
+data. The Lisp application that uses <a href="run-shell-command.htm"><b>run-shell-command</b></a> with stream output should
+explicitly close any stream it does not read to the end, or it risks
+finding the available pool of OS threads completely taken up by zombie
+stream agents.
+</p>
+
+<h2 id="101">13. run-shell-command and Unix</h2>
+
+<p id="102">
+<a href="run-shell-command.htm"><b>run-shell-command</b></a> starts a
+process with <strong>execlp()</strong> when command is a string and
+(as we said above) <strong>execvp()</strong> when command is a simple
+vector.
+</p>
+
+<p id="103">
+The SHELL environment variable is used to determine the type of shell
+spawned. If SHELL has no value. /bin/csh is used. If that fails,
+/bin/sh is used.
+</p>
+
+<h2 id="104">
+14. The environment in which <a href="run-shell-command.htm"><b>run-shell-command</b></a> runs its processes
+</h2>
+<p id="105">
+<a href="run-shell-command.htm"><b>run-shell-command</b></a> starts up
+subprocesses of the Lisp process. In order to modify an environment
+variable for these subprocesses, you must modify the environment for
+the Lisp process -- it does no good to modify the environment for the
+parent process of the Lisp process (i.e. the shell where Lisp was
+started, or Emacs, if Lisp is started as a subprocess of Emacs).
+</p>
+
+<p id="106">
+You can poll environment variables with 
+<a href="../system/getenv.htm"><b>getenv</b></a>, and you can set
+environment variables for the Lisp process, and thus for subprocesses
+created by Lisp (by 
+<a href="run-shell-command.htm"><b>run-shell-command</b></a>, e.g.) with
+<a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> and 
+<a href="../system/getenv.htm"><b>getenv</b></a>.
+</p>
+
+
+<h2 id="107">15. The uid, gid, effective, and initgroups-user keyword arguments</h2>
+
+<p id="108">
+These arguments only have meaning on UNIX platforms. They are not
+supported on Windows.
+</p>
+<p id="109">
+<i>uid</i> and <i>gid</i> are numbers
+representing user and group ids. <i>effective</i> is a
+boolean which indicates that <i>uid</i> and
+<i>gid</i> are effective user and group ids.
+<i>initgroups-user</i> is a string naming a user.
+</p>
+<p id="110">
+Here is an example using <a href="../../os-interface.htm#command-output-op-bookmarkxx"><b>command-output</b></a> (which also has
+the new arguments):
+</p>
+<pre id="111">
+cl-user(1): (require :osi)
+t
+cl-user(2): (excl.osi:command-output "whoami" :uid 483)
+("layer")
+nil
+0
+cl-user(3): (excl.osi:command-output "whoami")
+("root")
+nil
+0
+cl-user(4): 
+</pre>
+<p id="112">
+The <i>gid</i>, <i>initgroups-user</i>,
+and <i>uid</i> arguments are independent and are
+processed in the following order, using the indicated system calls (on
+most UNIX platforms):
+</p>
+
+<table BORDER="1">
+  <tr>
+    <td VALIGN="TOP"><i>gid</i></td>
+    <td VALIGN="TOP"><b>setgid()</b>, <b>setegid()</b></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><i>initgroups-user</i></td>
+    <td VALIGN="TOP"><b>initgroups()</b></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><i>uid</i></td>
+    <td VALIGN="TOP"><b>setuid()</b>, <b>seteuid()</b></td>
+  </tr>
+</table>
+<p id="113">
+The group is always set first, since after changing users that user
+may not have permission to change groups.
+</p>
+
+<h2 id="114">16. A couple of Unix examples</h2>
+
+<pre id="115">;; The current values of the environment variables on your system may,
+;; of course, be different from what appears in this example.
+user(2): (sys:getenv "SHELL")
+"/bin/csh"
+user(3): (setf (sys:getenv "SHELL") "/bin/sh")
+"/bin/sh"
+user(4): (sys:getenv "SHELL")
+"/bin/sh"
+</pre>
+
+<p id="116">
+Here are a couple of examples of <a href="run-shell-command.htm"><b>run-shell-command</b></a>. In the first, we simply
+have <a href="run-shell-command.htm"><b>run-shell-command</b></a>
+execute a simple command (<strong>who</strong>).
+</p>
+
+<pre id="117">USER(1): (run-shell-command "who")
+rlogin ttyb Aug 19 08:26
+sdj ttyp0 Aug 18 16:08 (rubix)
+adam ttyp2 Aug 18 16:17 (rubix)
+dm ttyp4 Aug 19 10:24 (rubix)
+0
+USER(2):
+</pre>
+
+<p id="118">The second example is more complicated. We cause <a href="run-shell-command.htm"><b>run-shell-command</b></a> to spawn a shell and then we
+communicate with the shell via the stream set up by
+<a href="run-shell-command.htm"><b>run-shell-command</b></a>.</p>
+
+<pre id="119">;; First we define a function to read the output from the shell. This
+;; function is pretty simple -- it reads characters and prints them
+;; out but it does show how a more useful function could be implemented.
+USER(24): (defun get-from-shell (stream)
+             (do ((ch (read-char-no-hang stream)
+                      (read-char-no-hang stream)))
+                 ((null ch))
+               (write-char ch)))
+GET-FROM-SHELL
+;; Now we initiate the shell:
+USER(25): (setq shell-stream 
+                (excl:run-shell-command &quot;csh&quot;
+                                        :input :stream
+                                        :output :stream
+                                        :wait nil))
+#&lt;EXCL::BIDIRECTIONAL-TERMINAL-STREAM @ #x10a4aa6&gt;
+USER(26): (format shell-stream &quot;who~%&quot;)
+NIL
+USER(27): (force-output shell-stream)
+NIL
+USER(28): (get-from-shell shell-stream)
+rlogin ttya Aug 19 07:06
+rlogin ttyb Aug 19 08:26
+sdj ttyp0 Aug 18 16:08 (rubix)
+cheetham ttyp1 Aug 18 17:17 (frozen)
+adam ttyp2 Aug 18 16:17 (rubix)
+NIL
+;; We exit the shell:
+USER(29): (format shell-stream &quot;exit~%&quot;)
+NIL
+;; and close the stream.
+USER(30): (close shell-stream)
+T
+;; We call sys:reap-os-subprocess because we called 
+;; run-shell-command with :wait nil:
+USER(31): (sys:reap-os-subprocess)
+0
+3995
+nil
+USER(32):
+</pre>
+
+<h2 id="120">
+17A. excl:run-shell-command and SMP
+</h2>
+
+<p id="121">
+A call to <a href="run-shell-command.htm"><b>run-shell-command</b></a>
+with <code>:wait t</code> (the default for
+the <i>wait</i> keyword argument
+is <code>t</code>) in an SMP Lisp blocks the Lisp process
+than calls <a href="run-shell-command.htm"><b>run-shell-command</b></a>
+but does not block other running processed. This is in contrast to the
+behavior of non-SMP multiprocessing, where a call to <a href="run-shell-command.htm"><b>run-shell-command</b></a> with <code>:wait
+t</code> blocks everything until the shell command completes, as we
+describe under the next heading.
+</p>
+
+<h2 id="122">
+17B. excl:run-shell-command and non-SMP multiprocessing
+</h2>
+
+
+<p id="123">
+<a href="run-shell-command.htm"><b>run-shell-command</b></a> does not
+take multiprocessing into consideration.  Therefore, if it is called
+with the :wait argument true (the default is t), all of Lisp waits for
+the call to complete, not just the process or thread that called
+<a href="run-shell-command.htm"><b>run-shell-command</b></a>.  It is
+that behavior which is <em>multiprocessing unfriendly</em>.  The
+following is a multiprocessing friendly call to <a href="run-shell-command.htm"><b>run-shell-command</b></a>.  It does cause the calling
+process or thread to wait but does not cause the entire Lisp process
+to wait for the shell command to finish.
+</p>
+
+<pre id="124">
+(multiple-value-bind (s errs my-pid)
+    (run-shell-command "sleep 5; ls /usr/bin" :wait nil)
+  (declare (ignore errs s))
+  (let ((my-status nil))
+    (mp::process-wait "for run-shell-command to finish"
+                      #'(lambda ()
+                         (setq my-status
+                          (or my-status
+                             (sys:reap-os-subprocess
+                              :pid my-pid :wait nil)))))
+    my-status)) 
+
+</pre>
+
+<p id="125"><strong>Notes:</strong> 
+</p>
+
+<ol>
+  <li id="126">Calling <strong>run-shell-command</strong> with 
+    :wait <code>nil</code> allows Lisp to continue in any
+    case, and that might be what you want.</li>
+  <li id="127">To repeat what we said above, most things can be done better 
+    from Lisp without 
+    recourse to <strong>run-shell-command</strong>,
+    which is inherently risky (to some extent, it puts the 
+    fate of the Lisp process in the
+    hands of a non-Lisp program over which Lisp may not have control). 
+    Whenever you are
+    tempted to use <strong>run-shell-command</strong>, 
+    consider performing the same action
+    within Lisp (perhaps using foreign functions). </li>
+</ol>
+
+<h2 id="128">
+18. A note on the order of execution when reading from a program to be
+reaped in a non-multiprocessing environment
+</h2>
+
+<p id="129">
+Code written similar to the following skeleton of code may hang:
+</p>
+<pre id="130">
+(multiple-value-bind (shell-stream error-stream process)
+    (excl:run-shell-command cmd
+       :input :stream :output :stream :error :stream)
+
+  (when process
+    (loop (when (sys:reap-os-subprocess :pid process :wait nil)
+	     (return))))
+
+  ;; now read from shell-stream and then close the streams
+
+  )
+</pre>
+<p id="131">
+In the code sample, the process is reaped prior to reading the process
+output. While this often works, because many programs don't bother to
+wait for all of their writes to complete before exiting, it may cause
+hanging if the pipe to which the data is sent fills up and thus not
+all data can be written until some reading is done, or the child
+program waits until each input has been read before writing more data.
+Some operating systems will cause select() to not
+return ready status on the output descriptor if any data at all is
+in that pipe, regardless of whether a call to write() would have
+succeeded.
+</p>
+<p id="132">
+The correct outline for the code is:
+</p>
+<pre id="133">
+(multiple-value-bind (shell-stream error-stream process)
+    (excl:run-shell-command cmd
+       :input :stream :output :stream :error :stream)
+
+  ;; do all the reading from shell-stream
+
+  (when process
+    (loop (when (sys:reap-os-subprocess :pid process :wait nil)
+	     (return))))
+
+  ;;  close the streams  
+)
+</pre>
+<p id="134">
+When you are using multiprocessing, you can use multiprocessing tools
+such as <a href="../mp/process-wait.htm"><b>process-wait</b></a> to ensure that no
+hanging occurs, as is done in the example under the heading
+<b>excl:run-shell-command and multiprocessing</b> above.
+</p>
+
+<a name="kill-proc"></a>
+<h2 id="135">
+19. Killing a process started with :wait nil
+</h2>
+
+<p id="136">
+Such processes often exit on there own or are killed by the user of
+the application but you may wish to kill them yourself from within
+Lisp. To do this, you need the pid value (which is the third returned
+value from run-shell-command when :wait is nil). We assume in what
+follows that the pid value is <i>pid</i>. Then:
+</p>
+<h3 id="137">
+Killing a :wait nil process on UNIX
+</h3>
+<p id="138">
+The function in the excl.osi package <a href="../../os-interface.htm#kill-op-bookmarkxx"><b>kill</b></a>
+takes <i>pid</i> and a kill signal as arguments. For example,
+</p>
+
+<pre id="139">
+(multiple-value-setq (v1 v2 xterm-pid)
+   (run-shell-command "exec xterm" :wait nil))
+nil
+nil
+3187
+;; An xterm appears. The pid is 3187, which is the value of XTERM-PID
+
+;; Later: (excl.osi:kill 3187 excl::*sigkill*) 
+;; excl::*sigkill* is the constant associated with that signal 
+;; The xterm is killed.  
+;;
+;; ALWAYS reap the killed process 
+(sys:reap-os-subprocess :pid 3187)
+0
+3187
+9
+</pre>
+
+<p id="140">
+Note the call to <a href="../system/reap-os-subprocess.htm"><b>sys:reap-os-subprocess</b></a>. This cleans the
+process from the system. If you neglkect to do this and you start many
+subprocesses, the system will clog up.
+</p>
+<p id="141">
+This method does not work on Windows (<a href="../../os-interface.htm#kill-op-bookmarkxx"><b>kill</b></a> signals an error if called in
+a Windows Lisp.
+</p>
+<h3 id="142">
+Killing a :wait nil process on Windows
+</h3>
+<p id="143">
+This is a bit more complicated because:
+</p>
+<ul>
+<li id="144">
+Some processes are started directly and some through a command
+shell. (<a href="run-shell-command.htm"><b>run-shell-command</b></a> can only start
+programs, not shell commands, as described above.)
+</li>
+<li id="145">
+Some processes are special, like the explorer (which in fact runs all
+the time).
+</li>
+</ul>
+<p id="146">
+In light of these differrences, be sure to test potential uses of
+killing spawned processes to ensure that what you want dome is
+actually done.
+</p>
+<p id="147">
+The following form kills the process with pid <i>pid</i>:
+</p>
+
+<pre id="148">
+ (run-shell-command (format nil "taskkill /f /pid ~a" pid))
+</pre>
+
+<p id="149">
+So, for example, we start <b>notepad</b> and then kill it:
+</p>
+
+<pre id="150">
+(multiple-value-setq (v1 v2 pid)
+  (run-shell-command "notepad" :wait nil))
+
+;; Notepad runs
+
+(run-shell-command (format nil "taskkill /f /pid ~a" pid))
+;; Notepad is killed
+
+(sys:reap-os-subprocess :pip pid)
+;; we reap the process
+</pre>
+
+
+<p id="151">
+See also <a href="shell.htm"><b>shell</b></a>. See
+<a href="../../os-interface.htm">os-interface.htm</a> for general information on the
+interface between Allegro CL and the operating system and for
+information on shell commands.
+</p>
+
+<hr><p id="152"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/run-shell-command.htm">9.0 version</a></td></tr></table></body></html>

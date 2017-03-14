@@ -1,0 +1,116 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>do-click</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/do-click.htm">9.0 version</a></td></tr></table><h2 id="2">do-click</h2>
+
+<p id="3"><b>Arguments: </b><i>window-or-widget-or-nil 
+</i>&amp;key  (<i>position</i> (and window-or-widget-or-nil :center)) (<i>mouse-button</i> :left) (<i>pre-expose</i> t) (<i>preview-seconds</i> 0.5) (<i>down-seconds</i> 0.5)<i>
+</i></p>
+
+<p id="4">
+This generic function programmatically emulates clicking a mouse
+button, after optionally exposing a window and/or moving the mouse
+cursor over it. This may be useful for automated testing.
+</p>
+<p id="5">
+<i>window-or-widget-or-nil</i> may be either a window, a
+dialog-item, or <code>nil</code>.  If this argument is
+non-<code>nil</code> and <i>pre-expose</i>
+is true, then the specified window or widget and all of its ancestor
+windows are selected so that the window or widget is in front to
+receive the mouse click.  The <i>position</i> argument
+will also be relative to this window or widget.
+</p>
+<p id="6">
+The keyword arguments are:
+</p>
+
+<ul>
+<li id="7">
+<i>position</i>: may be a position, or the special
+keyword <code>:center</code>, or <code>nil</code>.
+If non-<code>nil</code>, then the mouse cursor is moved to
+the indicated position before the mouse click is done.  If
+<i>window-or-widget-or-nil</i> is non-<code>nil</code>, then the position is in that object's stream
+coordinates, and otherwise it is a screen position.  The special
+<code>:center</code> value indicates the center of that object's
+client area.  The default value is <code>:center</code> if
+<i>window-or-widget-or-nil</i> is non-<code>nil</code>, and <code>nil</code> otherwise.
+<p id="8">
+Note that the mouse cursor is left at the specified position.  If you
+would like to return the mouse cursor to where it was previously, then
+you should first call <a href="../c/cursor-position.htm"><b>cursor-position</b></a> or <a href="../n/ncursor-position.htm"><b>ncursor-position</b></a> and save
+the current position, then call <a href="../d/do-click.htm"><b>do-click</b></a>, and finally call <a href="../c/cursor-position.htm"><b>(setf cursor-position)</b></a> to
+return the mouse cursor to its original position.
+</p>
+</li>
+<li id="9">
+<i>mouse-button</i>: may be either
+<code>:left</code>, <code>:middle</code>, or
+<code>:right</code> to indicate which mouse button is to be
+clicked. The default is <code>:left</code>.
+</li>
+<li id="10">
+<i>pre-expose</i>: if this argument is true and
+<i>window-or-widget-or-nil</i> is non-<code>nil</code>, then that window or widget and all its ancestor
+windows are selected before the click is done, so that it is in front
+to receive the click.  The default is <code>t</code>.
+</li>
+<li id="11">
+<i>preview-seconds</i> may be either a non-negative
+number indicating the number of seconds to sleep before pressing the
+mouse button, or <code>nil</code> to not sleep at all.
+The default is 0.5.
+</li>
+<li id="12">
+<i>down-seconds</i> may be either a non-negative number
+indicating the number of seconds to sleep after pressing the mouse
+button down but before releasing it, or <code>nil</code>
+to not sleep at all.  The default is 0.5.
+</li>
+</ul>
+
+<h4 id="13">Examples</h4>
+
+<pre id="14">
+;; Left-click at the center of a window's scrollable page.
+(do-click some-window)
+
+;; Left-click near the upper-right corner of its scrollable page.
+(do-click some-window
+  :position (make-position (- (interior-width some-window) 8)
+                           12))
+
+;; Left-click it with no pause for people to watch the action.
+(do-click some-window :preview-seconds nil :down-seconds nil)
+
+;; Right-click in the center of a window's scrollable page.
+(do-click some-window :button :right)
+
+;; Left-click whatever is under the mouse.
+(do-click nil)
+
+;; Left-click an arbitary position on the screen.
+(do-click nil :position (make-position 100 200))
+
+;; Left-click over the center of a window, but without
+;; first exposing it.  So if another window covers it, then the
+;; click will go to that window instead.  Pre-expose defaults to
+;; t to ensure that the click goes to the specified window, but
+;; it may be useful to pass it as nil as in this example if you
+;; are testing that the window is exposed when it should be.
+(do-click some-window :pre-expose nil)
+</pre>
+
+<h3 id="15">
+GTK Note
+</h3>
+
+<p id="16">
+This function is not implemented on GTK, and we doubt that there is
+any feasible way to implement it.  The function does not exist at all
+on the GTK platform, so you should use <code>#+mswindows</code>
+to conditionalize any calls to it.
+</p>
+
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/do-click.htm">9.0 version</a></td></tr></table></body></html>

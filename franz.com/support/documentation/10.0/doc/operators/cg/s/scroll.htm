@@ -1,0 +1,33 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>scroll</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/scroll.htm">9.0 version</a></td></tr></table><h2 id="2">scroll</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window offset </i>&amp;key <i>delay-redraw</i><i>
+</i></p>
+
+<p id="4">
+Scrolls <i>window</i> by <i>offset</i>
+which must be a position object (see <a href="../m/make-position.htm"><b>make-position</b></a>) indicating the
+amount to scroll by in the x and y directions. Redrawing is delayed if
+the <i>delay-redraw</i> keyword argument is
+true. Returns the actual amount of scrolling achieved as a position,
+or <code>nil</code> if no scrolling was done. See also
+<a href="../s/scroll-to.htm"><b>scroll-to</b></a>.
+</p>
+
+
+<p id="5">
+This function is called automatically by <a href="../u/user-scroll.htm"><b>user-scroll</b></a> when the user clicks on the
+scrollbar of a regular window or a <a href="../../../classes/cg/lisp-widget-window.htm"><code>lisp-widget-window</code></a> (but not for an <a href="../../../classes/cg/os-widget-window.htm"><code>os-widget-window</code></a>, which handles its
+scrolling internally).
+</p>
+<p id="6">
+Keystrokes do not automatically scroll windows by default.  Keyboard
+scrolling can be set up by writing a <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method that calls this
+function, or more simply by using the <a href="../h/handle-scrolling-keys.htm"><b>handle-scrolling-keys</b></a> property.
+</p>
+
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/scroll.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,93 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>jcall</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jcall.htm">9.0 version</a></td></tr></table><h2 id="2">jcall</h2>
+
+<p id="3"><b>Arguments: </b><i>method-ref instance </i> &amp;rest <i>args</i></p>
+
+<p id="4">
+This is the general form for calling Java methods.  If the arguments
+specify a unique Java method, then the specified method is called with
+the given arguments.  If more than one matching method is found, a
+continuable error is signaled to allow an appropriate method to be
+selected.
+</p>
+<p id="5">
+If the first (<i>method-ref</i>) argument is a class
+method, the second (<i>instance</i>) argument must be a
+reference to an instance of an appropriate class. The (unique)
+specified method is called with the given arguments.
+</p>
+<p id="6">
+If the <i>method-ref</i> argument is the name of a
+method, the <i>instance</i> argument must be a reference
+to an instance of an appropriate class. The methods of the class are
+examined to find one or more methods with the given number of
+arguments.  If the arguments specify a unique Java method, then the
+specified method is called with the given arguments.  If more than one
+matching method is found, a continuable error is signaled to allow an
+appropriate method to be selected.
+</p>
+<p id="7">
+If the <i>method-ref</i> argument is a reference to a
+static method, the <i>instance</i> argument is ignored.
+The (unique) specified method is called with the given arguments.
+</p>
+<p id="8">
+The <b><i>args</i></b> rest argument is a list of
+argumnents to the Java method. The arguments are converted using the
+rules in the section <a href="../../jlinker.htm#data=types-conversions-3">Data Types and Conversions</a>
+in <a href="../../jlinker.htm">jlinker.htm</a>. The last element in the list may be
+a result modifier; one of the following keywords that add advice about
+the value returned.
+</p>
+<ul>
+<li id="9">
+<code>:copy</code>:
+return a scalar value, or Lisp vector if at all possible.
+</li>
+<li id="10">
+<code>:ref</code>:
+return a remote reference if that makes sense.
+</li>
+<li id="11">
+<code>:ignore</code>: do not return anything at all.
+</li>
+<li id="12">
+<code>:one-way</code>: do not return anything at all and do not
+even wait for the answer. (Note: <code>:oneway</code> is also
+accepted for backward compatibility, but :one-way is preferred.)
+</li>
+</ul>
+
+<p id="13">
+If the Java code called from Lisp throws an exception, the exception
+is reflected in Lisp as a Lisp simple-error condition. The value of
+the slot <code>excl::format-arguments</code> is a list of the form
+</p>
+<pre id="14">
+(string1 (string2 remote-ref-to-java-error))
+</pre>
+<p id="15">
+It does not make sense to throw on purpose (rather than because of an
+exception) in code called from Lisp since the Java code is executed in
+a thread dedicated to the handling of calls from Lisp. When the Java
+code is running, there is no context of interest outside of the called
+method. That is why all throws are caught by jLinker and returned back
+to Lisp.
+</p>
+<p id="16">
+The compiler macro associated with the function allows compile-time
+collection of java class names and method signatures. This information
+is used to generate a file of class and method definitions that may be
+loaded to initialize an application, and avoid the class and method
+lookup overhead in the body of the application (see <a href="jlookup.htm"><b>jlookup</b></a>).
+</p>
+
+
+
+<p id="17">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jcall.htm">9.0 version</a></td></tr></table></body></html>

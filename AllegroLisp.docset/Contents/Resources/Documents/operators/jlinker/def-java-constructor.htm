@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-java-constructor</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/def-java-constructor.htm">9.0 version</a></td></tr></table><h2 id="2">def-java-constructor</h2>
+
+<p id="3"><b>Arguments: </b><i>lisp-name 
+(lisp-class </i> &amp;rest <i>argtypes</i><i>)
+</i></p>
+
+<p id="4">
+This macro defines a Lisp function that calls a Java constructor.  The
+first argument is the name of the new Lisp function.  The second
+argument is an argument list where the first item is the Lisp name of
+a class previously defined with <a href="def-java-class.htm"><b>def-java-class</b></a>.  The Lisp name is
+defined as a function of n arguments, where n is the number of
+<i>argtype</i>s specified.  Each
+<i>argtype</i> is a string or symbol that denotes a Java
+class. The Lisp class must be defined to represent exactly one Java class.
+If the Lisp class was defined to represent more than one Java class,
+an error is signaled when the macro is expanded.
+</p>
+
+<h3 id="5">Examples</h3>
+
+<pre id="6">
+(def-java-class (string-buffer "java.lang.StringBuffer")
+(application-buffer)
+    ()
+    ()
+    ((source :initform "Java")))
+
+(def-java-constructor new-string-buffer-int (string-buffer "int"))
+</pre>
+
+<p id="7">
+This form defines a Lisp function <b>new-string-buffer-int</b> that
+calls Java to create an instance of the Java class
+<code>java.lang.StringBuffer</code>, and returns a remote
+reference to the instance. The remote reference will be a Lisp
+instance of the class <code>string-buffer</code>.
+</p>
+<p id="8">
+The constructor is called as an ordinary Lisp function:
+</p>
+<pre id="9">
+(new-string-buffer-int 17)
+</pre>
+<p id="10">
+is an example of such a call.
+</p>
+
+<pre id="11">
+(def-java-constructor new-string-buffer-str 
+    (string-buffer "java.lang.String"))
+</pre>
+
+<p id="12">
+This form defines another Lisp function (<b>new-string-buffer-str</b>
+that calls a different constructor of the
+<code>java.lang.StringBuffer</code> class.  The Lisp function
+must have a different name because the constructors are ordinary
+functions, not generic functions, and thus cannot be overloaded in any
+way.
+</p>
+<p id="13">
+The constructor is also called as an ordinary Lisp function:
+</p>
+<pre id="14">
+(new-string-buffer-str "abc")
+</pre>
+
+<p id="15">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/def-java-constructor.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,124 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>tray-item</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/tray-item.htm">9.0 version</a></td></tr></table><h2 id="2">tray-item</h2>
+
+<p id="3">
+The class of <a href="tray-item.htm"><code>tray-item</code></a> objects.  A <a href="tray-item.htm"><code>tray-item</code></a> instance is
+used for each item that a standalone Common Graphics application
+places into the system "tray", also known as the Taskbar Notification
+Area. This is the area at the rightmost end of the system taskbar
+that contains small icons with custom mouse behavior for various
+applications.
+</p>
+<p id="4">
+A Common Graphics application can add an item to the tray by calling
+<a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> to
+create a <a href="tray-item.htm"><code>tray-item</code></a> and then calling <a href="../../operators/cg/a/add-tray-item.htm"><b>add-tray-item</b></a> to add it
+to the tray.  It may be removed later with <a href="../../operators/cg/r/remove-tray-item.htm"><b>remove-tray-item</b></a> and then added
+again and removed any number of times.  <a href="../../operators/cg/i/in-tray-p.htm"><b>in-tray-p</b></a> returns whether a <a href="tray-item.htm"><code>tray-item</code></a> is currently
+in the tray.
+</p>
+<p id="5">
+A <a href="tray-item.htm"><code>tray-item</code></a>
+generally needs an icon to display, which may be specified either by
+passing an icon handle as the :icon initarg to <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or later by calling
+(setf tray-item-icon).  An optional tooltip may also be specified either
+with the :tooltip initarg or by calling <a href="../../operators/cg/t/tray-item-tooltip.htm"><b>(setf
+tray-item-tooltip)</b></a>.  A name for identifying the <a href="tray-item.htm"><code>tray-item</code></a>
+programmatically may be specified by passing a symbol as the :name
+initarg or by calling <a href="../../operators/cg/n/name.htm"><b>(setf name)</b></a>.
+</p>
+<p id="6">
+When the user moves the mouse over the tray icon or clicks on it, the
+generic function <a href="../../operators/cg/t/tray-item-message.htm"><b>tray-item-message</b></a> is called.  An
+application may supply <a href="../../operators/cg/t/tray-item-message.htm"><b>tray-item-message</b></a> methods to handle
+the mouse events in a custom way.
+</p>
+<p id="7">
+<b>Microsoft Windows note</b>: to make it easy for the user to select
+a choice or to cancel a pop-up menu, you may want to ensure that a
+window from the same process has the keyboard focus, or at least that
+such a window is present on the screen.  In Microsoft Windows,
+keypresses will apply to a pop-up menu only if the window that
+currently has the keyboard focus was created in the process that
+popped up the menu.  Otherwise the Escape key will not dismiss the
+menu, and a choice cannot be made with the keyboard.  Clicking the
+mouse outside a pop-up menu will dismiss the menu only if there is at
+least one currently visible (not shrunk) top-level window that was
+created in the process that popped up the menu.
+</p>
+<p id="8">
+Here is a complete (though trivial) example:
+</p>
+
+<pre id="9">
+;;; Define a tray-item subclass in order to specialize a
+;;; custom tray-item-message method on it.
+(defclass my-tray-item (tray-item)())
+
+(defclass my-frame (frame-window)())
+
+(defmethod tray-item-message ((tray-item my-tray-item)
+                              (window my-frame)
+                              message)
+  (case message
+    
+    ;; On a left click, select the application window.
+    (#.mouse-left-down
+     (select-window window)
+     (set-foreground-window window))
+    
+    ;; On a right click, pop up a menu of background colors
+    ;; for the application window.  Popping up a menu on a
+    ;; down click appears not to work when the tray icon's
+    ;; associated window is selected, so use an up click.
+    (#.mouse-right-up
+     (let* ((menu (open-menu
+                   (list (make-instance 'menu-item
+                           :name :yellow
+                           :title "~Yellow"
+                           :value yellow)
+                         (make-instance 'menu-item
+                           :name :green
+                           :title "~Green"
+                           :value green)
+                         (make-instance 'menu-item
+                           :name :cyan
+                           :title "~Cyan"
+                           :value cyan))
+                   'pop-up-menu (screen *system*)))
+            (color (pop-up-menu menu window)))
+       (close menu)
+       (when color
+         (setf (background-color window) color)
+         (invalidate window))))))
+
+;;; Test the above application code.
+
+(setq window (make-window :tray-test
+               :class 'my-frame
+               :title "Tray Test"))
+
+(setq ti (make-instance 'my-tray-item
+           :icon information-icon
+           :tooltip "Click left or right"))
+
+(add-tray-item ti :window window)
+
+;; Try out the tray icon here ...
+
+(remove-tray-item ti)
+</pre>
+
+<h3 id="10">
+GTK Note
+</h3>
+
+<p id="11">
+Tray items are not implemented on the GTK platform, where we
+see no way to implement them.  You should use #+mswindows to
+conditionalize any tray-item code.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/tray-item.htm">9.0 version</a></td></tr></table></body></html>

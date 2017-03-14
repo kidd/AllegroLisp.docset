@@ -1,0 +1,122 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-output-to-buffer</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Code change since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-output-to-buffer.htm">9.0 version</a></td></tr></table><h2 id="2">with-output-to-buffer</h2>
+
+
+
+<p id="3"><b>Arguments: </b><i>
+(var </i> &amp;optional <i>buffer</i><i> </i>&amp;key <i>external-format</i><i>)
+forms
+</i></p>
+
+
+
+
+<p id="4">
+Similar to <a href="../../../ansicl/dictentr/with-out.htm"><b>with-output-to-string</b></a> but with an octet buffer
+(a vector that is a <a href="../../../ansicl/dictentr/simple-a.htm"><code>simple-array</code></a> with element
+type <code>(unsigned-byte 8)</code> or
+<code>(signed-byte 8)</code>) instead of a Lisp string. The
+<i>external-format</i> argument should be the name of an
+external-format,
+or <code>:default</code>.  <code>:default</code> will
+cause the external format to be looked up in the locale. <a href="with-output-to-buffer.htm"><b>with-output-to-buffer</b></a> is implemented using a
+<a href="../../classes/excl/buffer-output-simple-stream.htm"><code>buffer-output-simple-stream</code></a>.
+</p>
+<p id="5">
+The return value depends on the value of
+the <b><i>buffer</i></b> argument. Return values are
+described below.
+</p>
+<p id="6">
+The <b><i>buffer</i></b> argument can either be an octet
+buffer (described above), or <code>nil</code>, or
+unsupplied (unsupplied is not the same
+as <code>nil</code>), or <code>:growable</code>
+(equivalent to unsupplied). If an octet buffer is supplied, an error
+will be signaled if the buffer
+overflows. The <code>:growable</code> value is necessary because
+some value must be supplied when a value is given for
+the <i>external-format</i> keyword argument.
+</p>
+<p id="7">
+If <i>buffer</i> is unsupplied
+or <code>:growable</code>, a suitable buffer is created and
+used. That buffer extends automatically as needed and so cannot
+overflow. The contents are available in the body of this macro
+using <a href="get-output-stream-buffer.htm"><b>get-output-stream-buffer</b></a>. 
+</p>
+<p id="8">
+If <i>buffer</i>
+is <code>nil</code>, the stream acts like a counting
+bit-bucket: no output is generated, and so no overflow can occur, but
+the file-position of the stream can be queried at the end of the
+write.  This allows the following to be done:
+</p>
+<pre id="9">
+cl-user(1): (with-output-to-buffer (stm nil)
+              (write-string "hello" stm)
+              (file-position stm))
+5
+cl-user(2): 
+</pre>
+<p id="10">
+This macro returns the contents of the created buffer
+if <i>buffer</i> is unsupplied
+or <code>:growable</code>. If <i>buffer</i> is an
+octet array or <code>nil</code>, this macro returns, as
+multiple values, all values returned by the last form of the body.
+</p>
+
+<pre id="11">
+;; buffer not supplied
+cl-user(3): (with-output-to-buffer (b) 
+              (values (write-string &quot;hello&quot; b) 1 2 3))
+#(104 101 108 108 111)
+
+;; buffer eq :growable
+cl-user(5): (with-output-to-buffer (b :growable) 
+              (values (write-string &quot;hello&quot; b) 1 2 3))
+#(104 101 108 108 111)
+
+;; buffer = nil
+cl-user(4): (with-output-to-buffer (b nil) 
+              (values (write-string &quot;hello&quot; b) (file-position b) 'more 'output))
+&quot;hello&quot;
+5
+more
+output
+
+;; non-nil buffer supplied
+cl-user(12): (with-output-to-buffer 
+                (b (make-array 20 :element-type '(unsigned-byte 8))) 
+              (values (write-string &quot;hello&quot; b) 1 2 3))
+&quot;hello&quot;
+1
+2
+3
+
+;; non-nil buffer supplied but it is too small, 
+;; so an error is signaled:
+cg-user(13): (with-output-to-buffer 
+                (b (make-array 10 :element-type '(unsigned-byte 8))) 
+              (values (write-string &quot;hello, how are you today?&quot; b) 1 2 3))
+Error: In sc-write-char-direct: Output exceeds workspace for #&lt;buffer-output-simple-stream  pos 10 @ #x202796082&gt;
+[condition type: simple-error]
+cg-user(14): 
+</pre>
+
+<p id="12">
+The macro <a href="with-underlying-simple-vector.htm"><b>with-underlying-simple-vector</b></a> may be
+useful in conjunction with this macro as it allows
+any <code>(unsigned-byte 8)</code> or
+<code>(signed-byte 8)</code> array (not just simple one or just
+vectors) to be effectively used as the buffer.
+</p>
+
+<p id="13">
+See <a href="../../streams.htm">streams.htm</a> for information on the
+simple-streams implementation in Allegro CL. 
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Code change since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-output-to-buffer.htm">9.0 version</a></td></tr></table></body></html>

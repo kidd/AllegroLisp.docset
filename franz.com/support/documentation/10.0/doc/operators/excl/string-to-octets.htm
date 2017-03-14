@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>string-to-octets</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/string-to-octets.htm">9.0 version</a></td></tr></table><h2 id="2">string-to-octets</h2>
+
+<p id="3"><b>Arguments: </b><i>string </i>&amp;key  (<i>null-terminate</i> t) (<i>start</i> 0) (<i>end</i> (length string))<i> mb-vector make-mb-vector?</i> (<i>external-format</i> :default)</p>
+
+<p id="4">
+In releases prior to 6.0, this function was named
+<strong>string-to-mb</strong>. The old name is preserved for backward
+compatibility, but users should use the new name.
+</p>
+
+<p id="5">
+This function returns a Lisp (simple-array (unsigned-byte 8) (*))
+vector and the number of bytes copied.
+</p>
+
+<p id="6">
+This function converts (according to the
+<i>external-format</i> argument) and copies the string
+data from indices specified by <i>start</i> to
+<i>end</i> out of the lisp string into a lisp array of
+type (simple-array (unsigned-byte 8) (*)). This array is
+returned. 
+</p>
+
+<p id="7">
+If the <i>mb-vector</i> argument is specified, then its
+value will be used (and returned) as the destination lisp array. If a
+vector is specified with the <i>mb-vector</i> argument
+and it is not long enough, an error is signaled unless
+<i>make-mb-vector?</i> is specified as non-<code>nil</code>, in which case a new vector is created and
+returned (and <i>mb-vector</i> is ignored).
+</p>
+
+<p id="8">
+When the null-terminate argument is true, the copied string data (in
+the resulting vector) is null-terminated, that is the byte following
+the last data element is 0. The number of 8-bit bytes copied including
+the null-terminator is returned as the second value of this function.
+</p>
+
+<p id="9">
+Conversion is done using the specified
+<i>external-format</i>. If
+<i>external-format</i> is not specified (or,
+equivalently, if the value of <i>external-format</i> is
+<code>:default</code>), then the external format returned by the
+following form is used:
+</p>
+<pre id="10">
+(locale-external-format *locale*)
+</pre>
+<p id="11">
+See <a href="locale-external-format.htm"><b>locale-external-format</b></a>
+and <a href="../../variables/excl/s_locale_s.htm"><code>*locale*</code></a>.
+</p>
+
+<p id="12">
+See also <a href="octets-to-string.htm"><b>octets-to-string</b></a>
+and <a href="string-to-native.htm"><b>string-to-native</b></a>.
+</p>
+
+<p id="13">
+See also <a href="../../iacl.htm">iacl.htm</a> for general
+information on international character set support in Allegro
+CL.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/string-to-octets.htm">9.0 version</a></td></tr></table></body></html>

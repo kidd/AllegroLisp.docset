@@ -1,0 +1,97 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rpc-open-server</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-open-server.htm">9.0 version</a></td></tr></table><h2 id="2">rpc-open-server</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(server rpc-socket-server) </i>&amp;key <i>confirm</i><i>
+</i></p>
+
+<p id="4"><b>Arguments: </b><i>
+(server rpc-datagram-server) </i>&amp;key <i>confirm</i><i>
+</i></p>
+
+<p id="5">
+This function accepts one connection from a remote client.  In a
+typical situation, a server would loop on a call to this function.
+The function <a href="rpc-open-listener.htm"><b>rpc-open-listener</b></a> implements such a
+loop. This function is useful if an application needs behavior that
+is not provided by <a href="rpc-open-listener.htm"><b>rpc-open-listener</b></a>.
+</p>
+<p id="6">
+When <i>server</i> is a subclass of <a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>, this method
+waits for a connection and returns the resulting port object. 
+</p>
+<p id="7">
+When <i>server</i> is a subclass of <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>, the effect of this
+method is to wait for one datagram message to arrive. The message
+could be a new RPC call, the result of some previous RPC call, or an
+RPC request. Unless this method is called repeatedly in some loop, the
+Lisp host will be very unreceptive to remote calls and requests.
+</p>
+<p id="8">
+The keyword arguments are the same as <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>, and are used to update
+the settings in the server instance.
+</p>
+<p id="9">
+A passive socket is opened if necessary, and closed if appropriate. If
+<i>begin</i> is t, start receiver and sender processes
+for the port. The <i>begin</i> argument always defaults
+to t, unless it is explicitly passed as <code>nil</code>
+in each call.
+</p>
+<p id="10">
+If <i>connect-action</i> is <code>:return</code>, the port object is
+simply returned as the value of the call.
+</p>
+<p id="11">
+If <i>connect-action</i> is <code>:call</code>,
+then two values are returned:
+</p>
+<ul>
+<li id="12">
+The port instance 
+</li>
+<li id="13">
+The result of calling the function supplied as connect-function. The
+connect-function is called with the port instance as the first
+argument and the value of connect-args as the remaining arguments.
+</li>
+</ul>
+<p id="14">
+If <i>connect-action</i> is <code>:process</code>,
+then two values are returned:
+</p>
+<ul>
+<li id="15">
+The port instance 
+</li>
+<li id="16">
+An Allegro CL process object - a new process is started and the
+connect-function is called in the new process with the same arguments
+as in the <code>:call</code> case.
+</li>
+</ul>
+
+<p id="17">
+The <i>confirm</i> keyword argument: when this argument
+is non-<code>nil</code>, the Lisp RPC protocol includes
+additional confirmation messages that track the progress of a remote
+call in more detail (see <a href="rpc-query.htm"><b>rpc-query</b></a> for more details).  The default
+value is <code>nil</code>.
+</p>
+<p id="18">
+A non-<code>nil</code> value may be applicable when using
+a very slow network connection. In such cases more detailed progress
+information could be useful.
+</p>
+<p id="19">
+This argument was not available in releases prior to 6.2, where this
+function worked as if this argument was specified non-<code>nil</code>.
+</p>
+
+<p id="20">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-open-server.htm">9.0 version</a></td></tr></table></body></html>

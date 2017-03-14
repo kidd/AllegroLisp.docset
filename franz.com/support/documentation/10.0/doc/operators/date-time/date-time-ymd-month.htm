@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>date-time-ymd-month</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: util.date-time</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/date-time-ymd-month.htm">9.0 version</a></td></tr></table><h2 id="2">date-time-ymd-month</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+date-time
+</i></p>
+
+<p id="4">
+Returns the value in the <code>ymd-month</code> (month in year)
+slot of <i>date-time</i>, which must be a <a href="../../classes/date-time/date-time.htm"><code>date-time</code></a> object. The
+value is <code>nil</code> if the slot is not
+set. Otherwise it is an integer from 1 to 12. This value <b>cannot</b>
+be changed with <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> and this
+function.
+</p>
+<p id="5">
+This value
+<b>cannot</b> be changed with <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> and this function.
+</p>
+<pre id="6">
+(require :datetime)
+(use-package :util.date-time)
+
+;; date-time is 1985/04/12 10:15:30, that is 15 and a half
+;; minutes after 10 AM April 12, 1985.
+(setq a (date-time &quot;1985-04-12T10:15:30&quot;))
+(date-time-ymd-month a) -&gt; 4
+</pre>
+
+<p id="7">
+See <a href="../../date-time.htm">date-time.htm</a> for information on support in
+Allegro CL for parsing and generating time expressions using the ISO
+8601 standard.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/date-time-ymd-month.htm">9.0 version</a></td></tr></table></body></html>

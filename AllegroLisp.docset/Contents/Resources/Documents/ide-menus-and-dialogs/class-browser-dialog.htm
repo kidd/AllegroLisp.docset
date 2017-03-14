@@ -1,0 +1,160 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>class-browser-dialog</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/class-browser-dialog.htm">9.0 version</a></td></tr></table><h2 id="2">Class Browser</h2>
+
+
+
+
+<p id="3"><img src="../pictures/class-br.jpg"></p>
+
+<p id="4">
+The class browser displays a graphical outline of the class structure
+(focusing on the specific named class). Information about the selected
+class is shown in the  pane on the
+right.
+</p>
+
+<p id="5">
+The outline (which is an instance of an <a href="../classes/cg/outline.htm"><code>outline</code></a> widget) can be navigated quickly by
+pressing the J, K, F, and D keys as alternatives to the down, up,
+right, and left arrow keys respectively, and the T and B keys for the
+Home and End keys. This works because the outline widgets in IDE tool
+dialogs enable their <a href="../operators/cg/h/handle-home-key-shortcuts.htm"><b>handle-home-key-shortcuts</b></a> property.
+</p>
+
+<p id="6">
+The browser is displayed when <a href="tools-menu.htm#browse-class">Tools | Browse Class</a> is
+clicked. If there is a selected symbol naming a class (or if the
+cursor is in or next to text naming a symbol naming a class), that
+class is selected in the browser. Otherwise, the previously selected
+class or <code>t</code> are browsed but you can enter a
+class name in the Name field to browse a different class. In the
+illustration, we are browsing the class <code>integer</code>.
+</p>
+<p id="7">
+When a class outline is generated for a class, that class is initially
+selected in the outline (as <code>integer</code> is in the
+illustration), but you can then click on other classes in the outline
+(or use the arrow keys as usual) to display information about related
+classes. When this is done, the class for which the outline was
+generated will be highlighted in the outline with a light blue
+background, while the selected class in the outline (for which
+information is displayed in the 
+pane) will always be highlighted with the usual selection
+background color that you have set up in the Windows Control Panel.
+</p>
+<p id="8">
+Pressing the main ENTER key while the outline widget has the keyboard
+focus will generate a new class outline for the class that is
+currently selected there, just as if the <a href="tools-menu.htm#browse-class">Tools |
+Browse Class</a> command had been invoked on that class
+name. Right-clicking the outline will pop-up a shortcut menu of
+several commands from the IDE menu-bar that are likely useful for the
+selected class (this right-click does not select a class though), and
+other IDE menu-bar commands may be applicable as well.
+</p>
+
+
+
+<p id="9">
+The information displayed in the pane on the right depends on which of
+the Feature toolbar icons is slected. Positioning the mouse over an
+icon will display a tooltip naming the icon (we use those names in the
+description below). The first seven refer to any class and the last
+two (<b>P</b> and <b>E</b> for Properties and Events) apply to Common
+Graphics-related classes.
+</p>
+<p id="10">
+The first three choices list classes that are related to the selected
+class. Double-clicking or pressing ENTER on one of these classes will
+generate a new class outline for that class.
+</p>
+<ul>
+<li id="11">
+<b>Direct Superclasses</b> lists the immediate superclasses of the
+selected class, as returned by <b>mop:class-direct-superclasses</b>.
+</li>
+<li id="12">
+<b>DirectSubclasses</b> lists the immediate subclasses of the selected
+class, as returned by <b>mop:class-direct-subclasses</b>.
+</li>
+<li id="13">
+<b>Class Precedence</b> lists all of the superclasses of the selected class,
+as returned by <b>mop:class-precedence-list</b>. The precedence order
+determines which methods get called, and in what order, when a generic
+function is called on this class.
+</li>
+</ul>
+<p id="14">
+The next two choices list slots of the selected class.  Double-clicking or
+pressing ENTER on one of these slots will inspect the slot definition
+object.  Simply selecting a slot will cause any classes that are
+visible in the class outline and which define a slot with that name to
+be highlighted with a light red background; this feature can be used
+to find out where an inherited slot is inherited from, and the <a href="search-menu.htm#quick-find-definition">Search | Quick Find Definition</a>
+command can then be used to edit the code that defines the slot.  (The
+single selected class in the outline will always have its usual
+highlighting, and so will not show this special red highlighting.)
+</p>
+<ul>
+<li id="15">
+<b>Direct Slots</b> lists the slots that are defined by the selected class,
+as returned by <b>mop:class-direct-slots</b>. The slots are shown in
+alphabetical order, rather than the order in which they are defined on
+the class.
+</li>
+<li id="16">
+<b>All Slots</b> lists both the slots defined by the selected class as
+well as any slots that this class inherits from superclasses, as
+returned by <b>mop:class-slots</b>.
+</li>
+</ul>
+<p id="17">
+The next two choices list methods of the selected class.  Double-clicking
+or pressing ENTER on one of these methods invokes the IDE editor on
+that method (if the location of its source code is known).  Invoking
+the <a href="run-menu.htm#trace">Run |
+Trace</a> command will trace just the selected method, rather
+than its generic function. Invoking the <a href="edit-menu.htm#delete">Edit | Delete</a>
+command will offer to remove the selected method from your lisp
+environment.
+</p>
+<ul>
+<li id="18">
+<b>Methods</b> lists all methods that specialize on the selected class
+itself, as returned by <b>mop:specializer-direct-methods</b>.
+</li>
+<li id="19">
+<b>All Methods</b> lists all methods that specialize on the selected class
+or on any of its superclasses below standard-class or structure-class.
+</li>
+</ul>
+<p id="20">
+The final two choices display the properties of the selected class.
+In the illustration, we the <a href="../classes/cg/combo-box.htm"><code>combo-box</code></a> class is selected and its properties
+are listed.
+</p>
+<p id="21"><img src="../pictures/class-br-cb-prop.jpg"></p>
+
+<p id="22">
+These choices are enabled appear only if properties have been defined
+for the class by calling <a href="../operators/cg/d/defproperties.htm"><b>defproperties</b></a> or <a href="../operators/cg/d/defcomponent.htm"><b>defcomponent</b></a> (only certain CG and IDE classes
+initially). Double-clicking or pressing ENTER on one of these
+properties will inspect the property; this may be useful for finding
+the names of the property-reader or property-writer functions for the
+property in the rare cases where these are not <a href="../../ansicl/dictentr/equal.htm"><b>equal</b></a> to the property name itself (and its
+setf).
+</p>
+<ul>
+<li id="23">
+<b>Properties</b> lists all non-event-handler properties of the
+selected class, as returned by <a href="../operators/cg/n/non-event-properties.htm"><b>non-event-properties</b></a>.
+</li>
+<li id="24">
+<b>Events</b> lists all event-handler properties of the selected
+class, as returned by <a href="../operators/cg/e/event-handlers.htm"><b>event-handlers</b></a>.
+</li>
+</ul>
+
+
+<hr><p id="25"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/class-browser-dialog.htm">9.0 version</a></td></tr></table></body></html>

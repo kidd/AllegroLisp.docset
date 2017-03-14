@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>default-menu-on-click</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-menu-on-click.htm">9.0 version</a></td></tr></table><h2 id="2">default-menu-on-click</h2>
+
+<p id="3"><b>Arguments: </b><i>
+menu menu-item window-or-screen
+</i></p>
+
+<p id="4">
+The symbol default-menu-on-click is the default value of the <a href="../o/on-click.htm"><b>on-click</b></a>
+event-handling property of a menu.
+</p>
+<p id="5">
+The default <a href="../d/default-menu-on-click.htm"><b>default-menu-on-click</b></a> method simply
+returns the value of the chosen menu-item. Therefore, when <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a> is called on
+a menu that uses this default on-click handler, the value of the
+chosen menu item is simply returned from <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a>, and the calling
+function must decide what to do with the value. (Alternate on-click
+handlers, such as the built-in function <a href="../f/funcall-menu-item.htm"><b>funcall-menu-item</b></a>, can be used
+instead to process any chosen item in some standard way before
+pop-up-menu returns. In fact, this must be done for pull-down menus,
+since they do not return values to the application.)
+</p>
+<p id="6">
+When the <i>menu</i> is a <a href="../../../classes/cg/shortcut-menu.htm"><code>shortcut-menu</code></a>, the default <a href="../o/on-click.htm"><b>on-click</b></a> function is
+still <a href="../d/default-menu-on-click.htm"><b>default-menu-on-click</b></a>, but a
+different method of this generic function is used.  This method
+expects the menu-item's value to be one of the following things:
+</p>
+<ul>
+<li id="7">
+A symbol naming a function, or a function object.  In this case, the
+function will be called, passing <i>window-or-screen</i>
+as the only argument. (When the <a href="../../../classes/cg/shortcut-menu.htm"><code>shortcut-menu</code></a> is invoked by <a href="../p/pop-up-shortcut-menu.htm"><b>pop-up-shortcut-menu</b></a>, as
+usual, <i>window-or-screen</i> will be the window that
+was passed to <a href="../p/pop-up-shortcut-menu.htm"><b>pop-up-shortcut-menu</b></a>).
+</li>
+<li id="8">
+A window. In this case, the window is selected by calling <a href="../s/select-window.htm"><b>select-window</b></a>.
+</li>
+</ul>
+
+<p id="9">
+<i>menu</i> is the menu that contains the chosen
+menu-item.
+</p>
+<p id="10">
+<i>menu-item</i> is the menu-item that was chosen.
+</p>
+<p id="11">
+<i>window-or-screen</i> is either the window on which
+the menu was invoked with <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a>, or else the window on
+which the menu was defined.
+</p>
+
+
+
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-menu-on-click.htm">9.0 version</a></td></tr></table></body></html>

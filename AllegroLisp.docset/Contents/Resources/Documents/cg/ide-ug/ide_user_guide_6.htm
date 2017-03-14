@@ -1,0 +1,604 @@
+<html>
+
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<meta NAME="GENERATOR" CONTENT="Microsoft FrontPage 3.0">
+<title>IDE User Guide, Chapter 6: Designing a user interface using forms</title>
+</head>
+
+<body LINK="#0000ff">
+
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+  <tr>
+    <td bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3">
+      <tr>
+        <td align="left" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td>
+      </tr>
+    </table>
+    </td>
+    <td align="right"><b>Allegro CL version 10.0</b></td>
+  </tr>
+</table>
+
+<h1><a NAME="begin"></a>6. Designing a user interface using forms</h1>
+
+<p>This chapter contains the following sections:</p>
+
+<blockquote>
+  <p><a href="#sec-6-1">6.1 How to add forms to a project</a><br>
+  <a href="#sec-6-2">6.2 Form devices</a><br>
+  <a href="#sec-6-3">6.3 Specifying the main form of a project</a><br>
+  <a href="#sec-6-4">6.4 Form properties that affect appearance</a><br>
+  <a href="#sec-6-5">6.5 Components and forms</a><br>
+  &nbsp;&nbsp;&nbsp; <a href="#sec-6-5-1">6.5.1 Placing a new component on a form</a><br>
+  &nbsp;&nbsp;&nbsp; <a href="#sec-6-5-2">6.5.2 Placing a copy of an existing component on a
+  form</a><br>
+  &nbsp;&nbsp;&nbsp; <a href="#sec-6-5-3">6.5.3 Positioning and sizing a component on a form</a><br>
+  &nbsp;&nbsp;&nbsp; <a href="#sec-6-5-4">6.5.4 Aligning components</a><br>
+  &nbsp;&nbsp;&nbsp; <a href="#sec-6-5-5">6.5.5 Selecting more than one component</a><br>
+  &nbsp;&nbsp;&nbsp; <a href="#sec-6-5-6">6.5.6 Component position when a form is resized</a><br>
+  <a href="#sec-6-6">6.6 Setting component properties at runtime</a><br>
+  <a href="#sec-6-7">6.7 Modal dialogs</a></p>
+</blockquote>
+
+<p>This is chapter 6 of the User Guide for the Allegro CL 10.0 Integrated Development
+Environment (IDE).</p>
+
+<p>The chapters of the IDE User Guide are:</p>
+
+<blockquote>
+  <p><a href="ide_user_guide_1.htm">Chapter 1: Introduction to the IDE</a> <br>
+  <a href="ide_user_guide_3.htm">Chapter 2: The Allegro CL Development Environment (IDE)</a><br>
+  <a href="ide_user_guide_3.htm">Chapter 3: An example</a><br>
+  <a href="ide_user_guide_4.htm">Chapter 4: Projects</a><br>
+  <a href="ide_user_guide_5.htm">Chapter 5: Components</a><br>
+  <strong>Chapter 6: Designing a user interface using forms</strong> (this chapter)<br>
+  <a href="ide_user_guide_7.htm">Chapter 7: Menus</a><br>
+  <a href="ide_user_guide_8.htm">Chapter 8: Events</a></p>
+</blockquote>
+
+<p>The Allegro CL Integrated Development Environment facilitates designing and creating a
+user interface for your application. The form is the canvas for designing windows.
+Typically, each project has one or more forms, one identified as the main form and the
+others (if any) subsidiary forms. Each form corresponds to a window in the actual
+application. The various windows you see in an application &#150; the primary window (the
+closing of which ends the application), other windows and dialogs all start as forms in
+the design process.</p>
+
+<p>In this chapter, we describe how to: 
+
+<ul>
+  <li>Add forms to a project </li>
+  <li>Place and customize components on a form </li>
+  <li>Design dialogs </li>
+  <li>Test forms and projects </li>
+</ul>
+
+<h3><a NAME="sec-6-1"></a>6.1 How to add forms to a project</h3>
+
+<p>Allegro CL starts with one blank form as part of a default project. The General tab of
+the project manager (displayed with <a
+href="../../ide-menus-and-dialogs/view-menu.htm#project-manager">View | Project Manager</a>)
+shows all modules (a module may have one or more files associated with it) associated with
+a project. Form modules have two or three associated files: one .cl (source) file, one
+.bil file, and (if there are pixmaps associated with the form,) one .bml file. All have
+the same name but different extensions. The Project Manager shows the form name and the
+location of the form source (.cl) file if it is saved. </p>
+
+<p>You can add a new, blank form to the current project by clicking <a
+href="../../ide-menus-and-dialogs/file-menu.htm#new-form">File | New Form</a> (i.e. click <strong>New
+Form</strong> on the <strong>File</strong> menu). You are asked what sort of window to
+design with a dialog similar to:</p>
+
+<p><img src="../../pictures/new-form1.jpg"></p>
+
+<p>We describe the choices just below. It is often useful to subclass the classes
+provided: then you can write methods specifc to the new window (and others of the same
+subclass), methods that do not modify the behavior of existing windows. You can specify a
+new subclass in the area to the right. This class will be created and the new form will
+have it as the value of the class property (accessed by the <a
+href="../../operators/cg/d/device.htm">device</a> generic function).</p>
+
+<p>A common choice is <strong>dialog</strong>. The different choices are called <em>classes</em>
+(or, in older documentation <em>devices</em>) and name classes of windows (as described in
+the next section). Once you choose the class, a new (and unsaved) blank form is displayed,
+named form<i>n</i> where <i>n</i> is an integer not already used (thus form2, form3, etc.)
+This new form is automatically added to the current project and will appear at the end of
+the modules listed in the <a
+href="../../ide-menus-and-dialogs/project-manager-dialog-general.htm">Project Manager
+General</a> tab. </p>
+
+<p>You can add an existing form to the current project by clicking on the <b>+</b> button
+of the <a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project Manager</a>
+toolbar and identifying the form source (.cl) file to the Open dialog that is displayed.
+(The .bil and, if there is one, .bml files must be in the same folder.)</p>
+
+<h3><a NAME="sec-6-2"></a>6.2 Form devices</h3>
+
+<p>As said in the previous section, when you click <a
+href="../../ide-menus-and-dialogs/file-menu.htm#new-form">File | New Form</a>, a dialog
+like the following is displayed:</p>
+
+<p><img src="../../pictures/new-form1.jpg"></p>
+
+<p>The choices shown identify the class property of the form (meaning the class of the
+application window created from the form). Note that the accessor of the class property is
+<a href="../../operators/cg/d/device.htm">device</a> (since <em>class</em> is a Common
+Lisp symbol and should not be overloaded with a function definition). If you define a new
+class (by subclassing the appropriate window class), it will be displayed in the dialog as
+well, as the following example shows. Define a subclass of <a
+href="../../classes/cg/dialog.htm">dialog</a> by entering <strong>my-dialog</strong> in
+the type-in widget on the New Form dialog, or by evaluating a form like the following in a
+listener:</p>
+
+<blockquote>
+  <pre>(defclass my-dialog (dialog) ())</pre>
+</blockquote>
+
+<p>Click <a href="../../ide-menus-and-dialogs/file-menu.htm#new-form">File | New Form</a>
+and the class choices now include my-dialog (which we have selected):</p>
+
+<p><img src="new-form-my-dialog.jpg"></p>
+
+<p>As we said above, subclassing predefined classes of windows is highly recommended. You
+can modify your subclasses &#150; changing the initial property values, redefining
+methods, and so on &#150; without worrying about affecting anything else. Change an
+existing class and many things may break.</p>
+
+<p>The initial device choices are <em>frame-window</em>, <em>non-refreshing-window</em>, <em>rich-edit-dialog</em>,
+<em>dialog</em>, <em>text-edit-window</em>, <em>lisp-edit-window</em>, and <em>bitmap-window</em>.
+The usual choice, if you intend to add components to the form, is <em>dialog</em>, because
+it is the choice most suitable for components since it supports ALT-key shortcuts and
+allows you to move keyboard focus among its controls with the TAB key. We describe each
+type and follow the description with definitions of some terms we use. 
+
+<ul>
+  <li><a href="../../classes/cg/frame-window.htm">frame-window</a>. The most basic window
+    class, having only a title bar and a border. The title bar allows title-bar features such
+    as close and minimize boxes and the border allows resizing with the mouse). There are no
+    sub-windows and no backing store (defined below).</li>
+  <li><a href="../../classes/cg/non-refreshing-window.htm">non-refreshing-window</a>. The
+    subclass of <a href="../../classes/cg/frame-window.htm">frame-window</a> which contains a
+    sub-window called a pane. It too has no backing store. </li>
+  <li><a href="../../classes/cg/rich-edit-dialog.htm">rich-edit-dialog</a>. The subclass of <a
+    href="../../classes/cg/dialog.htm">dialog</a> which provides a rich-edit-pane for editing
+    formatted text, along with associated tools such as a status-bar, a toolbar with a
+    rich-edit-multipic set of buttons, a rich-edit-ruler, and a special menubar.</li>
+  <li><a href="../../classes/cg/dialog.htm">dialog</a>. Another subclass of <a
+    href="../../classes/cg/frame-window.htm">frame-window</a>, without sub-windows. This type
+    of window can have controls and behavior such as tabbing between controls and using Alt +
+    another key as access keys is supported (see <b>Tabbing</b> and <b>Alt Key</b> below).
+    Toolbars are a subclass of <a href="../../classes/cg/dialog.htm">dialog</a> and can be
+    added to any window to group controls along the top. Dialogs do not have a backing store.</li>
+  <li><a href="../../classes/cg/bitmap-window.htm">bitmap-window</a>. This window has a <a
+    href="../../classes/cg/bitmap-pane.htm">bitmap-pane</a> with a backing store and so
+    automatically remembers and redisplays whatever is drawn on it (though any window can be
+    drawn on). </li>
+  <li><a href="../../classes/cg/text-edit-window.htm">text-edit-window</a>. This window has a <a
+    href="../../classes/cg/text-edit-pane.htm">text-edit-pane</a> suitable for editing text.
+    By default, text-edit-panes keep track of all text information, so they scroll and
+    redisplay properly. They are in fact OS rich edit controls. </li>
+  <li><a href="../../classes/cg/lisp-edit-window.htm">lisp-edit-window</a>: a subclass of <a
+    href="../../classes/cg/text-edit-window.htm">text-edit-window</a> with a <a
+    href="../../classes/cg/lisp-edit-pane.htm">lisp-edit-pane</a> suitable for Lisp code:
+    Features like correct indentation are supported.</li>
+</ul>
+<strong>
+
+<p>Note on windows with subwindows</strong>. The classes that have subwindows (<a
+href="../../classes/cg/non-refreshing-window.htm">non-refreshing-window</a>, <a
+href="../../classes/cg/bitmap-window.htm">bitmap-window</a>, and <a
+href="../../classes/cg/text-edit-window.htm">text-edit-window</a>) instantiate a frame
+window plus a pane window inside the frame (retrievable by calling <a
+href="../../operators/cg/f/frame-child.htm">frame-child</a> on the frame). This is not
+absolutely necessary since you could just draw in the frame-window by itself, but it comes
+in handy when you want to add a toolbar or status-bar to the window. When added to the
+frame, these special panes become siblings of the main pane so that the main pane will be
+an independently scrolling area and the size of it is the actual available drawing size
+and so on. </p>
+
+<p>When you subclass a class of a window with a pane, you should subclass the pane class
+as well and provide a <a href="../../operators/cg/d/default-pane-class.htm">default-pane-class</a>
+method so the correct pane will be instantiated when the window is instantiated. Thus, if
+you subclass text-edit-window, you must (1) subclass text-edit-pane as well and (2) make
+your subclass of text-edit-pane the <a href="../../operators/cg/d/default-pane-class.htm">default-pane-class</a>
+of your subclass of text-edit-window (by providing a <a
+href="../../operators/cg/d/default-pane-class.htm">default-pane-class</a> method).</p>
+
+<p>Here are definitions of some of the terms we just used: 
+
+<dir>
+  <b><blockquote>
+    <p>Backing store</b>: a backing store is a copy of the contents of a window which is
+    automatically displayed when any portion of the window is exposed after being hidden
+    (covered by another window or because the window was shrunk). Only bitmap-windows have a
+    backing store. (The text in text-edit-panes is redisplayed when the pane is exposed but by
+    a means other than using a backing store.) Note that a backing store is expensive in its
+    use of machine resources.</p>
+  </blockquote>
+  <b><blockquote>
+    <p>Pane</b>: when a window has a pane, it is actually two windows, a frame with the title
+    and border (and perhaps other things) and the pane as a child window. The pane's advantage
+    is that it is automatically resized when its parent is resized or when additional
+    sub-windows, such as toolbars and status bars, are added to the parent. In a frame-window,
+    adding a toolbar (with <a href="../../operators/cg/a/add-toolbar.htm">add-toolbar</a>)
+    covers whatever was at the top and the toolbar can be scrolled out of sight. If a toolbar
+    is added to a non-refreshing-window (or text-edit- or bitmap-windows), the pane is resized
+    (so nothing is covered) and the toolbar is not scrolled. </p>
+  </blockquote>
+  <b><blockquote>
+    <p>Alt key</b>: the ability to use access keys (pressing Alt and the underlined letter in
+    the title) to change the value of a control or press a button. Access keys for menus on a
+    menubar is supported for all windows.</p>
+  </blockquote>
+  <b><blockquote>
+    <p>Tabbing</b>: the ability to move focus among controls with the tab key.</p>
+  </blockquote>
+</dir>
+
+<p>Because of its ability to have visible components, <a
+href="../../classes/cg/dialog.htm">dialog</a> (or your own subclass of <a
+href="../../classes/cg/dialog.htm">dialog</a>) is the standard choice for a window with
+visible components. Components on other types of windows should be placed on a toolbar
+added to the window. Add a toolbar by specifying the toolbar property to be true.</p>
+
+<p>Some examples of window types in the Allegro CL environment: the Project Window in
+Allegro CL (with the main menubar and toolbars) is a variety of frame-window; the debug
+window is a variety of text-edit-window. If you see a window in the Allegro CL development
+environment that you want to emulate, click <a
+href="../../ide-menus-and-dialogs/tools-menu.htm">Tools | Get Component</a> and then click
+on the window of interest (clicking on the frame will get the parent window and the
+interior will get the pane if there is one). A printed representation of the window object
+is written to the debug window. Evaluating <code>(class-of *)</code> tells the class. You
+can then look at the superclasses with <a
+href="../../ide-menus-and-dialogs/tools-menu.htm#graph-superclasses">Tools | Graph
+Superclasses</a> (select the class name without the trailing &gt; and click the menu
+command). Note that you should not use the classes of Allegro CL windows. Instead, create
+your own classes with similar superclasses.</p>
+
+<h3><a NAME="sec-6-3"></a>6.3 Specifying the main form of a project</h3>
+
+<p>
+The window corresponding to the main form of a project has the feature
+that closing that window (by, e.g. clicking on the close button in the
+upper right) closes the application as well. Main forms are displayed
+with a different icon than other form modules when you view the
+General tab.
+</p>
+
+<p><img src="Image45.jpg"></p>
+
+<p>Form1 is the main form. Its icon looks like it is moving while the icon for form2 looks
+stable. </p>
+
+<p>The options tab of the Project Manager window displays the forms associated with a
+project (this is from the Interface Builder Tutorial project):</p>
+
+<p><img src="../../pictures/pm-op.jpg"></p>
+
+<p>
+The main form is identified &#150; doodler in the illustration. The
+other forms are displayed in the drop-down list. To select a different
+form, display the list and select a different form. The Init
+Function, in the default is make-&lt;main-form&gt; but the default
+name is not listed. This function creates and displays the window
+associated with the main form so if you use the default init function,
+when your application is started, the window associated with the main
+form is displayed and it is the only window displayed initially.
+Other windows must be displayed programatically.</p>
+
+<h3><a NAME="sec-6-4"></a>6.4 Form properties that affect appearance</h3>
+
+<p>Forms are components and have properties. You can inspect the properties of a form by
+selecting the form. The illustration shows the properties of a form:</p>
+
+<p><img SRC="ch6-insp-f2.jpg" WIDTH="329" HEIGHT="639"></p>
+
+<p>All the properties are described on their online manual pages. Here we just mention
+two: 
+
+<ul>
+  <li><b><a href="../../operators/cg/b/border.htm">border</a></b>: if <code>:none</code>, then
+    the corresponding window cannot be resized with the mouse and there are no close or
+    minimize buttons. </li>
+  <li><b><a href="../../operators/cg/t/title-bar.htm">title-bar</a></b>: if <code>nil</code>,
+    no title bar displayed and (as a result) no close or minimize buttons. </li>
+</ul>
+
+<p>Form design is somewhat WYSIWYG (<strong>w</strong>hat <strong>y</strong>ou <strong>s</strong>ee<strong>
+i</strong>s <strong>w</strong>hat <strong>y</strong>ou <strong>g</strong>et), i.e. it
+looks quite like its associated window, but a form always has a title bar, an active close
+box and minimize button, and a border, and are always resizable while the associated
+window may not have those features. These features are provided for forms to make them
+easy to design. Further, the attachment properties of the components on a form (how the
+component moves or resizes when the parent window is resized, e.g. <a
+href="../../operators/cg/r/right-attachment.htm">right-attachment</a> and <a
+href="../../operators/cg/l/left-attachment.htm">left-attachment</a>) are mostly disabled.
+Components keep constant distance from the top and left of the form and are never resized
+as the form is resized even though that might not be their behavior (depending on their
+attachment properties) when the window associated with the form is resized. Again, this is
+a feature to assist in form design. </p>
+
+<p>Run the form (click <a href="../../ide-menus-and-dialogs/run-menu.htm#run-project">Run
+| Run Project</a> or <a href="../../ide-menus-and-dialogs/run-menu.htm#run-form">Run | Run
+Form</a> to see how the associated window will behave in the application). <strong>Run
+Project</strong> runs the project's init function (which in the default displays the main
+form only). <strong>Run Form</strong> displays the selected form regardless of whether it
+is the main form. Also <strong>Run Project</strong> runs the project in a separate thread
+(so you see an item for it in the task bar) while <strong>Run Form</strong> runs the form
+in the IDE GUI thread.</p>
+
+<h3><a NAME="sec-6-5"></a>6.5 Components and forms</h3>
+
+<p>Much of the time spent designing the user interface to your application is spent
+manipulating components in forms. <a href="ide_user_guide_5.htm">Chapter 5</a> on
+components describes the type of components, which are suitable for what purposes, and how
+the behavior of a component can be customized. Here we discuss issues relating to
+positioning components on the form, associating separate components with each other and
+tabbing between components, issues dealing with components on forms rather than individual
+component behavior.</p>
+
+<h3><a NAME="sec-6-5-1"></a>6.5.1 Placing a new component on a form</h3>
+
+<p>Click on a component button on the component toolbar. The button stays pressed until
+you add the component to a form. Then clicking and releasing on the form (at the location
+you want the upper left corner of the bounding box of the component to appear) places the
+component with default size at that location. Clicking without releasing and dragging the
+mouse positions the component with one corner at the click location and the other corners
+specified by the rubber band box that appears as you drag. This allows components to be
+sized when placed if desired. (Components can be resized at any time by selecting and then
+dragging over the sizing handles that surround a selected component.) The new component
+object will have default properties. </p>
+
+<h3><a NAME="sec-6-5-2"></a>6.5.2 Placing a copy of an existing component on a form</h3>
+
+<p>Selecting an existing component, clicking <a
+href="../../ide-menus-and-dialogs/edit-menu.htm#copy">Edit | Copy</a>, and then <a
+href="../../ide-menus-and-dialogs/edit-menu.htm#paste">Edit | Paste</a> causes a new
+instance of the selected component (with all properties except name identical) to be
+placed on the form. The new copy is placed close (offset down and to the right) to the
+existing one (assuming they are on the same form). Move it to the desired location using
+the mouse.</p>
+
+<p>Note that copying works between forms as well: if you copy a component from form1 and
+then select form2, clicking <a href="../../ide-menus-and-dialogs/edit-menu.htm#paste">Edit
+| Paste</a> will place the copy on form2. Using the same component instance (rather than
+copies) more than once is not supported.</p>
+
+<p><a href="../../ide-menus-and-dialogs/edit-menu.htm">Edit | Cut</a> deletes the
+component and puts the component object on the clipboard. <a
+href="../../ide-menus-and-dialogs/edit-menu.htm#paste">Edit | Paste</a> places it on the
+selected form. Selecting a component and pressing the Delete key deletes the component.</p>
+
+<h3><a NAME="sec-6-5-3"></a>6.5.3 Positioning and sizing a component on a form</h3>
+
+<p>When a component on a form has focus, sizing handles appear around it: If sizing
+handles are solid, then you can use a handle to resize the component.</p>
+
+<p><img SRC="Image47.jpg" WIDTH="262" HEIGHT="275"></p>
+
+<p>As the cursor moves over the sizing handles, it changes to a vertical (top and bottom
+handles), horizontal (right and left handles), or 45 degrees (corner handles)
+double-headed arrow. Pressing the left mouse button and moving the mouse resizes in the
+direction of the arrows. You can also change the appropriate property (height, e.g.) of
+the component in the Inspector window while the component has focus and the size or
+location of the component on the form changes. Also, pressing the left button while inside
+the sizing handles and moving the mouse moves the component.</p>
+
+<h3><a NAME="sec-6-5-4"></a>6.5.4 Aligning components</h3>
+
+<p>As a component moves into alignment (vertical or horizontal) with another component on
+a form, an alignment cue appears exactly when the components are aligned. Movement is also
+temporarily stopped. If you release the mouse button while the alignment cue is visible,
+the components will be in exact alignment. Thus it is easy to align components exactly as
+you wish.</p>
+
+<p>Clicking <a href="../../ide-menus-and-dialogs/form-menu.htm#show-alignment">Form | Show
+Alignment</a> shows all alignment cues for currently aligned components. </p>
+
+<p>Clicking <a href="../../ide-menus-and-dialogs/form-menu.htm#space-equally">Form | Space
+Equally</a> while three or more components are selected repositions them so they are
+spaced equally along the obvious (to the system) axis. This feature is most useful when
+the selected components are aligned horizontally or vertically.</p>
+
+<h3><a NAME="sec-6-5-5"></a>6.5.5 Selecting more than one component</h3>
+
+<p>If you select a component (by clicking over it) and then, while pressing the Shift key,
+click over a second component, both components will be selected. (And additional
+components can be added to the selection in the same way &#150; press the shift key and
+click over the component you want added to the selection.) Resizing is disabled when more
+than one component is selected but all selected components will move as a unit if the left
+button is depressed over a selected component and the mouse is moved. </p>
+
+<p>You can select multiple components with rectangular selection. Click on the form but
+outside of a component, drag the mouse and a selection rectangle appears. Any component
+that overlaps or is enclosed by the selection rectangle will be selected when the mouse
+button is released.</p>
+
+<p>When more than one component is selected, the Inspector window shows common properties
+and events shared by all the selected components. (The title of the Inspector changes to
+Inspect Multiple. The values for the properties and events are for the last selected
+component. Changing a property/event changes all selected components.</p>
+
+<h3><a NAME="sec-6-5-6"></a>6.5.6 Component position when a form is resized</h3>
+
+<p>Attachments are not active during design, because during design you need to specify the
+form size and component location without one affecting the other.</p>
+
+<p>When a form is resized, the top-left corner of the component maintains the same
+relative position to the top-left corner of the form&#146;s interior. Component position
+on a form is determined by the top and left properties (they specify the distance from the
+top and left edge of the form). While a form is being designed, those values are not
+affected if the form is resized. Therefore, if the top of a component is 100 (meaning it
+is 100 pixels below the top of the form) and the form is resized so it is only 50 pixels
+high, the component will <i>no longer be visible</i>.</p>
+
+<p>Note that this behavior is different from what happens when the window associated with
+the form is resized. The issue of what should happen to a component when the parent window
+is resized is complicated: should it be resized proportionally or remain the same size? If
+it remains the same size, should its location in the resized window be absolutely the same
+(still 100 pixels down from the top and 30 pixels right of the left border, say) or should
+they scale in proportion to the resizing (to 50 pixels down if the window height is
+halved). The behavior is controlled by the various attachment properties &#150; <a
+href="../../operators/cg/t/top-attachment.htm">top-</a>, <a
+href="../../operators/cg/b/bottom-attachment.htm">bottom-</a>, <a
+href="../../operators/cg/l/left-attachment.htm">left-</a>, and <a
+href="../../operators/cg/r/right-attachment.htm">right-attachment</a>. We will not discuss
+attachment in more detail here (see the online manual pages for attachment properties): we
+are emphasizing that this is a situation where the behavior of the form and the associated
+running window are different in that attachments are ignored on forms.</p>
+
+<p>As a consequence, a large resize can cause a component to cease to be visible. This
+form has three components:</p>
+
+<p><img src="f-stmilcb-1-8.jpg" width="666" height="370"
+alt="f-stmilcb-1-8.bmp (740054 bytes)"></p>
+
+<p>When we make the height much smaller, the check-box and multi-item-list cease to be
+visible:</p>
+
+<p><img src="f-stmilcb-2-8.jpg" width="666" height="174"
+alt="f-stmilcb-2-8.bmp (348054 bytes)"></p>
+
+<p>They are still there of course. You can enlarge the form, move them up, and shrink it
+again. You can also see the list of all components by clicking on the dialog-items
+property (not the value but the property on the left). This causes the Inspector to
+inspect the value of the <a href="../../operators/cg/d/dialog-items.htm">dialog-items</a>
+property:</p>
+
+<p><img SRC="Image96.gif" WIDTH="352" HEIGHT="205"></p>
+
+<p>The first lines describe the value (identifying it as a cons &#150; i.e. a list) whose
+elements are then listed &#150; the (still visible) static-text, the multi-item-list, and
+the check-box. Clicking on 1 (on the left) inspects the value of our invisible
+multi-item-list. </p>
+
+<p><img SRC="Image97.gif" WIDTH="353" HEIGHT="488"></p>
+
+<p>Modify the <a href="../../operators/cg/t/top.htm">top</a> property, from the current
+232 to, say 10, and the multi-item-list is visible again:</p>
+
+<p><img src="f-stmilcb-3-8.jpg" width="666" height="174"
+alt="f-stmilcb-3-8.bmp (348054 bytes)"></p>
+
+<h3><a NAME="sec-6-6"></a>6.6 Setting component properties at runtime</h3>
+
+<p>See <a href="ide_user_guide_5.htm">Chapter 5</a> for more discussion of component
+properties and how to set them during the design (but briefly, select the component and
+its properties and their current values are displayed in the Inspector; click on the value
+of a property and either type in the new value or click on the button to the right of the
+value slot to set using a dialog or toggle if true/false). However, you may not want to
+specify everything at design time since you may want different things to appear depending
+on information provided at startup or from the environment. For example, suppose you have
+a window for providing information on how to contact you if your user has a problem with
+the application. </p>
+
+<p><img SRC="Image53.jpg" WIDTH="293" HEIGHT="98"></p>
+
+<p>This window may be part of a standard project used as a subproject for various
+applications. The message may be the same for each application but the <a
+href="../../operators/cg/t/title.htm">title</a> (foo as displayed) should be the name of
+your application. If you are using this form for your Destructo application, your
+Gardening application, and your Thai Cooking application, <em>Destructo</em>, <em>Gardening</em>,
+and <strong>Thai Cooking</strong> should be the respective titles. Now, you can either
+have three different forms, one for each application, or you can have one form whose title
+property is set at runtime rather than design time. (And having one form means that only
+one form has to be changed if, for example, you get a new telephone number.) </p>
+
+<p>In the source code for your application, during initialization, an expression such as
+the following should be executed (for the Destructo application, replace Destructo with
+Thai Cooking or Gardening for the other applications):</p>
+
+<pre>(setf (title (find-window :help-dialog)) &quot;Destructo&quot;)</pre>
+
+<p>Here <code>:help-dialog</code> is the name (the value of the <a
+href="../../operators/cg/n/name.htm">name</a> property) of the dialog, <a
+href="../../operators/cg/f/find-window.htm">find-window</a> finds the dialog object (i.e.
+the window associated with the form), <a href="../../operators/cg/t/title.htm">title</a>
+accesses the title property, and <strong>setf</strong> is the Lisp operator which changes
+values of properties. </p>
+
+<h3><a NAME="sec-6-7"></a>6.7 Modal dialogs</h3>
+
+<p>A dialog is modal if, when it is displayed, only it is receptive to events (mouse or
+keyboard). Therefore the user must deal with the dialog before doing anything else with
+the application. For example, the dialog displayed by <a
+href="../../ide-menus-and-dialogs/file-menu.htm#save-as">File | Save As</a> in Allegro CL
+is modal. You must either specify a file as a location to save whatever is being saved or
+click cancel. </p>
+
+<p>For a dialog to be modal in an application, the following properties should be set as
+indicated: 
+
+<ul>
+  <li><a href="../../operators/cg/c/child-p.htm"><b>child-p</b></a> property <em><strong>must</strong></em>
+    be <code>nil</code>. If not, the window will not be displayed outside its owner and may in
+    fact be hidden, meaning that it cannot be cleared, but neither can anything else be done.</li>
+  <li><a href="../../operators/cg/m/maximize-button.htm"><b>maximize-button</b></a>, <a
+    href="../../operators/cg/m/minimize-button.htm"><b>minimize-button</b></a>, and <a
+    href="../../operators/cg/s/scrollbars.htm"><b>scrollbars</b></a> should be <code>nil</code>.
+    Modal windows typically do not have these features.</li>
+  <li><a href="../../operators/cg/s/state.htm"><b>state</b></a> should be <code>:shrunk</code>,
+    so the window is not visible until popped-up with <a
+    href="../../operators/cg/p/pop-up-modal-dialog.htm"><b>pop-up-modal-dialog</b></a>.</li>
+</ul>
+
+<p>The <a href="../../operators/cg/p/pop-up.htm"><b>pop-up</b></a> property acts as a
+surrogate for those properties. If you set it to t in the inspector, the other properties
+will be coerced to the values indicated. Note that the <a
+href="../../operators/cg/p/pop-up.htm">pop-up</a> property does not have additional
+programmatic effect. Note too that a non-modal window can have the indicated values for
+these properties as well.</p>
+
+<p>Such dialogs can be displayed in a modal fashion with <a
+href="../../operators/cg/p/pop-up-modal-dialog.htm">pop-up-modal-dialog</a>. Every modal
+dialog should have an obvious way for the user to deal with it since the user can do
+nothing else until it is dealt with. The Default and Cancel button components are designed
+for this purpose. Each has an initial <a href="../../operators/cg/o/on-change.htm">on-change</a>
+handler function, <a href="../../operators/cg/r/return-t-from-pop-up-dialog.htm">return-t-from-pop-up-dialog</a>
+and <a href="../../operators/cg/r/return-nil-from-pop-up-dialog.htm">return-nil-from-pop-up-dialog</a>
+respectively, that closes the dialog and causes <a
+href="../../operators/cg/p/pop-up-modal-dialog.htm">pop-up-modal-dialog</a> to return t or
+nil. After <a href="../../operators/cg/p/pop-up-modal-dialog.htm">pop-up-modal-dialog</a>
+returns, the dialog has disappeared from view but it still exists as an object and the
+values of the components on the dialog can be examined. Options dialogs are often modal
+(although the Allegro CL Options dialog is not). After the user has clicked the default
+button (often titled OK or Accept), the program can act on the choices the user made with
+code like:</p>
+
+<pre>(if (pop-up-modal-dialog (find-dialog :options))
+    (dolist (i (dialog-items (find-dialog :options))
+               (... get the value and act appropriately ...)))</pre>
+
+<p>Go to <a href="ide_user_guide_7.htm">chapter 7</a>. Go to the <a href="#begin">beginning</a>
+of this chapter.</p>
+
+<hr>
+
+<p><small>Copyright (c) 1998-2015, Franz Inc. Berkeley, CA., USA. All rights reserved.</small><br>
+<small>Documentation for Allegro CL version 10.0. This is the initial (unrevised) page.</small><br>
+<small>Created 2015.1.25.</small></p>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+  <tr>
+    <td bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3">
+      <tr>
+        <td align="left" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td>
+        <td align="left" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td>
+      </tr>
+    </table>
+    </td>
+    <td align="right"><b>Allegro CL version 10.0</b></td>
+  </tr>
+</table>
+</body>
+</html>

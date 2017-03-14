@@ -1,0 +1,99 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>memlog-init</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">memlog-init</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>size width stop start wait yield-rate yield</i><i>
+</i></p>
+
+<p id="4">
+This function initializes the current memory log with possibly new
+values for <i>size</i>
+and <i>width</i>. The return value is the new state of
+the initialized current log, or <code>nil</code> if
+nothing was done.
+</p>
+<p id="5">
+If the <b><i>wait</i></b> argument is
+non-<code>nil</code>, wait until the current log becomes
+available in the required state. If the <i>wait</i>
+argument is a number, wait that many seconds and if the time runs out,
+return <code>nil</code>. The default is to wait up to one
+second; this delay should be sufficient if an active log is in the
+middle of a logging call. If the <i>wait</i> argument is
+<code>nil</code>, return <code>nil</code> if
+the log is not in the required state.
+</p>
+<p id="6">
+When the <b><i>stop</i></b> argument is is
+non-<code>nil</code> (the default), stop logging when
+logging is active. Once logging is stopped, any current entries are
+discarded and the log is initialized. If the <i>stop</i>
+argument is <code>nil</code>, the log must already be
+stopped or <code>nil</code> is returned.
+</p>
+<p id="7">
+The <b><i>start</i></b> argument specifies the state of
+the current memory log after this operation:
+</p>
+<ul>
+<li id="8">
+<code>nil</code> -- Leave the log in
+the <code>:stopped</code> state. This is the default.
+</li>
+<li id="9">
+<code>:cond</code> -- Leave the log in the same state that was
+in effect on entry.
+</li>
+<li id="10">
+other non-<code>nil</code> -- Leave the log in
+the <code>:ready</code> state.
+</li>
+</ul>
+<p id="11">
+The <b><i>size</i></b> argument specifes the maximum
+number of entries in the log.  When the maximum is reached, older
+entries are overwritten with newer entries.  If the size is not
+specified, the most recently used size continues in effect.  The
+default size is 1000.
+</p>
+<p id="12">
+The <b><i>width</i></b> argument specifies the number of
+data values in each entry. If the width is not specified, the most
+recently used width continues in effect. The default width is 4.
+</p>
+<p id="13">
+All the memory locking operations must synchronize their behavior on a
+lock in memory.  Spinning on the lock is most efficient in an SMP
+architecture, but when there are more threads than processors,
+spinning may be counterproductive.  If a lock cannot be acquired in N
+attempts, the memlog operations yield to another thread and try again
+for N attempts.  The <b><i>yield-rate</i></b> argument
+specifies a value for N. The default is 5.
+</p>
+<p id="14">
+The <b><i>yield</i></b> argument is tested by
+the <a href="memlog.htm"><b>memlog</b></a> call only.  If
+non-<code>nil</code>, the default, then one yield is
+performed if necessary to obtain a lock on the log
+object. If <code>nil</code>, then no yield call is made at
+all.  Thus if the log is initialized
+with <i>yield-rate</i>=1
+and <i>yield</i>=<code>nil</code>, a log
+entry will be made only when the log is available immediately; this is
+the least disruptive setting of the memory log. The skipped count
+returned by <a href="memlog-state.htm"><b>memlog-state</b></a>
+increases as the waiting in memlog is made more restrictive.
+</p>
+<p id="15">
+See <a href="../../smp.htm#memlog-1">Memlog: A Facility for
+Minimally Intrusive Monitoring of Complex Application
+Behavior</a> in <a href="../../smp.htm">smp.htm</a> for more information.
+</p>
+<p id="16">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

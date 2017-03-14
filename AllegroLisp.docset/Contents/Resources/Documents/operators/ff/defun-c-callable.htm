@@ -1,0 +1,95 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>defun-c-callable</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/defun-c-callable.htm">9.0 version</a></td></tr></table><h2 id="2">defun-c-callable</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name arglist </i> &amp;rest <i> body</i><i>
+</i></p>
+
+<p id="4">
+This macro is obsolete and has been replaced by <a href="defun-foreign-callable.htm"><b>defun-foreign-callable</b></a>.  Please
+use that macro in all new code. This macro is maintained for backward
+compatibility only.
+</p>
+
+<p id="5">
+This macro defines a function in Lisp that can be called from foreign
+(traditionally C) code.
+</p>
+
+<p id="6">The argument list can be restated as:</p>
+
+<blockquote>
+  <blockquote>
+    <blockquote>
+      <pre id="7"><i>lisp-function-name</i> ({<i>arg</i> | (<i>arg</i> <i>type</i>)}*) <i>body-form</i>+ </pre>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<p id="8">
+Thus <i>arglist</i> (the second argument in the argument
+list) is a list of arguments each of which is either a symbol (as in
+the usual function definition), or it is a list of length two, a
+symbol and its type. If a symbol only is present, then it has the
+default type (<code>:signed-natural</code>). Each is an argument
+which C passes to Lisp. This macro does not allow &rest or
+&optional arguments in the argument list. The type corresponds to
+a memref type (see <a href="../system/memref.htm"><b>memref</b></a>
+and <a href="../system/memref-int.htm"><b>memref-int</b></a>) and is
+limited to be one of the following:
+</p>
+
+<blockquote>
+  <blockquote>
+    <blockquote>
+      <pre id="9">:signed-byte 8 bits
+:unsigned-byte 8 bits
+:signed-word 16 bits
+:unsigned-word 16 bits
+:fixnum 30 bits
+:signed-long 32 bits
+:unsigned-long 32 bits
+:signed-natural (<strong>the default</strong>)
+:unsigned-natural
+:single-float, single-float 32 bits
+:double-float, double-float 64 bits
+:lisp (<strong>Assumes that C passes an actual Lisp value</strong>)</pre>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<p id="10">
+<b>Warning for users of 64-bit Lisps</b>:
+<code>:signed-long</code> and <code>:unsigned-long</code>
+are treated as 32-bit values, even on a 64-bit port. Contrast this to
+<a href="defun-foreign-callable.htm"><b>defun-foreign-callable</b></a>, where
+<code>:long</code> and <code>:unsigned-long</code> match
+the precise meaning in C on the architecture in question. But note
+further that that does not mean they follow the 32/64-bit nature of
+the Lisp; for example, a <code>:long</code> foreign type on
+Compaq Alphas is always 64-bits, even for a 32-bit lisp. But this is
+consistent with C.
+</p>
+
+<p id="11">
+<b>Warning about backward compatibility with release 5.0.1 and
+earlier</b>: The default argument type is changed from
+<code>:signed-long</code> to
+<code>:signed-natural</code>. If a user has pre-6.0 code that
+explicitly specifies <code>:signed-long</code>, it is likely not
+to work on 64-bit ports, because <code>:signed-long</code>
+always specifies 32 bit values.  If the user instead takes the default
+argument type, then the code will work in all 6.0 and pre-6.0
+versions. If 32-bits is explicitly desired, however, then the
+<code>:signed-long</code> (or <code>:unsigned-long</code>)
+should be explicitly specified.
+</p>
+
+<p id="12">
+See <a href="../system/memref.htm"><b>memref</b></a> and <a href="../system/memref-int.htm"><b>memref-int</b></a> and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general information on
+foreign functions in Allegro CL.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/defun-c-callable.htm">9.0 version</a></td></tr></table></body></html>

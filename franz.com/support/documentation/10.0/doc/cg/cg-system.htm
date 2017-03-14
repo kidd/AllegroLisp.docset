@@ -1,0 +1,96 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>System Internals in Common Graphics</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-system.htm">9.0 version</a></td></tr></table><h1 id="2">System Internals in Common Graphics</h1><p id="3">This document contains the following sections:</p><a href="#system-var-1">1.0 The *system* variable</a><br><a href="#configuration-1">2.0 System configuration</a><br><a href="#app-1">3.0 The app slot</a><br><a href="#start-up-shut-down-1">4.0 System start up and shut down</a><br><a href="#dumplisp-1">5.0 dumplisp</a><br><hr><hr><h2 id="4"><a name="system-var-1">1.0 The *system* variable</a></h2>
+
+
+
+<p id="5">
+The goal for Common Graphics and the Development Environment is to
+have a single global variable called <a href="../variables/cg/s_system_s.htm"><code>*system*</code></a>. The value of this global
+variable is an instance of the
+<code>devel::development-system</code> class when you are
+running the IDE, and an instance of the <a href="../classes/cg/system.htm"><code>system</code></a> class in a delivered
+application.
+</p>
+
+
+<p id="6">
+All slots and other global information, are added as properties of
+<a href="../variables/cg/s_system_s.htm"><code>*system*</code></a>. That way, you can assess
+and change anything about the global state using the inspector.
+</p>
+
+<hr><hr><h2 id="7"><a name="configuration-1">2.0 System configuration</a></h2>
+
+
+
+<p id="8">
+An instance of the <a href="../classes/cg/system.htm"><code>system</code></a> class is a hierarchical
+object. Stored in a slot of a <a href="../classes/cg/system.htm"><code>system</code></a> instance is a <a href="../classes/cg/configuration.htm"><code>configuration</code></a> object,
+which is used to store all options that will be saved and restored in
+the preferences file (allegro-ide-options.cl). Not
+all configuration options are displayed in the <a href="../ide-menus-and-dialogs/options-dialog.htm">Options</a> dialog
+(displayed by choosing Options from the <a href="../ide-menus-and-dialogs/tools-menu.htm">Tools menu</a>) but the commonly used ones do.
+</p>
+
+<p id="9">
+Like the <a href="../classes/cg/system.htm"><code>system</code></a> and
+<code>devel::development-system</code> classes, there are
+<a href="../classes/cg/configuration.htm"><code>configuration</code></a>
+and <code>devel::development-configuration</code> classes. The
+<a href="../classes/cg/configuration.htm"><code>configuration</code></a>
+class is used for Common Graphics and some Common Lisp configuration
+options. The <code>devel::development-configuration</code> is
+used for the Development Environment configuration options.
+</p>
+
+<p id="10">
+All slots and configuration information should also be properties of
+the <a href="../classes/cg/configuration.htm"><code>configuration</code></a> class so that you can
+assess and change them using the inspector. Only properties are saved
+to the preferences file allegro-ide-options.cl.
+</p>
+
+<hr><hr><h2 id="11"><a name="app-1">3.0 The app slot</a></h2>
+
+
+<p id="12">The <a href="../operators/cg/a/app.htm"><b>app</b></a> slot
+of the system object holds an instance of the <a href="../classes/cg/app.htm"><code>app</code></a> class. An app object holds
+Windows application information such as current program, command line
+options, <code>hinst</code>,
+<code>wndow-proc-address</code>, etc. This object is analogous
+to the app object offered by Visual Basic.
+</p>
+
+<hr><hr><h2 id="13"><a name="start-up-shut-down-1">4.0 System start up and shut down</a></h2>
+
+
+<p id="14">
+To start Common Graphics or the Development Environment, run the
+function <a href="../operators/ide/start-ide.htm"><b>start-ide</b></a>. System start up is
+described in <a href="../cgide.htm#startup-1">About IDE startup</a>
+in <a href="../cgide.htm">cgide.htm</a>.
+</p>
+
+<p id="15">
+Exiting the system in the development environment only -- i.e when running the IDE -- each item in <code>(exit-tests *system*)</code>, which is a list
+of functions (see <a href="../operators/ide/exit-tests.htm"><b>exit-tests</b></a>), is funcalled. The exit
+is aborted if any of the functions returns false.
+</p>
+
+
+<hr><hr><h2 id="16"><a name="dumplisp-1">5.0 dumplisp</a></h2>
+
+
+<p id="17">
+After a <a href="../operators/excl/dumplisp.htm"><b>dumplisp</b></a>, the
+<a href="../variables/cg/s_system_s.htm"><code>*system*</code></a>
+variable remains bound. That way, the global state and the
+configuration are saved in the new <strong>dxl</strong>.  When the
+system is started after a <a href="../operators/excl/dumplisp.htm"><b>dumplisp</b></a>,
+<strong>cg::reinitialize-system</strong> is called to clean up the
+values stored in <a href="../variables/cg/s_system_s.htm"><code>*system*</code></a>.
+</p>
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-system.htm">9.0 version</a></td></tr></table></html>

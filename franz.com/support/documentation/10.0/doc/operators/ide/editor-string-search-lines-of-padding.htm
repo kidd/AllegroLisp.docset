@@ -1,0 +1,37 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>editor-string-search-lines-of-padding</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/editor-string-search-lines-of-padding.htm">9.0 version</a></td></tr></table><h2 id="2">editor-string-search-lines-of-padding</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+This IDE configuration option specifies the number of text lines that
+are scrolled into view both above and below a string match in the
+IDE's editor when a string search is done. This affects commands on
+the <a href="../../ide-menus-and-dialogs/search-menu.htm">Search</a> menu
+such as <a href="../../ide-menus-and-dialogs/search-menu.htm#find-forward">Search | Find Forward</a>
+and <a href="../../ide-menus-and-dialogs/search-menu.htm#replace">Search | Replace</a>, and allows the user to see
+additional context around the string match. The default value is 6.
+</p>
+<p id="5">
+This option can be found on the <b>Editor</b> tab of
+the <a href="../../ide-menus-and-dialogs/options-dialog.htm">Options
+dialog</a>, and may be modified programmatically with a form such
+as this one:
+</p>
+
+<pre id="6">
+(setf (ide:editor-string-search-lines-of-padding
+        (configuration ide:*ide-system*))
+      4)
+</pre>
+
+<p id="7">
+This option works by passing the value to the Common Graphics
+functions <a href="../cg/s/string-search.htm"><b>string-search</b></a> and
+<a href="../cg/s/string-replace.htm"><b>string-replace</b></a>.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/editor-string-search-lines-of-padding.htm">9.0 version</a></td></tr></table></body></html>

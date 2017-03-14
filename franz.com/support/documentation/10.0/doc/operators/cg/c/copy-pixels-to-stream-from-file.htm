@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>copy-pixels-to-stream-from-file</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-pixels-to-stream-from-file.htm">9.0 version</a></td></tr></table><h2 id="2">copy-pixels-to-stream-from-file</h2>
+
+<p id="3"><b>Arguments: </b><i>
+filename 
+</i> &amp;optional <i>stream position</i><i>
+</i></p>
+
+<p id="4">
+This function reads a pixmap file and copies the image to
+<i>stream</i>. <i>stream</i> should be a
+<a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>. This function may be
+useful for displaying many large pixmaps without the overhead of
+creating lisp representations of each pixmap, since the pixels are
+transferred directly from the file to the stream without creating any
+lisp array to store them in. No pixmap object is created, so the
+individual pixels cannot be examined in lisp (except by calling
+<a href="../p/pixel.htm"><b>pixel</b></a> or <a href="../p/pixel-x-y.htm"><b>pixel-x-y</b></a> to ask the
+stream for its pixel values).
+</p>
+<p id="5">
+<i>filename</i> is a pathname or path namestring
+indicating the file to read the pixmap from. This file should be
+either a .bmp (device-independent bitmap), .ico (icon), or .cur
+(cursor) file.
+</p>
+<p id="6">
+<i>stream</i> is either a window, a bitmap-stream, a
+printer stream, or <code>nil</code>. It indicates the
+stream to draw the pixmap on. If <code>nil</code>, a
+<a href="../../../classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a>
+is created and used. If the pixmap is to be used in multiple places or
+at multiple times in the interface, it may be useful to call this
+function once to store the pixmap on a bitmap-stream, and then copy
+the image from there to a window with <a href="../c/copy-stream-area.htm"><b>copy-stream-area</b></a> whenever needed.
+</p>
+<p id="7">
+<i>position</i> is a position or <code>nil</code>, indicating where to position the upper left
+corner of the pixmap on stream. If <code>nil</code>, the
+image is positioned in the upper left corner of the stream.
+</p>
+<p id="8">
+Two values are returned:
+</p>
+<ol>
+<li id="9">
+the stream that was passed in or created,
+</li>
+<li id="10">
+a texture-info containing the dimensions, depth, and colors of the
+pixmap.
+</li>
+</ol>
+<p id="11">
+Note that if stream is a bitmap-pane, then the image
+is copied to the backing store of the window but not to the visible
+window itself. The image may then be viewed at any time by calling
+<a href="../i/invalidate.htm"><b>invalidate</b></a>
+on the window. This allows loading a new pixmap into the window while
+the end user is still viewing the previous pixmap, and then to very
+quickly switch to the new pixmap when the user is ready.
+
+</p>
+
+
+
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-pixels-to-stream-from-file.htm">9.0 version</a></td></tr></table></body></html>

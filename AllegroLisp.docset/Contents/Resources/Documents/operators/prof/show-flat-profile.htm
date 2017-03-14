@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>show-flat-profile</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: prof</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/show-flat-profile.htm">9.0 version</a></td></tr></table><h2 id="2">show-flat-profile</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>stream current-profile verbose</i><i>
+</i></p>
+
+<p id="4">
+This function prints a flat analysis based on the most recently
+collected runtime analyzer data to the output stream specified by the
+<i>stream</i> keyword argument. The default value of the
+<i>stream</i> keyword argument is <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>.
+</p>
+
+<p id="5">
+The <i>current-profile</i> keyword argument specifies
+the runtime analyzer data to be displayed. If no value is specified,
+data from the most recent data collected will be displayed. If a value
+is specified, it must be a runtime analysis saved with <a href="save-current-profile.htm"><b>save-current-profile</b></a>, in which case data
+from that runtime analysis will be displayed.
+</p>
+
+<p id="6">The 
+<i>verbose</i> keyword argument controls whether or not
+messages about the progress of the analysis are printed to
+*standard-output*. The messages will be printed if the value is
+true and they will not be 
+printed if the value is 
+<code>nil</code>. The value
+defaults to 
+<code>nil</code>. (Note that in the default, 
+both the messages and the
+result are printed to *standard-output* so if you rebind
+*standard-output* to be a stream open to a file, the messages will be
+printed to the file as well.)</p>
+
+<p id="7">This function returns no value.</p>
+
+<p id="8">
+If data is still being collected when this function is called, data
+collection will be stopped, then analysis and display of the results
+will occur. After <strong>show-flat-profile</strong> has been applied
+to the data, the status of that runtime analysis (as returned by <a href="profiler-status.htm"><b>profiler-status</b></a>) becomes
+<code>:analyzed</code> if it was not already in that state.
+</p>
+
+<p id="9">
+See <a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a> for general information on
+the runtime analyzer. 
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/show-flat-profile.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,31 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>object-editor-revert</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/object-editor-revert.htm">9.0 version</a></td></tr></table><h2 id="2">object-editor-revert</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object-editor
+</i></p>
+
+<p id="4">
+This function is called by the <code>:revert-button</code>
+widget of an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>
+dialog (see <a href="../c/command-buttons.htm"><b>command-buttons</b></a>),
+and may also be called directly by application code.
+</p>
+<p id="5">
+It undoes any modifications that the user has made to the
+currently-displayed instance if they have not yet been saved by a call
+to object-editor-save.  It does this by simply calling <a href="../d/display-instance.htm"><b>display-instance</b></a> on the
+current-instance of the <b><i>object-editor</i></b> (an
+instance of <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>)
+to overwrite any modified values in the widgets.
+</p>
+<p id="6">
+Note that an automatic save might occur before the user realizes it if
+the <a href="../s/save-on-clear-focus.htm"><b>save-on-clear-focus</b></a> or the
+<a href="../s/save-on-new-widget-value.htm"><b>save-on-new-widget-value</b></a>
+property is true.  Pressing the Enter key also does a save if the
+<code>:save-button</code> widget (a default-button) is included.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/object-editor-revert.htm">9.0 version</a></td></tr></table></body></html>

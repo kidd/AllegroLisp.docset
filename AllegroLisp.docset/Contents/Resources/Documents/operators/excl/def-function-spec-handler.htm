@@ -1,0 +1,121 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-function-spec-handler</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-function-spec-handler.htm">9.0 version</a></td></tr></table><h2 id="2">def-function-spec-handler</h2>
+
+<p id="3"><b>Arguments: </b><i>symbol arglist </i> &amp;body <i> body</i></p>
+
+<p id="4">
+<a href="def-function-spec-handler.htm"><b>def-function-spec-handler</b></a>
+defines a new kind of function spec handler keyed on
+<i>symbol</i>, a symbol which is the <a href="fspec-first.htm"><b>fspec-first</b></a> of the function spec. The handler
+must accept three arguments so <i>arglist</i> must be a
+list of three elements. The arguments are:</p>
+
+<ol>
+  <li id="5"><em>The function spec</em>, which may be in internal or external form. The external form
+    is a list of two or three elements.</li>
+  <li id="6"><em>The operation</em>. The list of operations is given below.</li>
+  <li id="7"><em>The extra argument</em>. This argument will be used when needed and ignored when not
+    needed. When the operation is <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>, for example, the extra argument is
+    the new value.</li>
+</ol>
+
+<p id="8">The <i>body</i> must return an appropriate value for
+the operation. The operations are:</p>
+
+<table border="1" width="82%" height="238">
+  <tr>
+    <td width="29%" height="38"><code>:validate</code></td>
+    <td width="71%" height="38">Return a boolean indicating whether the place named by the
+    spec exists. This must never signal error.</td>
+  </tr>
+  <tr>
+    <td width="29%" height="38"><code>fboundp</code></td>
+    <td width="71%" height="38">Return the function if the function is defined and return <code>nil</code>
+    if the function is not defined. An error must never be signaled on a validated function
+    spec. </td>
+  </tr>
+  <tr>
+    <td width="29%" height="19"><code>:setfable</code></td>
+    <td width="71%" height="19">A boolean indicating whether <b>(setf
+    fdefinition)</b> is allowed.</td>
+  </tr>
+  <tr>
+    <td width="29%" height="19"><code>setf</code></td>
+    <td width="71%" height="19">Set the function to the third (extra) argument value.</td>
+  </tr>
+  <tr>
+    <td width="29%" height="19"><code>boundp</code></td>
+    <td width="71%" height="19">Boolean whether <a href="../../../ansicl/dictentr/fmakunbo.htm"><b>fmakunbound</b></a> is allowed. Note
+    that this is not the same meaning as the CL function <a href="../../../ansicl/dictentr/boundp.htm"><b>boundp</b></a>.</td>
+  </tr>
+  <tr>
+    <td width="29%" height="19"><code>fmakunbound</code></td>
+    <td width="71%" height="19">Make the function funbound.</td>
+  </tr>
+  <tr>
+    <td width="29%" height="19"><code>block</code></td>
+    <td width="71%" height="19">For certain functions (e.g. setf functions) <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a>
+    is required to wrap the body in a block with a certain name. This operation must return
+    the name based on the spec and is called by the <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a> macro and the
+    compiler top level. This is a good place to put an error check for functions that may not
+    be defined by <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a>.</td>
+  </tr>
+  <tr>
+    <td width="29%" height="19"><code>unintern</code></td>
+    <td width="71%" height="19">Detach the function-spec from its "oblist" for
+    potential garbage-collection of the entire function spec. Does <em>not</em> do an <a href="../../../ansicl/dictentr/fmakunbo.htm"><b>fmakunbound</b></a>;
+    i.e. if an operation has squirrelled the function-spec away, it remains fully operational,
+    just as <a href="../../../ansicl/dictentr/unintern.htm"><b>unintern</b></a> of an <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> symbol still leaves it <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a>.</td>
+  </tr>
+
+  <tr>
+    <td width="29%" height="19"><code>:defunable</code></td>
+    <td width="71%" height="19">A boolean indicating
+    whether <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a> can
+    be used on this function-spec.</td>
+  </tr>
+
+</table>
+
+<p id="9">
+The function
+<a href="function-name-p.htm"><b>function-name-p</b></a> returns true
+when passed a valid function spec defined with <a href="def-function-spec-handler.htm"><b>def-function-spec-handler</b></a>. <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> can be used to determine
+whether a valid function spec defined with <a href="def-function-spec-handler.htm"><b>def-function-spec-handler</b></a> actually names an
+operator.
+</p>
+
+
+<p id="10">
+<b>Note</b>: with <a href="def-function-spec-handler.htm"><b>def-function-spec-handler</b></a>, Allegro CL extends
+the concept of <b>(setf fdefinition)</b>, but it does not extend the
+concept of <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a>.
+So, for example, it is sometimes useful to
+</p>
+
+<pre id="11">
+(setf (fdefinition '(method foo (bar))) (lambda (&lt;args&gt;) &lt;body&gt;))
+</pre>
+
+<p id="12">
+but it is not appropriate to
+</p>
+
+<pre id="13">
+(defun (method foo (bar)) (&lt;args&gt;) &lt;body&gt;)
+</pre>
+
+<p id="14">
+because <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a> does
+not supply enough mechanism to accomodate MOP requirements.
+</p>
+
+
+<p id="15">
+See <a href="../../implementation.htm#function-specs-1">Function
+specs</a> in <a href="../../implementation.htm">implementation.htm</a> for more
+information on function specs.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-function-spec-handler.htm">9.0 version</a></td></tr></table></body></html>

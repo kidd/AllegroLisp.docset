@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*top-level-read-eval-print-loop-wrapper*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: top-level</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/tpl/s_top-level-read-eval-print-loop-wrapper_s.htm">9.0 version</a></td></tr></table><h2 id="2">*top-level-read-eval-print-loop-wrapper*</h2>
+
+<p id="3">
+The value of this variable should be <code>nil</code> or a
+function which takes two arguments and typically makes some
+customizations before applying the first argument to the second. The
+initial value of this variable is <code>nil</code>, which
+has no effect.
+</p>
+
+<p id="4">
+In this rather trivial example, we define the wrapper so that the
+command character (the value of <a href="s_command-char_s.htm"><code>*command-char*</code></a>, initially #\:) is #\$. Of
+course, in a real example, something more complex would be done, but
+the form would be similar to this example. These forms must be in an
+initialization file (such as you <i>.clinit.cl</i> file)
+because they need to be executed before the top-level starts up.
+</p>
+
+<pre id="5">
+;;  These forms whould be in an initialization file. When Lisp
+;;  starts (assuming the .clinit.cl file is read), the command 
+;;  character will be $ (rather than :) in any new lisp listener 
+;;  process.
+(defun my-lisp-listener-wrapper (function args)
+  (let ((tpl:*command-char* #\$))
+    (apply function args)))
+
+(setq tpl:*top-level-read-eval-print-loop-wrapper*
+      'my-lisp-listener-wrapper) 
+</pre>
+
+<p id="6">
+This variable is not available in Lisp images built with a minimal top
+level, that is built with the
+<i>include-tpl</i> argument to <a href="../../operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> specified <code>nil</code>. See <a href="../../building-images.htm#minimal-top-levels-1">Minimal top levels</a> in
+<a href="../../building-images.htm">building-images.htm</a> for information on minimal top
+levels.</p>
+
+<p id="7">
+See <a href="../../top-level.htm">top-level.htm</a>
+for more information on the top level.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/tpl/s_top-level-read-eval-print-loop-wrapper_s.htm">9.0 version</a></td></tr></table></body></html>

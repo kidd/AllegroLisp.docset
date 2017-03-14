@@ -1,0 +1,139 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-process</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/make-process.htm">9.0 version</a></td></tr></table><h2 id="2">make-process</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>name class reset-action run-reasons arrest-reasons priority quantum resume-hook suspend-hook initial-bindings run-immediately stack-allocation message-interrupt-function</i><i>
+</i></p>
+
+
+<p id="4">
+This function returns a new process object, but does nothing about
+making it runnable.
+</p>
+
+<h4 id="5">
+name, class, quantum, priority, run-reasons, arrest-reasons, and
+reset-action keyword arguments
+</h4>
+
+<p id="6">
+<i>name</i> must be a string. Its default value is
+"Anonymous". 
+</p>
+<p id="7">
+The <i>class</i> keyword argument specifies the class of
+the process being created. The value defaults to the class <a href="../../classes/mp/process.htm"><code>mp:process</code></a>. A subclass
+of <a href="../../classes/mp/process.htm"><code>mp:process</code></a>
+may be specified instead, if a program has created such subclasses.
+</p>
+<p id="8">
+The default value of
+<i>quantum</i> is 2 and of <i>priority</i>
+is 0. <i>run-reasons</i> and
+<i>arrest-reasons</i> are both lists of Lisp
+objects. They default to <code>nil</code> (that is, the
+empty list).  The effect of these lists being empty or not is
+described in <a href="../../multiprocessing.htm">multiprocessing.htm</a>. The process can
+run only if the <i>arrest-reasons</i> list is empty, and
+the <i>run-reasons</i> list is not empty.
+<i>reset-action</i> defaults to <code>nil</code>. If it is set to <code>t</code>, the
+process will restart if it is reset or ever completes; that is, it
+will once again apply its initial function to its initial
+arguments. Otherwise, the process will be killed when it
+completes.
+</p>
+<h4 id="9">No property-list keyword argument</h4>
+<p id="10">
+There is no <i>property-list</i> keyword argument, but
+property lists for processes are supported and <a href="process-property-list.htm"><b>process-property-list</b></a> accesses them. They can be
+modified in the usual property list way with <a href="../../../ansicl/dictentr/getf.htm"><b>getf</b></a> and <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of <a href="../../../ansicl/dictentr/getf.htm"><b>getf</b></a> and that function.
+</p>
+<h4 id="11">initial-bindings, resume-hook, and suspend-hook keyword arguments</h4>
+<p id="12">
+The <i>initial-bindings</i>,
+<i>resume-hook</i>, and
+<i>suspend-hook</i> arguments all default to <code>nil</code> and initialize the corresponding slot values of
+the process object. The meanings of these slots are explained in
+<a href="../../multiprocessing.htm">multiprocessing.htm</a>.
+</p>
+
+<h4 id="13">stack-allocation keyword argument</h4>
+
+<p id="14">
+The <i>stack-allocation</i> argument is only used in the
+<strong>:os-threads</strong> model of multiprocessing. It specifies
+the size to request from the OS for the thread associated with the new
+process. The default value is to copy the size used for the process in
+which the process-creating function (i.e. <a href="make-process.htm"><b>make-process</b></a> or something that
+calls <a href="make-process.htm"><b>make-process</b></a>) is
+running. A process's soft limit is set to a default value when the
+process starts. This value is 80% of the hard limit or 4 megabytes,
+whichever is less.
+</p>
+
+<h4 id="15">message-interrupt-function keyword argument</h4>
+
+<p id="16">
+The <i>message-interrupt-function</i> argument is
+important for Windows only. In the windows environment only, it's very
+very bad to ignore messages for long periods of time.  Some global
+events involve broadcasting messages to a class of threads, and some
+of these have to be responded to or things lock up.
+</p>
+<p id="17">
+To deal with this, each windows process has an attribute <a href="process-message-interrupt-function.htm"><b>process-message-interrupt-function</b></a>. When
+a process is in a non-ready state (wait function, arrest reasons, no
+run reasons), and a windows message appears on its message queue, then
+the <code>process-message-interrupt-function</code> will be run
+as if by process-interrupt call, if the
+process-message-interrupt-function is non-<code>nil</code>.
+</p>
+<p id="18">
+The <code>process-message-interrupt-function</code> attribute
+can be initialized at process creation via the
+<i>message-interrupt-function</i> keyword argument. The
+default value, if unspecified, is the value (at process-creation time)
+of the variable <a href="../../variables/mp/s_default-message-interrupt-function_s.htm"><code>mp:*default-message-interrupt-function*</code></a>.
+</p>
+<pre id="19">
+(mp:process-message-interrupt-function p) is setfable.
+</pre>
+<p id="20">
+The function specified as the message-interrupt handler for a process
+must return non-<code>nil</code> if there is any chance
+that it made a change in Lisp state that could free another process to
+run, and <code>nil</code> otherwise.
+</p>
+
+<p id="21">
+The system-provided initial value of <a href="../../variables/mp/s_default-message-interrupt-function_s.htm"><code>*default-message-interrupt-function*</code></a>
+is the function <b>mp::process-messages-in-interrupt</b>, a function
+of no arguments, that verifies the existance of messages on the queue.
+It returns <code>nil</code> if there are none.  Otherwise
+it dispatches all of them and returns <code>t</code>.
+</p>
+
+<h4 id="22">The immigrant and run-immediately keyword arguments</h4>
+
+<p id="23">
+The <i>immigrant</i> keyword argument is for internal
+use only. Do not specify a value for it.
+</p>
+<p id="24">
+The <i>run-immediately</i> keyword argument was designed
+to tell the in-Lisp scheduler to run the new process immediately
+(assuming it was runnable) regardless of the assigned priorities. It
+was never effective in threaded multiprocessing since scheduling was
+done by the OS. In 7.0 it is ignored and no value should be specified
+for it.
+</p>
+
+<p id="25">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+
+<hr><p id="26"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/make-process.htm">9.0 version</a></td></tr></table></body></html>

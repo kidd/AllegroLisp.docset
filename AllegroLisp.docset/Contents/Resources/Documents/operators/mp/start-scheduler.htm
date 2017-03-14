@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>start-scheduler</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/start-scheduler.htm">9.0 version</a></td></tr></table><h2 id="2">start-scheduler</h2>
+
+<p id="3"><b>Arguments: </b><i>
+nil
+</i></p>
+
+
+<p id="4">
+Multiprocessing is not automatically started in the default Allegro CL
+environment.
+</p>
+
+<p id="5">
+This function starts multiprocessing, which is also started
+automatically the first time a process is started by <a href="process-reset.htm"><b>process-reset</b></a>, directly or indirectly (as by
+<a href="process-run-function.htm"><b>process-run-function</b></a>). There
+is in fact no scheduler process. In a virtual thread Lisp, runnable
+processes are queued by priority and run (for a quantum of time)
+according to the queue. In os-thread and SMP Lisps, the OS decides
+what processes to run. The name <i>start-scheduler</i> dates from
+earlier releases where there was an actual scheduler process.
+</p>
+
+
+<p id="6">
+Even in an SMP Lisp, it is possible to start Lisp without the
+multiprocessing module loaded. A call to <a href="start-scheduler.htm"><b>start-scheduler</b></a> ensures the mp module is
+loaded. (Other functionality has the same effect, but
+calling <a href="start-scheduler.htm"><b>start-scheduler</b></a>
+guarantees things.) Also, if you use immigrant threads in a non-SMP
+Lisp, you might want to call <a href="start-scheduler.htm"><b>start-scheduler</b></a> to be sure the system is
+initialized properly for the immigrant threads.
+</p>
+
+
+
+<p id="7">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/start-scheduler.htm">9.0 version</a></td></tr></table></body></html>

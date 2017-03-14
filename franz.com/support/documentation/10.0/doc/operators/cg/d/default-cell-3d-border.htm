@@ -1,0 +1,37 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>default-cell-3d-border</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-cell-3d-border.htm">9.0 version</a></td></tr></table><h2 id="2">default-cell-3d-border</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-widget-or-section
+</i></p>
+
+<p id="4">
+Returns whether a pseudo-three-dimensional border will be drawn around
+each cell in the specified <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>, <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a>, or <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a>.
+If this property is true for any of these objects that contain a given
+cell, then that cell will have a 3d border.  The <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of this function may be called to change
+the 3d border, at which time the grid will be drawn as needed to display
+the new borders.
+</p>
+<p id="5">
+The above actually describes the behavior of the default <a href="../c/cell-3d-border.htm"><b>cell-3d-border</b></a> method.
+An application may supply <a href="../c/cell-3d-border.htm"><b>cell-3d-border</b></a> methods to override
+this behavior for some or all of the cells.
+</p>
+<p id="6">
+If the value is <code>nil</code> (the default), then no 3d
+borders will be drawn. If it is the keyword
+<code>:sunken-edge</code>, then 3d borders will be drawn that
+appear sunken (making the grid cells appear raised).  If it is <code>t</code>, then 3d borders will be drawn that appear raised
+(making the grid cells appear sunken).
+</p>
+<p id="7">
+If the regular (non-3d) borders of the cells are non-zero (see <a href="../b/border-width.htm"><b>border-width</b></a> and <a href="../d/default-cell-border-width.htm"><b>default-cell-border-width</b></a>) while 3d
+borders are turned on, then both the regular and 3d borders are drawn,
+with the 3d borders just inside the regular borders.  3d borders may
+look best without the regular borders, so it is likely desirable to
+set the width of the regular borders to zero when using 3d borders.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-cell-3d-border.htm">9.0 version</a></td></tr></table></body></html>

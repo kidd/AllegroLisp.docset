@@ -1,0 +1,123 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>print-function-meta-info</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table><h2 id="2">print-function-meta-info</h2>
+
+<p id="3"><b>Arguments: </b><i>
+func </i>&amp;key  (<i>src</i> t) (<i>ask</i> t)<i> terse full sort vars mixed</i><i>
+</i></p>
+
+<p id="4">
+Returns 0 values after printing information
+about <i>func</i> for
+side-effect. <b><i>func</i></b> can be a function or
+closure object or a function name.
+</p>
+<p id="5">
+If <b><i>terse</i></b> is true then 80 columns should be
+sufficient for the output, otherwise up to 150 columns may be required
+for the output. Normally, output is restricted to one line per
+information item. Source forms, when available, are printed using a
+concise-print technique whereby various values
+of <a href="../../../ansicl/dictentr/print-le.htm"><code>*print-length*</code></a>
+and <a href="../../../ansicl/dictentr/print-le.htm"><code>*print-level*</code></a> are
+tried until the whole form fits on one line. However,
+if <b><i>full</i></b> is true, no such testing is done,
+and whole forms are printed, possibly on multiple lines.
+</p>
+<p id="6">
+Up to four kinds of information currently presented, depending on
+various options.  These are described more fully described
+in <a href="../../debugging.htm#func-meta-1">Printing function
+meta data are related topics</a>
+in <a href="../../debugging.htm">debugging.htm</a>.
+</p>
+<ul>
+<li id="7">
+<b>Source debug info</b>: these are records which serve as Lisp
+breakpoints, and which provide information about what is currently
+being executed at any particular program counter location. There may
+be multiple source records with same pc locations. If other
+information is being printed with these records, then the first column
+always starts with "S" for "source record".
+</li>
+<li id="8">
+<b>Disassembler output</b>: generally, each one or two line record
+shows a single instruction at a program-counter location.  No
+character is ever printed in the first column of disassembler output.
+</li>
+<li id="9">
+<b>Variable transition information</b>: each record represents a
+transfer of a variable's value to or from a location, either a
+register or a memory location. Each variable record is printed on a
+separate line that starts with "V" (for "variable transition").
+</li>
+<li id="10">
+<b>Census information</b>: a census point is a pc location which is
+likely to be seen by the precise-gc, and the census point provides
+information about what locations on the stack are alive at that pc
+location.  Each Census point is printed on its own line starting with
+"C" (for "census point").
+</li>
+</ul>
+<p id="11">
+If <b><i>src</i></b> is non-<code>nil</code>
+(the default) and if source-level-debug info is available
+for <i>func</i> it is used, otherwise the output is
+presented without source information. If <i>func</i> has
+been compiled with <a href="../../variables/compiler/save-source-level-debug-info-switch.htm"><code>comp:save-source-level-debug-info-switch</code></a>
+on but the <i>fasl</i> file has not been loaded with
+<a href="../../variables/excl/s_load-source-debug-info_s.htm"><code>*load-source-debug-info*</code></a> on, then source info
+will be searched using the following steps:
+</p>
+<ol>
+<li id="12">
+If the fasl file was compiled with <a href="../../variables/excl/s_record-source-file-info_s.htm"><code>*record-source-file-info*</code></a> true, and if
+<a href="../../variables/excl/s_load-source-file-info_s.htm"><code>*load-source-file-info*</code></a> was true when the fasl
+file was loaded, then the location of the fasl file is implied and is
+re-loaded with only source-debug-info requested.
+</li>
+<li id="13">
+If the source-file information was not recorded or loaded, but
+source-debug info was recorded (and not loaded), and
+if <b><i>ask</i></b> is non-<code>nil</code>
+(the default) then a prompt is given asking for the name of the file
+to load.  Any string representing the file can be specified,
+e.g. "dir/file.fasl", "dir/file", "dir/file.cl", etc.  If the fasl
+file associated with the given name exists it is loaded for source
+debug info and that info becomes available.
+</li>
+<li id="14">
+If <b><i>ask</i></b> is <code>nil</code>,
+source-debug info is silently unused.
+</li>
+</ol>
+<p id="15">
+Information is presented in an order most appropriate for the options
+given. Sorting can be by requested by source-record
+(i.e. <code>:rec</code>), by program-counter
+(i.e. <code>:pc</code>), or by source-position
+(i.e. <code>:pos</code>).  If no options are specified for this
+function, and if source is available, then only source records will be
+shown in record order. If <b><i>src</i></b>
+is <code>nil</code> or source-debug-info is unavailable,
+or if either of <b><i>mixed</i></b>
+or <b><i>vars</i></b> is
+non-<code>nil</code>, then the presentation will be made
+in program-counter order.
+</p>
+<p id="16">
+If <b><i>mixed</i></b> is <code>t</code>
+then assembler code is presented in a manner similar to disassemble,
+but intermixed with any other information (in program-counter order).
+</p>
+<p id="17">
+If <b><i>vars</i></b> is <code>t</code>,
+then variable transitions are presented, interspersed with other
+information (in program-counter order).
+</p>
+<p id="18">
+If <b><i>sort</i></b> is <code>:pc</code> for any
+reason, census points are presented, in pc order.
+</p>
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table></body></html>

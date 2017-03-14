@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>incf-atomic</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/incf-atomic.htm">9.0 version</a></td></tr></table><h2 id="2">incf-atomic</h2>
+
+<p id="3"><b>Arguments: </b><i>
+place </i> &amp;optional  (<i>increment-form</i> 1)<i>
+</i></p>
+
+<p id="4">
+This macro acts like <a href="../../../ansicl/dictentr/incfdecf.htm"><b>incf</b></a> with
+the same arguments except that the update is atomic with respect to
+any other processes looking at the
+same <i>place</i>. That is, if several processes
+simultaneously try to <a href="incf-atomic.htm"><b>incf-atomic</b></a> (or <a href="decf-atomic.htm"><b>decf-atomic</b></a>) the same location, all operations
+occur sequentially in some unspecified order. As a result, the final
+value will be what is expected. (If you just used <a href="../../../ansicl/dictentr/incfdecf.htm"><b>incf</b></a>'s and <a href="../../../ansicl/dictentr/incfdecf.htm"><b>decf</b></a>'s, the first <a href="../../../ansicl/dictentr/incfdecf.htm"><b>incf</b></a> could read the value and while it is
+calculating the increment, another <a href="../../../ansicl/dictentr/incfdecf.htm"><b>incf</b></a> could run, and then the
+initial <a href="../../../ansicl/dictentr/incfdecf.htm"><b>incf</b></a> could store its
+result effectively cancelling the action of the
+second <a href="../../../ansicl/dictentr/incfdecf.htm"><b>incf</b></a>.)
+</p>
+<p id="5">
+<b>Note on the place argument</b>: not all places legal as the first
+argument of <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>
+can be used as the <b><i>place</i></b> argument to this
+macro. The list of allowable places can be found
+in <a href="../../smp.htm#read-write-2">Atomic read-modify-write
+primitives</a> in <a href="../../smp.htm">smp.htm</a>. 
+</p>
+
+
+
+<p id="6">
+See <a href="../../smp.htm">smp.htm</a>
+and <a href="../../multiprocessing.htm">multiprocessing.htm</a> for more information on
+this macro and on multiprocessing.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/incf-atomic.htm">9.0 version</a></td></tr></table></body></html>

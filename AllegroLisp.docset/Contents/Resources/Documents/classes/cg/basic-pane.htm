@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>basic-pane</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/basic-pane.htm">9.0 version</a></td></tr></table><h2 id="2">basic-pane</h2>
+
+<p id="3">
+The class of all windows (excluding menus, which are not usually
+regarded as windows). A <a href="basic-pane.htm"><code>basic-pane</code></a> instance by default
+appears on the screen as a simple rectangular blank area with no
+border or title-bar, but may have any of the standard window
+attributes by specifying them explicitly when calling <a href="../../operators/cg/m/make-window.htm"><b>make-window</b></a>.
+</p>
+<p id="4">
+Windows are Common Lisp streams, and so various standard stream
+functions may be applied to them. For example, stream output functions
+such as <a href="../../../ansicl/dictentr/writepri.htm"><b>print</b></a> and <a href="../../../ansicl/dictentr/format.htm"><b>format</b></a> will draw text on a window, and
+a window is closed by calling <a href="../../../ansicl/dictentr/close.htm"><b>close</b></a> on it.  (See also <a href="../../operators/cg/u/user-close.htm"><b>user-close</b></a>.)  The <a href="../../operators/excl/device-open.htm"><b>device-open</b></a> generic function may be extended
+with custom methods that do additional setup when a window is created.
+The function <a href="../../operators/cg/w/windowp.htm"><b>windowp</b></a> will
+return true if its argument is a window and it is currently open.
+</p>
+<p id="5">
+This class is suitable to use as the superclass of custom application
+window classes when it is desirable to start with the simplest type of
+window, adding particular default attributes as needed. For windows
+that have borders and title-bars, it may be simpler to instead
+subclass <a href="frame-window.htm"><code>frame-window</code></a>. If backing-store is
+desired, instead use a <a href="bitmap-pane.htm"><code>bitmap-pane</code></a> or <a href="bitmap-window.htm"><code>bitmap-window</code></a>. If controls are to
+be added to the window, a <a href="dialog.htm"><code>dialog</code></a> is recommended.
+</p>
+
+
+
+
+
+
+<p id="6">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/basic-pane.htm">9.0 version</a></td></tr></table></body></html>

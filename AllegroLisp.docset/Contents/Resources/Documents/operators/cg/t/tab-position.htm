@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>tab-position</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/tab-position.htm">9.0 version</a></td></tr></table><h2 id="2">tab-position</h2>
+
+<p id="3"><b>Arguments: </b><i>
+dialog-item
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../t/tab-position.htm"><b>tab-position</b></a> property of the
+argument.
+</p>
+<p id="5">
+If the tab key moves focus among controls on a dialog, this property
+indicates how many tabs are needed to get to this control. Tab
+position 0 means that control has focus when the dialog is
+displayed. Tab position 1 means pressing tab once moves focus to the
+control, and so on.
+</p>
+<p id="6">
+The setf of <a href="../t/tab-position.htm"><b>tab-position</b></a> may be called to
+reposition a control that is already on a dialog. But unlike most
+properties of controls, it would have no effect to specify an initial
+tab-position when creating a control by passing a :tab-position
+keyword argument to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>. Instead, the initial tab order of
+the list of controls passed as the value of the
+<i>dialog-items</i> argument to <a href="../m/make-window.htm"><b>make-window</b></a> is determined by the
+order of the controls in that list. And the tab-position of a control
+added to a dialog by calling <a href="../a/add-component.htm"><b>add-component</b></a> is determined by the
+value of the <i>behind</i> argument to <a href="../a/add-component.htm"><b>add-component</b></a>.
+</p>
+<p id="7">
+In Windows, the tab-order of the controls on a parent window is always
+the same as the front-to-back occlusion order of the controls. This
+means, for example, that a <a href="../../../classes/cg/group-box.htm"><code>group-box</code></a> or <a href="../../../classes/cg/tab-control.htm"><code>tab-control</code></a> must be positioned in
+the tab order after all of the widgets that are on it, or else it will
+cover those widgets. This is handled automatically when designing a
+form window interactively, but it must be handled by the application
+when creating a dialog programmatically.
+</p>
+<p id="8">
+(Note that keyboard shortcuts can be used to jump to a control with a
+keypress. The keyboard shortcut is defined by placing a tilde (~)
+before the keyboard shortcut letter. The keyboard shortcut is then
+Alt-[the letter]. The <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a> control cannot
+have focus so if its value has a tilde before a letter, that provides
+a keyboard shortcut to the next control in the tab order. See the
+discussion "Using a static text as a keyboard shortcut to jump to a
+control" in the <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a> entry.)
+</p>
+<p id="9">
+The <a href="../../../ide-menus-and-dialogs/form-menu.htm#set-tab-order">Form | Set Tab Order</a> menu command can be
+used to set the tab position for all controls on a form.
+</p>
+
+
+
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/tab-position.htm">9.0 version</a></td></tr></table></body></html>

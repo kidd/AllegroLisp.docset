@@ -1,0 +1,37 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>colorize-on-load-file</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/colorize-on-load-file.htm">9.0 version</a></td></tr></table><h2 id="2">colorize-on-load-file</h2>
+
+<p id="3"><b>Arguments: </b><i>
+cg-configuration
+</i></p>
+
+<p id="4">
+Returns whether source code colorization will be done automatically
+whenever <a href="../l/load-file.htm"><b>load-file</b></a> is called
+on a <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a>. In the
+IDE, <a href="../l/load-file.htm"><b>load-file</b></a> is called when
+a file is shown in the editor.  Applications may call <a href="../l/load-file.htm"><b>load-file</b></a> as well.
+</p>
+<p id="5">
+This option appears on the <a href="../../../ide-menus-and-dialogs/options-dialog-editor-color.htm">Editor Color</a> tab on the
+<a href="../../../ide-menus-and-dialogs/options-dialog.htm">Options</a> dialog
+in the IDE, and may also be set programmatically by calling (setf
+colorize-on-load-file).  The initial value is nil because colorization
+adds a significant delay, especially for larger files.  An alternative
+in the IDE is to colorize only on demand by using the Colorize
+Definition and Colorize Buffer commands on the Edit menu.
+</p>
+<p id="6">
+See also <a href="../c/colorize-source-code.htm"><b>colorize-source-code</b></a>.
+</p>
+
+<h3 id="7">
+Example
+</h3>
+
+<pre id="8">
+(setf (colorize-on-load-file (configuration *system*)) t)
+</pre>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/colorize-on-load-file.htm">9.0 version</a></td></tr></table></body></html>

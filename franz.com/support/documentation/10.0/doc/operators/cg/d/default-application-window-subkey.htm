@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>default-application-window-subkey</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-application-window-subkey.htm">9.0 version</a></td></tr></table><h2 id="2">default-application-window-subkey</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i></p>
+
+<p id="4">
+Returns the default value for the subkey argument of the functions
+<a href="../a/add-application-window.htm"><b>add-application-window</b></a>,
+<a href="../f/find-application-window.htm"><b>find-application-window</b></a>, and
+<a href="../r/remove-application-window.htm"><b>remove-application-window</b></a>. It
+is probably not useful for an application to call this function
+directly. It is also sufficiently obscure that you likely need not
+concern yourself with it.
+</p>
+<p id="5">
+On platforms where Allegro's threads are native operating system
+threads (in which case the value of <a href="../../../variables/cg/s_use-single-cg-event-handling-process_s.htm"><code>*use-single-cg-event-handling-process*</code></a> is
+<code>nil</code>), this function returns the current
+process.  On non-native thread platforms, this function returns the
+keyword <code>:global</code>.
+</p>
+<p id="6">
+The idea behind the subkey argument to <a href="../a/add-application-window.htm"><b>add-application-window</b></a> was to allow windows in
+distinct processes to have the same name, and still allow <a href="../f/find-application-window.htm"><b>find-application-window</b></a> to find the
+correct window when called in event-handler callback code of windows
+in the same process. This works because event callback code runs in
+the creation-process of each window.  But on non-native threads
+platforms, this does not work out because there is only a single event
+queue for the single operating system thread, and so the events for
+windows created in all Lisp processes are handled in a single
+event-handling process. So the subkey is effectively not used by
+default on these platforms.
+</p>
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-application-window-subkey.htm">9.0 version</a></td></tr></table></body></html>

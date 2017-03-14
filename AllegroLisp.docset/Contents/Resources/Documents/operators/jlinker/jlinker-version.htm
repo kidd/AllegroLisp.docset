@@ -1,0 +1,56 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>jlinker-version</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlinker-version.htm">9.0 version</a></td></tr></table><h2 id="2">jlinker-version</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;optional <i>stream-or-key prefix t1 t2</i><i>
+</i></p>
+
+<p id="4">
+The behavior of this function depends on the type of the
+<i>stream-or-key</i>. That argument can be a string or
+symbol <a href="../../../ansicl/dictentr/stringst.htm"><b>string-equal</b></a> to &quot;&lt;&quot;
+or &quot;&gt;&quot;, or it can be a value suitable as the first argument to
+<a href="../../../ansicl/dictentr/format.htm"><b>format</b></a> (such as a stream,
+<code>t</code>, or <code>nil</code>)
+</p>
+
+<h3 id="5">Behavior when stream-or-key argument is string-equal to &quot;&lt;&quot; or
+&quot;&gt;&quot;</h3>
+
+<p id="6">
+In this case, jlinker-version works as a boolean, testing whether the
+current version is earlier than or later than the version specified by
+the <i>prefix</i>, <i>t1</i>, and
+<i>t2</i> arguments. <i>prefix</i>,
+<i>t1</i>, and <i>t2</i> should all be
+non-negative integers. Thus, <code>(jlinker-version :&gt; 2)</code>
+returns true for versions later than 2.0.0. (The current version in
+list format is the value of <a href="../../variables/jlinker/s_jlinker-version_s.htm"><code>*jlinker-version*</code></a>.)
+</p>
+
+<h3 id="7">Behavior when stream-or-key argument is suitable as the first argument to format</h3>
+<p id="8">
+This function generates a nice version message from the jLinker
+version variables. If the <i>stream-or-key</i> argument is
+<code>nil</code> or omitted, the message is returned as a
+string; otherwise, the message is written to the
+<i>stream-or-key</i> argument.  The <i>prefix</i>
+argument is text inserted at the beginning of each of the 3 lines in
+the message.
+</p>
+<p id="9">
+Example:
+</p>
+<pre id="10">
+;;;  *jlinker-version* = 3.0.8
+;;; *jlinker-comptime* = 2000-9-29 16:16:31
+;;; JDK/Orb: c:\mmWork\java\jdk1.2   Direct link.
+</pre>
+
+<p id="11">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlinker-version.htm">9.0 version</a></td></tr></table></body></html>

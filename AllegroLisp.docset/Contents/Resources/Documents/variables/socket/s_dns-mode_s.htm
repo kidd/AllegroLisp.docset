@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*dns-mode*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: socket</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/socket/s_dns-mode_s.htm">9.0 version</a></td></tr></table><h2 id="2">*dns-mode*</h2>
+
+<p id="3">
+This variable can have the value <code>:clib</code> or
+<code>:acldns</code> or a list of one or both of those symbols.
+The initial value is the list <code>(:acldns :clib)</code>.
+</p>
+<p id="4">
+The value of this variable controls whether the C library functions or
+Allegro CL DNS functionality are used for calls to <a href="../../operators/socket/lookup-hostname.htm"><b>lookup-hostname</b></a> and <a href="../../operators/socket/ipaddr-to-hostname.htm"><b>ipaddr-to-hostname</b></a>. Using Allegro CL DNS
+functionality means calls are made to <a href="../../operators/socket/dns-lookup-hostname.htm"><b>dns-lookup-hostname</b></a> and <a href="../../operators/socket/dns-ipaddr-to-hostname.htm"><b>dns-ipaddr-to-hostname</b></a>.
+</p>
+<p id="5">
+If the value of this variable is either <code>:acldns</code> or
+the list <code>(:acldns)</code> then <a href="../../operators/socket/lookup-hostname.htm"><b>lookup-hostname</b></a> and <a href="../../operators/socket/ipaddr-to-hostname.htm"><b>ipaddr-to-hostname</b></a> use Allegro CL DNS
+functionality.
+</p>
+<p id="6">
+If the value of this variable is either <code>:clib</code> or
+the list <code>(:clib)</code> then <a href="../../operators/socket/lookup-hostname.htm"><b>lookup-hostname</b></a> and <a href="../../operators/socket/ipaddr-to-hostname.htm"><b>ipaddr-to-hostname</b></a> use the C library
+functions to do the dns lookup.
+</p>
+<p id="7">
+If the value of this variable is a list containing both
+<code>:clib</code> and <code>:acldns</code> (in any order),
+then the Allegro CL DNS functionality is used first and then,
+if that fails, the C library functions are used.
+</p>
+<p id="8">
+Before calling an Allegro CL DNS function, a check is made to see if
+the Allegro CL DNS module has been configured. If it hasn't been, then
+<code>(configure-dns :auto t)</code> is done (see <a href="../../operators/socket/configure-dns.htm"><b>configure-dns</b></a>). If this auto
+configuration fails to find any nameservers then
+<code>*dns-mode*</code> is set to <code>:clib</code> so
+that there will be no further attempts to use the Allegro CL DNS
+module.
+</p>
+
+<p id="9">
+See <a href="../../dns.htm">dns.htm</a> for information on the domain naming
+system utility in Allegro CL and see <a href="../../socket.htm">socket.htm</a> for
+general information on sockets in Allegro CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/socket/s_dns-mode_s.htm">9.0 version</a></td></tr></table></body></html>

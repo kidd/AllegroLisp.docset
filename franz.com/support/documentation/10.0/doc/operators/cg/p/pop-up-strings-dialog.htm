@@ -1,0 +1,88 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pop-up-strings-dialog</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pop-up-strings-dialog.htm">9.0 version</a></td></tr></table><h2 id="2">pop-up-strings-dialog</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window-or-screen title prompt1 icon string1
+button1 button2
+prompt2 string2
+</i></p>
+
+<p id="4">
+Displays a modal dialog that prompts for two modifiable
+strings. Returns three values. The first two are the modified strings,
+the third is the button number.
+</p>
+<p id="5">
+<i>window-or-screen</i> is the window with respect to
+which the dialog will be modal (no windows are disabled if the value
+is the screen). If <code>nil</code>, the stream returned
+by <a href="../s/selected-window-or-screen.htm"><b>selected-window-or-screen</b></a> will be
+used. <i>title</i> is a string to display in the
+title-bar of the dialog. <i>prompt1</i> is a string to
+display in the body of the dialog, typically describing what the user
+should enter in the editable-text widget just below it.
+</p>
+<p id="6">
+<i>icon</i> is the handle of an icon to display in the
+dialog. Typically this is the value of one of the symbols <a href="../../../variables/cg/information-icon.htm"><code>information-icon</code></a>,
+<a href="../../../variables/cg/question-icon.htm"><code>question-icon</code></a>, <a href="../../../variables/cg/warning-icon.htm"><code>warning-icon</code></a>, or
+<a href="../../../variables/cg/error-icon.htm"><code>error-icon</code></a>,
+but may alternately be an icon handle returned by <a href="../e/extract-icon-from-file.htm"><b>extract-icon-from-file</b></a>.
+</p>
+<p id="7">
+<i>string1</i> is the string to initially display in the
+editable-text widget where the user enters a string. The whole string
+will initially be selected so that the user can easily replace it by
+simply typing.
+</p>
+<p id="8">
+<i>button1</i> is a string to display on the leftmost
+button at the bottom of the dialog.  If the user presses this button
+or presses the Enter key, then the third return value will be the
+number 1.  A tilde character (~) may be included in the string to
+underline the next character, so that the user may press the button by
+holding down the Alt key and pressing the key for that character.
+</p>
+<p id="9">
+<i>button2</i> is a string to display on the rightmost
+button at the bottom of the dialog. If the user presses this button
+or presses the Escape key, then the third return value will be the
+number 2. A tilde character (~) may be included in the string as with
+button1.
+</p>
+<p id="10">
+<i>prompt2</i> is a string to display in the dialog
+above the lower editable-text widget.
+</p>
+<p id="11">
+<i>string2</i> is the string to initially display in the
+lower editable-text widget where the user enters a second string.
+</p>
+<p id="12">
+The position of the dialog when displayed is controlled by <a href="../p/position-utility-dialog.htm"><b>position-utility-dialog</b></a>.
+</p>
+<p id="13">
+See also <a href="../p/pop-up-string-dialog.htm"><b>pop-up-string-dialog</b></a> and <a href="../a/ask-user-for-string.htm"><b>ask-user-for-string</b></a>.
+</p>
+
+
+<h3 id="14">Example</h3>
+
+<pre id="15">
+(pop-up-strings-dialog
+ (or (selected-window (screen *system*))
+     (screen *system*))
+ "Answer Box"
+ #.(format nil "Enter a string to remove, followed by a string ~
+                to substitute in its place.")
+ question-icon "initial string to remove" "~OK" "~Cancel"
+ "Replacement string:" "initial replacement string")
+</pre>
+
+<p id="16">
+A typical usage of the returned strings would be to pass them to
+<a href="../s/string-replace.htm"><b>string-replace</b></a>.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/pop-up-strings-dialog.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>char-to-key-name</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/char-to-key-name.htm">9.0 version</a></td></tr></table><h2 id="2">char-to-key-name</h2>
+
+<p id="3"><b>Arguments: </b><i>
+char 
+</i>&amp;key <i>return-comtab-event</i><i>
+</i></p>
+
+<p id="4">
+This function takes a lisp character object as an argument and returns
+the name of the key that is pressed in order to type that character.
+This name may be a lisp character object such as #\A or one of the
+vk-... constants such as <a href="../../../variables/cg/vk-period.htm"><code>vk-period</code></a>. A second
+returned value is an integer which is a logior'ed value indicating
+which shift keys are used with the returned key in order to type the
+character; the logior'ed values are the values of the symbols <a href="../../../variables/cg/shift-key.htm"><code>shift-key</code></a>, <a href="../../../variables/cg/control-key.htm"><code>control-key</code></a>, and
+<a href="../../../variables/cg/alt-key.htm"><code>alt-key</code></a>
+(whichever of those keys are down).
+</p>
+<h3 id="5">
+Examples:
+</h3>
+<pre id="6">
+&gt; (char-to-key-name #\*)
+#\8
+4         (4 is the value of shift-key)
+&gt; (char-to-key-name #\&gt;)
+vk-period
+4
+</pre>
+<p id="7">
+If the keyword argument return-comtab-event is true, then instead of
+the two returned values detailed above a single value is
+returned. This value is an event-synonym specifier list in the format
+that is passed to <a href="../s/set-event-function.htm"><b>set-event-function</b></a> or the
+:event-synonym initarg of a menu-item.
+</p>
+<h3 id="8">
+Examples:
+</h3>
+<pre id="9">
+&gt; (char-to-key-name #\* :return-comtab-event t)
+(shift-key #\8)
+&gt; (char-to-key-name #\&gt; :return-comtab-event t)
+(shift-key vk-period)
+</pre>
+<p id="10">
+The association of shifted special characters with unshifted
+characters is more or less standard on all United States keyboards but
+can be different (from the US standard) on non-US keyboards. This
+function may be needed for applications that must work on such
+non-US-standard keyboards.
+</p>
+
+
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/char-to-key-name.htm">9.0 version</a></td></tr></table></body></html>

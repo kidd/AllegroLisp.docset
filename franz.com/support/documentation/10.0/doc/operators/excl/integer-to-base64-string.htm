@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>integer-to-base64-string</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/integer-to-base64-string.htm">9.0 version</a></td></tr></table><h2 id="2">integer-to-base64-string</h2>
+
+<p id="3"><b>Arguments: </b><i>
+integer </i> &amp;optional  (<i>column</i> 52)<i>
+</i></p>
+
+<p id="4">
+Takes the integer specified by the <i>integer</i>,
+assumes it is a base64 encoding, and converts it to a base64
+string. If <i>column</i> is non-<code>nil</code>, its value must be a positive integer and
+newlines are inserted in the string each time that number of
+characters is output. If <i>column</i> is
+<code>nil</code>, no newlines are inserted.
+</p>
+<p id="5">
+The function <a href="base64-string-to-integer.htm"><b>base64-string-to-integer</b></a> converts a base64
+string (the output of this function) back to an integer.
+</p>
+<p id="6">
+Here is an example:
+</p>
+<pre id="7">
+cl-user(2): (integer-to-base64-string #xfeedfacefeedface)
+"/u36zv7t+s4="
+cl-user(3): (base64-string-to-integer "/u36zv7t+s4=")
+18369614222061337294
+cl-user(4): (format t "~x" *)
+feedfacefeedface
+nil
+cl-user(5): 
+</pre>
+<p id="8">
+See <a href="../../miscellaneous.htm#base64-1">Base64
+Support</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a> for
+information on Base64 and Base64 support in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/integer-to-base64-string.htm">9.0 version</a></td></tr></table></body></html>

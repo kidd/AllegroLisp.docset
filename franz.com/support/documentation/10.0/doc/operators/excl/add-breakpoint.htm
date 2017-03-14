@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-breakpoint</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/add-breakpoint.htm">9.0 version</a></td></tr></table><h2 id="2">add-breakpoint</h2>
+
+<p id="3"><b>Arguments: </b><i>
+func pc 
+</i> &amp;optional <i>temporary verbose</i><i>
+</i></p>
+
+
+<p id="4">
+Adds a breakpoint to the breakpoint table, if one does not already
+exist. Breakpoints are identified by <i>func</i>, which
+must be a function object, and <i>pc</i>, which must be
+a integer indicating the relative pc offset (look at a disassembly of
+<i>func</i> produced by <strong>cl:disassemble</strong>
+for offsets). When adding a breakpoint, if the pc specified is not
+exact, a "close" one is found. The exact algorithm is not
+easily described and is subject to change. The breakpoint structure is
+returned.
+</p>
+
+<p id="5">
+If <i>temporary</i> is true, the breakpoint is
+considered temporary (subject to removal after the next breakpoint is
+hit). Temporary breakpoints have less "priority" than
+non-temporaries; a temporary will not replace a non-temporary in the
+same location, but a non-temporary will replace a
+temporary. Breakpoints of the same priority will not replace each
+other at the same location.
+</p>
+
+<p id="6">
+The <i>verbose</i> argument, when 
+true, will show the disassembly of
+the breakpoint being added.
+</p>
+
+<p id="7">
+See <a href="../../debugging.htm#ldb-stepper-1">The Lisp DeBug (ldb)
+stepper</a> in <a href="../../debugging.htm">debugging.htm</a>. 
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/add-breakpoint.htm">9.0 version</a></td></tr></table></body></html>

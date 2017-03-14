@@ -1,0 +1,152 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-cg-ocx-control</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/def-cg-ocx-control.htm">9.0 version</a></td></tr></table><h2 id="2">def-cg-ocx-control</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ocx-object-name-string 
+</i>&amp;key <i>doc-path use-native-size toolbar-string-or-icon toolbar-after toolbar-tooltip toolbar-help-string</i><i>
+</i></p>
+
+<h4 id="4">
+This macro is supported on Windows only.
+</h4>
+
+<p id="5">
+Defines a Common Graphics <a href="../../../classes/cg/dialog-item.htm"><code>dialog-item</code></a> class, and an associated <a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a> class, for one of the
+OLE controls that was defined by a call to <a href="../../../ole.htm#def-ole-linkage-op-bookmarkxx"><b>ole:def-ole-linkage</b></a>. All
+such widgets will be subclasses of the <a href="../../../classes/cg/ocx-widget.htm"><code>ocx-widget</code></a> class, and their widget-windows will
+be subclasses of the <a href="../../../classes/cg/ocx-widget-window.htm"><code>ocx-widget-window</code></a> class. Methods for the Common
+Graphics classes that are created will be defined in the package that
+was defined by the <a href="../../../ole.htm#def-ole-linkage-op-bookmarkxx"><b>ole:def-ole-linkage</b></a> form.
+</p>
+<p id="6">
+A call to <a href="../d/def-cg-ocx-control.htm"><b>def-cg-ocx-control</b></a>
+should be a top-level form in an application source code file, and
+should be placed somewhere after a call to <a href="../../../ole.htm#def-ole-linkage-op-bookmarkxx"><b>ole:def-ole-linkage</b></a> that
+loads the OLE application that defines the control. If the two forms
+are in the same file, you should place the <a href="../../../ole.htm#def-ole-linkage-op-bookmarkxx"><b>ole:def-ole-linkage</b></a> form
+inside an <code>(eval-when (compile load eval) ...)</code> form
+to ensure that that macro call is evaluated to create its new package
+before the <a href="../d/def-cg-ocx-control.htm"><b>def-cg-ocx-control</b></a>
+form is macroexpanded (see the example at the bottom of this page).
+Compiling an OLE control can take a fair amount of time, so in an IDE
+project (for example) it is a good idea to place these forms in a
+project file by themselves, so that the control does not need to be
+recompiled whenever you modify other code in the same file.
+</p>
+<h3 id="7">
+Arguments
+</h3>
+
+<ul>
+<li id="8">
+
+<b><i>ocx-object-name-string</i></b> should be a string
+naming the particular OCX control, such as "WebBrowser" or
+"MonthView".  Refer to the documentation for the OLE application that
+was loaded, or its controls, to find these names.
+
+</li>
+<li id="9">
+
+<b><i>doc-path</i></b>: if <i>doc-path</i>
+is non-<code>nil</code>, then it should be a pathname or
+path namestring for a documentation file. Compiling (or simply
+macroexpanding) the <a href="../d/def-cg-ocx-control.htm"><b>def-cg-ocx-control</b></a> form will generate the file
+with brief documentation for the control's properties, methods, and
+event-handler callback functions. The default is <code>nil</code>, in which case no documenation file is created.
+
+</li>
+<li id="10">
+
+<b><i>use-native-size</i></b>: if use-native-size is
+true, then the widgets of this class will ask the OLE server for the
+natural size for the widget, given its current properties, and the
+widget will be sized accordingly. If <code>nil</code>,
+then the widget may be made any size, as with other widgets. You
+should pass whichever value is appropriate for the control being
+defined; for example, true is appropriate for the MonthView control,
+which always draws a calendar at a standard size, whereas <code>nil</code> is appropriate for the WebBrowser control, which
+works at any size. The default value is <code>nil</code>.
+
+</li>
+<li id="11">
+
+<b><i>toolbar-string-or-icon</i></b>: if
+<i>toolbar-string-or-icon</i> is true, and the IDE is
+present, then a button for the new widget class will be added to the
+IDE's Components toolbar to allow you to place instances of the widget
+class onto form windows in projects. This argument is passed to
+<a href="../../ide/add-to-component-toolbar.htm"><b>add-to-component-toolbar</b></a> as
+its <i>pixmap-or-title</i> argument.   The default value is <code>nil</code>.
+
+</li>
+
+<li id="12">
+
+<b><i>toolbar-after</i></b>,
+<b><i>toolbar-tooltip</i></b>,
+<b><i>toolbar-help-string</i></b>: if
+<i>toolbar-string-or-icon</i> is true (and the IDE is
+present), these values are passed as the values of the corresponding
+arguments (i.e. <i>after</i>,
+<i>tooltip</i>, and <i>help-string</i>) to
+<a href="../../ide/add-to-component-toolbar.htm"><b>add-to-component-toolbar</b></a>.
+
+</li>
+
+
+</ul>
+
+<h4 id="13">
+Note about property names
+</h4>
+
+<p id="14">
+<a href="../d/def-cg-ocx-control.htm"><b>def-cg-ocx-control</b></a> will define
+Common Graphics properties for any OLE <b>get</b> and <b>put</b>
+functions that take a single argument (which is the widget itself).
+In the IDE inspector, you will see these properties mixed with the
+usual properties that are defined by Common Graphics. In a
+case-sensitive lisp, the standard Common Graphics properties will be
+entirely lowercase, while the properties provided by the OCX control
+will be mixed case.  Sometimes there will be two properties with the
+same name that differ only in string case. These symbols do not
+conflict, even in a case-insensitive lisp, because the package that is
+created for the symbols that are provided by the OCX control never
+uses any other package and is never used by any other package. This
+is necessary because we cannot predict what symbol names an OCX
+control may use.
+</p>
+
+<p id="15">
+Note that you don't need to define the WebBrowser control, because
+Common Graphics defines it internally.  It is exported as the
+<code>cg.ie:cg-WebBrowser</code> dialog-item class, though for
+this particular control it may be preferable to use the
+platform-independent subclass called <a href="../../../classes/cg/html-widget.htm"><code>html-widget</code></a>.
+</p>
+<p id="16">
+Here is how Common Graphics defines the WebBrowser control. <b>You
+should not evaluate this code because Common Graphics has already done
+so</b>, but you could define some other OCX control similarly.
+</p>
+
+<pre id="17">
+;;  Code sample for information only. It should not be
+;;  evaluated by users.
+;;
+(eval-when (compile load eval)
+  (ole:def-ole-linkage #:cg.ie :application "InternetExplorer"))
+
+(def-cg-ocx-control "WebBrowser"
+    :doc-path (merge-pathnames "WebBrowser.txt"
+                               *compile-file-pathname*))
+</pre>
+
+<p id="18">
+See also <a href="../../../ole.htm">ole.htm</a>.
+</p>
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/def-cg-ocx-control.htm">9.0 version</a></td></tr></table></body></html>

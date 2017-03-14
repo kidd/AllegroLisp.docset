@@ -1,0 +1,74 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>update-bundle-files</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/update-bundle-files.htm">9.0 version</a></td></tr></table><h2 id="2">update-bundle-files</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>include-new-efs files bundle tdir bundle-prog bli-tf</i><i>
+</i></p>
+
+
+
+<p id="4">
+Although this function can be called at any time, it is generally only
+needed if a patch is downloaded from Franz Inc., which when built into
+the Lisp, displays a message at startup time advising the user to call
+this function.
+</p>
+<p id="5">
+If a user defines a new external-format which s/he wants to be
+autoloadable in a runtime application, the definition should be made
+in a file named <i>code/ef-[name].fasl</i> (where
+<i>code/</i> is a subdirectory of the Allegro CL
+directory). When this function is called, a copy of the
+external-format definition file will be put into the bundle and
+runtime bundle.  Note that only files named
+<i>code/ef-*.fasl</i> are placed into the bundle by this
+function.
+</p>
+<p id="6">
+This function updates the bundle file (returned by <a href="bundle-pathname.htm"><b>bundle-pathname</b></a>) and also the
+runtime bundle file <i>runtime.bu</i> (if there is
+one). After the update, all module fasl files downloaded to the
+<i>code/</i> subdirectory of the Allegro Directory will
+be included in the bundle. External format definitions not in the
+bundle will also be included.
+</p>
+<p id="7">
+Note that updating the bundle can take an appreciable amount of time.
+</p>
+<p id="8">
+The arguments are all keyword arguments. It is recommended that
+<a href="update-bundle-files.htm"><b>update-bundle-files</b></a> be run without
+arguments (that is, the defaults be accepted in all cases). The
+arguments are:
+</p>
+<ul>
+<li id="9">
+<i>include-new-efs</i>:include external-format
+definitions found in #p"sys;code;" which aren't already in the bundle.
+</li>
+<li id="10">
+<i>files</i>: list of pairs of pathnames.  These
+correspond to the original names and target names of files to be
+updated.
+</li>
+<li id="11">
+<i>bundle</i>: the primary file to be updated.
+</li>
+<li id="12">
+<i>tdir</i>: pathname of temporary directory to be used.
+This directory should not exist. Furthermore, the directory is removed
+before the function returns.
+</li>
+<li id="13">
+<i>bundle-prog</i>: name of bundle manipulation program.
+</li>
+<li id="14">
+<i>bli-tf</i>: the temporary script file name used to
+hold the forms passed to <a href="build-lisp-image.htm"><b>build-lisp-image</b></a>, a function called
+by <a href="update-bundle-files.htm"><b>update-bundle-files</b></a>.
+</li>
+</ul>
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/update-bundle-files.htm">9.0 version</a></td></tr></table></body></html>

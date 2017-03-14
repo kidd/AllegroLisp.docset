@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*hidden-packages*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: prof</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/prof/s_hidden-packages_s.htm">9.0 version</a></td></tr></table><h2 id="2">*hidden-packages*</h2>
+
+<p id="3">This variable contains a list of packages. Any function object
+considered to be associated with a package in the list will be hidden
+from the display. You can modify this list at any time to control the
+display detail. Setting the list to <code>nil</code> means
+functions from all packages will be displayed (but see <a href="s_hidden-functions_s.htm"><code>*hidden-functions*</code></a> and
+<a href="s_hidden-space-functions_s.htm"><code>*hidden-space-functions*</code></a>).</p>
+
+<p id="4">Because the default list may change faster than the documentation
+is updated, we do not give it here. To find the default, look at the
+value of the variable in a fresh Lisp.</p>
+
+<p id="5">You can add a single package (in this example, the
+<strong>foo</strong> package) to the list with the following form:</p>
+
+<pre id="6">
+(push (find-package :foo) *hidden-packages*)
+</pre>
+
+<p id="7">You can remove a single package with the form:</p>
+
+<pre id="8">
+(setq prof:*hidden-packages* (delete (find-package :foo)
+  *hidden-packages*))
+</pre>
+
+<p id="9">This variable only affects display of runtime analyzer data, not
+the collection of data. If you want to see more or less, redisplay
+after resetting this and other runtime analyzer display variables as
+desired.</p>
+
+<p id="10">The value of this variable and the other runtime analyzer display
+variables, <a href="s_hidden-functions_s.htm"><code>*hidden-functions*</code></a>, <a href="s_hidden-space-functions_s.htm"><code>*hidden-space-functions*</code></a>,
+<a href="s_significance-threshold_s.htm"><code>*significance-threshold*</code></a>, and <a href="s_fractional-significance-threshold_s.htm"><code>*fractional-significance-threshold*</code></a>, can
+be reset to their initial values by <a href="../../operators/prof/reset-profiler-display-defaults.htm"><b>reset-profiler-display-defaults</b></a>.</p>
+
+<p id="11">
+See <a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a> for general information on
+the runtime analyzer. 
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/prof/s_hidden-packages_s.htm">9.0 version</a></td></tr></table></body></html>

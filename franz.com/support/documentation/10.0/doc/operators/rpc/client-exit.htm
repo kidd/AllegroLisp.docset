@@ -1,0 +1,198 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>client-exit</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/client-exit.htm">9.0 version</a></td></tr></table><h2 id="2">client-exit</h2>
+
+<p id="3"><b>Arguments: </b><i>
+client
+</i>&amp;key <i>wait kill</i><i>
+</i></p>
+
+<p id="4">
+The <i>kill</i> argument was added in an update released
+in January, 2007.
+</p>
+
+<p id="5">
+This function causes a client image to exit. It returns one of the
+keywords <code>:terminating</code>,
+<code>:terminated</code>, <code>:closing</code>, or
+<code>:closed</code>.
+</p>
+<h4 id="6">
+The client argument
+</h4>
+<p id="7">
+The <b><i>client</i></b> argument must be a <a href="../../classes/rpc/client-lisp.htm"><code>client-lisp</code></a> instance. The wait
+argument may be <code>nil</code>, a positive integer, the
+keyword <code>:wait</code>, or any other non-<code>nil</code> value.
+</p>
+<p id="8">
+If the client instance is already marked as terminated, the function
+returns <code>nil</code> immediately.
+</p>
+<h4 id="9">
+The wait keyword argument
+</h4>
+<p id="10">
+If the <b><i>wait</i></b> argument is <code>nil</code>, the value returned is
+<code>:closing</code>.  If the <i>wait</i>
+argument is a positive integer, it is the number of seconds to wait.
+If the <i>wait</i> argument is <code>:wait</code>,
+the wait interval is indefinite. If the wait argument is any other
+non-<code>nil</code> value, the wait interval is 30
+seconds.
+</p>
+<p id="11">
+If at the end of the wait interval the connection to the client still
+appears to be open, the value returned is <code>:timeout</code>;
+otherwise the value is <code>:closed</code>.
+</p>
+<h4 id="12">
+The kill keyword argument
+</h4>
+<p id="13">
+The default behavior of <a href="client-exit.htm"><b>client-exit</b></a> (when <i>kill</i>
+is <code>nil</code>) is to call the client Lisp and
+request that it terminate (if the keep flag, returned by <a href="client-lisp-keep.htm"><b>client-lisp-keep</b></a>, is <code>nil</code>). When the <i>kill</i> argument is
+non-<code>nil</code> some more aggressive steps may be
+taken, such as calling the Operating System <b>kill</b> command. The
+table below lists the possible strategies.
+</p>
+<table BORDER="1" CELLSPACING="1" CELLPADDING="7">
+<tr>
+<td VALIGN="TOP" ROWSPAN="2"><b>Value of <i>kill</i> 
+argument</b></td>
+<td VALIGN="TOP" COLSPAN="2"><b>Keep Flag Nil</b></td>
+<td VALIGN="TOP" COLSPAN="2"><b>Keep Flag T</b></td>
+</tr>
+<tr>
+<td>
+<b>End with call</b>
+</td>
+<td>
+<b>OS Kill</b>
+</td>
+<td>
+<b>End with call</b>
+</td>
+<td>
+<b>OS Kill</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>nil</code>
+</td>
+<td>
+yes
+</td>
+<td>
+no
+</td>
+<td>
+no
+</td>
+<td>
+no
+</td>
+</tr>
+<tr>
+<td>
+<code>:force</code>
+</td>
+<td>
+yes
+</td>
+<td>
+no
+</td>
+<td>
+yes
+</td>
+<td>
+no
+</td>
+</tr>
+
+<tr>
+<td>
+<code>:kill</code>
+</td>
+<td>
+no
+</td>
+<td>
+yes
+</td>
+<td>
+no
+</td>
+<td>
+no
+</td>
+</tr>
+
+<tr>
+<td>
+<code>:killall</code>
+</td>
+<td>
+no
+</td>
+<td>
+yes
+</td>
+<td>
+no
+</td>
+<td>
+yes
+</td>
+</tr>
+
+<tr>
+<td>
+<code>:all</code>
+</td>
+<td>
+yes
+</td>
+<td>
+yes
+</td>
+<td>
+yes
+</td>
+<td>
+yes
+</td>
+</tr>
+
+<tr>
+<td>
+other non-<code>nil</code>
+</td>
+<td>
+yes
+</td>
+<td>
+yes
+</td>
+<td>
+no
+</td>
+<td>
+no
+</td>
+</tr>
+
+</table>
+
+<p id="14">
+See <a href="../../rpc.htm#several-images-1">Running several
+communicating Allegro CL images</a> in
+<a href="../../rpc.htm">rpc.htm</a> for information on running several Lisp
+images.
+</p>
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/client-exit.htm">9.0 version</a></td></tr></table></body></html>

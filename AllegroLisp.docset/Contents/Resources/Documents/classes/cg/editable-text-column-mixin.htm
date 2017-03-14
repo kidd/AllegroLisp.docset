@@ -1,0 +1,66 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>editable-text-column-mixin</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/editable-text-column-mixin.htm">9.0 version</a></td></tr></table><h2 id="2">editable-text-column-mixin</h2>
+
+<p id="3">
+A non-instantiable class that can be mixed with the <a href="grid-column.htm"><code>grid-column</code></a> class to create grid
+columns whose cells act like <a href="multi-line-editable-text.htm"><code>multi-line-editable-text</code></a> controls.
+Each cell in the column will implement the pseudo-control if the row
+of that cell is an instance of a <a href="grid-row.htm"><code>grid-row</code></a> subclass that mixes in the
+<a href="widget-row-mixin.htm"><code>widget-row-mixin</code></a>
+class.
+</p>
+<p id="4">
+To ensure that this mixin class' methods take precedence over other
+methods that specialize on <a href="grid-column.htm"><code>grid-column</code></a>, this mixin class generally should
+appear first in a <a href="../../../ansicl/dictentr/defclass.htm"><b>defclass</b></a>
+expression's list of superclasses, as in:
+</p>
+<pre id="5">
+(defclass my-editable-text-column
+  (editable-text-column-mixin my-subclass-of-grid-column) ...)
+</pre>
+<p id="6">
+The <a href="../../operators/cg/e/edit-start-trigger.htm"><b>edit-start-trigger</b></a> and <a href="../../operators/cg/e/edit-end-trigger.htm"><b>edit-end-trigger</b></a>
+properties of the column may be used to determine what gesture the
+user must make to initiate and complete the typing-in of a new value
+for the cell. The user may press either the spacebar or the enter key
+to emulate clicking on a cell in this column, and so that will
+initiate type-in in the same cases that clicking will. This type
+of column may also be given a <a href="../../operators/cg/t/template-string.htm"><b>template-string</b></a> to restrict what the user may
+enter.  The <a href="../../operators/cg/s/scrollbars.htm"><b>scrollbars</b></a>
+property determines whether a vertical scrollbar will appear during
+editing; when true (the default) a scrollbar will appear, and when
+<code>nil</code> it will not appear (to save space in the
+cell).
+</p>
+<p id="7">
+When the user initiates type-in according to the <a href="../../operators/cg/e/edit-start-trigger.htm"><b>edit-start-trigger</b></a> property, the
+user is allowed to edit the string displayed in the cell. The user
+may then either press the escape key to cancel the edit, or accept the
+edit by pressing the enter key or by moving the keyboard focus out of
+the cell. If the edit is accepted and the text has changed, then the
+column's <a href="../../operators/cg/d/data-write-converter.htm"><b>data-write-converter</b></a> function is
+called to convert the typed string to a meaningful data object, which
+is then written by calling <a href="../../operators/cg/w/write-cell-value.htm"><b>write-cell-value</b></a>.
+</p>
+<p id="8">
+The <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> method supplied by
+this mixin calls the column's <a href="../../operators/cg/d/data-read-converter.htm"><b>data-read-converter</b></a> to convert the
+actual domain data value represented by this cell into a string to be
+drawn in the cell. This string is also the initial string to be
+edited when the user initiates type-in.
+</p>
+<p id="9">
+See the section <b>Built-In Grid Cell Widgets</b> on the page for the
+<a href="grid-widget.htm"><code>grid-widget</code></a> class for an
+overview of the grid column mixins.
+</p>
+
+<p id="10">
+A quicker but less object-oriented alternative to using the <a href="widget-column-mixin.htm"><code>widget-column-mixin</code></a> classes is to
+write <a href="../../operators/cg/c/cell-widget.htm"><b>cell-widget</b></a> methods.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/editable-text-column-mixin.htm">9.0 version</a></td></tr></table></body></html>

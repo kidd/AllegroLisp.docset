@@ -1,0 +1,105 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>allocate-fobject</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/allocate-fobject.htm">9.0 version</a></td></tr></table><h2 id="2">allocate-fobject</h2>
+
+<p id="3"><b>Arguments: </b><i>
+type </i> &amp;optional <i>allocation size</i><i>
+</i></p>
+
+<p id="4">
+This function allocates an object of the given
+<i>type</i> in the heap area described by the
+<i>allocation</i> argument. If the
+<i>size</i> argument is given, then it is the minimum
+size (in bytes) of the data portion of the object that will be
+allocated. The function <a href="sizeof-fobject.htm"><b>sizeof-fobject</b></a>, which returns the
+size of an object of the given foreign type, might be useful in
+determining possible values for <i>size</i>.
+</p>
+<p id="5">
+The valid <i>allocation</i> argument values
+are as follows (default is<b> :foreign</b>). <i>type</i>
+should be a type defined with <a href="def-foreign-type.htm"><b>def-foreign-type</b></a>.
+</p>
+
+<ul>
+<li id="6">
+<b>:foreign</b> - The object is allocated in the lisp heap using a
+lisp data type unique to Allegro called the <b>(array
+excl::foreign)</b>. This kind of array has one lisp slot at the
+beginning, with all subsequent slots holding raw integer data. The
+foreign types facility uses the first, lisp-valued, slot to hold a
+pointer to a description of the type of data held in this
+object. Because these objects are stored in the Lisp heap, it doesn't
+make sense to ask for the address of a slot of one of these objects,
+as it may have moved by the time you get your answer.
+</li>
+<li id="7">
+<b>:foreign-static-gc</b> - These objects look just like
+<strong>:foreign</strong> allocated objects. The difference is that
+they are allocated in static space (i.e. space allocated with
+<code>aclmalloc</code>). Unlike other objects allocated in
+static space, these objects are automatically gc'ed (the C
+<code>aclfree</code> function is called on them) when the last
+pointer to them in the Lisp heap disappears. The advantage of this
+allocation type over <code>:foreign</code> is that the object
+doesn't move. This makes it very useful when the object must be passed
+to a C foreign-function that releases the heap (e.g. most functions in
+the Windows package).
+</li>
+<li id="8">
+<b>:lisp</b> - A lisp array of type <b>(unsigned-byte 8)</b> of
+sufficient size to hold the object is allocated in the lisp heap. The
+object does not record the foreign type of which it is an
+instance. This allocation type is useful if you've got a binary file
+you want to read and take apart, and the format of the file is
+described by a C struct definition. In that case you can allocate an
+object of type <code>:lisp</code> and then call <a href="../../../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a> to read the data from
+the binary file into the foreign object. Note, however, that <a href="../../../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a> will also work for
+<code>:foreign</code> allocated objects.
+<p id="9">
+There is one tricky case for 32-bit Lisps (it is not an issue 
+on 64-bit Lisps): if the foreign structure
+requires 8 byte alignment (e.g. it begins with a double float)
+then the first four bytes of the lisp array allocated will not be
+used by <a href="fslot-value-typed.htm"><b>fslot-value-typed</b></a>.  If you
+<a href="../../../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a> into such an
+array, then your data will be displaced 4 bytes from where <a href="fslot-value-typed.htm"><b>fslot-value-typed</b></a>
+thinks it is. 
+</p>
+</li>
+<li id="10">
+<b>:lisp-short</b> - A lisp short-array of type <b>(unsigned-byte
+8)</b> of sufficient size to hold the object is allocated in the lisp
+heap. The object does not record the foreign type of which it is an
+instance. This type is the same as the <code>:lisp</code> type
+described just above, except that the data is held in a
+short-array. (short-arrays are a new data type corresponding to the
+older array type in Allegro CL. See <a href="../../implementation.htm#arrays-1">Arrays and short arrays</a> section in
+<a href="../../implementation.htm">implementation.htm</a>.)  Except for using a
+short-array, this type is the same as <code>:lisp</code>.
+</li>
+<li id="11">
+<b>:c</b> - The object is allocated in static space (via <a href="../excl/aclmalloc.htm"><b>aclmalloc</b></a>) which is like C's
+<em>malloc</em> except that the data is preserved through a call
+to <a href="../excl/dumplisp.htm"><b>dumplisp</b></a>) and a
+pointer to the space is returned. Thus the object is represented
+by an integer value. The object is <strong>not</strong>
+automatically freed. You must do the freeing with <a href="free-fobject.htm"><b>free-fobject</b></a>
+</li>
+<li id="12">
+<code>:aligned</code> - This is just like <code>:c</code>
+except that it returns an <em>aligned</em> pointer. Objects allocated
+in <code>:aligned</code> mode should be freed with
+<a href="free-fobject-aligned.htm"><b>free-fobject-aligned</b></a>.
+</li>
+</ul>
+
+<p id="13">
+See <a href="../../ftype.htm">ftype.htm</a> for
+information on foreign types in Allegro CL and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/allocate-fobject.htm">9.0 version</a></td></tr></table></body></html>

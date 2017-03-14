@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>bar-fill-textures</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/bar-fill-textures.htm">9.0 version</a></td></tr></table><h2 id="2">bar-fill-textures</h2>
+
+<p id="3"><b>Arguments: </b><i>
+bar-chart-view
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../b/bar-fill-textures.htm"><b>bar-fill-textures</b></a> property of
+a <a href="../../../classes/cg/bar-chart-view.htm"><code>bar-chart-view</code></a>. The value
+may be set at creation time by passing
+the <code>bar-fill-textures</code> initarg, or any
+time later by calling <a href="../b/bar-fill-textures.htm"><b>(setf bar-fill-textures)</b></a>.
+</p>
+<p id="5">
+The textures that are used to fill the interior of the bars of a
+<a href="../../../classes/cg/bar-chart-view.htm"><code>bar-chart-view</code></a> in a
+<a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>. The value
+should be a sequence (list or vector) of values that are valid for the
+<a href="../f/fill-texture.htm"><b>fill-texture</b></a> property of a
+<a href="../../../classes/cg/graphical-stream.htm"><code>graphical-stream</code></a> (such as
+arbitrary pixmaps), and/or symbols that are globally bound to such
+values. The default value is <code>nil</code>.
+</p>
+<p id="6">
+If the value is <code>nil</code>, then no fill textures
+will be used and the bars will be filled with solid colors from the
+<a href="../b/bar-colors.htm"><b>bar-colors</b></a> property.
+Otherwise, the first object in the chart-widget's sequence of
+<a href="../c/chart-objects.htm"><b>chart-objects</b></a> is drawn with
+the first texture, the second object with the second texture, and so
+on. If there are fewer textures in the list than there are
+<a href="../c/chart-objects.htm"><b>chart-objects</b></a>, then the
+drawing code will cycle back through the list of textures as needed.
+</p>
+
+<p id="7">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and
+also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/bar-fill-textures.htm">9.0 version</a></td></tr></table></body></html>

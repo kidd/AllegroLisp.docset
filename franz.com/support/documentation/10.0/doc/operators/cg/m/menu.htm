@@ -1,0 +1,119 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>menu</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/menu.htm">9.0 version</a></td></tr></table><h2 id="2">menu</h2>
+
+<p id="3"><b>Arguments: </b><i>
+frame-window
+</i></p>
+
+<p id="4">
+Returns the <a href="../../../classes/cg/menu-bar.htm"><code>menu-bar</code></a> of
+<i>frame-window</i>. The menu-bar is displayed along the
+top of the frame-window.
+</p>
+<p id="5">
+The setf of this function may be called to add a menu-bar to a window.
+The new value may be a menu-bar that was created by calling <a href="../o/open-menu.htm"><b>open-menu</b></a>, or <code>nil</code> to remove the window's current menu-bar if there
+is one. A menu-bar should not exist on more than one window at the
+same time, though it may be removed from one window and then added to
+another.
+</p>
+
+<p id="6">
+A <a href="../../../classes/cg/menu-bar.htm"><code>menu-bar</code></a> is
+structured the same way as a pop-up menu, except that each of its
+menu-items denotes one of the pull-down menus of the menubar, with the
+title of the menu-item being a pull-down menu title that is displayed
+along the menu-bar, and the value of the menu-item being a menu
+containing the pull-down menu's items.
+</p>
+<p id="7">
+If you use the IDE, you can add a menubar to a form (and thus to the
+window associated to the form in the application) by clicking on the
+extended editor button of the menu property of the form. Doing so
+displays the <a href="../../../ide-menus-and-dialogs/menu-editor-dialog.htm">menu
+editor</a>. 
+</p>
+<p id="8">
+Common Graphics does not automatically close a menu-bar when it is
+removed from a window, because in general menus may be reused on the
+same or other windows or parent menus, and so Common Graphics does not
+know whether you are done with a menu-bar when you remove it. Any
+menus that are not closed explicitly by an application are closed
+automatically when Lisp exits, and so there is ordinarily no need for
+an application to close its menus. But if so many menus are being
+created that the operating system runs out of related resources
+(leading to errors), the application may call <a href="../../../../ansicl/dictentr/close.htm"><b>close</b></a> on each menu that will no
+longer be used. A menu-bar should be removed from its window before
+calling close on it. Closing a menu does not close its submenus, and
+so these must be closed individually (either before or after closing
+the parent menu) to close an entire menu hierarchy.
+</p>
+
+
+<h3 id="9">
+Limitations of child window menu bars on all platforms:
+</h3>
+
+<p id="10">
+Menu-bar access keys and keyboard shortcuts will never be routed to
+a child window, and will go to the menu-bar of the top-level parent
+(or its owner window) instead, if it has a menu-bar.
+</p>
+
+<h3 id="11">
+Limitations of child window menu bars on MS Windows only
+</h3>
+
+<ul>
+<li id="12">
+
+The menu-bar is actually a child pane that emulates a "real" menu-bar,
+because MS Windows does not allow menu bars on child windows.  This
+primarily means that other windows must be offset downward by (<a href="../m/menu-bar-height.htm"><b>menu-bar-height</b></a>) to avoid
+covering (or being covered by) the menu bar pane.
+
+</li>
+<li id="13">
+
+Exposing one pull-down menu and then moving the mouse over the title
+of another pull-down menu does not remove the first menu and expose
+the second one.  This is probably not feasible to improve because
+Common Graphics is waiting on a foreign function call that pops up the
+menu and tracks it within the operating system.  Instead you must
+click on the second menu's title to show that menu.
+
+</li>
+</ul>
+
+
+
+
+
+<h3 id="14">
+Ubuntu note:
+</h3>
+
+<p id="15">
+If you run on the Ubuntu version of Linux, then you will probably need
+to avoid using <a href="../m/menu.htm"><b>(setf
+menu)</b></a> to swap alternate menu bars onto a window.  When
+putting a menu bar onto a window that had already been on the window
+and then removed, we have noticed strange effects such as all of the
+commands on the pull-down menus being replaced with a single
+"Activate" command that CG doesn't know about.  This is likely related
+to GTK modifications that Ubuntu appears to have made to shift menu
+bars onto title bars, though the problem persists if you select the
+Ubuntu option to show menus "in the window's toolbar" (actually in its
+title bar) rather than the default option to show them "in the menu
+bar" (actually in the main window's title bar).  In any case, an
+alternate approach for exchanging the pull-down menus on a window that
+works well on all platforms is to keep the same menu bar menu object
+on the window and to replace its set of menu-items, to replace the set
+of pull-down menus that are on the single menu bar.
+</p>
+
+
+
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/menu.htm">9.0 version</a></td></tr></table></body></html>

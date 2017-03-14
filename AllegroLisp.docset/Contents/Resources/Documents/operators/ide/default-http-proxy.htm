@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>default-http-proxy</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/default-http-proxy.htm">9.0 version</a></td></tr></table><h2 id="2">default-http-proxy</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="default-http-proxy.htm"><b>default-http-proxy</b></a> property of
+<b><i>ide-configuration</i></b>. The current IDE
+configuration is the value of <code>(configuration
+*ide-system*)</code>; (see <a href="../cg/c/configuration.htm"><b>configuration</b></a> and <a href="../../variables/ide/s_ide-system_s.htm"><code>*ide-system*</code></a>).
+</p>
+
+<p id="5">
+This property can be used for downloading patches if your site
+requires an HTTP proxy. The value is typically specified in the
+<a href="../../ide-menus-and-dialogs/download-dialog.htm">Download
+Patches</a> dialog, in the four HTTP Proxy widgets in the lower
+right corner, just before using the dialog to download patches.  It
+could also be set by calling <a href="default-http-proxy.htm"><b>(setf default-http-proxy)</b></a>.
+</p>
+<p id="6">
+The value is a list of four values for the proxy host name, port
+number, username, and password.  Each element may be either a string
+or else <code>nil</code> to not specify a value.
+</p>
+<p id="7">
+The <a href="../../ide-menus-and-dialogs/download-dialog.htm">Download
+Patches</a> dialog will never store the password, always leaving
+the fourth element as <code>nil</code>, for security
+reasons. It is highly recommended that this element never be set
+programmatically either, since this configuration option is saved with
+all of the others in the IDE's preferences file. The fourth element
+exists for a possible enhancement where it could hold an encrypted
+version of the password.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/default-http-proxy.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,83 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>lamp-column-mixin</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/lamp-column-mixin.htm">9.0 version</a></td></tr></table><h2 id="2">lamp-column-mixin</h2>
+
+<p id="3">
+A non-instantiable class that can be mixed with the <a href="grid-column.htm"><code>grid-column</code></a> class to create grid
+columns whose cells draw lamp widgets. Each cell in the column will
+display a lamp if the row of that cell is an instance of a <a href="grid-row.htm"><code>grid-row</code></a> subclass that mixes in the
+<a href="widget-row-mixin.htm"><code>widget-row-mixin</code></a> class.
+</p>
+<p id="4">
+To ensure that this mixin class' methods take precedence over other
+methods that specialize on grid-column, this mixin class generally
+should appear first in a defclass expression's list of superclasses,
+as in:
+</p>
+
+<pre id="5">
+
+(defclass my-lamp-column
+  (lamp-column-mixin my-subclass-of-grid-column) ...)
+</pre>
+
+<p id="6">
+The <a href="../../operators/cg/d/draw-cell.htm"><b>draw-cell</b></a> method provided
+by this mixin will draw (in each cell) the single lamp widget that is
+the value of the <a href="../../operators/cg/l/lamp-widget.htm"><b>lamp-widget</b></a>
+property of the grid column.  It will call <a href="../../operators/cg/r/read-cell-value.htm"><b>read-cell-value</b></a> to determine the state of the
+lamp (off, on, or blinking) in each cell. The grid column may be given
+a <a href="../../operators/cg/d/data-read-converter.htm"><b>data-read-converter</b></a> function
+to convert arbitrary application values into corresponding lamp state
+values (<code>nil</code>, <code>t</code>, and
+<code>:blinking</code>).
+</p>
+<p id="7">
+The grid column may be given a <a href="../../operators/cg/t/title-reader.htm"><b>title-reader</b></a> property to determine the string to
+display in each lamp cell.  If there is no <a href="../../operators/cg/t/title-reader.htm"><b>title-reader</b></a> function or it returns <code>nil</code>, then no label will be displayed beside the lamp
+image (and the lamp image will be centered within the grid cell).
+</p>
+<p id="8">
+Here is a typical expression for creating a lamp grid column.  It
+assumes that the data-object of each <a href="grid-row.htm"><code>grid-row</code></a> has a slot called <b>danger-level</b>
+containing one of the values <code>:low</code>,
+<code>:moderate</code>, or <code>:high</code>.
+</p>
+
+<pre id="9">
+(make-instance 'my-lamp-column
+  :name :danger-level
+  :proportional nil
+  :section-size 24
+  :data-reader 'danger-level
+  :data-read-converter (lambda (user-value)
+                         (case user-value
+                           (:low nil)
+                           (:moderate t)
+                           (:high :blinking)))
+  :lamp-widget (make-instance 'lamp
+                 :on-color red
+                 :lamp-shape :triangle
+                 :lamp-width 16
+                 :lamp-height 12))
+</pre>
+
+<p id="10">
+The Employee grid example in the <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator Dialog</a> includes a lamp
+column.
+</p>
+<p id="11">
+See the section <b>Built-In Grid Cell Widgets</b> on the page for the
+<a href="grid-widget.htm"><code>grid-widget</code></a> class for an
+overview of the grid column mixins.
+</p>
+<p id="12">
+A quicker but less object-oriented alternative to using the <a href="widget-column-mixin.htm"><code>widget-column-mixin</code></a> classes is to
+write <a href="../../operators/cg/c/cell-widget.htm"><b>cell-widget</b></a> methods.
+</p>
+
+<p id="13">
+See the <a href="lamp.htm"><code>lamp</code></a> widget.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/lamp-column-mixin.htm">9.0 version</a></td></tr></table></body></html>

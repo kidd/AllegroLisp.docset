@@ -1,0 +1,1089 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Fwrapping and Advice</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/fwrappers-and-advice.htm">9.0 version</a></td></tr></table><h1 id="2">Fwrapping and Advice</h1><p id="3">This document contains the following sections:</p><a href="#fwrap-intro-1">1.0 The Fwrap Facility</a><br>&nbsp;&nbsp;&nbsp;<a href="#fwrap-background-2">1.1 Background</a><br><a href="#fwrap-description-1">2.0 The Def-fwrapper/fwrap Facility</a><br>&nbsp;&nbsp;&nbsp;<a href="#fwrapper-macroexpansion-2">2.1 Macroexpansion and Compilation of Fwrappers</a><br><a href="#fwrap-examples-1">3.0 Fwrap Examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#fwrap-simple-example-2">3.1 Simple fwrap example</a><br>&nbsp;&nbsp;&nbsp;<a href="#fwrap-arglist-example-2">3.2 Fwrapper and argument access example</a><br>&nbsp;&nbsp;&nbsp;<a href="#fwrap-and-trace-2">3.3 Interaction between fwrap and trace</a><br><a href="#trace-modifications-1">4.0 Modifications Made to Trace</a><br><a href="#fwrapper-and-advice-1">5.0 Replacing advice with fwrappers</a><br><a href="#advice-intro-1">6.0 Introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#advising-funs-2">6.1 Advising a function</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#advice-class-before-3">6.1.1 Advice of class :before</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#advice-class-around-3">6.1.2 Advice of class :around</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#advice-class-after-3">6.1.3 Advice of class :after</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#position-more-3">6.1.4 More on the position argument</a><br>&nbsp;&nbsp;&nbsp;<a href="#removing-advice-2">6.2 Removing advice from a function or macro</a><br>&nbsp;&nbsp;&nbsp;<a href="#advice-utilities-2">6.3 Utilities associated with advice</a><br>&nbsp;&nbsp;&nbsp;<a href="#advice-examples-2">6.4 Examples using advice</a><br>&nbsp;&nbsp;&nbsp;<a href="#advising-macros-2">6.5 Advising macros</a><br><p id="4">
+This document describes the new fwrap (Function WRAPper) facility.
+Fwrappers are intended to replace the advice facility, which is still
+supported and also documented here. Both facilities allow runtime
+modification of defined functions without actually redefining the
+function.
+</p><p id="5">
+Symbols relating to the fwrap facility and to the advice facility are
+in the <code>:excl</code> package.
+</p><hr><hr><h2 id="6"><a name="fwrap-intro-1">1.0 The Fwrap Facility</a></h2>
+
+<p id="7">
+The Fwrap facility is provided, starting in release 6.0, to better
+implement encapsulation, tracing, and advice functionalities.
+Highlights of the Fwrap facility include:
+</p>
+
+<ul>
+<li id="8">A new function wrapping facility.</li> 
+<li id="9">The older, advice
+encapsulation facility is deprecated. It still exists in autoloadable
+form and works, but might not remain in future versions.
+</li>
+<li id="10">
+The trace macro is re-implemented to use the fwrap facility, instead
+of the encapsulation facility.
+</li>
+<li id="11">
+The macro, <a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a>,
+allows new function wrappers to be created in a lisp-like style,
+incorporating the use of environments, pre-compilation, and argument
+identification, in a manner similar to other defining macros such as
+defun and defmacro. This is in contrast to the forms-based approach of
+<a href="operators/excl/defadvice.htm"><b>defadvice</b></a>.
+</li>
+<li id="12">
+The advise/advice facility is deprecated. It still exists in
+autoloadable form and works, but might not remain in future
+versions. The user is encouraged to switch to the fwrap facility in
+creating and manipulating advice-like functionality.
+</li>
+</ul>
+
+<hr><h2 id="13"><a name="fwrap-background-2">1.1 Background</a></h2>
+
+<p id="14">
+The encapsulation facility, as manifested in previous versions of
+Allegro CL in the advice and trace facilities, has a major drawback,
+in that the act of encapsulationg a function produces a new, non-eq
+function object that is installed at the point of the function spec.
+</p>
+<p id="15">
+This means that for example if #'foo were encapsulated, but had been
+previously captured and stored in a variable to be later funcalled,
+the funcalled function does not execute the encapsulating
+functionality. In practical terms, it means that it is impossible to
+trace a function object by anything other than its name, and it is
+thus also impossible to trace a function which cannot be accessed
+via a function spec (usually a symbol, but possibly a list; see
+def-function-spec-handler). Also, an internal function such as
+#'(flet foo bar) which is traced does not retain its trace status
+when the parent function (i.e. #'foo, in this case) is redefined
+either by defun, compile, or loading a compiled file.
+</p>
+<p id="16">
+Another major problem with encapsulations is that it is forms-based,
+and so acts in the dynamic environment only, while fwrappers operate
+in the lexical environment. One of the differences is internal, and
+affects performance rather than coding: to use advice, the argument
+list must be created so the advice can operate on it. The fwrap
+facility may not need the arguments list, and if it does not, it will
+not be created, saving execution time. Further, the arguments are
+known to advice only from the list: you cannot refer to arguments by
+name, only by position, and if optional or keywords arguments are
+defaulted, advice will not know the value (except perhaps by calling
+the excl:arglist function). Fwrappers can refer to arguments by name
+because they can be defined with the argument list specified.
+</p>
+<p id="17">
+Advice also defines the code that does the work and what this code is
+applied to at once. there is no way to define advice and apply it
+later to a function. Fwappers can be defined independently of what
+they might modify (with <a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a>) and then apply it to a function
+(with <a href="operators/excl/fwrap.htm"><b>fwrap</b></a>) when and only
+when desired. Fwrapper objects survive dumplisp and can be applied
+when an image is started.
+</p>
+
+
+
+<hr><hr><h2 id="18"><a name="fwrap-description-1">2.0 The Def-fwrapper/fwrap Facility</a></h2>
+
+<p id="19">
+The term "fwrapper" means "function wrapper". A normal function
+that implements any functionality is called a primary function
+for the purposes of this description. An fwrapper, then, is a
+function that "wraps" the primary function, i.e. it executes 
+at the point of call to the primary function, but its functionality
+surrounds the call to the actual primary function call, in a similar
+way that around methods surround the primary method in CLOS. Several
+fwrappers may wrap a primary function; they are executed in an
+outer-to-inner order that can be manipulated.
+</p>
+<p id="20">
+During the time of the execution of fwrapped functions, an attempt
+is made to preserve the argument list without reproducing it,
+if possible, in order to reduce consing and maintain speed. The
+conceptual arglist starts out as a stack pointer and a
+number-of-arguments variable, and is only converted to a list
+if any one of the fwrappers in the line forces the argument list
+to list form. Once an argument-list is made into a list, it remains
+a list until the primary function is called, when it is re-expanded
+on the stack.
+</p>
+<p id="21">
+You create an fwrapper object with the <a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a> macro. This macro associates an
+fwrapper object with a name (a function spec, which is typically
+a symbol but can be a list), but that name does not name a function or
+function object and nothing is wrapped with a call to <a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a>. You wrap a function
+independently with a call to <a href="operators/excl/fwrap.htm"><b>fwrap</b></a>. The function being wrapped is called the
+<i>primary function</i>.
+</p>
+<p id="22">
+The fwrapper object can be compiled, just like any operator, with
+<a href="../ansicl/dictentr/compile.htm"><b>compile</b></a>.
+</p>
+<p id="23">
+As we said above, fwrappers wrap around their primary functions and a
+wrapper must call <a href="operators/excl/call-next-fwrapper.htm"><b>call-next-fwrapper</b></a> in order that the primary
+function (or the next inner wrapper) be called. The return values from
+the primary function (or the next inner wrapper) are returned from the
+call to <a href="operators/excl/call-next-fwrapper.htm"><b>call-next-fwrapper</b></a>.
+</p>
+<p id="24">
+Consider the following simple example.
+</p>
+<pre id="25">
+;; We define Function bar, which prints a message
+;; saying bar has been called and what its argument was.
+user(39): (defun bar (x)
+               (format t &quot;Function bar called with argument ~S.~%&quot; x))
+
+bar
+;; We define an fwrapper object. Note that bar is not
+;; specifically mentioned.
+user(40): (def-fwrapper bar-wrap (x)
+               (format t &quot;Fwrapper bar-wrap called with argument ~S.~%&quot; x)
+               (if (integerp x) (call-next-fwrapper))
+               (format t &quot;This form in bar-wrap called!~%&quot;))
+bar-wrap
+
+;; bar is not yet wrapped, so it is unaffected:
+user(41): (bar 10)
+Function bar called with argument 10.
+nil
+
+;; Now we wrap bar with bar-wrap. barwrapper1 is a symbol
+;; which serves as the identifier (called the indicator)
+;; of this wrapper of bar.
+user(42): (fwrap 'bar 'barwrapper1 'bar-wrap)
+#&lt;Interpreted Function bar&gt;
+
+;; We now call bar with argument 10. Note that the wrapper
+;; executes before and after the call to call-next-fwrapper.
+user(43): (bar 10)
+Fwrapper bar-wrap called with argument 10.
+Function bar called with argument 10.
+This form in bar-wrap called!
+nil
+
+;; We call bar with a non-integer argument. The conditional
+;; (integerp x) fails so call-next-fwrapper, and thus bar,
+;; are not called.
+user(44): (bar t)
+Fwrapper bar-wrap called with argument t.
+This form in bar-wrap called!
+nil
+
+;; We unwrap bar:
+user(45): (funwrap 'bar 'barwrapper1)
+#&lt;Interpreted Function bar&gt;
+
+;; And now bar behaves as it did when first defined.
+user(46): (bar t)
+Function bar called with argument t.
+nil
+
+;; Finally we compile bar and bar-wrap, just to show
+;; how wrappers are compiled:
+user(47): (compile 'bar)
+bar
+nil
+nil
+user(48): (compile 'bar-wrap)
+bar-wrap
+nil
+nil
+user(49): (fwrap 'bar 'barwrapper1 'bar-wrap)
+#&lt;Function bar&gt;
+user(50): (bar t)
+Fwrapper bar-wrap called with argument t.
+This form in bar-wrap called!
+nil
+user(51): 
+</pre>
+
+<h3 id="26">Fwrapper notes</h3>
+
+<ul>
+<li id="27"><b>Order of fwrappers.</b>
+Fwrappers are called in order, from outside to inside.  When a new
+wrapper is added (with <a href="operators/excl/fwrap.htm"><b>fwrap</b></a>), it is placed outside. The function
+<a href="operators/excl/fwrap-order.htm"><b>fwrap-order</b></a> provides
+information on the order of fwrappers and can specify the outermost
+and innermost wrappers. There is no way to specify the order in one
+action, but repeated calls to <a href="operators/excl/fwrap-order.htm"><b>fwrap-order</b></a> can result in any desired order.
+</li>
+<li id="28"><b>List of fwrappers on a function.</b> &nbsp;<a href="operators/excl/fwrap-order.htm"><b>fwrap-order</b></a> provides information on whether a
+function is fwrapped and what the fwrappers, if any, are.
+</li>
+<li id="29"><b>Removing fwrappers.</b> Fwrappers are removed with <a href="operators/excl/funwrap.htm"><b>funwrap</b></a>.</li> 
+<li id="30"><b>Modifying an
+existing fwrapper.</b> Redefining an fwrapper object with <a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a> does not modify the
+behavior of a function already wrapped with the old definition. You must
+call <a href="operators/excl/fwrap.htm"><b>fwrap</b></a> again with the
+same <i>indicator</i> after defining the new fwrapper
+object.
+</li>
+<li id="31"><b>Calling fwrap with an already used indicator replaces the
+wrapper.</b> Fwrappers are associated with indicators, which are
+typically symbols. If you call <a href="operators/excl/fwrap.htm"><b>fwrap</b></a> with an already used
+<i>indicator</i>, the existing fwrapper is replaced
+rather than a new fwrapper being added.
+</li>
+<li id="32"><b>Fwrapping macros.</b> When you fwrap a macro, the
+macroexpansion function is fwrapped. See the example below.
+</li>
+</ul>
+
+<pre id="33">
+;; Here is an example of fwrapping a macro.
+;; 
+;; Here is the macro definition:
+(defmacro safe-car (x)
+   (let ((object (gensym)))
+    `(let ((,object ,x))
+      (if (consp ,object) (car ,object) ,object))))
+
+;; Here is the fwrapper definition:
+(def-fwrapper wrap-safe-car (&amp;rest args) 
+  (let ((mac (caar args)))
+    (format t &quot;The macro ~S has been expanded!~%&quot; mac)
+    (format t &quot;The arglist is ~S~%&quot; args))
+  (call-next-fwrapper))
+			
+;;
+user(66): (safe-car '(1 2))
+1
+user(67) (fwrap 'safe-car 'wsc-1 'wrap-safe-car)
+&lt;Interpreted function safe-car @ #x20f1cc21&gt;
+user(68) (safe-car '(1 2))
+The macro safe-car has been expanded!
+The arglist is ((safe-car '(1 2)) nil)
+1
+user(68): 
+</pre>
+
+<hr><h2 id="34"><a name="fwrapper-macroexpansion-2">2.1 Macroexpansion and Compilation of Fwrappers</a></h2>
+
+<p id="35">
+<a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a> has been designed to
+work well as a Common Lisp defining form. As a macro, it can be
+macroexpanded, thus revealing portions of the implementation of the
+definition it is creating.  Because it uses the same techniques as
+defun and defmacro to create a definition, compilation of a form is
+efficient in resource-usage, and loading a .fasl file with a compiled
+def-fwrapper form does not require the compiler to be present, as is
+the case with compiled defadvice forms.
+</p>
+<p id="36">
+To find out what a <a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a> form is doing, it is
+recommended to use a standard macroexpansion technique:
+</p>
+<pre id="37">
+(pprint (macroexpand '(def-fwrapper foo-wrap ...)))
+</pre>
+<p id="38">
+which will reveal the implementation of foo-wrap.
+</p>
+<p id="39">
+To use an fwrapper that is compiled, without requiring the compiler
+in the image, simply place the def-fwrapper form into a source
+file, compile the file in a lisp with a compiler, and load the
+resulting fasl file into a lisp (not necessarily containing a
+compiler). The fwrapper will then be defined as a compiled
+function, and fwrap may then be used to fwrap the primary function.
+</p>
+
+
+
+<hr><hr><h2 id="40"><a name="fwrap-examples-1">3.0 Fwrap Examples</a></h2>
+
+<hr><h2 id="41"><a name="fwrap-simple-example-2">3.1 Simple fwrap example</a></h2>
+
+<p id="42">
+We start with a simple example where
+a simple fwrapper is defined for wrapping
+a definition of a factorial function. Note that before the fwrap
+call, the fwrapper has no effect on the execution of fact.
+</p>
+
+<pre id="43">
+user(1): (defun fact (n)
+	  (if (= n 0)
+	      1
+	    (* n (fact (1- n)))))
+fact
+user(2): (def-fwrapper factx (n)
+            (when (= (mod n 2) 1)
+              (format t &quot;in trace, n= ~d~%&quot; n))
+             (call-next-fwrapper))
+factx
+user(3): (fact 10)
+3628800
+user(4): (fwrap 'fact :my-trace 'factx)
+#&lt;Interpreted Function fact&gt;
+user(5): (fact 10)
+in trace, n= 9
+in trace, n= 7
+in trace, n= 5
+in trace, n= 3
+in trace, n= 1
+3628800
+user(6): 
+</pre>
+
+
+
+<hr><h2 id="44"><a name="fwrap-arglist-example-2">3.2 Fwrapper and argument access example</a></h2>
+
+<p id="45">
+There have been many requests for arglist access in trace.
+<a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a>
+allows the lambda list to match that of the primary
+function, in which case arguments can be accessed by name.
+</p>
+
+<pre id="46">
+(defun foo (x y &optional z &rest args) ...)
+(def-fwrapper foo-wrap (x y &optional z &rest args) ...)
+</pre>
+
+<p id="47">
+or, if it is desired to work with the arguments as a list, they
+can be specified as such:
+</p>
+
+<pre id="48">
+(def-fwrapper foo-wrap (&rest arglist) ...)
+</pre>
+
+
+
+<hr><h2 id="49"><a name="fwrap-and-trace-2">3.3 Interaction between fwrap and trace</a></h2>
+
+<p id="50">
+The following example shows how trace and fwrap can work together
+and how fwrap-order can be manipulated to govern the interaction.
+It also demonstrates the use of describe on fwrapped functions.
+Of course, this example is not a good example of modular design,
+but its intent is to show how such interdependence behaves.
+</p>
+
+<pre id="51">
+user(1): (defvar *fact-arg* 0)
+*fact-arg*
+user(2): (defun fact (num)
+       (if (equal num 0) 1
+	   (* num (fact (- num 1)))))
+fact
+user(3): (def-fwrapper factwrap (num)
+           (setq *fact-arg* num)
+           (call-next-fwrapper))
+factwrap
+user(4): (fwrap 'fact :my-advice 'factwrap)
+#&lt;Interpreted Function fact&gt;
+user(5): :trace (fact  :condition (= *fact-arg* 3))
+(fact)
+user(6): (fact 12)
+ 0: (fact 2)
+ 0: returned 2
+479001600
+user(7): (describe #'fact)
+#&lt;Interpreted Function fact&gt; is a function.
+  The arguments are (num)
+  It has the following indicator/fwrapper pairs, from outer to inner:
+:trace            #&lt;Closure trace-fwrapper @ #x30c601ea&gt;
+:my-advice        #&lt;Interpreted Function factwrap&gt;
+user(8): (fwrap-order #'fact :outer :my-advice)
+(:my-advice #&lt;Interpreted Function factwrap&gt; :trace
+ #&lt;Closure trace-fwrapper @ #x30c601ea&gt;)
+user(9): (describe #'fact)
+#&lt;Interpreted Function fact&gt; is a function.
+  The arguments are (num)
+  It has the following indicator/fwrapper pairs, from outer to inner:
+:my-advice        #&lt;Interpreted Function factwrap&gt;
+:trace            #&lt;Closure trace-fwrapper @ #x30c601ea&gt;
+user(10): (fact 12)
+ 0: (fact 3)
+ 0: returned 6
+479001600
+user(11): 
+</pre>
+
+
+
+
+<hr><hr><h2 id="52"><a name="trace-modifications-1">4.0 Modifications Made to Trace</a></h2>
+
+<p id="53">
+The only change that has been made to the trace interface is the
+addition of the :not-inside trace option. It is similar to the
+:inside option, in that it checks whether or not the specified
+function is active when the traced function is entered.  However,
+it requires that the specified function not be on the stack.
+Both :inside and :not-inside work together and check simultaneously,
+for maximum efficiency.
+</p>
+<p id="54">
+Other changes that are not functional are mostly bug fixes and
+enhancements to the operation of trace:
+</p>
+<ul>
+<li id="55">The :inside (and :not-inside) options operate on the traced
+function's thread to find functions, rather than to setup
+statefulness to determine that a function has been entered.
+This fixes a bug where if (trace ((foo :inside bar))) is specified,
+and bar is entered on one thread and foo is then entered on another,
+foo was being traced.
+</li>
+<li id="56">Under some circumstances after a :break-after point was hit, no
+tracing could work anymore until that break loop was returned from.
+</li>
+<li id="57">Redefining functions that had traced internal functions
+(flets/labels) tended to forget about the fact that they had
+been traced.
+</li>
+<li id="58">Generic-functions lost their genericity when traced.  This caused
+things like compute-applicable-methods and others to fail on traced
+gfs.</li>
+</ul>
+<hr><hr><h2 id="59"><a name="fwrapper-and-advice-1">5.0 Replacing advice with fwrappers</a></h2>
+
+<p id="60">
+We recommend that you replace any advice code you might have with
+fwrapper code (though advice is still supported). This section
+indicates how such code might be rewritten.
+</p>
+
+<p id="61">
+Things to note:
+</p>
+
+<ul>
+<li id="62">
+<b>You must insert a (call-next-fwrapper) if you want the wrapped
+function to run.</b> With before and after advice, the advised
+function ran automatically, after the before advice and before the
+after advice. Only around advice needed an indication of where the
+advised function was to be run. Fwrappers are like around advice in
+this respect: the function (and also inner fwrappers) will only run
+when <a href="operators/excl/call-next-fwrapper.htm"><b>call-next-fwrapper</b></a> is
+called (it takes no arguments).
+</li>
+<li id="63">
+<b>Fwrappers must be defined and applied.</b> Advice is defined and
+applied to the advised function in one operation. With fwrappers, the
+definition and the application are separate actions. Define an
+fwrapper with <a href="operators/excl/def-fwrapper.htm"><b>def-fwrapper</b></a>
+and applied with <a href="operators/excl/fwrap.htm"><b>fwrap</b></a>.
+</li>
+<li id="64">
+<b>Positioning is more complicated.</b> Advice could be positioned
+using an argument to <a href="operators/excl/advise.htm"><b>advise</b></a>. Fwrappers are always positioned by
+<a href="operators/excl/fwrap.htm"><b>fwrap</b></a> in the outermost
+position. If you wish to rearrange fwrappers, you must use <a href="operators/excl/fwrap-order.htm"><b>fwrap-order</b></a>.
+</li>
+<li id="65"><b>Each fwrapper must be removed individually.</b> The <a href="operators/excl/unadvise.htm"><b>unadvise</b></a> macro could remove many
+pieces of advice (called with no arguments, it removed all advise from
+everything). <a href="operators/excl/funwrap.htm"><b>funwrap</b></a> removes
+only the single fwrapper specified by the
+<i>indicator</i>.
+</li>
+</ul>
+
+<p id="66">
+Here is an example from the advice examples section <a href="#advice-examples-2">below</a> with the corresponding
+fwrapper code.
+</p>
+
+<pre id="67">
+;; First we define a function to be advised.
+(defun perm-and-comb (n k)
+  (let ((perm (/ (fact n) (fact (- n k)))))
+    (values perm (/ perm (fact k)))))
+
+(defun fact (n)
+  (if (= n 1) 1 (* n (fact (1- n)))))
+
+;; This before advice:
+(excl:advise perm-and-comb :before order nil
+  (let ((n (car excl:arglist)) (k (cadr excl:arglist)))
+    (if (&gt;= k n) (setq excl:arglist (list k n)))))
+
+;; would be replaced with this fwrapper (note the arguments
+;; are specified and can be refered to by name):
+(def-fwrapper order-wrap (n k)
+  (if (&gt;= k n) 
+    (let ((hold n))
+      (setq n k)
+      (setq k hold)))
+  (call-next-fwrapper))
+
+;; and applied with a call to fwrap:
+(fwrap 'perm-and-comb 'w1 'order-wrap)
+
+;; This around advice:
+(excl:defadvice perm-and-comb (error :around)
+  (let ((n (car excl:arglist)) (k (cadr excl:arglist)))
+    (if (or (not (integerp n)) (not (integerp k))
+            (&gt;= k n) (&gt; 1 k))
+        (error &quot;Improper arguments to comb-and-perm: ~D ~D&quot; n k)
+        :do-it)))
+
+;; would be replaced with this fwrapper:
+(def-fwrapper arg-check-wrap (n k)
+  (if (or (not (integerp n)) (not (integerp k))
+            (&gt;= k n) (&gt; 1 k))
+        (error &quot;Improper arguments to comb-and-perm: ~D ~D&quot; n k))
+  (call-next-fwrapper))
+
+;; and applied with
+(fwrap 'perm-and-comb 'w2 'arg-check-wrap)
+
+;; but we are not done. arg-check-wrap is now outside
+;; order-wrap, but it should be inside (around advice was
+;; automatically inside before advice) so we have to 
+;; call fwrap-order (the value of the :inner argument is
+;; placed innermost):
+(fwrap-order 'perm-and-comb :inner 'w2)
+</pre>
+
+<hr><hr><h2 id="68"><a name="advice-intro-1">6.0 Introduction</a></h2>
+
+<p id="69">
+The advice facility has been replaced with the fwrapper facility,
+described above in the document. Advice is still supported, and the
+remainder of this document is the (somewhat abreviated) description of
+advice and advising functions from the release 5.0.1 and earlier
+documentation.
+</p>
+<p id="70">
+The advice facility allows you to affect the action of
+a function by adding code before, around or after the evaluation of
+forms defining a function. You may do this with interpreted or
+compiled functions without changing the source code or having to
+recompile. This facility is particularly useful in cases where you
+have compiled code but do not have access to the source code (for
+example, in a commercial application). </p>
+
+<p id="71">Advice works on macros as well as functions but what gets advised
+is the macro-expander function, not the forms returned by the macro
+expansion. Thus, advising a macro is more complex than advising a
+function and there are fewer situations where advising a macro is
+helpful. <a href="#advising-macros-2">Section 6.5 Advising macros</a> below
+describes how to advise a macro. The remainder of this document
+describes advising functions only. </p>
+
+<p id="72">Note that you cannot advise special forms, such as <a href="../ansicl/dictentr/setq.htm"><b>setq</b></a> or <a href="../ansicl/dictentr/progn.htm"><b>progn</b></a>, and that some standard Common Lisp
+functions that are normally compiled in-line, for example <a href="../ansicl/dictentr/carcdrca.htm"><b>car</b></a>, will not run advice code when
+compiled. (Since many Common Lisp functions may be compiled in-line,
+care should be used when advising such functions, since advice will
+not be run if a function is compiled inline. Compiling: Help with
+declarations describes how to get information during the code
+generation phase of compilation.) </p>
+
+<p id="73">To get the nomenclature straight: </p>
+
+<ul>
+<li id="74">
+<i><b>advice</b></i> is attached to a function;
+</li>
+<li id="75">
+the act of attaching advice to functions is <em>advising</em> them;
+</li>
+<li id="76">
+the code that implements the advice is <em>advice code</em>.
+</li>
+<li id="77">
+This document describes the <em>advice facility</em>.
+</li>
+<li id="78">
+You use either the advice facility or advice when advising functions. 
+</li>
+</ul>
+
+<p id="79">The functions for the advice facility are in the
+<code>trace</code> module, which may not be
+included with the default Lisp image file. If you wish to use advice,
+the module must be loaded. It will be autoloaded with the first call
+to most advice functions, but you can load it explicitly, for example
+by evaluating the following form: </p>
+
+<pre id="80">
+(require :trace) 
+</pre>
+
+
+<p id="81">If you commonly use advice, you may want to put such a form in your
+<i>.clinit.cl</i> file. </p>
+
+<p id="82">Advising a function has a number of uses: </p>
+
+<ol>
+
+  <li id="83">To put debugging information in a function for testing (checking
+    arguments and return values, for example). Doing so is useful
+    particularly since advice code can be very easily removed (with a
+    call to <a href="operators/excl/unadvise.htm"><b>unadvise</b></a>). 
+    Note that advice code is evaluated each
+    time a function is called, so you may wish to avoid doing output
+    in advice code in a recursive function. </li>
+
+  <li id="84">To add extra argument checking or conditioning to an already
+    written function without modifying the function itself. </li>
+
+  <li id="85">To modify code provided by others where you do not have access
+    to the source (and therefore cannot modify the code
+    directly). </li>
+
+</ol>
+
+<p id="86">If a function which has been advised (that is: advice code is
+attached to it) is redefined with <a href="../ansicl/dictentr/defun.htm"><b>defun</b></a>, either at the top level or by loading a
+new definition from a file, the function will still have the same
+advice. The advice will be removed only with a call to <a href="operators/excl/unadvise.htm"><b>unadvise</b></a> or a related function. </p>
+
+<p id="87">Advice code can access the list of arguments passed to the advised
+function, which is bound to the variable excl:arglist, and the list of
+returned values, which is bound to the Lisp variable values. The
+advice code may look at and change either the argument list or the
+list of returned values. (Which values can be modified depends on the
+type of advice.  :before and :around advice may change the argument
+list, but the list bound to values is not formed until all :around
+advice has been evaluated. :after advice has access to values, but,
+since the advised function has already run, the argument list is of
+little interest to :after advice.) If you change either list, be
+careful to ensure that you preserve such structure as is
+necessary. For example, if you replace the argument list, you must be
+sure the new list has as least as many elements as there are required
+arguments to the advised function. </p>
+
+<p id="88">There are five functions for advising and unadvising: </p>
+
+<p id="89"><a href="operators/excl/advise.htm"><b>advise</b></a></p>
+<p id="90"><a href="operators/excl/advise-1.htm"><b>advise-1</b></a></p>
+<p id="91"><a href="operators/excl/unadvise.htm"><b>unadvise</b></a></p>
+<p id="92"><a href="operators/excl/unadvise-1.htm"><b>unadvise-1</b></a></p>
+<p id="93"><a href="operators/excl/defadvice.htm"><b>defadvice</b></a></p>
+
+<p id="94">The following functions and global variable are also useful: </p>
+
+<p id="95"><a href="operators/excl/advised-functions.htm"><b>advised-functions</b></a></p>
+<p id="96"><a href="operators/excl/compile-advice.htm"><b>compile-advice</b></a></p>
+<p id="97"><a href="operators/excl/describe-advice.htm"><b>describe-advice</b></a></p>
+<p id="98"><a href="variables/excl/s_compile-advice_s.htm"><code>*compile-advice*</code></a></p>
+
+
+<p id="99"><a href="operators/excl/advise.htm"><b>advise</b></a> and <a href="operators/excl/unadvise.htm"><b>unadvise</b></a> are macros, <a href="operators/excl/advise-1.htm"><b>advise-1</b></a> and <a href="operators/excl/unadvise-1.htm"><b>unadvise-1</b></a> are the functions which implement
+the macros. The macro <a href="operators/excl/defadvice.htm"><b>defadvice</b></a> allows users to use a defun-like
+syntax for advice. </p>
+
+
+<hr><h2 id="100"><a name="advising-funs-2">6.1 Advising a function</a></h2>
+
+<p id="101">You may advise functions with <a href="operators/excl/advise.htm"><b>advise</b></a>, <a href="operators/excl/advise-1.htm"><b>advise-1</b></a> or <a href="operators/excl/defadvice.htm"><b>defadvice</b></a>. advise and advise-1 take as
+arguments the name of the function being advised, the class, described
+next, the position (relative to other advice, see 
+<a href="#position-more-3">below</a>), 
+the name given to the piece of
+advice being added, and the forms to run when the function is
+called. Advice comes in three types, called the class of advice. These
+are <a href="#advice-class-before-3">:before</a>, 
+<a href="#advice-class-around-3">:around</a>, 
+and <a href="#advice-class-after-3">:after</a>. 
+Let us look more closely at the classes of
+advice and at the possible values for the position argument. </p>
+
+<hr><h2 id="102"><a name="advice-class-before-3">6.1.1 Advice of class :before</a></h2>
+
+<p id="103">:before advice will be evaluated before the function call. The
+argument list with which the function was called is available to
+:before advice. The argument list is stored as the value of the
+variable excl:arglist. You may check the values in this list, change
+the values or replace the list altogether with a new list. (If you
+replace the list, be careful that it have the correct format for the
+function (number and types of arguments in the list) or you may get an
+error, or worse, a wrong result but no error.) :before advice is used
+only for its side effects. Any value returned by :before advice code
+is ignored. </p>
+
+
+
+<hr><h2 id="104"><a name="advice-class-around-3">6.1.2 Advice of class :around</a></h2>
+
+<p id="105">:around advice places the function call inside the code of the
+advice. The keyword <code>:do-it</code> signals where the
+function should be called within the advice code. When Lisp encounters
+the <code>:do-it</code>, it calls the next piece of :around advice, if
+there is more, or the function. When the function returns, the :around
+advice code continues execution. <code>:do-it</code> may appear
+several times in <code>:around</code> advice. Normally, it is placed
+in conditional code, e.g. </p>
+
+<pre id="106">
+(if (zerop (car excl:arglist))(+ 5 :do-it)(* 7 :do-it)) 
+</pre>
+
+<p id="107"> In that case, the system will encounter one or the other
+<code>:do-it</code>, but not both. However, it is allowed to have
+several <code>:do-it</code>'s, all of which are evaluated. In that
+case, the succeeding :around advice and the advised function are
+evaluated more than once. :after advice is still evaluated only once,
+however. :around advice can work with <code>excl:arglist</code> before
+the <code>:do-it</code>. Since the advised function is run at the
+location specified by the <code>:do-it</code>, the values the function
+return are available to <code>:around</code> advice just like with any
+function call. The list bound to the variable values is not set up
+until after all <code>:around</code> advice is run, then values is
+bound to the list of values returned by the final piece of :around
+advice. Note that if the function returns multiple values, these
+should be caught with <a href="../ansicl/dictentr/multiple.htm"><b>multiple-value-bind</b></a> or <a href="../ansicl/dictentr/multipl1.htm"><b>multiple-value-list</b></a> or some similar function if
+you are interested in the values beyond the first. </p>
+
+
+
+<hr><h2 id="108"><a name="advice-class-after-3">6.1.3 Advice of class :after</a></h2>
+
+<p id="109"><code>:after</code> advice is evaluated after the function has
+completed, but before control is passed back to whatever called the
+function. <code>:after</code> advice may examine and change the list
+of returned values from the last piece of <code>:around</code> advice
+(or the function, if there is no :around advice) stored in the
+variable values. <code>:after</code> advice is used only for its side
+effects. Any value returned by the <code>:after</code> advice code is
+ignored. The list bound to values is returned from the now completed
+function call. </p>
+
+
+
+<hr><h2 id="110"><a name="position-more-3">6.1.4 More on the position argument</a></h2>
+
+<p id="111">Let us look at the position argument more closely. As we said
+above, advice is numbered 0, 1, 2, ..., n-1, if there are n pieces of
+advice of a given class. Advice with a smaller index is run farther
+from the function call than advice with a larger index. Regardless of
+what position was specified for advice when it was defined, its real
+position is the number in the list from 0 to n-1. A new piece of
+advice of the same class will be placed according to its position
+argument. If that argument is a number, that number is placed with
+respect to the list 0, ..., n-1. The argument can also be a name of
+other advice, in which case it is placed immediately farther from the
+function call than that named advice.  Or the argument can be <code>nil</code>, in which case the advice is placed farthest from
+the function call. Here are some examples. Let us assume that the
+function foo has no :before advice on it when we start. We will define
+advice, and show after each definition the order in which the advice
+will be run.
+</p>
+
+<pre id="112">
+(defun foo (&rest args) nil)
+
+(excl:advise foo :before
+  john 10 (format t "hello john")) 
+</pre>
+
+<p id="113">Things will be run in the following order: </p>
+
+<pre id="114">
+john foo 
+</pre>
+
+<pre id="115">
+(excl:advise foo :before
+  cathy 5 (format t "hello cathy")) 
+</pre>
+
+<p id="116">Things will be run in the following order: </p>
+
+<pre id="117">
+john cathy foo 
+</pre>
+
+
+
+
+
+
+
+<hr><h2 id="118"><a name="removing-advice-2">6.2 Removing advice from a function or macro</a></h2> 
+
+<p id="119">The <a href="operators/excl/unadvise.htm"><b>unadvise</b></a> macro and
+the <a href="operators/excl/unadvise-1.htm"><b>unadvise-1</b></a> function are
+used to remove advice from functions or macros. Note that <a href="operators/excl/unadvise.htm"><b>unadvise</b></a> called without arguments
+removes all advice from all functions and macros. </p>
+
+<p id="120">Let us look at some examples of unadvising functions. Note
+particularly how the value <code>nil</code> for the
+arguments to <a href="operators/excl/unadvise.htm"><b>unadvise</b></a> is
+interpreted. </p>
+
+<pre id="121">
+(excl:unadvise func :before joe) 
+</pre>
+
+<p id="122">removes the <code>:before</code> advice named joe from 
+<b>func</b>. </p>
+
+<pre id="123">
+(excl:unadvise func :before nil) 
+</pre>
+
+
+<p id="124"> removes all <code>:before</code> advice from <b>func</b>. </p>
+
+<pre id="125">
+(excl:unadvise func nil joe) 
+</pre>
+
+<p id="126">removes all advice named joe (whether <code>:before</code>,
+<code>:after</code> or <code>:around</code>) from
+<b>func</b>. </p>
+
+<pre id="127">
+(excl:unadvise nil :around) 
+</pre>
+
+<p id="128">removes all <code>:around</code> advice from all functions. </p>
+
+<pre id="129">
+(excl:unadvise func) 
+</pre>
+
+<p id="130">removes all advice from <b>func</b>. </p>
+
+<pre id="131">
+(excl:unadvise nil) 
+</pre>
+
+<p id="132">or </p>
+
+<pre id="133">
+(excl:unadvise) 
+</pre>
+
+<p id="134">removes all advice from all functions. </p>
+
+
+<hr><h2 id="135"><a name="advice-utilities-2">6.3 Utilities associated with advice</a></h2>
+
+
+<p id="136">The following functions and variables are useful when using the advice facility. </p>
+
+
+  <p id="137"><a href="operators/excl/advised-functions.htm"><b>advised-functions</b></a>,
+  a function, returns a list of all advice on all advised functions.</p>
+  <p id="138"><a href="variables/excl/s_compile-advice_s.htm"><code>*compile-advice*</code></a>, a
+  variable, if true, causes newly added advice to be compiled automatically. If <code>nil</code>,
+  newly added advice is left uncompiled (advice can be compiled with <a href="operators/excl/compile-advice.htm"><b>compile-advice</b></a>).</p>
+  <p id="139"><a href="operators/excl/compile-advice.htm"><b>compile-advice</b></a>, a
+  function, compiles the advice on the function named by the argument.</p>
+  <p id="140"><a href="operators/excl/describe-advice.htm"><b>describe-advice</b></a>, a
+  function, prints a description of advice on the function named by the required argument to
+  the stream named by the optional argument (which defaults to <a href="../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>).</p>
+
+
+
+<hr><h2 id="141"><a name="advice-examples-2">6.4 Examples using advice</a></h2>
+
+<p id="142">In the following example, we define a function and then add advice
+code which checks and (if necessary) modifies the arguments, signals
+an error for wrong arguments, and takes care of special cases not
+actually handled by the function itself. We do not suggest that the
+following example represents good programming style or that using
+advice is preferable to actually rewriting the original function. The
+example is designed only to show how advice works. We apply advice
+using excl:advise, excl:advise-1, and excl:defadvice.</p>
+
+<p id="143">Consider the following function, which calculates both the number
+of permutations of n things taken k at a time and the number of
+combinations of n things taken k at a time, returning both as multiple
+values.</p>
+
+<pre id="144">
+(defun perm-and-comb (n k)
+  (let ((perm (/ (fact n) (fact (- n k)))))
+    (values perm (/ perm (fact k)))))
+
+(defun fact (n)
+  (if (= n 1) 1 (* n (fact (1- n)))))
+</pre>
+
+<p id="145">There are several things to notice about perm-and-comb. One is that
+if you put the arguments in the wrong order (i.e. if the first
+argument is less than or equal to the second) or if either argument is
+not an integer, the function goes into an infinite loop.  The first
+pieces of :before advice check that the arguments are in the right
+order.</p>
+
+<pre id="146">
+(excl:advise perm-and-comb :before order nil
+  (let ((n (car excl:arglist)) (k (cadr excl:arglist)))
+    (if (&gt;= k n) (setq excl:arglist (list k n)))))
+</pre>
+
+<p id="147">The next piece of advice checks that the arguments are integers,
+truncating them if they are not. </p>
+
+<pre id="148">
+(excl:advise perm-and-comb :before truncate nil
+  (let ((n (car excl:arglist)) (k (cadr excl:arglist)))
+    (if (not (integerp n))
+        (setf (car excl:arglist) (truncate n)))
+    (if (not (integerp k))
+        (setf (cadr excl:arglist) (truncate k)))))
+</pre>
+
+<p id="149">(We are not suggesting that it is good programming style to change
+arguments without warning or notice. Generally, that is a bad idea.)
+</p>
+
+<p id="150">All the cases where numeric arguments to perm-and-comb cause an
+infinite loop have not yet been covered. The following :around advice
+completely checks the arguments (assuming that they are numbers),
+causing a fatal error if the arguments will cause an infinite
+loop. Some of the checks are redundant, of course, given the :before
+advice already applied to perm-and-comb. </p>
+
+<pre id="151">
+(excl:defadvice perm-and-comb (error :around)
+  (let ((n (car excl:arglist)) (k (cadr excl:arglist)))
+    (if (or (not (integerp n)) (not (integerp k))
+            (&gt;= k n) (&gt; 1 k))
+        (error &quot;Improper arguments to comb-and-perm: ~D ~D&quot; n k)
+        :do-it)))
+</pre>
+
+<p id="152">Now one last change. The form (perm-and-comb 10 0) will generate an
+error (and, indeed will cause an infinite loop, since (fact 0) will
+not stop), but the number of permutations and the number of
+combinations of 10 things taken none at a time is in fact defined.
+(There is only one way: choose nothing.) Let us add one final piece of
+:around advice, which will return 1 and 1 when the argument k is
+0. This advice must run before the error advice defined above, since
+the argument k being 0 will cause a fatal error if the error advice
+sees it. By specifying a position of error, we guarantee that this new
+advice is placed farther from the actual function call than the error
+advice. Note too that the forms argument is contained in a list. </p>
+
+<pre id="153">
+(excl:advise-1 'perm-and-comb :around 'zerotest 'error
+  '((let ((k (cadr excl:arglist)))
+      (if (zerop k) (return (values 1 1)) :do-it))))
+</pre>
+
+<p id="154">Notice the use of return. Since we know the answer, there is no
+reason to call the function. </p>
+
+<p id="155">For the final example, let us suppose that you are actually
+interested in the number of permutations and the ratio of permutations
+to combinations. Here is :after advice that will change the returned
+values to be what you want. The first returned value is left alone and
+the second is replaced by the ratio of the first and the original
+second. </p>
+
+<pre id="156">
+(excl:advise perm-and-comb :after nil nil
+  (let ((p (car values)) (c (cadr values)))
+    (setq values (list p (/ p c)))))
+</pre>
+
+<p id="157">Note that if the :around advice named zerotest returns without
+calling perm-and-comb, this <code>:after</code> advice will not be
+run. In this case, that is okay, since the values returned by
+<b>zerotest</b> would not be changed by the
+<code>:after</code> advice. However, it is important to keep in mind
+all of the advice on a particular function to ensure that different
+pieces are not working at cross purposes. The function <a href="operators/excl/describe-advice.htm"><b>describe-advice</b></a>, defined above, is
+useful for that purpose. When all of the advice given above has been
+attached to <b>perm-and-comb</b>, <a href="operators/excl/describe-advice.htm"><b>describe-advice</b></a> prints the
+following. </p>
+
+<pre id="158">
+USER(21): (let ((*print-pretty* t))
+           (excl:describe-advice 'perm-and-comb))
+Before advice:
+(truncate
+  (let ((n (car arglist))
+        (k (cadr arglist)))
+    (if (not (integerp n)) (setf (car arglist) (truncate n)))
+    (if (not (integerp k)) (setf (cadr arglist) (truncate k)))))
+(order
+  (let ((n (car arglist))
+        (k (cadr arglist)))
+    (if (&gt;= k n) (setq arglist (list n k)))))
+Around advice:
+(zerotest 
+  (let ((k (cadr arglist)))
+    (if (= k 0) (return (values 1 1)) :do-it)))
+(error
+  (let ((n (car arglist))
+        (k (cadr arglist)))
+    (if (or (not (integerp n)) (not (integerp k))
+            (&gt;= k n) (&gt; 1 k))
+        (error &quot;Improper arguments to comb-and-perm: ~D ~D&quot; n k)
+        :do-it)))
+After advice:
+(nil 
+  (let ((p (car values)
+      (c (cadr values)))
+    (setq values (list p (/ p c)))))
+</pre>
+
+
+<hr><h2 id="159"><a name="advising-macros-2">6.5 Advising macros</a></h2>
+
+<p id="160">You may advise macros as well as functions but note that both what
+is being advised and where the advice is run is very different when a
+macro is advised than when a function is advised. When you advise a
+macro, you advise the macro expansion function. This function takes
+two arguments, the whole form and the environment. The macro name will
+be the <a href="../ansicl/dictentr/carcdrca.htm"><b>car</b></a> of the form
+argument. The advice will thus be run at macro expansion time. Macros
+are typically advised for purposes of source-file recording, tracing,
+and other informational purposes. If you advise macros in order to
+affect their behavior (in ways other than simply printing or storing
+information) you must be very careful not to break or confuse the
+macro expansion system.</p>
+
+<p id="161">The effect and behavior of advice applied to macros (and placed on
+the macro expansion function) is the same as that described above for
+functions. Therefore, <em>name</em>, <em>position</em>, and
+<em>class</em> are all interpreted the same way and the advice is
+removed with <a href="operators/excl/unadvise.htm"><b>unadvise</b></a> (or
+<a href="operators/excl/unadvise-1.htm"><b>unadvise-1</b></a>) just as with
+functions. </p>
+
+<p id="162">Here is a simple example. We define the macro
+<b>safe-car</b>. Then we advise it to print a
+message whenever it is expanded. </p>
+
+<pre id="163">
+USER(25): (defmacro safe-car (x)
+            (let ((object (gensym)))
+               `(let ((,object ,x))
+                  (if (consp ,object) (car ,object) ,object))))
+safe-car
+USER(26): (safe-car '(1 2))
+1
+USER(27): (advise safe-car :before expand-notify nil
+              (let ((mac (caar excl:arglist)))
+                (format t "The macro ~S has been expanded!~%" mac)))
+safe-car
+
+;; When we call SAFE-CAR, the macro is expanded.
+
+USER(28): (safe-car '(1 2))
+The macro safe-car has been expanded!
+
+1
+USER(29):
+</pre>
+
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/fwrappers-and-advice.htm">9.0 version</a></td></tr></table></html>

@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pll-file</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/pll-file.htm">9.0 version</a></td></tr></table><h2 id="2">pll-file</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">Returns the name and perhaps the location of the current
+<b>.pll</b> file, or <code>nil</code> if there is no
+<b>.pll</b> file associated with the running
+Lisp. The location information is only returned (along with the name)
+if the image was created with location information specified along
+with the name (that is, <a href="build-lisp-image.htm"><b>build-lisp-image</b></a> was called with the value of
+the <code>:pll-file</code> argument being <em>[directory]/[filename
+and type]</em> rather than just <em>[filename and type]</em>).</p>
+
+<p id="5">On startup, Lisp looks for the pll file as follows: </p>
+
+<ul>
+  <li id="6">If location information is supplied, look there only (relative to the current directory
+    if the location information is relative).</li>
+  <li id="7">If just the filename and type or just the filename is supplied, do:</li>
+</ul>
+
+
+  <ol>
+    <li id="8">If there is no type, use the type <em>pll</em>. (Note that the type of the file supplied
+      with the distribution is sometimes <em>epll</em> rather than <em>pll</em>.)</li>
+    <li id="9">Look in the current directory.</li>
+    <li id="10">Look in the Allegro directory.</li>
+    <li id="11">[<strong>Windows only</strong>] Look in the Windows `system' directory. </li>
+  </ol>
+
+
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/pll-file.htm">9.0 version</a></td></tr></table></body></html>

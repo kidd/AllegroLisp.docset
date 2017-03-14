@@ -1,0 +1,96 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-java-class</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/def-java-class.htm">9.0 version</a></td></tr></table><h2 id="2">def-java-class</h2>
+
+<p id="3"><b>Arguments: </b><i>name supers statics fields slots
+</i> &amp;rest <i>options</i><i>
+</i></p>
+
+
+<p id="4">
+This macro defines a Lisp class that represents a Java class.
+Once a Lisp class is defined to represent a Java class, remote
+references to instances of the Java class will be instances of the
+corresponding Lisp class. As a result, Lisp methods may be defined.
+</p>
+<p id="5">
+If the name is a string or symbol, it is the name of the Java class
+and the corresponding symbol is the name of the Lisp class.  If the
+name is a list, the first element is a symbol for the name of the Lisp
+class and the second element is a string or symbol that identifies a
+Java class. The name may also be a list of three or more elements; in
+this case, the first element is the name of the Lisp class, the second
+element is the name of the base Java class or interface, and the
+remaining elements are the names of derived Java classes.  The derived
+Java classes must all inherit from the base Java class or interface.
+Any instances of the derived or base Java classes will be mapped to
+the Lisp class.
+</p>
+<p id="6">
+The second argument is a list of Lisp superclasses. This list will be
+augmented by adding the class
+<code>net.jlinker::java-class</code> at the end.
+</p>
+<p id="7">
+The third and fourth arguments are lists of static and class fields in the
+Java class.  Each item is of the form
+</p>
+<pre id="8">
+(name [:accessor aname] [:reader rname] [:writer wname])
+</pre>
+<p id="9">
+where name is again like the class name - a single string or symbol or
+a list of two. If the accessor, reader and writer components are
+omitted, the Lisp name of the field is defined as an accessor to the
+Java field. If any of the accessor, reader and writer components are
+specified, then those are the only accessors defined for the field.
+</p>
+<p id="10">
+The fifth argument is additional Lisp slots that are added to the class
+with no inspection of any kind.
+The final optional arguments are appended to the class definition.
+</p>
+
+<h3 id="11">Examples</h3>
+
+<pre id="12">
+(def-java-class (gcal "java.util.GregorianCalendar") ()
+    (((gcal-friday "FRIDAY") :reader gcal-friday)
+     ((gcal-ad     "AD")     :reader gcal-ad))
+    ()
+    ())
+</pre>
+
+<p id="13">
+This form defines a Lisp class <code>gcal</code> that will be
+used to represent any remote references to instances of the Java class
+<code>java.util.GregorianCalendar</code>.  The Lisp functions
+<b>gcal-friday</b> and <b>gcal-ad</b> (both of zero arguments) are
+accessors for the static fields FRIDAY and AD in the Java class.
+</p>
+
+<pre id="14">
+(defclass application-buffer () ((source :initform "Lisp")))
+
+(def-java-class (string-buffer "java.lang.StringBuffer")
+(application-buffer)
+    ()
+    ()
+    ((source :initform "Java")))
+</pre>
+
+<p id="15">
+This form defines a Lisp class <code>string-buffer</code> that
+will be used to represent any remote references to instances of the
+Java class <code>java.lang.StringBuffer</code>.  The slot named
+source does not exist in the Java object, but is present on every
+remote reference to a Java object of that class. This example also
+shows how a remote reference may inherit from other Lisp classes.
+</p>
+
+<p id="16">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/def-java-class.htm">9.0 version</a></td></tr></table></body></html>

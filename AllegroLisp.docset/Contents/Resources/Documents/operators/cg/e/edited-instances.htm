@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>edited-instances</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/edited-instances.htm">9.0 version</a></td></tr></table><h2 id="2">edited-instances</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object-editor
+</i></p>
+
+<p id="4"> Returns a list of the particular instances that an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> dialog is editing, or
+<code>nil</code> if the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> is editing all instances of a
+persistent class.  The value may be set with the
+<i>edited-instances</i> initarg at creation time, or any
+time later by calling <a href="../e/edited-instances.htm"><b>(setf edited-instances)</b></a>.  The default
+value is <code>nil</code>.  If this property is never set,
+then the dialog will attempt to edit all instances of its <a href="../e/edited-class.htm"><b>edited-class</b></a>, though this requires
+that the class be a persistent (AllegroCache) class so that all
+instances can be found.
+</p>
+<p id="5">
+At this time, editing a huge number of instances may be unwieldy
+because an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>
+always sorts the instances (typically according to the <a href="../p/primary-name-slot.htm"><b>primary-name-slot</b></a> of the class if
+any), which entails loading every instance from a database (if the
+instances are coming from a database). This is done to facilitate
+browsing the instances in an intuitive order, and for the <a href="../o/object-editor-select.htm"><b>object-editor-select</b></a> facility to be
+able to present many instances as a series of alphabetized pop-up
+menus.  And the <a href="../o/object-editor-search.htm"><b>object-editor-search</b></a> facility needs to load
+every instance in order to search one or more of its slots.  Options
+may be added in the future to facilitate handling large databases
+better.
+</p>
+<p id="6">
+For the related <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>
+widget, the <a href="../v/value.htm"><b>value</b></a> property is
+used instead of an <a href="../e/edited-instances.htm"><b>edited-instances</b></a> property to store the list of
+instances, and a value of <code>nil</code> will display no
+instances rather than all of them.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/edited-instances.htm">9.0 version</a></td></tr></table></body></html>

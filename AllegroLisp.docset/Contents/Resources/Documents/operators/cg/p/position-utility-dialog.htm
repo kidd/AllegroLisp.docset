@@ -1,0 +1,80 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>position-utility-dialog</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/position-utility-dialog.htm">9.0 version</a></td></tr></table><h2 id="2">position-utility-dialog</h2>
+
+<p id="3"><b>Arguments: </b><i>
+owner dialog return-position
+</i></p>
+
+<p id="4"> 
+This generic function is called internally when one of the
+following Common Graphics functions is called. They all invoke a
+utility dialog written in lisp.  
+</p> 
+<p id="5"> 
+<a href="../p/pop-up-message-dialog.htm"><b>pop-up-message-dialog</b></a>, <a href="../a/ask-user-for-choice.htm"><b>ask-user-for-choice</b></a>,
+<a href="../a/ask-user-for-choice-from-list.htm"><b>ask-user-for-choice-from-list</b></a>,
+<a href="../a/ask-user-for-string.htm"><b>ask-user-for-string</b></a>, <a href="../p/pop-up-string-dialog.htm"><b>pop-up-string-dialog</b></a>,
+<a href="../p/pop-up-strings-dialog.htm"><b>pop-up-strings-dialog</b></a>, <a href="../y/y-or-n-dialog.htm"><b>y-or-n-dialog</b></a>, <a href="../y/yes-no-or-cancel-list.htm"><b>yes-no-or-cancel-list</b></a>,
+<a href="../a/ask-save-changes.htm"><b>ask-save-changes</b></a>.
+</p>
+<p id="6">
+The default method is shown below. It calls <a href="../c/center-modal-children.htm"><b>center-modal-children</b></a>. Programmers
+may override the default if desired.
+</p>
+<p id="7">
+The <i>owner</i> argument is the window or screen that
+was passed as the value of the <i>stream</i> argument to
+the utility function to serve as the owner of the dialog. The
+<i>dialog</i> argument is the dialog that is being
+invoked. The <i>return-position</i> argument is a
+position that the method should modify and return (or it may return
+another position object). The dialog will then be positioned with its
+upper-left corner at this returned position. The position should be
+in screen coordinates.
+</p>
+<p id="8">
+This function is not called for Common Dialogs since there is no
+Common Graphics window object to position. The only way to position a
+Common Dialog is to move the owner window before invoking the dialog;
+the Common Dialog will then typically appear with its upper left
+corner at or near the upper left corner of the owner window that is
+passed to the utility dialog function. (See <a href="../c/center-all-modal-dialogs-on-screen.htm"><b>center-all-modal-dialogs-on-screen</b></a>.)
+</p>
+<p id="9">
+Here is the default method. An application could add a method to
+override this default in order to position the Common Graphics utility
+dialogs in some arbitrary way. When this function is called, the
+dialog already has the width and height at which it will appear, so
+the method can use that information to position the dialog.
+</p>
+
+<pre id="10">
+(defmethod position-utility-dialog ((owner t)(dialog t) return-position)
+  ;; A user-overridable generic function.  Should modify
+  ;; return-position to contain the screen position for the dialog
+  ;; and return it the position
+  (let* ((exterior (exterior dialog))
+         (width (width exterior))
+         (height (height exterior))
+         (owner-box (interior owner)))
+    (case (center-modal-children owner)
+      (:on-owner
+       (window-to-screen-units owner
+         (nmake-position return-position
+           (floor (- (box-width owner-box) width) 2)
+           (floor (- (box-height owner-box) height) 2))))
+      ((nil)
+       (let* ((margin (modal-dialog-margin (configuration *system*))))
+         (window-to-screen-units owner
+           (nmake-position return-position margin margin))))
+      (t (let* ((box (center-box-on-screen width height)))
+           (nmake-position return-position
+            (box-left box)(box-top box)))))))
+</pre>
+
+
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/position-utility-dialog.htm">9.0 version</a></td></tr></table></body></html>

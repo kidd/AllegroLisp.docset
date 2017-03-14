@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>logical-pathname-translations-database-pathnames</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/logical-pathname-translations-database-pathnames.htm">9.0 version</a></td></tr></table><h2 id="2">logical-pathname-translations-database-pathnames</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">Returns a list of pathnames or strings naming files to be searched
+for translations of logical-pathname hosts. Initially, this function
+returns the list</p>
+
+<pre id="5">
+("sys:hosts.cl")
+</pre>
+
+<p id="6">This function is <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'able so standard operators
+such as <a href="../../../ansicl/dictentr/push.htm"><b>push</b></a> or 
+<a href="../../../ansicl/dictentr/pushnew.htm"><b>pushnew</b></a> may be used
+to add additional entries to the list. For example, to add "~/myhosts"
+to the list, evaluate:</p>
+
+<pre id="7">
+(pushnew "~/myhosts"
+  (excl:logical-pathname-translations-database-pathnames))
+</pre>
+
+<p id="8"><a href="logical-pathname-translations-database-pathnames.htm"><b>logical-pathname-translations-database-pathnames</b></a> will now return</p>
+
+<pre id="9">
+("~/myhosts" "sys:hosts.cl")
+</pre>
+
+<p id="10">So long as the elements of the list can be coerced to pathnames,
+the searching done by <a href="../../../ansicl/dictentr/load-log.htm"><b>load-logical-pathname-translations</b></a> is well
+protected against errors. In particular, it is not an error if a
+pathname identifies a file (or a directory) that does not exist. Nor
+will specifying a file with a logical host for which no translation is
+known cause a problem. Users might consider adding a file such as
+"~/myhosts" prior to a call to <a href="dumplisp.htm"><b>dumplisp</b></a> so that they can easily provide
+translations to the restarted image during startup (before the first
+prompt). Translations can be added using <em>sys:hosts.cl</em>, but
+many users cannot modify that file, since it is shared by all Lisp
+users.</p>
+
+<p id="11">The format of the file is:</p>
+
+<code><p id="12"><em>host</em> {<em>translation</em>}+</p></code>
+
+<p id="13">
+where <em>host</em> is a string naming a logical host (i.e., "src")
+and <em>translation</em> is a list which specifies the translation
+(i.e., a list of the source and target, such as (list "**;*.*"
+"sys:**;*.*")). <em>translation</em> is evaluated.
+</p>
+
+<p id="14">
+See <a href="../../pathnames.htm#load-logical-pathname-translations-2">Details of
+cl:load-logical-pathname-translations</a> in
+<a href="../../pathnames.htm">pathnames.htm</a>.
+</p>
+
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/logical-pathname-translations-database-pathnames.htm">9.0 version</a></td></tr></table></body></html>

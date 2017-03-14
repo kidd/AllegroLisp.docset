@@ -1,0 +1,71 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>memlog</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">memlog</h2>
+
+<p id="3"><b>Arguments: </b><i>
+label </i> &amp;rest <i>data</i><i>
+</i></p>
+
+<p id="4">
+This function makes an entry in the current active memory log and
+returns <code>nil</code>. If there is no current active
+memory log, this function does nothing and
+returns <code>nil</code>.
+</p>
+<p id="5">
+The entry consists the following values, with the first 4 always
+recorded and as many of the rest (data arguments) as will fit in the
+current width specification of the memory log.
+</p>
+<ol>
+<li id="6">
+thread index of the current thread
+</li>
+<li id="7">
+process-name of the current thread
+</li>
+<li id="8">
+a timestamp (milliseconds since the last call to memlog-init)
+</li>
+<li id="9">
+the label 
+</li>
+<li id="10">
+as many data arguments as fit in the current width
+specification of the memory log
+</li>
+</ol>
+<p id="11">
+The <a href="memlog.htm"><b>memlog</b></a> function is very
+short and does no consing in order to minimize the disturbance caused
+by introducing tracing in an application. It does necessarily require
+a memory barrier in order to access the shared log object and this
+operation is likely to disturb to some extent the time behavior of a
+complex multi-threaded application.
+</p>
+<p id="12">
+Note also that if modifiable objects are recorded in the log, when the
+log is examined, the values seen will be the values at the time of the
+examination.
+</p>
+<p id="13">
+This function will make an entry in the log if it can gain a lock on
+the memory log within the limits specified when the log is
+initialized. If a lock cannot be obtained, the skipped count is
+incremented. The default setting is to iterate 5 times on the lock
+attempt, yield once and try 5 more iterations. This behavior is
+modified with the <i>yield-rate</i>
+and <i>yield</i> arguments to <a href="memlog-init.htm"><b>memlog-init</b></a>.
+</p>
+<p id="14">
+See <a href="../../smp.htm#memlog-1">Memlog: A Facility for
+Minimally Intrusive Monitoring of Complex Application
+Behavior</a> in <a href="../../smp.htm">smp.htm</a> for more information.
+</p>
+<p id="15">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

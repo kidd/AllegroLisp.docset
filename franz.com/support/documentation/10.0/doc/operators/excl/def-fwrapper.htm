@@ -1,0 +1,104 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-fwrapper</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-fwrapper.htm">9.0 version</a></td></tr></table><h2 id="2">def-fwrapper</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name arglist </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+Produces a form which returns name and defines an fwrapper as a side
+effect.  This fwrapper is suitable for use as the fwrap-function in a
+call to <a href="fwrap.htm"><b>fwrap</b></a>.
+</p>
+<p id="5">
+<b><i>name</i></b> can be any function spec.
+</p>
+<p id="6">
+<b><i>arglist</i></b> is an ordinary lambda list.  All
+ordinary lambda list keywords may be used, including
+&allow-other-keys, &aux, &key, &optional, and
+&rest. If either &key or &rest are present, then the
+arglist is automatically forced to be a list.  (Note: the current
+implementation also forces a list when optional arguments are
+specified, because of some potential problems when a not-given
+optional argument is setq'd).
+</p>
+<p id="7">
+Argument accesses are provided for by means of symbol-macrolets,
+in a manner that is mostly intuitive.  The arguments can simply
+be accessed by name, and they can be setq'd under most
+circumstances, with exceptions given below.  The values of these
+setq'd arguments become part of the argument list that is
+sent to the next more inner fwrapper.
+</p>
+<p id="8">
+Exceptions:
+</p>
+<ul>
+<li id="9">If the &rest arg is setq'd, the change only takes place for the
+current fwrapper, and is not passed inward.  However, any changes
+made to the structure of the rest arg (via (setf car) or (setf cdr)
+or similar functions) will result in a change that will be passed
+inward.
+</li>
+<li id="10">Any &key value that is setq'd will not replace or add the key
+value to the arglist that is passed inward, although the change
+will be in effect for the duration of the fwrapper.
+</li>
+</ul>
+
+<h4 id="11">
+def-fwrapper is a defining macro like defun
+</h4>
+<p id="12">
+<a href="def-fwrapper.htm"><b>def-fwrapper</b></a> is a additional
+defining macro in Allegro CL, joining the standard defining macros
+like <a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a>. Among
+other things, this means that the resulting code is wrapped in a block
+named by the wrapper <i>name</i> which can be returned
+from. As with any defining macro, one can use <a href="../../../ansicl/dictentr/macroex0.htm"><b>macroexpand</b></a> and <a href="../../../ansicl/dictentr/writepri.htm"><b>pprint</b></a> to see what is actually
+happening (you may see a different macroexpansion -- this is shown
+only to see how to get a macroexpansion):
+</p>
+<pre id="13">
+CL-USER(1): (pprint (macroexpand '(def-fwrapper foo (a b) nil)))
+
+(PROGN (EVAL-WHEN (COMPILE)
+         (EXCL::CHECK-LOCK-DEFINITIONS-COMPILE-TIME 'FOO 'FUNCTION
+           'DEF-FWRAPPER (FBOUNDP 'FOO)))
+       (SETF (FDEFINITION 'FOO)
+             (NAMED-FUNCTION FOO
+               (LAMBDA (EXCL::NEXT-FWRAPPERS EXCL::FWRAP-ENV
+                        EXCL::PRIMARY-FUNCTION ARGLIST EXCL::NARGS)
+                 (DECLARE
+                  (IGNORABLE EXCL::NEXT-FWRAPPERS EXCL::FWRAP-ENV
+                   EXCL::PRIMARY-FUNCTION))
+                 (EXCL::FWRAPPER-ARGUMENT-CHECK 'FOO 2 2 ARGLIST
+                   EXCL::NARGS)
+                 (BLOCK FOO
+                   (SYMBOL-MACROLET ((A
+                                      (EXCL::GET-FWRAPPER-ARG
+                                       EXCL::NARGS
+                                       0
+                                       ARGLIST))
+                                     (B
+                                      (EXCL::GET-FWRAPPER-ARG
+                                       EXCL::NARGS
+                                       1
+                                       ARGLIST)))
+                     (LET* ()
+                       (LET* ((#:G4 NIL))
+                         (DECLARE (IGNORABLE #:G4))
+                         NIL)))))))
+       (REMPROP 'FOO 'EXCL::%FUN-DOCUMENTATION)
+       (RECORD-SOURCE-FILE 'FOO) 'FOO)
+CL-USER(2): 
+</pre>
+
+<p id="14">
+See <a href="../../fwrappers-and-advice.htm">fwrappers-and-advice.htm</a> for information
+of fwrapping functions (and on the older, deprecated advice facility).
+</p>
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-fwrapper.htm">9.0 version</a></td></tr></table></body></html>

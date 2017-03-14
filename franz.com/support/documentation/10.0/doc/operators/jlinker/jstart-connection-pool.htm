@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>jstart-connection-pool</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jstart-connection-pool.htm">9.0 version</a></td></tr></table><h2 id="2">jstart-connection-pool</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>lisp-min lisp-max lisp-idle java-min java-max java-idle</i> (<i>error-p</i> t)<i> wait</i><i>
+</i></p>
+
+
+
+<p id="4">
+This function start a connection pool when delayed start was specified
+in the call to <a href="jlinker-init.htm"><b>jlinker-init</b></a>. If the pool is already
+started, then no action is taken. The values returned are as if
+<code>(jquery-connection-pool :wait wait)</code> were called
+(see <a href="jquery-connection-pool.htm"><b>jquery-connection-pool</b></a>).
+</p>
+<p id="5">
+If no pool was specified in the call to <a href="jlinker-init.htm"><b>jlinker-init</b></a>, the behavior depends on
+the <b><i>error-p</i></b> argument.  If
+non-<code>nil</code>, signal an error; otherwise return
+<code>nil</code>.
+</p>
+<p id="6">
+This function can be safely called repeatedly or from multiple threads;
+only the earliest call will have any effect, the others will wait or
+return a state.
+</p>
+<p id="7">
+When a pool is created, the effective parameters are obtained by
+combining the arguments with the value of <a href="../../variables/jlinker/s_jlinker-default-connection-pool_s.htm"><code>*jlinker-default-connection-pool*</code></a>.  See
+that value of <a href="../../variables/jlinker/s_jlinker-default-connection-pool_s.htm"><code>*jlinker-default-connection-pool*</code></a> for
+information on the various arguments. 
+</p>
+<p id="8">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jstart-connection-pool.htm">9.0 version</a></td></tr></table></body></html>

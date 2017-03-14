@@ -1,0 +1,110 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>variable-information</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/variable-information.htm">9.0 version</a></td></tr></table><h2 id="2">variable-information</h2>
+
+<p id="3"><b>Arguments: </b><i>
+symbol </i> &amp;optional <i>env all-declarations</i><i>
+</i></p>
+
+<p id="4">
+This function returns information about the variable named by symbol
+in the environment <i>env</i>.  <i>env</i>
+may be an environment object or <code>nil</code>, indicating
+the null lexical environment. 
+</p>
+<p id="5">
+<i>all-declarations</i> is a boolean which requests a
+building of the full alist to be provided as the third return value
+from this function.  It is provided in order to reduce consing when
+its value is <code>nil</code>, since most declarations are
+ignorable by an implementation and thus it is not necessary to cons the
+alist every time.
+</p>
+<p id="6">
+Four values are returned.
+</p>
+<ol>
+<li id="7">
+The first value returned is one of the following values, providing
+information about the binding of the variable named by
+<i>symbol</i>:
+<ul>
+<li id="8">
+<code>nil</code>: there is no binding or definition of
+<i>symbol</i>.
+</li>
+<li id="9">
+<code>:special</code>: <i>symbol</i> names a
+special variable.
+</li>
+<li id="10">
+<code>:lexical</code>: <i>symbol</i> names a
+lexical variable.
+</li>
+<li id="11">
+<code>:symbol-macro</code>: <i>symbol</i> refers
+to a <a href="../../../ansicl/dictentr/symbol-m.htm"><b>symbol-macrolet</b></a> binding.
+</li>
+<li id="12">
+<code>:constant</code>: <i>symbol</i> names a
+constant defined by <a href="../../../ansicl/dictentr/defconst.htm"><b>defconstant</b></a> or <i>symbol</i> is a
+keyword.
+</li>
+</ul>
+</li>
+<li id="13">
+The second returned value is a locative cons (a cons whose
+car and/or cdr may be used as a  mutable value).  This locative
+cons is used to provide the local binding of the value (for
+:evaluation environments) or local compiler structure
+information (for the two compilation environments).  To
+reduce consing at critical points in the environments
+implementation, there are a few exceptions where the second
+value is not a cons representing a locative:
+<ul>
+<li id="14">
+When the first return value from <a href="variable-information.htm"><b>variable-information</b></a> is
+<code>:constant</code>, then the second value returned is an
+actual value, and not a value housed within a locative. This ensures
+that the value is not changed by replacing it in the (non-existent)
+locative.
+</li>
+<li id="15">
+When the first return value from <a href="variable-information.htm"><b>variable-information</b></a> is
+<code>:special</code>, then the second value is <code>nil</code>, because the value is dynamic and can be best
+accessed via <a href="../../../ansicl/dictentr/symbol-v.htm"><b>symbol-value</b></a>.
+</li>
+</ul>
+</li>
+<li id="16">
+The third returned value is an alist containing information
+declarations that apply to the bindings of
+<i>symbol</i>. The keys are symbols that name
+declaration specifiers (such as dynamic-extent, ignore, type, etc.)
+and the value is the associated value. This alist may not be complete
+if the <i>all-declarations</i> argument is not specified
+or is <code>nil</code>. If this is the case, only those
+declarations which have been actually stored into the environment
+object will be present in the alist; in general, if the symbol has no
+lexical binding and <i>all-declarations</i> is <code>nil</code>, then this third return value will also be
+<code>nil</code>. If <i>all-declarations</i>
+is true, then applicable declarations are also be gathered from the
+global environment.  <b>Note</b>: the <code>special</code>
+declaration has special meaning in the context of <a href="variable-information.htm"><b>variable-information</b></a>; it never shows up in a
+declaration list, but instead shows up with the label
+<code>:special</code> in the first return value.
+</li>
+<li id="17">
+The fourth returned value is a boolean indicating whether binding is
+local or global: the value is true if the binding is local, <code>nil</code> if not. (In CLtL-2, this local/global boolean is
+the second returned value.)
+</li>
+</ol>
+
+
+<p id="18">
+See <a href="../../environments.htm">environments.htm</a> for more information on
+environments.
+</p>
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/variable-information.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,96 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>open-project</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/open-project.htm">9.0 version</a></td></tr></table><h2 id="2">open-project</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pathname-or-namestring
+</i>&amp;key <i>action</i><i>
+</i></p>
+
+<p id="4">
+This function opens a project (identified by the arguments) for further
+development in the IDE. The project becomes the current project (as
+returned by <a href="current-project.htm"><b>current-project</b></a>). This function
+returns the project that was opened, unless no project is opened for
+some reason (such as failure to specify an existing project definition
+file), in which case <code>nil</code> is returned. If the
+project is opened successfully, then the function <a href="current-project.htm"><b>current-project</b></a> will continue to
+return the project until another opened project (or a new project)
+takes its place. (Therefore, if this function fails to open a project,
+the previously open project remains the current project.)
+</p>
+<p id="5">
+Projects are typically opened interactively by using the <a href="../../ide-menus-and-dialogs/file-menu.htm#open-project">File | Open
+Project</a> command (which calls this function), but it may be
+useful to call this function directly (for example) in the
+<i>startup.cl</i> file, perhaps as part of code that
+conditionally decides which project to initially open in the IDE.
+(<i>startup.cl</i> is loaded during IDE startup. See
+<a href="../../cgide.htm#startup-1">About IDE startup</a>
+in <a href="../../cgide.htm">cgide.htm</a>.)
+</p>
+<p id="6">
+When calling <a href="open-project.htm"><b>open-project</b></a>
+programmatically, it's probably best to do so inside a call to
+<a href="eval-in-listener-thread.htm"><b>eval-in-listener-thread</b></a> as
+follows. This will ensure that the code runs in the IDE GUI process,
+just as when using the menu command, so that form windows and the
+project manager will get created in that process as usual.  See
+<a href="eval-in-listener-thread.htm"><b>eval-in-listener-thread</b></a> for
+more information.
+</p>
+
+<pre id="7">
+(ide:eval-in-listener-thread
+  '(ide.project:open-project "c:/path/project1.lpr")
+  :listener :gui)
+</pre>
+
+<p id="8">
+To simply run an existing project in the IDE without further
+developing it, or to load it before calling <a href="build-project.htm"><b>build-project</b></a>, call <a href="load-project.htm"><b>load-project</b></a> instead.  There should be no need
+to call <a href="load-project.htm"><b>load-project</b></a>
+and <a href="build-project.htm"><b>build-project</b></a>
+specifically in the IDE GUI process.
+</p>
+
+<h3 id="9">Arguments</h3>
+
+
+<p id="10">
+<i>pathname-or-namestring</i> may be either a pathname
+or string naming a .lpr project definition file that was automatically
+created by saving a project in the IDE. It may alternately be 
+<code>nil</code>, in
+which case the file-selection Common Dialog is invoked to prompt for
+the .lpr file to open.
+</p>
+<p id="11">
+<i>action</i> may be any one of the following values:
+</p>
+<ul>
+<li id="12">
+<code>nil</code> (the default): the current <a href="open-project-action.htm"><b>open-project-action</b></a>
+configuration option is used. (This option is found in the Open group
+box on the <a href="../../ide-menus-and-dialogs/options-dialog-project.htm">Project</a> tab of the <a href="../../ide-menus-and-dialogs/options-dialog.htm">Options</a> dialog.)
+</li>
+<li id="13">
+<b>:full-compile</b>: all of the source code files of the project are
+compiled, and all of the resulting fasl files are loaded.
+</li>
+<li id="14">
+<b>:compile</b>: all of the source code files for which there is not a
+corresponding newer fasl file are compiled, and then all of the fasl
+files are loaded.
+</li>
+<li id="15">
+<b>:no-compile</b>: 
+no files are compiled or loaded; this option may be desired if the
+project will not successfully load due to having errors or being in an
+intermediate inconsistent state.
+</li>
+</ul>
+
+
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/open-project.htm">9.0 version</a></td></tr></table></body></html>

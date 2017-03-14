@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*patches*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/system/s_patches_s.htm">9.0 version</a></td></tr></table><h2 id="2">*patches*</h2>
+
+<p id="3">The value of this variable is alist witch the keys being keywords
+that describe the patch category and the values being lists describing
+the individual patches loaded into the image. For a patch file to be
+noticed, it must contain a <a href="../../operators/system/defpatch.htm"><b>defpatch</b></a> form. All official Allegro CL
+patches contain such a form.
+</p>
+<p id="4">
+The values in the alist are (as said above) themselves lists, with
+four elements:
+</p>
+<ol>
+<li id="5">
+
+A string providing the name of the patch that an attempt was made to
+load.
+
+</li>
+<li id="6">
+
+The version of the patch (an integer).
+
+</li>
+<li id="7">
+
+A string providing a short description of the patch.
+
+</li>
+<li id="8">
+
+<code>nil</code> if the patch was loaded sucessfully or a
+string explaining why it was not loaded.
+
+</li>
+</ol>
+<p id="9">
+Here is an example of several entries (you may not see these exact
+patches), first some :compiler patches and then a few :lisp patches:
+</p>
+
+<pre id="10">
+((:compiler
+  ("fb006" 1 "Allow deprecation of time consuming compiler switches." nil)
+  ("fb005" 1 "Fix an immediate-args float return value bug in x86-64." nil)
+  ("fb004" 1 "Fix immed-args register allocation for x86-64." nil)
+  ("fb002" 1
+   "Fixes formatting failures in the (:explain :tailmerging) declaration."
+   nil)
+  ("fb001" 1 "Fix same-register-multiply problem." nil))
+ (:lisp
+  ("fa026" 1 "Fix single-value-return versions of floor and ceiling." nil)
+  ("fa025" 2 "Macros and support objects for using SMP macros in acl 8.1."
+   nil)
+  ...)
+</pre>
+
+<p id="11">
+Note particularly the last value of the four in the individual patch
+lists: <code>nil</code> if the patch was loaded
+sucessfully. All these patches were loaded. If the load was
+unsuccessful, there would be a string explaining why it was not
+loaded. If the last value is not <code>nil</code>, the
+patch was not loaded and whatever it is designed to fix/change is
+unfixed/unchanged.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/system/s_patches_s.htm">9.0 version</a></td></tr></table></body></html>

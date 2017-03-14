@@ -1,0 +1,90 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>two-stroke-gesture</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">two-stroke-gesture</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window count gesture
+</i></p>
+
+<p id="4">
+This generic function is called whenever all fingers are removed from
+the screen after a gesture on a <a href="../../../classes/cg/two-stroke-mixin.htm"><code>two-stroke-mixin</code></a> window.  An application can
+provide methods on this generic function to handle certain kinds of
+gestures.  See the <a href="../../../classes/cg/two-stroke-mixin.htm"><code>two-stroke-mixin</code></a> class for more
+information.
+</p>
+<p id="5">
+A <a href="../t/two-stroke-gesture.htm"><b>two-stroke-gesture</b></a> method
+should return true if it handled the gesture, to override any default
+behavior. Returning will allow default behavior, which for a tap will
+call <a href="../m/mouse-left-down.htm"><b>mouse-left-down</b></a> and for a
+hold will call <a href="../m/mouse-right-down.htm"><b>mouse-right-down</b></a>.  Other default behavior would
+depend on what Microsoft does when <a href="../t/touch-event.htm"><b>touch-event</b></a>
+returns <code>nil</code>.
+</p>
+<p id="6">
+<b><i>window</i></b> will be the <a href="../../../classes/cg/two-stroke-mixin.htm"><code>two-stroke-mixin</code></a> window where the
+gesture was done.
+</p>
+<p id="7">
+<b><i>count</i></b> will be an integer from 1 to 10
+(inclusive) for the maximum number of fingers that were in contact
+with the screen simultaneously during the gesture.
+</p>
+<p id="8">
+<b><i>gesture</i></b> will be a keyword symbol for the
+particular gesture that was interpreted from the many finger
+coordinates that were passed at a lower level to a touch-event method.
+Here are the possible keywords that may get passed, with their
+meanings:
+</p>
+<ul>
+<li id="9">
+<code>:tap</code> - the user did not drag appreciably, and
+released all fingers within <a href="../t/two-stroke-hold-time.htm"><b>two-stroke-hold-time</b></a> milliseconds.
+</li>
+<li id="10">
+<code>:hold</code> - the user did not drag appreciably, and held
+one or more fingers down longer than <a href="../t/two-stroke-hold-time.htm"><b>two-stroke-hold-time</b></a> milliseconds.
+</li>
+<li id="11">
+<code>:pinch</code> - the maximum finger count is 2, and the two
+fingers were moved closer to each other during the gesture by a
+certain threshold or more.
+</li>
+<li id="12">
+<code>:spread</code> - the maximum finger count is 2, and the
+two fingers were moved farther from each other during the gesture by a
+certain threshold or more.
+</li>
+<li id="13">
+<code>:left</code>, <code>:up</code>, <code>:right</code>,
+or <code>:down</code> - the user dragged in one of these
+orthogonal directions.
+</li>
+<li id="14">
+<code>:left-up</code>, <code>:left-right</code>, 
+<code>:left-down</code>,
+<code>:up-left</code>, <code>:up-down</code>, 
+<code>:up-right</code>,
+<code>:right-up</code>, <code>:right-left</code>,
+<code>:right-down</code>, <code>:down-right</code>,
+<code>:down-up</code>, or <code>:down-left</code> - the
+user dragged in the direction that's mentioned first in the keyword
+and then (with fingers still in contact with the screen) dragged in
+the second direction.  A curved motion will still be interpreted as
+two directions as long as the path ventures sufficiently to one side
+of the line between the starting and ending positions, and where both
+vertical and horizontal differences between the starting and ending
+positions are also sufficient.
+<p id="15">
+While up to ten fingers are tracked, a dragging gesture will be
+interpreted only from the path of the first finger that made contact
+with the screen.  Gestures other than those mentioned above will be
+interpreted as the one that most closely resembles the gesture that
+was done.
+</p>
+</li>
+</ul>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

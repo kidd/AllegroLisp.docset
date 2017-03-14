@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>device-buffer-length</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-buffer-length.htm">9.0 version</a></td></tr></table><h2 id="2">device-buffer-length</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+
+<p id="4">
+Returns the desired length of buffers to be allocated for the stream,
+if any. This method may be called from almost anywhere (the exceptions
+are noted in the bulleted list below), and should return a value that
+is constant for each instance. The method may query the stream (to
+determine the optimum buffer length for the underlying device), and so
+the stream must exist before <a href="device-buffer-length.htm"><b>device-buffer-length</b></a> methods are
+executed. Therefore, <a href="device-buffer-length.htm"><b>device-buffer-length</b></a> methods must never be
+called by
+</p>
+
+<ul>
+<li id="5">any before methods on <a href="device-open.htm"><b>device-open</b></a>
+</li> <li id="6">any methods on <a href="../../../ansicl/dictentr/allocate.htm"><b>allocate-instance</b></a> or
+<a href="../../../ansicl/dictentr/initiali.htm"><b>initialize-instance</b></a>,</li> 
+<li id="7">any methods on <a href="device-open.htm"><b>device-open</b></a>, <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or <a href="../../../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> called before the most
+specific <a href="device-open.htm"><b>device-open</b></a> primary
+method has had a chance to make the actual connection.</li>
+</ul>
+
+<h3 id="8">Defined methods</h3>
+
+<ul>
+<li id="9">
+On class: <a href="../../classes/excl/simple-stream.htm"><code>simple-stream</code></a>: returns 4096.
+</li>
+<li id="10">
+On class: <a href="../../classes/excl/null-simple-stream.htm"><code>null-simple-stream</code></a>: returns 256.
+</li>
+</ul>
+
+<p id="11">
+See <a href="../../streams.htm">streams.htm</a> for information on the
+simple-streams implementation in Allegro CL. The older but still
+supported Gray streams implementation is described in
+<a href="../../gray-streams.htm">gray-streams.htm</a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-buffer-length.htm">9.0 version</a></td></tr></table></body></html>

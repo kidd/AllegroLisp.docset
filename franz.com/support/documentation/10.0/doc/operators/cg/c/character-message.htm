@@ -1,0 +1,108 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>character-message</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/character-message.htm">9.0 version</a></td></tr></table><h2 id="2">character-message</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window buttons character
+</i></p>
+
+<p id="4">
+This generic function is called when the user types a graphical
+character, unless a <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method overrides
+the default behavior. An application may add methods to this generic
+function to respond to keyboard events in its windows.
+</p>
+<p id="5">
+<i>window</i> is the window that had the keyboard focus
+when the event occurred. The keyboard focus is usually indicated by
+some sort of highlighting.
+</p>
+<p id="6">
+<i>buttons</i> is an integer indicating which mouse
+buttons and shift keys were down when the event occurred.  The value
+is the result of applying <a href="../../../../ansicl/dictentr/logandlo.htm"><b>logior</b></a> to the values of the
+following bit-flag variables: 
+</p>
+<ul>
+<li id="7">
+<a href="../../../variables/cg/left-mouse-button.htm"><code>left-mouse-button</code></a>
+</li>
+<li id="8">
+<a href="../../../variables/cg/middle-mouse-button.htm"><code>middle-mouse-button</code></a>
+</li>
+<li id="9">
+<a href="../../../variables/cg/right-mouse-button.htm"><code>right-mouse-button</code></a>
+</li>
+<li id="10">
+<a href="../../../variables/cg/first-x-button.htm"><code>first-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>)
+</li>
+<li id="11">
+<a href="../../../variables/cg/second-x-button.htm"><code>second-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>),
+</li>
+<li id="12">
+<a href="../../../variables/cg/shift-key.htm"><code>shift-key</code></a>
+</li>
+<li id="13">
+<a href="../../../variables/cg/control-key.htm"><code>control-key</code></a>
+</li>
+<li id="14">
+<a href="../../../variables/cg/alt-key.htm"><code>alt-key</code></a>
+</li>
+</ul>
+<p id="15">
+Other bits might be turned on as well, so functions such as <a href="../../../../ansicl/dictentr/logtest.htm"><b>logtest</b></a> should be used to
+determine whether a particular mouse button or shift key was down; for
+example,
+</p>
+<pre id="16">
+(logtest right-mouse-button buttons) 
+</pre>
+<p id="17">
+will return
+true if and only if the right mouse button was down.  For "down"
+events, the value includes the button or key being pressed now; for
+"up" events, the value does not include the button or key being
+released.
+</p>
+
+<p id="18">
+<i>character</i> is the character that was typed. It is
+always a Common Lisp character object.
+</p>
+<p id="19">
+While a keypress will always cause <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> and <a href="../v/virtual-key-up.htm"><b>virtual-key-up</b></a> to be
+called, it will cause <a href="../c/character-message.htm"><b>character-message</b></a> to be called only
+under certain conditions. First, the keypress must indicate a
+graphical character. second, one of the following must be true:
+</p>
+<ol>
+<li id="20">
+The window in which the key was pressed is a <a href="../../../classes/cg/dialog-mixin.htm"><code>dialog-mixin</code></a> instance or a child or
+other descendant of a <a href="../../../classes/cg/dialog-mixin.htm"><code>dialog-mixin</code></a> instance.
+</li>
+<li id="21">
+The default <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method must run
+(since this method tells the operating system to generate a character
+message from the <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> message).
+</li>
+</ol>
+<p id="22">
+Therefore, if an application adds a <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method for a
+window that is not on a dialog, and this method does not call
+<code>(call-next-method)</code> for a particular keypress, then
+the default <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method is not
+called, and therefore <a href="../c/character-message.htm"><b>character-message</b></a> will not be
+called for that keypress.
+</p>
+<p id="23">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics.
+</p>
+
+
+
+
+
+<hr><p id="24"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/character-message.htm">9.0 version</a></td></tr></table></body></html>

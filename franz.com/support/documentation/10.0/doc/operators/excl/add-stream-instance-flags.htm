@@ -1,0 +1,81 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-stream-instance-flags</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/add-stream-instance-flags.htm">9.0 version</a></td></tr></table><h2 id="2">add-stream-instance-flags</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream </i> &amp;rest <i>flag-names</i><i>
+</i></p>
+
+
+<p id="4">
+This macro adds (via <a href="../../../ansicl/dictentr/logandlo.htm"><b>logior</b></a>)
+instance flags to or zeroes instance flags out of the
+standard-instance object that is the <i>stream</i>. Note
+that this flags field has no correlation to a flags slot in the
+stream. You may inspect a stream in raw mode to see the instance-flags
+(see <a href="../../inspector.htm">inspector.htm</a>).
+</p>
+<p id="5">
+The behavior depends on the first of the
+<i>flag-names</i> arguments. If it is a keyword
+specifying a valid instance flag, then it and all the remaining
+keyword-named instance flags are added. But if the first of the
+<i>flag-names</i> arguments is a list of flag names,
+then those are zeroed out before the remaining
+<i>flag-names</i> (if any) are added. For example, the
+form
+</p>
+<pre id="6">
+(add-stream-instance-flags stream (:gray :dual :string) :simple)
+</pre>
+<p id="7">
+first ensures that the <code>:gray</code>,
+<code>:dual</code>, and <code>:string</code> bits are
+zero, before ensuring that the <code>:simple</code> bit is set.
+This is done without modifiying the <code>:input</code> or
+<code>:output</code> bits. On the other hand, this form
+</p>
+<pre id="8">
+(add-stream-instance-flags stream :string :simple)
+</pre>
+<p id="9">
+simply ensures the <code>:string</code> and
+<code>:simple</code> flags are set.
+</p>
+<p id="10">
+Valid instance flags are placed into the following groups:
+</p>
+<ul>
+<li id="11">
+<b>Direct stream subclass</b> (select exactly one): <code>:gray</code>
+(identifies a Gray or fundamental-stream) or
+<code>:simple</code> (identifies a simple-stream).
+A stream instance that has neither bit set is not considered a stream.
+</li>
+<li id="12">
+<b>Open-ness</b> (select one, both, or none): <code>:input</code>
+(stream may perform input operations); <code>:output</code>
+(stream may perform output operations). A stream instance that has
+neither bit set is not considered an open stream.
+</li>
+<li id="13">
+<b>Direct simple-stream subclass</b> (select zero or one):
+<code>:dual</code> (stream is a dual-channel stream);
+<code>:string</code> (stream is a string-stream). A stream with
+neither bit set is considered a single-channel stream
+</li>
+</ul>
+<p id="14">
+You must load the <code>:iodefs</code> module to use this
+macro. Do that by evaluating <code>(require :iodefs)</code>. (It
+is not an error to evaluate that form if the module is already
+loaded.) This macro is intended for implementing device-level
+functionality and should not be used except for that purpose. See <a href="../../streams.htm#ss-description-2">Simple-stream Description</a>
+in <a href="../../streams.htm">streams.htm</a> for a description of the device-level.
+</p>
+<p id="15">
+See <a href="../../streams.htm">streams.htm</a> for information on the
+simple-streams implementation in Allegro CL. 
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/add-stream-instance-flags.htm">9.0 version</a></td></tr></table></body></html>

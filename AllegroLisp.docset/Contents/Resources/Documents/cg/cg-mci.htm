@@ -1,0 +1,383 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>About MCI support in Common Graphics</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-mci.htm">9.0 version</a></td></tr></table><h1 id="2">About MCI support in Common Graphics</h1><p id="3">This document contains the following sections:</p><a href="#mci-intro-1">1.0 Introduction to MCI functionality in Common Graphics</a><br><a href="#mci-ops-1">2.0 MCI functionality</a><br><hr><hr><h2 id="4"><a name="mci-intro-1">1.0 Introduction to MCI functionality in Common Graphics</a></h2>
+
+<p id="5">
+The Allegro CL Multimedia extension provides a high-level CLOS-based
+programmatic interface to the standard Windows Media Control Interface
+(MCI) functionality. Various multimedia devices such as the audio CD
+player, digital sound files (wave audio), MIDI files, and animation
+files, can be operated using a small amount of very straightforward
+lisp code.
+</p>
+<p id="6">
+Each type of multimedia device is represented by a CLOS class, and
+each particular multimedia device by a CLOS instance. A CLOS method
+is supplied for each operation that a device can perform, such as
+opening, playing, seeking to a new position, or asking about the
+current state of the device.
+</p>
+<p id="7">
+The following simple example is all the code that's needed in order to
+play an audio CD disc from its current position to the end:
+</p>
+<pre id="8">
+(in-package :cg-user)
+(setq cd (make-instance 'mci-cd-audio))
+(mci-open cd)
+(mci-play cd)
+</pre>
+<p id="9">
+While cd-audio is a "simple device" which always plays whatever is
+loaded into the physical cd player, other types of multimedia devices
+(called "compound devices") can play sounds or animations from various
+files. For these devices, you can specify the filename to play when
+opening the device.
+</p>
+<p id="10">
+The next example would use one logical wave-audio device to play two
+sound files in succession (these calls assume the relavant files are
+in c:\\windows\\Media\\, which may be incorrect on your machine;
+evaluating <code>(sys::windows-directory)</code>, using the
+internal function <b>sys:windows-directory</b>, should return the
+correct parent of the Media directory):
+</p>
+<pre id="11">
+(setq wav (make-instance 'mci-wave-audio))
+(mci-open wav :file "c:\\windows\\Media\\chord.wav")
+(mci-play wav :wait-p t)
+(mci-close wav)
+(mci-open wav :file "c:\\windows\\Media\\tada.wav")
+(mci-play wav :wait-p t)
+</pre>
+<p id="12">
+The <code>:wait-p</code> flag above causes the <a href="../operators/cg/m/mci-play.htm"><b>mci-play</b></a> function to not return
+until the sound is finished playing, so that the second file will not
+be played until the first one is done. By default, mci functions will
+return asynchronously so that you can continue other processing while
+the activity requested by the function call is being performed.
+</p>
+<p id="13">
+A related argument is the <code>:notify-p</code> flag. When this
+is passed, the <a href="../operators/cg/m/mci-notify.htm"><b>mci-notify</b></a> generic function will be
+called when the operation is complete, with a value indicating whether
+the operation completed successfully, failed, or was interrupted by
+the user. You can redefine the <a href="../operators/cg/m/mci-notify.htm"><b>mci-notify</b></a> method for your own
+subclasses or instances in order to look at the notification and act
+on it however you wish.
+</p>
+<p id="14">
+For finer control over device operation, various optional keyword
+arguments are provided by the methods. For example, to play the first
+minute of the third track on the cd:
+</p>
+<pre id="15">
+(mci-device-set-time-format cd :tmsf)
+(mci-play cd :from (tmsf-to-integer 3 0 0 0)
+             :to (tmsf-to-integer 3 1 0 0))
+</pre>
+<p id="16">
+The above code first tells the device to use the
+track-minute-second-frame (:tmsf) time format for describing its
+current location, and then tells the CD to play from "track 3 minute
+0" to "track 3 minute 1". (The function <a href="../operators/cg/t/tmsf-to-integer.htm"><b>tmsf-to-integer</b></a> is required because
+there are various time formats that use different numbers of
+components.) To determine the current position of the CD device while
+it is playing, use:
+</p>
+<pre id="17">
+(multiple-value-setq (track minute second frame)
+  (integer-to-tmsf (mci-device-position cd)))
+</pre>
+<p id="18">
+If <a href="../operators/cg/m/mci-open.htm"><b>mci-open</b></a> is
+called when no device of the requested class is available, an error
+occurs with an error message from the operating system indicating why
+the device could not be opened. A device may not be available either
+because there is no such device installed on the computer, or because
+this application or other applications have all such devices open
+already. Since there is no way to know whether a device is available
+before attempting to open it, an application may want to trap the
+error and decide how to proceed rather than simply breaking. For
+example, the following function will either return an open cd-audio
+device, or nil to indicate that a cd-audio device could not be opened,
+along with the explanatory error message as a second value.
+</p>
+<pre id="19">
+(defun get-a-cd-device ()
+  (let* ((cd (make-instance 'mci-cd-audio)))
+    (handler-case (mci-open cd)
+      (error (c)
+        (values nil (princ-to-string c))))))
+</pre>
+<p id="20">
+To ensure that devices are available when needed, it is prudent to
+always close devices by calling <a href="../operators/cg/m/mci-close.htm"><b>mci-close</b></a> when they are no longer
+needed. An error will occur if an already-closed device is closed
+again, so an application needs to either keep track of whether it has
+closed a device, or else check whether a device is still open. If a
+device's <a href="../operators/cg/m/mci-device-id.htm"><b>mci-device-id</b></a> is 0, then the device
+is closed; otherwise the device is open, and the <a href="../operators/cg/m/mci-device-id.htm"><b>mci-device-id</b></a> will be a positive
+integer (that value is of no interest to the application other than
+indicating the device is open).
+</p>
+<p id="21">
+When you are using a device that requires a window (such as displaying
+animation from a .avi file), you should use <a href="../operators/cg/m/mci-set-window.htm"><b>mci-set-window</b></a> to specify the
+window to use. If you do not, the animation will appear in a new
+non-Common Graphics window over which Common Graphics has no control.
+</p>
+<p id="22">
+See also the example on the page describing <a href="../operators/cg/m/mci-record.htm"><b>mci-record</b></a>.
+</p>
+
+<hr><hr><h2 id="23"><a name="mci-ops-1">2.0 MCI functionality</a></h2>
+
+<p id="24">
+This section outlines the available set of MCI operators:
+</p>
+<h3 id="25">
+Basic operations
+</h3>
+<ul>
+<li id="26">
+<a href="../operators/cg/m/mci-open.htm"><b>mci-open</b></a>
+prepare a device for use.
+</li>
+<li id="27">
+<a href="../operators/cg/m/mci-set-window.htm"><b>mci-set-window</b></a>
+specifies the window in which an mci-animation will play back.
+</li>
+<li id="28">
+<a href="../operators/cg/m/mci-close.htm"><b>mci-close</b></a> release the
+resources used by a device when done with it.
+</li>
+<li id="29">
+<a href="../operators/cg/m/mci-play.htm"><b>mci-play</b></a>
+start playing an open device.
+</li>
+<li id="30">
+<a href="../operators/cg/m/mci-stop.htm"><b>mci-stop</b></a>
+stop playing a device that is currently playing.
+</li>
+<li id="31">
+<a href="../operators/cg/m/mci-record.htm"><b>mci-record</b></a> record a
+wave-audio sound from the microphone or other source.
+</li>
+<li id="32">
+<a href="../operators/cg/m/mci-save.htm"><b>mci-save</b></a>
+save a newly-recorded wave-audio sound to a .wav file.
+</li>
+<li id="33">
+<a href="../operators/cg/m/mci-step.htm"><b>mci-step</b></a>
+display the next (or previous) frame of a .avi animation file.
+</li>
+<li id="34">
+<a href="../operators/cg/m/mci-pause.htm"><b>mci-pause</b></a> stop playing,
+but remain ready to resume playing quickly.
+</li>
+<li id="35">
+<a href="../operators/cg/m/mci-resume.htm"><b>mci-resume</b></a> resume playing
+after pausing.
+</li>
+<li id="36">
+<a href="../operators/cg/m/mci-seek.htm"><b>mci-seek</b></a>
+jump to a new position, ready to play from that point.
+</li>
+<li id="37">
+<a href="../operators/cg/m/mci-delete.htm"><b>mci-delete</b></a>
+delete material already recorded.
+</li>
+</ul>
+<h3 id="38">Capability inquiries</h3>
+<p id="39">
+Most of these functions return true or <code>nil</code> as
+the device has or does not have the indicated capability or can or
+cannot perform the indicated task. Some return more specific
+information.
+</p>
+<ul>
+<li id="40">
+<a href="../operators/cg/m/mci-device-can-eject-p.htm"><b>mci-device-can-eject-p</b></a>
+</li>
+<li id="41">
+<a href="../operators/cg/m/mci-device-can-play-p.htm"><b>mci-device-can-play-p</b></a>
+</li>
+<li id="42">
+<a href="../operators/cg/m/mci-device-can-record-p.htm"><b>mci-device-can-record-p</b></a>
+</li>
+<li id="43">
+<a href="../operators/cg/m/mci-device-can-save-p.htm"><b>mci-device-can-save-p</b></a>
+</li>
+<li id="44">
+<a href="../operators/cg/m/mci-device-has-audio-p.htm"><b>mci-device-has-audio-p</b></a>
+</li>
+<li id="45">
+<a href="../operators/cg/m/mci-device-has-video-p.htm"><b>mci-device-has-video-p</b></a>
+</li>
+<li id="46">
+<a href="../operators/cg/m/mci-device-uses-files-p.htm"><b>mci-device-uses-files-p</b></a>
+</li>
+<li id="47">
+<a href="../operators/cg/m/mci-device-type.htm"><b>mci-device-type</b></a>
+</li>
+<li id="48">
+<a href="../operators/cg/m/mci-compound-device-p.htm"><b>mci-compound-device-p</b></a>
+</li>
+<li id="49">
+<a href="../operators/cg/m/mci-device-can-stretch-p.htm"><b>mci-device-can-stretch-p</b></a>
+</li>
+<li id="50">
+<a href="../operators/cg/m/mci-device-can-reverse-p.htm"><b>mci-device-can-reverse-p</b></a>
+</li>
+<li id="51">
+<a href="../operators/cg/m/mci-device-fast-rate.htm"><b>mci-device-fast-rate</b></a>
+</li>
+<li id="52">
+<a href="../operators/cg/m/mci-device-normal-rate.htm"><b>mci-device-normal-rate</b></a>
+</li>
+<li id="53">
+<a href="../operators/cg/m/mci-device-slow-rate.htm"><b>mci-device-slow-rate</b></a>
+</li>
+<li id="54">
+<a href="../operators/cg/m/mci-device-max-windows.htm"><b>mci-device-max-windows</b></a>
+</li>
+<li id="55">
+<a href="../operators/cg/m/mci-device-palettes-p.htm"><b>mci-device-palettes-p</b></a>
+</li>
+<li id="56">
+<a href="../operators/cg/m/mci-device-can-freeze-p.htm"><b>mci-device-can-freeze-p</b></a>
+</li>
+<li id="57">
+<a href="../operators/cg/m/mci-device-inputs.htm"><b>mci-device-inputs</b></a>
+</li>
+<li id="58">
+<a href="../operators/cg/m/mci-device-outputs.htm"><b>mci-device-outputs</b></a>
+</li>
+</ul>
+
+<h3 id="59">
+Status inquiries
+</h3>
+<p id="60">
+These functions return information on the current state of a device.
+</p>
+<ul>
+<li id="61">
+<a href="../operators/cg/m/mci-device-current-track.htm"><b>mci-device-current-track</b></a>
+</li>
+<li id="62">
+<a href="../operators/cg/m/mci-device-length.htm"><b>mci-device-length</b></a>
+</li>
+<li id="63">
+<a href="../operators/cg/m/mci-device-mode.htm"><b>mci-device-mode</b></a>
+</li>
+<li id="64">
+<a href="../operators/cg/m/mci-device-number-of-tracks.htm"><b>mci-device-number-of-tracks</b></a>
+</li>
+<li id="65">
+<a href="../operators/cg/m/mci-device-position.htm"><b>mci-device-position</b></a>
+</li>
+<li id="66">
+<a href="../operators/cg/m/mci-device-start-position.htm"><b>mci-device-start-position</b></a>
+</li>
+<li id="67">
+<a href="../operators/cg/m/mci-device-ready-p.htm"><b>mci-device-ready-p</b></a>
+</li>
+<li id="68">
+<a href="../operators/cg/m/mci-device-time-format.htm"><b>mci-device-time-format</b></a>
+</li>
+<li id="69">
+<a href="../operators/cg/m/mci-device-forward-p.htm"><b>mci-device-forward-p</b></a>
+</li>
+<li id="70">
+<a href="../operators/cg/m/mci-device-hpal.htm"><b>mci-device-hpal</b></a>
+</li>
+<li id="71">
+<a href="../operators/cg/m/mci-device-hwnd.htm"><b>mci-device-hwnd</b></a>
+</li>
+<li id="72">
+<a href="../operators/cg/m/mci-device-speed.htm"><b>mci-device-speed</b></a>
+</li>
+<li id="73">
+<a href="../operators/cg/m/mci-device-stretch-p.htm"><b>mci-device-stretch-p</b></a>
+</li>
+<li id="74">
+<a href="../operators/cg/m/mci-device-disc-size.htm"><b>mci-device-disc-size</b></a>
+</li>
+<li id="75">
+<a href="../operators/cg/m/mci-device-media-type.htm"><b>mci-device-media-type</b></a>
+</li>
+<li id="76">
+<a href="../operators/cg/m/mci-device-side.htm"><b>mci-device-side</b></a>
+</li>
+<li id="77">
+<a href="../operators/cg/m/mci-device-speed.htm"><b>mci-device-speed</b></a>
+</li>
+<li id="78">
+<a href="../operators/cg/m/mci-device-media-present-p.htm"><b>mci-device-media-present-p</b></a>
+</li>
+<li id="79">
+<a href="../operators/cg/m/mci-device-input.htm"><b>mci-device-input</b></a>
+</li>
+<li id="80">
+<a href="../operators/cg/m/mci-device-output.htm"><b>mci-device-output</b></a>
+</li>
+<li id="81">
+<a href="../operators/cg/m/mci-device-average-bytes-per-second.htm"><b>mci-device-average-bytes-per-second</b></a>
+</li>
+<li id="82">
+<a href="../operators/cg/m/mci-device-bits-per-sample.htm"><b>mci-device-bits-per-sample</b></a>
+</li>
+<li id="83">
+<a href="../operators/cg/m/mci-device-block-alignment.htm"><b>mci-device-block-alignment</b></a>
+</li>
+<li id="84">
+<a href="../operators/cg/m/mci-device-channels.htm"><b>mci-device-channels</b></a>
+</li>
+<li id="85">
+<a href="../operators/cg/m/mci-device-format-tag.htm"><b>mci-device-format-tag</b></a>
+</li>
+<li id="86">
+<a href="../operators/cg/m/mci-device-samples-per-second.htm"><b>mci-device-samples-per-second</b></a>
+</li>
+<li id="87">
+<a href="../operators/cg/m/mci-device-level.htm"><b>mci-device-level</b></a>
+</li>
+</ul>
+
+<h3 id="88">
+Setting device status
+</h3>
+
+<p id="89">
+These functions modify the state of a device.
+</p>
+
+<ul>
+<li id="90">
+<a href="../operators/cg/m/mci-device-set-audio-on.htm"><b>mci-device-set-audio-on</b></a>
+</li>
+<li id="91">
+<a href="../operators/cg/m/mci-device-set-audio-off.htm"><b>mci-device-set-audio-off</b></a>
+</li>
+<li id="92">
+<a href="../operators/cg/m/mci-device-set-video-on.htm"><b>mci-device-set-video-on</b></a>
+</li>
+<li id="93">
+<a href="../operators/cg/m/mci-device-set-video-off.htm"><b>mci-device-set-video-off</b></a>
+</li>
+<li id="94">
+<a href="../operators/cg/m/mci-device-set-door-open.htm"><b>mci-device-set-door-open</b></a>
+</li>
+<li id="95">
+<a href="../operators/cg/m/mci-device-set-door-closed.htm"><b>mci-device-set-door-closed</b></a>
+</li>
+<li id="96">
+<a href="../operators/cg/m/mci-device-set-time-format.htm"><b>mci-device-set-time-format</b></a>
+</li>
+<li id="97">
+<a href="../operators/cg/m/mci-set-wave-options.htm"><b>mci-set-wave-options</b></a>
+</li>
+</ul>
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-mci.htm">9.0 version</a></td></tr></table></html>

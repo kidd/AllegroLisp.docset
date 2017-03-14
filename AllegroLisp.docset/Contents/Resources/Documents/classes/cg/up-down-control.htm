@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>up-down-control</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/up-down-control.htm">9.0 version</a></td></tr></table><h2 id="2">up-down-control</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of the up-down control. That is a control with two arrow
+heads pointing in opposite directions used for incrementing a numeric
+value in either direction by clicking on the arrow heads. A range of
+valid values can be specified by the 
+<a href="../../operators/cg/r/range.htm"><b>range</b></a> property.
+</p>
+<p id="5">
+Can be used on its own or paired with a buddy. A possible <a href="../../operators/cg/b/buddy-widget.htm"><b>buddy-widget</b></a> is the
+<a href="editable-text.htm"><code>editable-text</code></a>
+control. Once paired, the up-down-control will modify the display of
+its <a href="../../operators/cg/b/buddy-widget.htm"><b>buddy-widget</b></a>, otherwise
+it only modifies its own value (which can be programmatically accessed
+and, if desired, displayed elsewhere).
+</p>
+<p id="6">
+For example, place an <a href="editable-text.htm"><code>editable-text</code></a> control on a form and
+place an up-down control next it. Make the value of the editable-text
+1 and the range of the up-down control (0, 100). Ensure that the
+editable-text is correctly identified as the <a href="../../operators/cg/b/buddy-widget.htm"><b>buddy-widget</b></a> of the up-down control
+(as indicated by the <a href="../../operators/cg/b/buddy-widget.htm"><b>buddy-widget</b></a>
+property). When you run the form, the value in the editable text
+widget will increase (up to 100) and decrease (down to 0) as the
+up-down control is clicked.
+</p>
+<p id="7">
+There is special <a href="../../operators/cg/i/increment.htm"><b>increment</b></a> behavior for an
+up-down-control. You can have the increment be a single value or a
+list of paired values. In the latter case, the first member of each
+pair indicates a number of seconds and the second indicates the value
+of the increment during those seconds. For example, a value of
+<code>((1 1)(1 3)(2 10)(4 100))</code> indicates that the
+up-down-control should increment (or decrement) by 1 for the first
+second, by 3 for the next second, by 10 for the next 2 seconds, and
+then by 100 thereafter until either the mouse button is released or
+the maximum or minimum value of the control's range is reached.
+</p>
+<p id="8">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="9">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/up-down-control.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-barrier</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/make-barrier.htm">9.0 version</a></td></tr></table><h2 id="2">make-barrier</h2>
+
+<p id="3"><b>Arguments: </b><i>
+count </i>&amp;key <i>discount-on-abort discount-on-timeout callback disable-on-unblock name</i><i>
+</i></p>
+
+<p id="4">
+Returns a freshly created <a href="../../classes/mp/barrier.htm"><code>barrier</code></a> instance.  
+The new barrier is in the enabled state with an arriver-count of zero.
+The expected count is determined by
+the <b><i>count</i></b> argument which must be an
+integer greater than zero or <code>t</code>.
+If <code>t</code> is specified, the count is set to
+<a href="../../../ansicl/dictentr/most-pos.htm"><code>most-positive-fixnum</code></a>;
+such a barrier will effectively block until it is explicitly unblocked
+by a call to <a href="barrier-unblock.htm"><b>barrier-unblock</b></a>.
+</p>
+<p id="5">
+The two <b><i>discount</i></b> arguments
+(<b><i>discount-on-abort</i></b>
+and <b><i>discount-on-timeout</i></b>) specify what to
+do when a <a href="barrier-wait.htm"><b>barrier-wait</b></a> call
+ends abnormally. Each defaults to nil and a true value for either
+specifies that the arriver-count is decremented in that
+case. 
+
+The <b><i>discount-on-timeout</i></b> argument specifies
+the behavior if the <a href="barrier-wait.htm"><b>barrier-wait</b></a> call takes longer that the
+specified timeout. The <b><i>discount-on-abort</i></b>
+argument specifies the behavior if the <a href="barrier-wait.htm"><b>barrier-wait</b></a> call is ended
+abruptly for some other reason.
+</p>
+<p id="6">
+The <b><i>disable-on-unblock</i></b> argument specifies
+the behavior when <a href="barrier-unblock.htm"><b>barrier-unblock</b></a> is called explicitly or
+implicitly.  When <code>nil</code>, the built-in default,
+<a href="barrier-unblock.htm"><b>barrier-unblock</b></a> leaves the
+barrier enabled and ready for a new set of arriving threads.  When
+non-<code>nil</code>, the barrier is disabled.
+</p>
+<p id="7">
+The <b><i>name</i></b> argument should be a string that
+will be used in status and error messages.
+</p>
+<p id="8">
+The <b><i>callback</i></b> argument specifies a function
+that is called in the thread where <a href="barrier-wait.htm"><b>barrier-wait</b></a> detects that the arriver-count has
+reached the specified count. The function is called with one
+argument, the barrier. The function is called before the barrier is
+unblocked and while the barrier is still locked; consequently, this
+function should not perform extensive computations.
+</p>
+<p id="9">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/make-barrier.htm">9.0 version</a></td></tr></table></body></html>

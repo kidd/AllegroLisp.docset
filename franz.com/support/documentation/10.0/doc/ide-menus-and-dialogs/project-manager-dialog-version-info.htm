@@ -1,0 +1,35 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>project-manager-dialog-version-info</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog Tab</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/project-manager-dialog-version-info.htm">9.0 version</a></td></tr></table><h2 id="2">Project Manager Version Info Tab</h2>
+
+<p id="3"><img src="../pictures/pm-vi.jpg"></p>
+
+<p id="4">
+This tab on the <a href="project-manager-dialog.htm">Project Manager</a> dialog allows
+entering version (and other) information about the standalone
+application for the project, which is used by the Windows operating
+system. The information is ignored on other platforms.
+</p>
+<p id="5">
+If an end user uses the Windows file manager to show the properties
+dialog for your application, for example, there will be a Version tab
+that lists this information. It is a good idea to always fill in some
+of these fields, because otherwise the Version tab in the file manager
+will contain only empty fields, though almost all applications supply
+information for some of the fields.
+</p>
+<p id="6">
+The information is stored as the value of the
+<a href="../operators/ide/project-file-version-info.htm"><b>ide:project-file-version-info</b></a>
+property of the project, in the form of a property list.
+The <a href="file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> command will pass the plist as the
+:file-version-info argument to <a href="../operators/excl/generate-application.htm"><b>generate-application</b></a>, which will call the
+function <a href="../operators/windows/set-file-version-info.htm"><b>win:set-file-version-info</b></a> to modify the
+.exe file that has been placed into the distribution directory of the
+project.  You could call <a href="../operators/windows/set-file-version-info.htm"><b>win:set-file-version-info</b></a> yourself on the
+project's .exe file, if desired.
+</p>
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/project-manager-dialog-version-info.htm">9.0 version</a></td></tr></table></body></html>

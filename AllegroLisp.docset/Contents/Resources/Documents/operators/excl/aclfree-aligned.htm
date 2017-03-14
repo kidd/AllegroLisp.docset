@@ -1,0 +1,78 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>aclfree-aligned</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/aclfree-aligned.htm">9.0 version</a></td></tr></table><h2 id="2">aclfree-aligned</h2>
+
+<p id="3"><b>Arguments: </b><i>
+aligned
+</i></p>
+
+<p id="4">
+Makes available again to the system the space occupied by the object
+at the address which is represented by
+the <i>aligned</i> argument, which must be a fixnum. The
+object must have been allocated by either <a href="aclmalloc.htm"><b>aclmalloc</b></a> or <a href="aclmalloc-aligned.htm"><b>aclmalloc-aligned</b></a>.
+</p>
+
+<p id="5">
+If the argument is recognized as indicating a valid object, then this
+function returns the number of bytes that had originally been
+requested in the allocation. Otherwise 0 is returned. The actual
+number of bytes freed is at least the (non-zero value) returned and may
+be more if the original request was filled from a pool or larger
+areas.
+</p>
+<p id="6">
+The 0 return value is more complicated and means one of the following things:
+</p>
+<ol>
+<li id="7">
+The argument pointer is zero.
+</li>
+<li id="8">
+The argument pointer is not within the recorded allocations that
+<a href="aclmalloc-aligned.htm"><b>aclmalloc-aligned</b></a> has tracked.
+</li>
+<li id="9">
+A specific byte in the pointer's putative header is not the magic
+value it was originally set to.
+</li>
+<li id="10">
+The original aclmalloc request was for 0 bytes.
+</li>
+</ol>
+<p id="11">
+Cases 1 - 3 indicate a failure of some kind and no action is
+taken. Case 4 is odd but legal and does not indicated a failure.
+</p>
+
+
+<h3 id="12">
+Note on various Allegro CL malloc and free functions
+</h3>
+
+<p id="13">
+The space allocated by <a href="malloc.htm"><b>excl:malloc</b></a> and its C counterpart
+<b>malloc()</b> (described here collectively as "malloc") is different
+than the space allocated by <a href="aclmalloc.htm"><b>excl:aclmalloc</b></a> and the C <b>aclmalloc()</b>
+(described collectively as "aclmalloc").  Malloc allocates in space
+defined and maintained by the system, in whatever manner the system
+defines.  Some operating systems allow the linking in of alternate
+versions of <b>malloc()</b> and its cohorts (usually including
+<b>free()</b>, <b>calloc()</b>, <b>realloc()</b>, and others), giving
+some flexibility in debugging malloc bugs (but of course this need
+arises much less often in Lisp programming).  The aclmalloc
+functionalities are part of the Allegro CL library and allocate from
+space usually known as Aclmalloc heap space. <a href="aclmalloc.htm"><b>aclmalloc</b></a> is useful for allocating objects
+which should survive the rebirth of a dumped lisp.
+</p>
+<p id="14">
+The <a href="free.htm"><b>free</b></a> and <a href="aclfree.htm"><b>aclfree</b></a> functionalities must always
+match objects to free with the mallocs of the same kind; i.e. one
+should never <a href="free.htm"><b>free</b></a> an <a href="aclmalloc.htm"><b>aclmalloc</b></a>'d object, nor should one
+call an <a href="aclfree.htm"><b>aclfree</b></a> function on
+an object created with <a href="malloc.htm"><b>malloc</b></a>.  Note that one <b>can</b> mix <a href="aclmalloc.htm"><b>aclmalloc</b></a>/<a href="aclfree.htm"><b>aclfree</b></a> with <a href="aclmalloc-aligned.htm"><b>aclmalloc-aligned</b></a>/<a href="aclfree-aligned.htm"><b>aclfree-aligned</b></a>, but only after proper
+conversions are done; see <a href="../ff/address-to-aligned.htm"><b>ff:address-to-aligned</b></a> and <a href="../ff/aligned-to-address.htm"><b>ff:aligned-to-address</b></a>.
+</p>
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/aclfree-aligned.htm">9.0 version</a></td></tr></table></body></html>

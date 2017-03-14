@@ -1,0 +1,91 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>re-submatch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/re-submatch.htm">9.0 version</a></td></tr></table><h2 id="2">re-submatch</h2>
+
+<p id="3"><b>Arguments: </b><i>
+regexp string indexes selector
+</i>&amp;key  (<i>type</i> :string)<i>
+</i></p>
+
+<p id="4">
+This is a convenience function to extract a specified submatch
+information from the value returned by <a href="match-re.htm"><b>match-re</b></a>.
+</p>
+<p id="5">
+<i>regexp</i> should be a compiled regexp, and
+<i>indexes</i> should be a list of <code>(start
+. end)</code> index pairs returned by <a href="match-re.htm"><b>match-re</b></a>. <i>selector</i> should
+be an integer that specifies a captured submatch (or 0 for the whole
+match), or a string or a symbol that names a named submatch.
+</p>
+<p id="6">
+Alternatively, you can pass the opaque 'match' object returned by
+<a href="match-re.htm"><b>match-re</b></a> with
+<code>:return :match</code> argument, as
+<i>regexp</i>. The match object knows the information
+about the match results, so you don't need <i>string</i>
+and <i>indexes</i>; just pass <code>nil</code> to them.
+</p>
+<p id="7">
+The <i>type</i> argument may be
+<code>:string</code>, <code>:after</code>,
+<code>:before</code> or <code>:index</code>. It specifies the
+return value. If it is <i>:string</i> (the default), the
+substring of the specified submatch is returned. If it is
+<code>:after</code> or <code>:before</code>, the substring
+after or before the specified submatch is returned, respectively. If
+it is <code>:index</code>, a pair of <code>(start
+. end)</code> indexes are returned.
+</p>
+<p id="8">
+If the specified submatch isn't included in indexes, <code>nil</code> is returned.
+</p>
+<p id="9">
+A typical usage pattern of this function is like this:
+</p>
+
+<pre id="10">
+(let ((r (multiple-value-list (match-re regexp string :return :index))))
+  (re-submatch regexp string (cdr r) 3)))
+</pre>
+<p id="11">
+Or, if you use the match object, like this:
+</p>
+
+<pre id="12">
+(let ((match (match-re regexp string :return :match)))
+  (re-submatch match nil nil 3))
+</pre>
+
+<h3 id="13">
+Additional examples
+</h3>
+<pre id="14">
+cl-user(25): (let* ((s "abCDEfg")
+                    (x (compile-re "[A-Z]([A-Z]+)"))
+                    (r (cdr (multiple-value-list
+                             (match-re x s :return :index)))))
+               (list
+                (re-submatch x s r 0)
+                (re-submatch x s r 1)
+                (re-submatch x s r 0 :type :before)
+                (re-submatch x s r 1 :type :before)
+                (re-submatch x s r 0 :type :after)
+                (re-submatch x s r 1 :type :after)))
+("CDE" "DE" "ab" "abC" "fg" "fg")
+cl-user(26): 
+</pre>
+
+
+<p id="15">
+The symbol naming this operator is 
+also exported from the regexp package.
+</p>
+
+<p id="16">
+See <a href="../../regexp.htm#regexp-new-1">The new regexp2
+module</a> in <a href="../../regexp.htm">regexp.htm</a> for further
+information on this function and the <b>regexp2</b> module.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/re-submatch.htm">9.0 version</a></td></tr></table></body></html>

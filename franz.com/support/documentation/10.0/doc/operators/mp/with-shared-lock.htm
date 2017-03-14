@@ -1,0 +1,79 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-shared-lock</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/with-shared-lock.htm">9.0 version</a></td></tr></table><h2 id="2">with-shared-lock</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(sharable-lock </i>&amp;key <i>yield-rate timeout recursive-p</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+This macro was part of an early implementation of sharable locks.  The
+values returned are not consistent with other <b>with-XXX</b> macros
+in Common Lisp. (<a href="with-shared-lock.htm"><b>with-shared-lock</b></a>
+returns <code>t</code> rather than the value of the last
+body form when the associated lock is acquired.) It is included for
+compatibility with earlier versions.  The recommended macro is
+<a href="with-sharable-lock.htm"><b>with-sharable-lock</b></a>.
+</p>
+
+<p id="5">
+Evaluate a body of code in the context of a <a href="../../classes/mp/sharable-lock.htm"><code>sharable-lock</code></a> acquired in shared mode. This
+macro is in the <code>smputil</code> module and may not be
+included in the image until <code>(require :smputil)</code> is
+evaluated.
+</p>
+<p id="6">
+The <b><i>yield-rate</i></b> argument, if specified,
+must be a positive integer, or the keyword <code>:never</code>.
+The specified value overrides the value in the lock instance.  If the
+argument is omitted, or specified as <code>nil</code>,
+than the value in the lock instance is used.
+</p>
+<p id="7">
+The <b><i>timeout</i></b> argument, if specified, must
+be a non-negative number of seconds.  The value determines how long
+the program will wait if the lock is not immediately available.  A
+timeout value of zero specifies that that the lock must be available
+immediately only.
+</p>
+
+<p id="8">
+The <b><i>recursive-p</i></b> argument may be used to
+override the recursion specification in the <a href="../../classes/mp/sharable-lock.htm"><code>sharable-lock</code></a> instance.  If
+omitted, <code>nil</code> or <code>:default</code>,
+the value in the lock instance is used.  Otherwise, the value must be
+<code>t</code>, one of the keywords allowed in
+<a href="make-sharable-lock.htm"><b>make-sharable-lock</b></a>, or a list
+of these keywords.
+</p>
+<p id="9">
+The <b><i>body</i></b> expressions are evaluated as a
+progn body.  If the lock is acquired, the body forms are evaluated,
+and the <a href="with-shared-lock.htm"><b>with-shared-lock</b></a>
+expression returns a single value, <code>t</code>.  If the
+lock is not acquired, the <a href="with-shared-lock.htm"><b>with-shared-lock</b></a> expression returns two values
+as described in <a href="sharable-lock-lock.htm"><b>sharable-lock-lock</b></a>.
+</p>
+<p id="10">
+<b>Note that the return value when the lock is acquired is not what is
+typically returned by <i>with-XXX</i>
+macros. <code>t</code> is returned, not the value of the
+last <i>body</i> form.</b> As said at the beginning,
+this macro was part of an early implementation of sharable locks. It
+is included for compatibility with earlier versions. The recommended
+macro is
+<a href="with-sharable-lock.htm"><b>with-sharable-lock</b></a>.
+</p>
+
+
+<p id="11">
+See <a href="../../smp.htm#sharable-locks-2">Sharable
+locks</a> in <a href="../../smp.htm">smp.htm</a>.
+</p>
+<p id="12">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/with-shared-lock.htm">9.0 version</a></td></tr></table></body></html>

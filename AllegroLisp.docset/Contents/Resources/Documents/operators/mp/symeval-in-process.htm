@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>symeval-in-process</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/symeval-in-process.htm">9.0 version</a></td></tr></table><h2 id="2">symeval-in-process</h2>
+
+<p id="3"><b>Arguments: </b><i>symbol process
+</i></p>
+
+<p id="4">
+This function returns two values. The first is the value of the
+special <i>symbol</i> in the given process (which may be the
+current process). It only looks for actual bindings on the process; if
+the symbol has a global value but is not bound on the process, the
+global value is not returned.
+</p>
+
+<p id="5">
+The second returned value describes the status of the binding. t is
+returned if the symbol is bound on the process, <code>nil</code> if the symbol has no binding, and
+<code>:unbound</code> if there is a binding which has been
+subjected to <a href="../../../ansicl/dictentr/makunbou.htm"><b>makunbound</b></a>. In the
+latter two cases, the first returned value is <code>nil</code>.
+</p>
+
+<p id="6">
+<a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> understands this
+function. An error is signaled if the symbol has no binding on the
+process, i.e., if <a href="symeval-in-process.htm"><b>symeval-in-process</b></a> would return
+<code>nil</code> as the second value.
+</p>
+
+<p id="7">
+It is only possible to retrieve or set the innermost (most-recent)
+binding of a special symbol. This function is intended for use by
+debuggers and is not appropriate for normal programming.
+</p>
+
+<p id="8">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/symeval-in-process.htm">9.0 version</a></td></tr></table></body></html>

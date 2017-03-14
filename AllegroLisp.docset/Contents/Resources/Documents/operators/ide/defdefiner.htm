@@ -1,0 +1,69 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>defdefiner</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/defdefiner.htm">9.0 version</a></td></tr></table><h2 id="2">defdefiner</h2>
+
+<p id="3"><b>Arguments: </b><i>
+new-definer standard-definer
+</i></p>
+
+<p id="4">
+The IDE's find-definition facility (see the description of the <a href="../../ide-menus-and-dialogs/definitions-dialog.htm">Definitions</a> dialog)
+finds definitions in source code. The facility knows about standard
+defining macros such as defun, defvar, defgeneric, defmacro, etc. 
+(they are listed below) but developers may define their own macros
+for defining things in their application and those defining forms will
+not, in the default, be found with the find-definition facility.
+</p>
+<p id="5">
+This macro enables the IDE's find-definitions facility to find the
+location within a source code file of definitions that are defined by
+an application's custom definer macros. 
+</p>
+<p id="6">
+<i>new-definer</i> is an unevaluated symbol naming a
+custom definer such as
+<code>my-defun</code>. <i>standard-definer</i> may
+be any of the following unevaluated symbols if the new definer is
+based on that standard definer:
+</p>
+
+<ul>
+<li id="7"><b>defun</b></li>
+<li id="8"><b>defmethod</b></li>
+<li id="9"><b>defmacro</b></li> 
+<li id="10"><b>defgeneric</b></li>
+<li id="11"><b>defclass</b></li> 
+<li id="12"><b>defstruct</b></li> 
+<li id="13"><b>deftype</b></li> 
+<li id="14"><b>defvar</b></li> 
+<li id="15"><b>defparameter</b></li> 
+<li id="16"><b>defconstant</b></li>
+</ul>
+
+<p id="17">
+For example, if an application uses code such as the following:
+</p>
+<pre id="18">
+(defmacro my-defun (name varlist &rest body)
+   (format t "~&New definition for ~s!~%" name)
+   `(defun ,name ,varlist ,@body))
+
+(my-defun foo (a b)
+  (+ a b))
+</pre>
+
+<p id="19">
+Then if the following top-level form is included in the application
+source code, then Find Definition (triggered by the <a href="../../ide-menus-and-dialogs/search-menu.htm#find-definition">Search | Find Definition</a> menu item) in
+the IDE will be able to find the definition of <b>foo</b> within its
+source code file (or anything else defined with a <b>my-defun</b>
+form). The #-runtime-system reader macro prevents this form from being
+read in a standalone executable, where the IDE is not present.
+</p>
+<pre id="20">
+#-runtime-system (defdefiner my-defun defun)
+</pre>
+
+
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/defdefiner.htm">9.0 version</a></td></tr></table></body></html>

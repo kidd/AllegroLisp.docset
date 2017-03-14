@@ -1,0 +1,48 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>po-d~s~t</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Constant</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/po-d_t_s_t_t.htm">9.0 version</a></td></tr></table><h2 id="2">po-d~s~t</h2>
+
+
+
+<p id="3">
+Pixels to be painted on a device make a reference to three separate
+places: the destination, the source and a texture. These pixels are
+combined to create the actual pixel to be placed into the destination.
+</p>
+<p id="4">
+Such a combination is defined by a bitwise logical operation, called
+the paint operation. In Allegro CL, there are 256 possible paint
+operations that are given numbers from 0 to 255. There are eight
+possible minterms (of the three places): 
+<a href="po-dst.htm"><code>po-dst</code></a>, 
+<a href="po-ds_t_t.htm"><code>po-ds~t</code></a>, 
+<a href="po-d_t_st.htm"><code>po-d~st</code></a>, 
+<a href="po-_t_dst.htm"><code>po-~dst</code></a>, 
+<a href="po-d_t_s_t_t.htm"><code>po-d~s~t</code></a>, 
+<a href="po-_t_ds_t_t.htm"><code>po-~ds~t</code></a>, 
+<a href="po-_t_d_t_st.htm"><code>po-~d~st</code></a>, and 
+<a href="po-_t_d_t_s_t_t.htm"><code>po-~d~s~t</code></a> where d is destination, s is source
+and t is texture (and ~ is the logical not operation). Each minterm
+may be present or absent from a paint operation.
+</p>
+<p id="5">
+A source pixel is copied to the corresponding destination pixel
+whenever the minterm representing the state of that pixel in the
+source, destination and texture pixmaps is present in the paint
+operation. (The minterm is "present" if its bit is on in the paint
+argument.) Thus there are 256 possible operations. Minterms are given
+the following weights (and to aid programming, named constants set to
+them):
+</p>
+<pre id="6">
+po-dst 128
+po-ds~t 64
+po-d~st 32
+po-~dst 8
+po-d~s~t 16
+po-~ds~t 4
+po-~d~st 2
+po-~d~s~t 1
+</pre>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/po-d_t_s_t_t.htm">9.0 version</a></td></tr></table></body></html>

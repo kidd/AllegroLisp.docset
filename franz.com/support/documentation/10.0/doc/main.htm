@@ -1,0 +1,319 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>User-defined main()</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/main.htm">9.0 version</a></td></tr></table><h1 id="2">User-defined main()</h1><p id="3">This document contains the following sections:</p><a href="#main-intro-1">1.0 Introduction</a><br><a href="#unix-1">2.0 On UNIX</a><br>&nbsp;&nbsp;&nbsp;<a href="#main-on-unix-2">2.1 Remarks on main() on Unix</a><br><a href="#windows-1">3.0 On Windows</a><br>&nbsp;&nbsp;&nbsp;<a href="#main-on-windows-2">3.1 Remarks on main() on Windows</a><br><a href="#linux-1">Appendix A. Potential problems with user-defined main() on Linux</a><br><hr><hr><h2 id="4"><a name="main-intro-1">1.0 Introduction</a></h2>
+
+<p id="5">Allegro CL consists of three standard parts and one optional part: </p>
+
+<ol>
+<li id="6">
+<strong>The Lisp main, an executable program</strong>. The
+responsibility of the main is to gather appropriate information and to
+call <strong>lisp_init</strong> with that information.
+</li>
+<li id="7">
+<strong>The Allegro CL Shared Library</strong>. This is a <em>.so</em>
+or <em>.sl</em> file on Unix and a <em>.dll</em> file on Windows
+(usually <em>libaclnnn.so</em>/<em>sl</em> on Unix and
+<em>aclnnn.dll</em> on Windows, where <em>nnn</em> are digits and
+letters -- perhaps more than 3). It contains
+<strong>lisp_init</strong> and all of the runtime system that is
+needed to build or attach the Lisp heap.
+</li>
+<li id="8">
+<strong>The Lisp heap or image</strong>. This is a <em>.dxl</em> file
+(as created by <a href="operators/excl/build-lisp-image.htm"><b>excl:build-lisp-image</b></a> or <a href="operators/excl/dumplisp.htm"><b>excl:dumplisp</b></a>) that is mapped or copied into
+memory and which provides the majority of Lisp and application
+functionality.</li> <li id="9"><strong>The optional purespace
+file</strong>. When used, this is a <em>.pll</em> file that provides
+sharable, read-only treatment of constant strings and codevectors.
+</li>
+</ol>
+
+<p id="10">
+Any Unix or Windows program may serve as a Lisp main program if it: 
+</p>
+
+<ol>
+<li id="11">
+Gathers up proper information about the locations of all necessary files;
+</li>
+<li id="12">
+Links or dynamically loads the Allegro Shared Library; and
+</li>
+<li id="13">
+Calls <strong>lisp_init()</strong> with the appropriate arguments
+before trying to call any Lisp functionality.
+</li>
+</ol>
+
+<p id="14">
+Linking the Allegro CL Shared Library is discussed in this
+document. Dynamically loading the Allegro CL Shared Library is more
+complicated and operating-system dependent and is not further
+discussed. Please contact Franz Inc. for more information if you are
+interested in that option (see <a href="introduction.htm">introduction.htm</a>).
+</p>
+
+<p id="15">
+Basic requisite code for a minimal Lisp main is given in the
+following sections. The main should be linked with the Allegro CL
+Shared Library and with any other shared or static libraries that are
+required for Allegro CL and application operation.
+</p>
+
+<hr><hr><h2 id="16"><a name="unix-1">2.0 On UNIX</a></h2>
+
+<p id="17">
+In the example below, the <em>[version]</em> in
+<em>libacl[version].so</em> is different for each release of
+Allegro CL. Find the correct name by looking in the Allegro
+directory.</p>
+
+<pre id="18">
+struct shlib_library_item {
+  char *    name;
+  int        system;
+};
+
+#include &lt;stdio.h&gt;
+#include &quot;misc/shlibs.h&quot;
+
+void my_exit( int );
+
+main( int argc, char **argv, char **envp )
+{
+
+
+
+  /* put custom installation code here */
+  fprintf(stderr, "custom code runs..\n" );
+
+  lisp_init(
+  /* these three arguments are the main() arguments */
+            argc, argv, envp,
+  /* custom exit function; use 0 if default exit() call desired */
+            my_exit,
+  /* directory containing Allegro CL shared library and Lisp image(s ) */
+            "/room2/test/src",
+  /* Allegro CL shared library name; name could vary, so check your Allegro CL
+     directory for the correct name */
+            "libacl<em>[version]</em>.so",
+  /* Allegro CL shared library handle or 0 if none, 0 for this use */
+            0,
+  /* default lisp image name; use 0 if no default desired */
+            "lisp.dxl",
+  /* tls_slot_index 0 or 1, if 1 asks the Acldll to create its own 
+     thread-local index. See thread-local note below. This argument
+     was 'quiet' in releases prior to 8.1 but not used. */
+            0,
+  /* Win32app flag; on UNIX, must be 0 */
+            0,
+  /* global variable containing prelinked library list;
+     defined by shlibs.h include file */
+            linked_shared_libraries ); 
+
+}
+
+void
+my_exit( int n )
+{
+  fprintf( stderr, "my exit code can run here\n" );
+  exit( n );
+}
+</pre>
+
+
+<h3 id="19">
+Thread-local note
+</h3>
+
+<p id="20">
+As of 8.1, lisp thread-local values will be stored directly in the
+threads, rather than in the global table as they now are (thus
+requiring them to be moved in and out as threads are switched).  This
+requires that Allegro CL be able to get one thread-local slot from the
+operating system (because thread-local storage is limited in count on
+some systems, we only require that one slot be provided, and we then
+manage that slot in the lisp).  Some systems don't even provide for
+thread-local slots, or their provision has not been exploited yet;
+these systems are marked with <code>:no-os-tls</code> in the
+<a href="../ansicl/dictentr/features.htm"><code>*features*</code></a> list (this
+name means "no operating-system supplied thread-local storage").
+These architectures can supply a 0 or a 1 to the tls_slot_index
+argument.
+</p>
+
+<p id="21">
+Also, most architectures can get a tls slot from within the acl shared
+library, though on some architectures there are very strict linking rules
+needed in order to do so.  On the HP 64-bit port, which has tls, but whose
+shared-library cannot generate a tls slot, the tls_slot_index function
+pointer must be passed in.
+</p>
+<p id="22">
+The example is given in <i>examples/linkacl/fact.c</i> (on Unix
+machines, related example in <i>examples/dll/fact.c</i> on Windows).
+For HP, and for any other architecture which supports the relatively
+new __thread construct in C/C++, the code would look something like
+this:
+</p>
+
+<pre id="23">
+
+#ifdef NeedTls
+__thread nat tls_dummy_slot;
+
+nat
+tls_slot_index()
+{
+	return (nat)&tls_dummy_slot;
+}
+#endif
+
+
+and in the actual lisp_init, call where the quiet flag used to be:
+
+    lisp_init( lnk_argc, lnk_argv, lnk_envp,  /* argc, argv, envp */
+	       0,  /* exit routine */
+	       dir_buf, /* system directory */
+	       (char*)LIBACL_NAME,
+	       0,
+	       (char*)"fact.dxl",  /* image name */
+#ifdef NeedTls
+	       &tls_slot_index,
+#else
+	       (nat(*)())1, /* quiet flag (old) */
+#endif
+	       0, /* unused on Unix */
+	       linked_shared_libraries );
+</pre>
+
+<p id="24">
+For windows, the definition of tls_slot_index would be
+</p>
+
+<pre id="25">
+
+nat
+tls_slot_index()
+{
+	return ((nat)(TlsAlloc()));
+}
+</pre>
+
+
+
+
+<hr><h2 id="26"><a name="main-on-unix-2">2.1 Remarks on main() on Unix</a></h2>
+
+
+<ol>
+<li id="27">
+You most likely will not want to <em>hardwire</em> a pathname such as
+<em>/room2/test/src</em>. For example, you may require the user to set
+an environmental variable specifying the directory containing the
+required shared library and image; you can then call <em>getenv()</em>
+to find the needed value.
+</li>
+<li id="28">
+The default image name is used when there is no command line
+<em>-I</em> image name specified.
+</li>
+<li id="29">
+The linked_shared_libraries variable is needed for profiling,
+disassembly, and foreign function support. If you link your main
+program with additional shared libraries, add them to the shlibs.h
+file found in the <i>misc</i> subdirectory. For
+libraries that you add, set the "system" structure member to
+0.
+</li>
+<li id="30">
+
+The <b>lisp_init()</b> function is found in the Allegro CL
+shared library. After you have successfully compiled and linked your
+custom executable, users will have to add the directory containing the
+Allegro CL shared library to their environmental variable containing
+the directories to be searched when a dynamic shared library load
+occurs.
+
+</li>
+</ol>
+
+
+
+<hr><hr><h2 id="31"><a name="windows-1">3.0 On Windows</a></h2>
+
+<pre id="32">
+#include &lt;windows.h&gt;
+#include &lt;process.h&gt;
+
+unsigned _stdcall startlisp(void *x)
+{
+  StartLisp((char *) x, 1, 1);
+}
+
+int
+WINAPI
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
+        int nCmdShow)
+{
+  HANDLE handle;
+  int lisp_thread_id;
+
+/* custom code can go here */
+  MessageBox(NULL, &quot;custom code could run now&quot;, &quot;before Lisp starts&quot;,
+             MB_OK);
+
+  handle = (HANDLE) _beginthreadex(0, 0, startlisp, (void *) lpCmdLine, 0,
+                                   &amp;lisp_thread_id);
+
+  WaitForSingleObject(handle, INFINITE);
+
+/* custom code can go here; it runs after Lisp exits */
+  MessageBox(NULL, &quot;custom code could run now&quot;, &quot;after Lisp exits&quot;,
+             MB_OK);
+
+  return 0;
+}
+</pre>
+
+<hr><h2 id="33"><a name="main-on-windows-2">3.1 Remarks on main() on Windows</a></h2>
+
+
+<ol>
+  <li id="34">The <code>StartLisp()</code> function is in 
+  <em>elm[version].dll</em> (the name of this file will vary,
+   so check your Allegro CL directory for the correct name of this <em>.dll</em> 
+   and the <em>elm[version].lib</em>). Assuming the above code is 
+   in a file named <em>testm.c</em>, an executable named <em>testm.exe</em> 
+   is produced by the command:<br>
+    <em>cl testm.c /Zi /MD /link elm[version].lib user32.lib</em></li>
+  <li id="35">There is no default Lisp image filename - either the user 
+   specifies one using the <em>-I</em>
+    command line option, or a file dialog will pop up.</li>
+  <li id="36">If the loaded Lisp image includes Common Graphics 
+    (and it does if it includes the
+    Integrated Development Environment), it must be invoked like this:</li>
+</ol>
+
+<pre id="37">
+  testm -I allegro.dxl -e '(load "gdi32.dll")'
+        -e '(load "user32.dll")' 
+        -e (load  "kernel32.dll")'
+        -e '(load "comctl32.dll")'
+</pre>
+
+
+
+
+
+<hr><hr><h2 id="38"><a name="linux-1">Appendix A: Potential problems with user-defined main() on Linux</a></h2>
+
+<p id="39">
+You may have problems building a custom executable (with a
+user-defined main()) on a version of Redhat later than the one on
+which your version of Allegro CL was built.  If you run into this
+problem, please contact Franz Inc. Technical Support (send email to <a href="mailto:support@franz.com">support@franz.com</a>).
+</p>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/main.htm">9.0 version</a></td></tr></table></html>

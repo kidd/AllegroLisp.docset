@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>save-pixmap</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/save-pixmap.htm">9.0 version</a></td></tr></table><h2 id="2">save-pixmap</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pixmap filename </i>&amp;key  (<i>quality</i> 100)<i>
+</i></p>
+
+
+
+<p id="4">
+Saves a pixmap to a new file.  Any pixmap can be written as a BMP,
+PNG, JPEG, TIFF, or GIF file. Note GIF files are supported only on
+the Windows platform.
+</p>
+<p id="5">
+<b><i>pixmap</i></b> is the pixmap to save.  It may have
+been loaded from a file with <a href="../l/load-pixmap.htm"><b>load-pixmap</b></a>, or copied from the screen with
+<a href="../g/get-pixmap.htm"><b>get-pixmap</b></a>, or created
+programmatically from a lisp array of pixel values (see
+ <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a>).
+</p>
+<p id="6">
+<b><i>filename</i></b> is the path of the file to
+create.  It can be either a pathname or a path namestring.  If the
+file already exists it will be replaced.
+</p>
+<p id="7">
+<b><i>quality</i></b> is an integer between 0 and 100
+inclusive, specifying a tradeoff value between image quality and file
+size. It is used only for <i>jpeg</i> files (though that possibly
+could change with enhancements to the encoders that are in the
+underlying windowing systems).  The default value is 100, which means
+the highest quality and largest file size.
+</p>
+<p id="8">
+The kind of pixmap file that's written is determined by the
+pathname-type of the filename argument, which should be
+either <i>bmp</i>, <i>png</i>, <i>jpeg</i>, <i>jpg</i>, <i>tiff</i>,
+<i>tif</i>, or <i>gif</i>.  BMP files are uncompressed and therefore
+the largest, while PNG files are smaller, and JPEG files (even when
+<i>qualit</i>y is 100) are typically smaller still.
+</p>
+<p id="9">
+One known unsolved problem on Windows is that it doesn't work to load
+a non-<i>bmp</i> pixmap from a file and then save it as a <i>bmp</i>
+file if you passed the <i>use-gdi-plus</i> argument
+to <a href="../l/load-pixmap.htm"><b>load-pixmap</b></a> as true.
+</p>
+<p id="10">
+A pixmap could alternately be saved to a file as Lisp source code with
+<a href="../s/save-lisp-pixmap.htm"><b>save-lisp-pixmap</b></a>.
+</p>
+
+<p id="11">
+See also <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a>.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>The object described on this page has been modified in the 10.0 release; see the Release Notes.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/save-pixmap.htm">9.0 version</a></td></tr></table></body></html>

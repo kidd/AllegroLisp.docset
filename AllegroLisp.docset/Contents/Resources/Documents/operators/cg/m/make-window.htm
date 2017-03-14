@@ -1,0 +1,265 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/make-window.htm">9.0 version</a></td></tr></table><h2 id="2">make-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name </i> &amp;rest <i>arguments</i><i> </i>&amp;key  (<i>class</i> (quote frame-window)) (<i>owner</i> (development-main-window *system*))<i> dialog-items form-p child-name behind state</i><i>
+       &amp;allow-other-keys
+</i></p>
+
+<p id="4">
+Creates and returns a new window, or returns <code>nil</code> if the request to the Operating System to create
+a new window fails (see the information under the heading
+<b>make-window returns <code>nil</code> if a window cannot be created</b> near the
+bottom of this page).
+</p>
+<p id="5">
+The <i>name</i> argument should be a symbol (we
+recommend using keywords) which does not name any other object. The
+name can be passed as an argument to <a href="../f/find-window.htm"><b>find-window</b></a> and other find-
+functions to get a programmatic handle on a window.
+</p>
+<p id="6">
+When using the Integrated Development Environment, you can design
+windows to be used in your application using forms. A <a href="../../../classes/cg/form.htm"><code>form</code></a> is a class of
+window that is used to design windows of other classes. The Integrated
+Development Environment creates a function from a form you have
+designed which creates the designed window. Get a new form by clicking
+<a href="../../../ide-menus-and-dialogs/file-menu.htm#new-form">File |
+New Form</a>. You are asked for the class of the window (the
+value of the :class argument) and that is the type of window that
+will be designed with the form.
+</p>
+<p id="7">
+Here are some keyword arguments to <a href="../m/make-window.htm"><b>make-window</b></a>:
+</p>
+<ul>
+<li id="8">
+<b>:class</b>: default: <a href="../../../classes/cg/frame-window.htm"><code>frame-window</code></a>. The class of the window
+being created. The standard choices besides <a href="../../../classes/cg/frame-window.htm"><code>frame-window</code></a> are <a href="../../../classes/cg/text-edit-window.htm"><code>text-edit-window</code></a>, <a href="../../../classes/cg/bitmap-window.htm"><code>bitmap-window</code></a>, <a href="../../../classes/cg/dialog.htm"><code>dialog</code></a>, 
+<a href="../../../classes/cg/rich-edit-dialog.htm"><code>rich-edit-dialog</code></a>,
+and
+<a href="../../../classes/cg/non-refreshing-window.htm"><code>non-refreshing-window</code></a>. We recommend
+that you subclass these standard classes so your customizations will
+not affect existing windows. In earlier releases, this argument was
+named <i>device</i> and that name is still accepted. Do
+not, of course, specify both. 
+<p id="9">
+The accessor/setter of the <code>class</code> property is <a href="../d/device.htm"><b>device</b></a>, though it is
+uncommon to need to use that function programmatically (one typically
+sets this slot upon creation or using the <code>class</code>
+slot in an inspector window). <code>(class-name (class-of
+object))</code> also serves as an accessor.
+</p>
+</li>
+<li id="10">
+<b>:owner</b>: an existing window (or the screen) that will be the
+owner of the new window. The default owner is the value returned by
+<code>(development-main-window *system*)</code>, which is the
+invisible IDE owner window when the IDE is present, and otherwise the
+screen.  See <a href="../d/development-main-window.htm"><b>development-main-window</b></a>.
+<p id="11">
+A window shrinks or closes whenever its owner window does. If the
+<i>child-p</i> argument is true, then the owner will
+also be the parent of the new window. A window moves along with its
+parent, and is clipped at the interior edge of the parent. In earlier
+releases, this argument was named <i>parent</i> and that
+name is still accepted. Do not, of course, specify both.
+</p>
+<p id="12">
+See <a href="../../../cgide.htm#child-parent-overlapped-etc-1">About child, parent, and owner
+windows</a> in <a href="../../../cgide.htm">cgide.htm</a>.
+</p>
+</li>
+<li id="13">
+<b>:child-p</b>: default is <code>t</code>. A boolean
+value indicating whether the new window will be a child window. If
+non-nil and the owner is a window rather than the screen, then the new
+window will be a child window and the owner window will also be its
+parent. A child window moves along with its parent and is clipped at
+the parent's interior border. If <code>nil</code> or the
+owner is the screen, then the new window will float freely about on
+the screen, but will still shrink and close along with its owner (if
+the owner is a window). The parent of a non-child window is the
+screen.
+<p id="14">
+<b>GTK note</b>: On X platforms, we strongly discourage specifying
+<i>child-p</i> as <code>nil</code>, because
+non-child owned windows are often not handled well.  A typical window
+manager will add a separate taskbar item (and alt-tab item) for each
+non-child window, and will allow the user to move other applications
+between an owned window and its owner window in the occlusion stack.
+Common Graphics may also not be allowed to move the keyboard focus to
+a different top-level window programmatically.
+</p>
+
+</li>
+<li id="15">
+
+<b>:dialog-items (formerly :widgets)</b>: default: <code>nil</code>. The value should be a list of controls (also
+called widgets, whence the former argument name) to be placed on the
+window. While controls can be placed on any window, only windows of
+type <a href="../../../classes/cg/dialog-mixin.htm"><code>dialog-mixin</code></a> (that is, only windows
+whose class is a subclass of <a href="../../../classes/cg/dialog-mixin.htm"><code>dialog-mixin</code></a>) will have the special
+Windows dialog behavior. In such windows, pressing the TAB key moves
+the keyboard focus from one control to another and pressing
+Alt-[letter] will move the keyboard focus to the control that
+has the letter underlined as its access character. (For example,
+pressing Alt-A will move keyboard focus to the control whose access
+letter is an underlined A.)
+<p id="16">
+Each widget in the list is created by calling <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> on a subclass of <a href="../../../classes/cg/dialog-item.htm"><code>dialog-item</code></a>. See
+the list of all <a href="../../../cgide.htm#widget-classes-1">widget
+classes</a> in <a href="../../../cgide.htm">cgide.htm</a>. Each widget
+instance can be used on only a single parent window.
+</p>
+<p id="17">
+The use of :widgets to name this argument is deprecated. :dialog-items
+should be used instead. :widgets is accepted and both should not be
+specified.
+</p>
+</li>
+<li id="18">
+<b>:pop-up</b>: default: <code>nil</code>. See <a href="../p/pop-up.htm"><b>pop-up</b></a>. This argument should be
+specified true if the window is intended to be
+modal. Note that the value of this property
+cannot be changed once the window has been created.
+<p id="19">
+See <a href="../../../cgide.htm#child-parent-overlapped-etc-1">About child, parent, and owner windows</a> in <a href="../../../cgide.htm">cgide.htm</a>.
+</p>
+</li>
+<li id="20">
+<b>:form-p</b>: this parameter is for internal use by the IDE, and should
+not be specified by applications.
+</li>
+<li id="21">
+<b>:child-name</b>: when instantiating a window class that has the
+<a href="../../../classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a> mixin (such
+as <a href="../../../classes/cg/non-refreshing-window.htm"><code>non-refreshing-window</code></a> or <a href="../../../classes/cg/bitmap-window.htm"><code>bitmap-window</code></a>), the
+:child-name argument may be passed to make-window to provide a name
+for the child pane that is created automatically for the frame
+window. As with other object names that are used in Allegro CL for
+finding objects, the name should be a symbol.
+<p id="22">
+In fact it is unlikely that this name will be needed programmatically,
+since the child-pane can be found by calling <a href="../f/frame-child.htm"><b>frame-child</b></a> on the parent frame
+window, it is nevertheless often helpful for arbitrary objects to have
+names so that the they can be recognized more easily during debugging.
+</p>
+</li>
+<li id="23">
+<b>:behind</b>: this argument determines whether the new window should
+be placed behind or in front of its siblings in the occlusion
+stack. The default is <code>nil</code>, which places the
+window in front or its siblings. A value of <code>t</code>
+places the window behind all of its siblings. If the value is another
+window that is already on the owner window, the new window is placed
+immediately behind the specified window.
+</li>
+<li id="24">
+<b>:state</b>: the initial state of the newly created window. Possible
+states are :normal (window has its normal size and is visible, this is
+the default); :shrunk (window is shrunken and not visible); :icon
+(window is shrunk to a visible icon); and :maximized (window is
+extended to its maximum size).
+<p id="25">
+When creating a window, the window is placed into its initial visible
+state (as specified by the :state initarg) by a <a href="../../excl/device-open.htm"><b>device-open</b></a> :around method. This
+means that if an application adds device-open methods (including
+:after methods) for its window subclasses, for example to set up child
+windows on the window, the main window will be shown only after this
+setup is complete, to avoid distracting the user and to increase
+creation speed. (An alternate approach is simply to create the main
+window in :shrunk state, then do arbitrary setup, and then set the
+state of the main window to :normal.)
+</p>
+</li>
+<li id="26">
+<b>:exterior</b>: a box (see <a href="../m/make-box.htm"><b>make-box</b></a>) in the coordinates of the
+parent that determines the initial position and size of the exterior
+boundary of the window.  Note that if the new window is a non-child
+window, then the box should always be in screen coordinates, even if
+the window has an owner window.
+<p id="27">
+<b>GTK Note</b>: For a top-level window on the GTK platforms (Linux
+and Mac), you probably should always pass
+the <i>interior</i> argument rather than this argument
+or any of the others that apply to the exterior. The reason is that
+X11 makes it difficult or impossible (depending on the particular X
+server) to control the placement of the window manager frame of a
+top-level window, or even to determine its thickness. To make a
+cross-platform application work the same on Windows,
+the <i>interior</i> argument can be used universally.
+Child windows do not have this problem.
+</p>
+</li>
+<li id="28">
+<b>:interior</b>: an alternative to :exterior, in that the box
+specifies the boundary of the client (interior) area of the window,
+again in the coordinates of the parent.  The frame of the window will
+protrude outward from this box as needed.
+</li>
+<li id="29">
+<b>:exterior-top-left</b>: another alternative for the initial
+position.  A position in the coordinates of the parent that determines
+the initial position of the top-left corner of the window.  Another
+alternative is to pass individual coordinates using the :left and or
+:top arguments.  If the window position is not determined by any
+make-window arguments or the default-initargs of the window class,
+then the initial position is determined by the <a href="../d/default-top-left.htm"><b>default-top-left</b></a> generic function.
+</li>
+<li id="30">
+<b>:width</b> and <b>:height</b>: another alternative for the initial
+size. Integers specifying the exterior width and/or height of the
+window in pixels. If the width and/or height are not determined by any
+make-window arguments or default-initargs of the window class, then
+the initial size is determined by the <a href="../d/default-width.htm"><b>default-width</b></a> and/or <a href="../d/default-height.htm"><b>default-height</b></a> generic
+functions.
+</li>
+<li id="31">
+<b>:centered</b>: specifies whether to initially center the window
+over the interior of its parent or owner.  If <code>nil</code> (the default), then no centering is done.  If
+<code>:on-parent</code>, then the window will be centered over
+its <a href="../p/parent.htm"><b>parent</b></a>.  For
+any other true value, the window will be centered over its <a href="../o/owner.htm"><b>owner</b></a>.  If an
+<i>exterior</i> or <i>interior</i>
+argument is passed along with a true <i>centered</i>
+argument, then the exterior or interior box will determine the size of
+the window while the centering will determine its position.  A true
+<i>centered</i> argument would override an
+<i>exterior-top-left</i> argument.  See also <a href="../c/center-window.htm"><b>center-window</b></a> and the
+<a href="../c/centered.htm"><b>centered</b></a>
+property.
+</li>
+<li id="32">
+<b>:double-buffered</b>: specifies whether the window uses a memory
+bitmap to reduce flashing when redrawing the window (not needed on
+GTK). This option is <code>nil</code> by default for
+backward compatibility and because it uses memory resources, but it is
+generally recommended to pass this initarg as true for any window on
+which an application draws. See <a href="../d/double-buffered.htm"><b>double-buffered</b></a>.
+</li>
+</ul>
+
+
+<p id="33">
+There are many other options (specified by initarg (a keyword)/value
+pairs) to <a href="../m/make-window.htm"><b>make-window</b></a>. In general, the
+initargs are keywords with the same name as properties,
+:left-attachment for left-attachment, e.g.)
+</p>
+
+<h3 id="34">make-window returns nil if a window cannot be created</h3>
+
+<p id="35">
+<a href="../m/make-window.htm"><b>make-window</b></a>
+returns <code>nil</code> if the operating system fails to
+make the requested window. Such failure is typically due to one of the
+operating system's tables for all windows and menus becoming full.
+This situation should be rare, but if it does happen, your application
+should be modified to close any windows or menus that are no longer
+being used, in order to free up the corresponding operating system
+resources. Windows may be closed programmatically by calling <a href="../../../../ansicl/dictentr/close.htm"><b>close</b></a> on them.
+</p>
+
+<hr><p id="36"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/make-window.htm">9.0 version</a></td></tr></table></body></html>

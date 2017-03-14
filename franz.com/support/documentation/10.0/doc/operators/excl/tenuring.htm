@@ -1,0 +1,52 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>tenuring</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/tenuring.htm">9.0 version</a></td></tr></table><h2 id="2">tenuring</h2>
+
+<p id="3"><b>Arguments: </b><i></i> &amp;body <i>body</i></p>
+
+<p id="4">
+Use this macro to immediately tenure all objects allocated while
+within the scope of <i>body</i>. This macro is normally
+used when loading files, or performing some other operation where the
+objects created will not become garbage in the short
+term. (Objects with <a href="../system/lispval-storage-type.htm"><b>lispval-storage-type</b></a>&nbsp;
+<code>:panified</code> are never tenured and are thus
+unaffected.)
+</p>
+
+
+  <p id="5">
+  A <a href="tenuring.htm"><b>tenuring</b></a> form returns
+  the values of the last form of <i>body</i>, as if in
+  a <a href="../../../ansicl/dictentr/progn.htm"><b>progn</b></a>.
+  </p>
+
+
+
+<p id="6">
+This macro is very useful for preventing newspace expansion. Without
+the <a href="tenuring.htm"><b>tenuring</b></a> macro, loading
+a very large <i>fasl</i> file may cause the newspace to expand to
+several times its previous size. With the <a href="tenuring.htm"><b>tenuring</b></a> macro, the newspace will not grow as
+severely, which will usually improve performance in the resulting
+Lisp.
+</p>
+<p id="7">
+<a href="tenuring.htm"><b>tenuring</b></a> works (as can be
+seen in the macroexpansion) by setting the
+:generation-spread <a href="../system/gsgc-parameter.htm"><b>gsgc-parameter</b></a> to 0, then executing the body,
+then calling <a href="gc.htm"><b>gc</b></a> (without
+arguments thus performing a scavenge) twice, and finally resetting the
+:generation-spread to its old value. There may be additional scavenges
+while the body is executing. <a href="gc.htm"><b>gc</b></a> is called twice because objects that
+according to the parameters should be tenured during a scavenge
+sometimes are not for system reasons. The additional scavenge usually
+ensures such objects are indeed tenured.
+</p>
+
+<p id="8">
+See also <a href="../../gc.htm">gc.htm</a> for general information on
+garbage collection in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>The object described on this page has been modified in the 10.0 release; see the Release Notes.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/tenuring.htm">9.0 version</a></td></tr></table></body></html>

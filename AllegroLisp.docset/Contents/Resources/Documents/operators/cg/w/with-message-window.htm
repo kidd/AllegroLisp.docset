@@ -1,0 +1,167 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-message-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/with-message-window.htm">9.0 version</a></td></tr></table><h2 id="2">with-message-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(string-or-pixmap </i>&amp;key  (<i>owner</i> (quote (screen *system*)))<i> width height</i> (<i>horizontal-margin</i> 24) (<i>vertical-margin</i> 24) (<i>background-color</i> (quote yellow)) (<i>foreground-color</i> (quote black)) (<i>font</i> (make-font-ex nil "Arial" 20 (quote (:bold)))) (<i>border</i> :black)<i> class</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+This is a convenience utility macro that displays a simple message
+window while some activity is taking place, typically to tell the user
+to wait until the activity has finished.  Unlike a modal dialog (see
+<a href="../p/pop-up-modal-dialog.htm"><b>pop-up-modal-dialog</b></a> and
+<a href="../p/pop-up-message-dialog.htm"><b>pop-up-message-dialog</b></a>), the
+message window does not wait for the user to interactively respond to
+the message before proceeding.  Instead, it simply displays the
+message window, then proceeds to run the macro
+<i>body</i>, and finally removes the message window
+automatically when the body has completed. It returns whatever the
+body returns. (Such a window is useful when a progam is performing an
+action that may take a user-noticeable amount of time.)
+</p>
+<p id="5">
+The required <b><i>string-or-pixmap</i></b> is either a
+string or a pixmap to display in the message box. A non-null value for
+this argument must be supplied.
+</p>
+<p id="6">
+The keyword arguments are:
+</p>
+<ul>
+<li id="7">
+<b><i>owner</i></b> is the window or screen on which to
+display the message box.  The message box will be centered within this
+owner.  The default is value is the screen.
+</li>
+<li id="8">
+<b><i>width</i></b> is either an integer specifying the
+pixel width of the message window, or else <code>nil</code> to default to a particular portion of the owner's
+width. The default value is <code>nil</code>. If the
+first argument is a pixmap rather than a string, then the width
+argument is ignored and the window width will instead be the width of
+the pixmap plus the specified horizontal margins.
+</li>
+<li id="9">
+<b><i>height</i></b> is either an integer specifying the
+pixel height of the message window, or else <code>nil</code> to default to whatever height is necessary to
+contain the message string or pixmap, given the window's width,
+margins, and font that are determined beforehand.  If the first
+argument is a pixmap rather than a string, then the
+<i>height</i> argument is ignored and the window height
+will instead be the height of the pixmap plus the specified vertical
+margins.
+</li>
+<li id="10">
+<b><i>horizontal-margin</i></b> is the pixel width of
+blank space to leave between the left and right borders of the message
+window and the text or pixmap inside.  The default is 24.
+</li>
+<li id="11">
+<b><i>vertical-margin</i></b> is the pixel height of
+blank space to leave between the top and bottom borders of the message
+window and the text or pixmap inside.  The default is 24.
+</li>
+<li id="12">
+<b><i>background-color</i></b> is the color of the
+background of the message window.  It is either an RGB color object
+(see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>) or else <code>nil</code> to default to the <a href="../s/system-background-color.htm"><b>system-background-color</b></a>.  The default is the
+value of the constant <a href="../../../variables/cg/yellow.htm"><code>yellow</code></a>.
+</li>
+<li id="13">
+<b><i>foreground-color</i></b> is the color of the
+string that is drawn in the message window (unless a pixmap is
+specified instead). It is either an RGB color object (see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>) or else <code>nil</code> to default to the <a href="../s/system-foreground-color.htm"><b>system-foreground-color</b></a>. The default is the
+value of the constant <a href="../../../variables/cg/black.htm"><code>black</code></a>.
+</li>
+<li id="14">
+<b><i>font</i></b> is the font in which to draw the
+string (unless a pixmap is specified instead), or else <code>nil</code> to default to the font returned by <a href="../p/proportional-font.htm"><b>proportional-font</b></a>. The default is the
+relatively large font returned by <code>(make-font-ex nil "Arial"
+20 '(:bold))</code> (see <a href="../m/make-font.htm"><b>make-font</b></a>).
+</li>
+<li id="15">
+<b><i>border</i></b> is the type of <a href="../b/border.htm"><b>border</b></a> that the message window will have. The
+default is <code>:black</code> to draw a thin border.  See the
+<a href="../b/border.htm"><b>border</b></a> property of windows for
+other valid values.
+</li>
+
+<li id="16">
+<b><i>class</i></b> is the name of the window class to
+use for the message window. If <code>nil</code> or
+unspecified, it defaults to <a href="../../../classes/cg/message-window.htm"><code>message-window</code></a>. To change the appearance of the
+window, an application could define a subclass of <a href="../../../classes/cg/message-window.htm"><code>message-window</code></a> with default-initargs for various
+properties, and then pass the name of that subclass to
+<a href="../w/with-message-window.htm"><b>with-message-window</b></a>.
+</li>
+
+</ul>
+<p id="17">
+<a href="../w/with-message-window.htm"><b>with-message-window</b></a> calls the
+function <a href="../m/make-message-window.htm"><b>make-message-window</b></a>
+to make the actual window. If you would like to display the message
+window at some time other than during the execution of a macro body,
+then you could call that function directly instead.
+</p>
+<p id="18">
+<b>GTK note</b>: on GTK platforms (Linux and Mac), the message window
+will no longer be there after selecting another application and then
+returning to this one (even when the code is still inside the macro
+body), due to X11 limitations. Typically it may be prudent to also
+display the message in a status bar, where it can still be seen in
+this case.
+</p>
+<p id="19">
+Here is a complete example for <a href="../w/with-message-window.htm"><b>with-message-window</b></a>. A window is displayed and
+lines are drawn in it. A message window is also displayed asking the
+user to wait while the lines are drawn. The drawing is slowed by calls
+to <a href="../../../../ansicl/dictentr/sleep.htm"><b>sleep</b></a> (in order for the
+example to show the message window for a noticeable time).
+</p>
+<pre id="20">
+(with-positions (first-position previous-position next-position)
+  (let* ((width 300)(height 400)
+         (dx 3)(dy 4)(resolution 8)
+         (frame (make-window :frame
+                  :class 'bitmap-window
+                  :title "My Main Window"
+                  :interior (make-box-relative 100 100 width height)))
+         (pane (frame-child frame)))
+    (nmake-position first-position (round width 2) height)
+    (ncopy-position previous-position first-position)
+    (with-message-window
+        ("Please wait while this application draws a bunch of lines."
+         :owner frame
+         :width 200
+         :font (make-font-ex nil "Arial" 17)
+         :background-color green)
+      (flet ((draw-mirrored-line
+              (stream pos1 pos2 width)
+              (with-positions (mpos1 mpos2)
+                (draw-line stream pos1 pos2)
+                (draw-line stream
+                           (nmake-position mpos1
+                             (- width (position-x pos1))
+                             (position-y pos1))
+                           (nmake-position mpos2
+                             (- width (position-x pos2))
+                             (position-y pos2))))))
+        (dotimes (j 40)
+          (sleep 0.1) ;; artificially slow this down
+          (dotimes (k 4)
+            (nmake-position next-position
+              (+ (max (* resolution dx)
+                      (min (- width (* resolution dx))
+                           (position-x previous-position)))
+                 (* resolution (- (random (1+ (* 2 dx))) dx)))
+              (+ (max (* resolution dy)
+                      (min (- height (* resolution dy))
+                              (position-y previous-position)))
+                 (* resolution (- (random (1+ (* 2 dy))) dy))))
+            (draw-mirrored-line pane previous-position next-position width)
+            (ncopy-position previous-position next-position)))
+        (draw-mirrored-line pane next-position first-position width)))))
+</pre>
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/with-message-window.htm">9.0 version</a></td></tr></table></body></html>

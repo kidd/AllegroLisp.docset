@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rsa-decrypt</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/rsa-decrypt.htm">9.0 version</a></td></tr></table><h2 id="2">rsa-decrypt</h2>
+
+<p id="3"><b>Arguments: </b><i>
+value key </i>&amp;key <i>string</i><i>
+</i></p>
+
+<p id="4">
+RSA decrypt <i>value</i> using <i>key</i>.
+<i>key</i> can be a public or private key. If the value
+was encrypted with the public key then it should be decrypted with the
+private key, and vice versa. (See <a href="../../miscellaneous.htm#rsa-2">Support for RSA encryption</a> in
+<a href="../../miscellaneous.htm">miscellaneous.htm</a> for a description of key
+objects. Possible keys are returned by the function <a href="generate-rsa-keys.htm"><b>generate-rsa-keys</b></a>.)
+</p>
+<p id="5">
+<i>value</i> can be
+</p>
+<ul>
+<li id="6">
+a vector of element-type (unsigned-byte 8) that was the result of a
+call to <a href="rsa-encrypt.htm"><b>rsa-encrypt</b></a>.
+</li>
+<li id="7">
+integer which was the result of calling <a href="rsa-encrypt.htm"><b>rsa-encrypt</b></a> on an integer.
+</li>
+</ul>
+
+<p id="8">
+If <i>value</i> is an (unsigned-byte 8) vector (also
+called an octet vector) then the result of <a href="rsa-decrypt.htm"><b>rsa-decrypt</b></a> is either an octet array or, if
+<i>string</i> is true, a string.
+</p>
+<p id="9">
+If <i>value</i> is an integer then the result is an
+integer.
+</p>
+<p id="10">
+<a href="rsa-decrypt.htm"><b>rsa-decrypt</b></a> will
+signal an error if the given key is so far from the correct key to
+decrypt the value that it can't even run the decryption algorithm
+using it.
+</p>
+
+<p id="11">
+See also <a href="rsa-encrypt.htm"><b>rsa-encrypt</b></a> and
+<a href="generate-rsa-keys.htm"><b>generate-rsa-keys</b></a>.
+</p>
+
+<p id="12">
+See <a href="../../miscellaneous.htm#rsa-2">Support for
+RSA encryption</a> in <a href="../../miscellaneous.htm">miscellaneous.htm</a>
+for information on RSA encryption and RSA encryption support
+in Allegro CL. There are examples of RSA encryption and decryption
+in that section. <a href="../../miscellaneous.htm#encrypt-1">Support for
+encryption</a> in the same document discusses encryption support
+in Allegro CL in general.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/rsa-decrypt.htm">9.0 version</a></td></tr></table></body></html>

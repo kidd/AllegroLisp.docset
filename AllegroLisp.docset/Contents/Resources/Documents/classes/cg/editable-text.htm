@@ -1,0 +1,110 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>editable-text</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/editable-text.htm">9.0 version</a></td></tr></table><h2 id="2">editable-text</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of the editable-text control (and super class of a <a href="multi-line-editable-text.htm"><code>multi-line-editable-text</code></a>
+control). These controls can accept text which can be edited by the
+user, and which is displayed surrounded by a box. The edited text is
+stored as a simple string in the value field of the dialog item.
+</p>
+<p id="5">
+The text initially displayed can be specified by storing a simple
+string in the value field. The <a href="../../operators/cg/d/delayed.htm"><b>delayed</b></a> property controls
+whether the dialog-item value is updated after every keystroke or only
+when the user moves to another item.
+</p>
+<p id="6">
+You can constrain the number of characters, the types of characters
+that can be entered, and add characters that display but cannot be
+modified in an editable-text widget with <a href="../../operators/cg/t/template-string.htm"><b>template-string</b></a> and <a href="../../variables/cg/s_template-chars_s.htm"><code>*template-chars*</code></a>.
+</p>
+<h3 id="7">
+Control
+</h3>
+<p id="8">
+An instance of the editable-text class. This control contains editable
+text displayed surrounded by a box.
+</p>
+<p id="9">
+The edited text is stored as a simple string in the value field of the
+dialog item. The text initially displayed can be specified by storing
+a simple string in the <a href="../../operators/cg/v/value.htm"><b>value</b></a> field.
+</p>
+<p id="10">
+<a href="editable-text.htm"><code>editable-text</code></a> controls
+do not have titles. If you want to add a title to your editable-text
+control, pair it with a
+<a href="static-text.htm"><code>static-text</code></a>
+control.
+</p>
+<h3 id="11">
+Adding an editable-text control to your form
+</h3>
+<p id="12">
+Click the editable-text tool on the Component toolbar. Move the mouse
+cursor to the part of the form where you want to place the control,
+and click again. The control will appear with colored resizing
+handles.
+</p>
+<h3 id="13">
+Resizing and moving the control
+</h3>
+<p id="14">
+Controls can only be resized and moved on forms during the design
+stage; the size and location of everything is fixed on a running form.
+</p>
+<p id="15">
+Resize the control by clicking the mouse cursor and dragging one of
+the handles to the new size-point. Release the mouse key when you are
+satisfied with the new size. Note: resizing the control changes the
+size of the bounding-box, but not the size of the actual characters
+inside. Change the <a href="../../operators/cg/f/font.htm"><b>font</b></a> property if you want to change
+the size of the characters.
+</p>
+<p id="16">
+Move the control by clicking anywhere on it except a resizing handle
+and dragging it to a new location on the form. Release the mouse key
+when you are ready to place the control.
+</p>
+<h3 id="17">
+Customizing editable-text control behavior
+</h3>
+<p id="18">
+<b>When user-generated changes appear</b>: the <a href="../../operators/cg/d/delayed.htm"><b>delayed</b></a> option controls whether the
+dialog-item value is updated after every keystroke or only after the
+user moves to another item on the dialog.
+</p>
+<p id="19">
+<b>Number, type, and read-only qualities of characters</b>: you can
+constrain the number of characters, constrain the types of characters
+that can be entered, and add characters that display but cannot be
+modified in an editable-text widget with <a href="../../operators/cg/t/template-string.htm"><b>template-string</b></a> and <a href="../../variables/cg/s_template-chars_s.htm"><code>*template-chars*</code></a>.
+</p>
+<p id="20">
+<b>Adding a password</b>: the <a href="../../operators/cg/p/password.htm"><b>password</b></a> property can be set with a
+non-<code>nil</code> value, and the widget will echo
+asterisks (or another character, if desired) for each typed character
+(preventing others who see the screen from knowing what was typed).
+</p>
+<p id="21">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="22">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="23"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/editable-text.htm">9.0 version</a></td></tr></table></body></html>

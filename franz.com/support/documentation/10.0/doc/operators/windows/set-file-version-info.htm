@@ -1,0 +1,73 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-file-version-info</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: windows</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/set-file-version-info.htm">9.0 version</a></td></tr></table><h2 id="2">set-file-version-info</h2>
+
+<p id="3"><b>Arguments: </b><i>
+file </i> &amp;rest <i></i><i>
+</i>&amp;key <i>comments company-name file-description file-version internal-name legal-copyright legal-trademarks original-filename product-name product-version private-build special-build</i><i>
+</i></p>
+
+<p id="4">
+Returns the file version info strings from a file on the Microsoft
+Windows platform, after optionally modifying some of the existing
+fields in the file.  See <a href="file-version-info.htm"><b>file-version-info</b></a> for a description
+of the returned value.
+</p>
+<p id="5">
+<b><i>file</i></b> should be the pathname or path
+namestring of a file. The file is typically an EXE or DLL file.
+</p>
+<p id="6">
+The specified file must not be executing when this function is called,
+or else it will fail when it attempts to obtain write access to the
+file. (If you want to modify the .exe file which is running Lisp --
+<b>allegro.exe</b> or <b>mlisp.exe</b> or whatever -- you have to
+operate on a copy of that file because the one executing should not be
+modified.)
+</p>
+<p id="7">
+Any keyword argument that is passed should be a string to replace the
+existing string for that field in the file, if any.  If that field
+currently does not have a value in the file, or the file has no file
+version info resource at all, then the new value is not written.
+</p>
+<p id="8">
+If the field does exist in the file but the field is not long enough
+for the new value, then the new value is truncated to fit the existing
+field size.  There is no way to increase the length of a field or to
+add the fields that are not defined already.  The plist that is
+returned reflects the state of the file after any fields have been
+updated, reflecting any such truncation that was done.
+</p>
+<p id="9">
+It is a good idea to first call <a href="file-version-info.htm"><b>file-version-info</b></a> to see which
+attributes are defined in the file, and the length of the field for
+each one. The field length that is returned for each attribute is the
+maximum character length of a lisp string that will fit in the field.
+</p>
+<p id="10">
+If the file is an application that was built with Allegro, then the
+EXE file is actually a copy of a standard lisp EXE, and so the fields
+will be limited to the lengths of the fields that Franz established
+when creating this EXE file.
+</p>
+<h3 id="11">
+Example
+</h3>
+<pre id="12">
+
+(set-file-version-info "c:/temp/my-app.exe"
+                      :company-name "Our Company"
+                      :file-version "3.6.15.4"
+                      :file-description "This is our latest killer app."
+                      :comments "Nothing more to say.")
+</pre>
+
+<p id="13">
+The function <a href="../excl/generate-application.htm"><b>generate-application</b></a> takes a file-version-info
+argument which allows users to specify the VERSIONINFO of the
+application executable. See <a href="../../delivery.htm#version-info-3">Setting the VERSIONINFO of the application
+executable on Windows</a> in <a href="../../delivery.htm">delivery.htm</a>.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/set-file-version-info.htm">9.0 version</a></td></tr></table></body></html>

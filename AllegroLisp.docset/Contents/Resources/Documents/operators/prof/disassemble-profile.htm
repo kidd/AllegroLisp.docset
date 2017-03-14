@@ -1,0 +1,138 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>disassemble-profile</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: prof</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/disassemble-profile.htm">9.0 version</a></td></tr></table><h2 id="2">disassemble-profile</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name </i>&amp;key <i>current-profile verbose start end</i><i>
+</i></p>
+
+
+<p id="4">
+This function prints to <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a> a disassembly of the
+function denoted by <i>name</i>.  In the disassembly,
+each instruction is annotated with actual hits on that instruction,
+plus a percentage of the total hits in the function. Since the hits
+are from a statistical sampling, an estimate can be made as to where
+in the function time is being spent (the more hits, the better the
+estimate).
+</p>
+
+<p id="5">A hit that occurs just after (we define <em>just after</em> for
+various platforms below) an instruction that does a call probably
+means that the function was not itself executing but had called
+another function at the time of the hit. A hit that occurs any other
+place means the function was actually executing at the time. </p>
+
+<p id="6">By <em>just after</em> above, we mean different things for
+different architectures:</p>
+
+
+
+<p id="7">On <strong>Windows</strong>, the
+hit is on the instruction after the <strong>jsr</strong>,
+<strong>call</strong>, or <strong>bctrl</strong> instruction,
+respectively.</p>
+
+
+
+<p id="8">On Sparcs, the hit occurs exactly at the <strong>jmpl</strong>
+instruction.</p>
+
+<p id="9">
+As an example, consider the <b>foo</b> function defined in the example
+in <a href="../../runtime-analyzer.htm#profiler-examples-2">Examples</a> section in
+<a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a>. In this case, we are running
+on a Sparc. The output of <a href="disassemble-profile.htm"><b>disassemble-profile</b></a> is:
+</p>
+<pre id="10">
+cl-user(20): <b>(prof:disassemble-profile #'foo)</b>
+Disassembly of foo collected by the time profiler
+;; disassembly of #&lt;Function foo&gt;
+;; formals: x
+;; constant vector:
+0: fact
+1: bar
+
+;; code start: #x63c2b4c:
+                   0: 9de3bf98     save	%o6, #x-68, %o6
+                   4: 80a0e001     cmp	%g3, #x1
+                   8: 93d02010     tne	%icc,%g0, #x10
+                  12: 81100001     taddcctv	%g0, %g1, %g0
+                  16: c4076022     ld	[%i5 + 34], %g2	; fact
+                  20: 90100018     mov	%i0, %o0
+     1 ( 50%)     24: 9fc1200b     jmpl	%g4 + 11, %o7
+                  28: 86182001     xor	%g0, #x1, %g3
+                  32: c4076026     ld	[%i5 + 38], %g2	; bar
+                  36: 90100018     mov	%i0, %o0
+     1 ( 50%)     40: 9fc1200b     jmpl	%g4 + 11, %o7
+                  44: 86182001     xor	%g0, #x1, %g3
+                  48: 81c7e008     jmp	%i7 + 8
+                  52: 91ea0000     restore	%o0, %g0, %o0
+
+number of hits 2
+cl-user(21): 
+</pre>
+<p id="11">
+There are two hits, both occurring at jumps. The function <b>foo</b>
+is defined as:
+</p>
+<pre id="12">
+(defun foo (x) 
+  (fact x)
+  (bar x))
+</pre>
+<p id="13">
+so all it does it call two other functions, so the dissassembly is
+what we would expect in this case.
+</p>
+
+<p id="14">
+<b><i>name</i></b> must evaluate to a symbol or a
+compiled function object or a string. A symbol or compiled function
+object identifies a Lisp function. A string identifies a C
+function. The disassembler will disassemble C functions on most
+platforms. Note that you must use the string that appears in a runtime
+analyzer output (such as a call graph or a flat profile).
+</p>
+
+<p id="15">
+The <b><i>current-profile</i></b> keyword argument
+specifies the runtime analyzer data to be disassembled. If no value is
+specified, data from the last-run runtime analysis will be used. If a
+value is specified, it must be a profile saved with <a href="save-current-profile.htm"><b>save-current-profile</b></a>, in which case data
+from that runtime analysis will be used.
+</p>
+
+<p id="16">
+The <b><i>verbose</i></b> keyword argument controls
+whether or not messages about the progress of the analysis are printed
+to <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>. The messages will be printed
+if the value is true and they will not be printed
+if the value is <code>nil</code>.  The value defaults to
+<code>nil</code>. (Note that in the default, both the
+messages and the result are printed to <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a> so if you rebind <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a> to be a stream
+open to a file, the messages will be printed to the file as well.)
+</p>
+<p id="17">
+The <b><i>start</i></b>
+and <b><i>end</i></b> keyword arguments are passed to
+<a href="../../../ansicl/dictentr/disassem.htm"><b>cl:disassemble</b></a>. Allegro CL
+enhances <b>cl:disassemble</b> by adding these arguments, which
+resemble the <i>start</i> and <i>end</i>
+arguments to sequence functions. Both values, if specified, should be
+non-negative integers indicating the pc-offset where printing of
+disassembled code should start and stop, but there are many
+details. See the description of the Allegro CL implementation of
+cl:disassemble in <a href="../../implementation.htm#extensions-to-clfuns-one-2">Extensions to cl:make-package,
+cl:disassemble, cl:open, cl:apropos</a> in
+<a href="../../implementation.htm">implementation.htm</a>.
+</p>
+
+<p id="18">This function returns <code>nil</code>.</p>
+
+<p id="19">
+See <a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a> for general information on
+the runtime analyzer. 
+</p>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/disassemble-profile.htm">9.0 version</a></td></tr></table></body></html>

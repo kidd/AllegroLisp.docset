@@ -1,0 +1,41 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>title-bar</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/title-bar.htm">9.0 version</a></td></tr></table><h2 id="2">title-bar</h2>
+
+<p id="3"><b>Arguments: </b><i>
+basic-pane
+</i></p>
+
+<p id="4">
+Returns the value of the title-bar property of the argument. The value
+of this property should be t if an object should have a title-bar and
+<code>nil</code> if it should not. Many windows display
+what looks like a title-bar even when the property is <code>nil</code> but the title-bar in that case will not have any
+controls (such as a close box).
+</p>
+<p id="5">
+The title-bar property may not be changed on an existing window,
+and must instead be specified with the inspector when designing a
+window (using a form) or with the :title-bar initarg of <a href="../m/make-window.htm"><b>make-window</b></a>. (It can be
+changed using the inspector when designing a form but not for a
+running window or control, either in the IDE or in an application.)
+</p>
+
+<h3 id="6">
+GTK note
+</h3>
+<p id="7">
+It is probably not a good idea to specify <code>nil</code>
+for the <a href="../t/title-bar.htm"><b>title-bar</b></a> property of
+a top-level window on a GTK platform (Linux or Mac), unless you also
+define a <a href="../f/frameless-topmost-p.htm"><b>frameless-topmost-p</b></a>
+method for the window class that returns true. When <a href="../t/title-bar.htm"><b>title-bar</b></a> is <code>nil</code> for a
+top-level window on GTK, the window will have no window manager frame,
+which can lead to confusion in the X11 world.  But a
+<a href="../f/frameless-topmost-p.htm"><b>frameless-topmost-p</b></a> window is
+a special type where X11 is prepared to handle no window manager
+frame.
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/title-bar.htm">9.0 version</a></td></tr></table></body></html>

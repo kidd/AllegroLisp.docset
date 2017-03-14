@@ -1,0 +1,98 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>defsystem</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/defsystem.htm">9.0 version</a></td></tr></table><h2 id="2">defsystem</h2>
+
+<p id="3"><b>Arguments: </b><i>system-name options </i> &amp;body <i> modules</i></p>
+
+<p id="4">This macro creates a new system with name
+<i>system-name</i> and options taken from
+<i>options</i>, containing module-groups specified by
+<i>modules</i>. <i>system-name</i> must be
+a symbol (we recommend using a keyword) which will identify the
+system. <i>options</i> must be a (possibly empty) list
+of keyword/value pairs. <i>modules</i> is a list
+consisting of one or more short form module-specifications and/or long
+form module-specifications.</p>
+
+<p id="5">This macro returns the symbol <i>system-name</i>.</p>
+
+<p id="6">The allowable <i>options</i> keywords are shown in
+the table below. 
+</p>
+
+<p id="7">
+See also <a href="../../defsystem.htm">defsystem.htm</a> for general
+information on the defsystem facility in Allegro
+CL and for a description of
+module specifications.
+</p>
+
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="735">
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><b><p id="8" ALIGN="CENTER">Keyword</p></b></td>
+    <td WIDTH="89" VALIGN="TOP"><b><p id="9" ALIGN="CENTER">value type</p></b></td>
+    <td WIDTH="212" VALIGN="TOP"><b><p id="10" ALIGN="CENTER">default value</p></b></td>
+    <td WIDTH="144" VALIGN="TOP"><b><p id="11" ALIGN="CENTER">Notes</p></b></td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:pretty-name</code></td> <td WIDTH="89" VALIGN="TOP">string</td> <td WIDTH="212" VALIGN="TOP">print-name of <i>system-name</i>
+    symbol</td> 
+    <td WIDTH="144" VALIGN="TOP">This name will be used
+    for printing.</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-module-class</code></td>
+    <td WIDTH="89" VALIGN="TOP">symbol identifying a class</td>
+    <td WIDTH="212" VALIGN="TOP"><code>ds:lisp-module</code></td>
+    <td WIDTH="144" VALIGN="TOP"><p id="12">Predefined classes are:</p>
+    <p id="13"><code>ds:lisp-module</code>, </p>
+    <p id="14"><code>ds:text-module</code>, </p>
+    <p id="15"><code>ds:c-module</code>. Users may define additional classes, 
+    see <a href="../../defsystem.htm">defsystem.htm</a>.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-package</code></td>
+    <td WIDTH="89" VALIGN="TOP">package object or string or symbol
+    naming a package</td> <td WIDTH="212" VALIGN="TOP">The value of
+    <a href="../../../ansicl/dictentr/package.htm"><code>*package*</code></a></td> <td WIDTH="144" VALIGN="TOP">Can be
+    overridden for a module or module-group with the
+    <i>package</i> option in the long module form. Also
+    can be overridden during an operation with the
+    <i>package</i> argument.</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-pathname</code></td>
+    <td WIDTH="89" VALIGN="TOP">pathname object or string or symbol naming pathname</td>
+    <td WIDTH="212" VALIGN="TOP">*default-pathname-defaults*</td>
+    <td WIDTH="144" VALIGN="TOP">This pathname will be merged with the filenames of the
+    modules of the system in order to find files.</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-file-type</code></td>
+    <td WIDTH="89" VALIGN="TOP">string</td>
+    <td WIDTH="212" VALIGN="TOP">depends on value of <code>:default-module-class</code> - see
+    notes at right.</td>
+    <td WIDTH="144" VALIGN="TOP">Specifies file type (extension) for source files for modules
+    in system. If :default-module-class is ds:lisp-module, default is 
+    value of 
+    <a href="../../variables/system/s_source-file-types_s.htm"><code>*source-file-types*</code></a>;
+    if ds:text-module, default is nil; if ds:c-module, default is "c".</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:property-list</code></td>
+    <td WIDTH="89" VALIGN="TOP">property list</td>
+    <td WIDTH="212" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="144" VALIGN="TOP">The value is added to the property list of the system.</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" COLSPAN="4" width="684"><b><p id="16" ALIGN="CENTER">Table 1: options keywords
+    and values</p></b></td>
+  </tr>
+</table>
+</div>
+
+
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/defsystem.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>offset-from-selected-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/offset-from-selected-window.htm">9.0 version</a></td></tr></table><h2 id="2">offset-from-selected-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+configuration
+</i></p>
+
+<p id="4">
+The default <a href="../d/default-top-left.htm"><b>default-top-left</b></a> method uses this
+configuration option to determine the positioning of a new window when
+<a href="../m/make-window.htm"><b>make-window</b></a> is
+called with no argument that explicitly indicates a position for the
+new window.
+</p>
+<p id="5">
+If true (the default), then a new window is created by default with
+its top-left corner near the top-left corner of the window that is
+currently selected on the owner window (or screen) of the new window.
+If there is no such selected window, then the upper left corner of the
+owner window (or screen) is used.
+</p>
+<p id="6">
+If <code>nil</code>, then a new window is created by
+default with its top-left corner near the position that was most
+recently used as a default position for a new window (even if that
+window has since been moved from that position or is no longer
+selected).  If no default window position has been used yet, then the
+upper left corner of the owner window (or screen) is used.
+</p>
+<p id="7">
+The term "near" in both cases above means shifted rightward and
+downward by the height of a window title-bar (see <a href="../t/title-bar-height.htm"><b>title-bar-height</b></a>) plus a resizing
+border.  This means that a sequence of windows created with default
+positioning will initially be positioned so that all of their
+title-bars are visible simultaneously.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/offset-from-selected-window.htm">9.0 version</a></td></tr></table></body></html>

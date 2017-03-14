@@ -1,0 +1,149 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>debug-window</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/debug-window.htm">9.0 version</a></td></tr></table><h2 id="2">Debug Window</h2>
+
+<p id="3">
+The Debug window contains a listener (with a prompt) where you can
+enter and evaluate Lisp forms. It also displays debugging information
+after an error (<a href="debug-window-after-error.htm">click here</a>
+to see the
+description of the Debug window after an error). Here is the Debug
+window when there is no error being debugged:
+</p>
+<p id="4"><img src="../pictures/debug.jpg"></p>
+<p id="5">
+The prompt is a 
+<code>[current package](Number)</code>.
+You can type directly to the prompt, pressing Enter
+for a newline. If you have entered a complete Lisp expression,
+pressing Enter evaluates it and the returned value is printed below
+the entered form. If you have not entered a complete expression,
+pressing Enter places the cursor on the next line, suitably indented,
+waiting for more input.
+</p>
+<p id="6">
+There are various ways to repeat an already typed expression.  One
+quick way is to place the text cursor anywhere within an expression
+visible in the listener pane and then press ENTER. This will copy the
+whole evaluated expression to the end of the listener's text (either
+to the prompt or after any text already entered at the
+prompt). You can quickly move the text cursor to various
+previously-evaluated forms by holding down the Control and Alt keys
+and pressing the up and down arrow keys (this also works without the
+Control key, though on Windows that can trigger functionality for
+inserting special characters that's built into Microsoft
+widget).
+</p>
+<p id="7">
+You can also use the history dropping outline to retrieve an already
+entered expression.
+</p>
+<p id="8">
+The dropping outline to the right under the title bar displays the
+history of entered Lisp expressions, with the most recent
+visible. (History can be cleared with the blue arrow icon just
+to the left of the History dropping outline.) Both expressions
+which were evaluated and those which were entered and not evaluated
+(because, e.g., the New Prompt button was clicked before evaluation)
+appear in the list. Clicking on an item in this drop-down list will
+paste the expression at the listener's prompt, ready to be evaluated
+again (after optionally editing it).  Clicking the blue arrow at the
+left of an expression will show the values that were returned, each in
+a separate line (expressions not evaluated have a gray dot rather than
+a blue arrow); clicking one of these values will return the value,
+leaving the variable <a href="../../ansicl/dictentr/unnamed.htm"><b>*</b></a> bound
+to the value for further use. Expressions in the history drop-down
+list may also be manipulated more quickly with the keyboard shortcuts
+for some of the buttons to the left of the drop-down list; see below
+for details.
+</p>
+
+<p id="9">
+To instead copy a sub-expression of an earlier evaluation to the
+prompt, hold down the control key and left-click in or next to the
+expression.  Clicking just before an opening parenthesis or just after
+the corresponding closing parenthesis will copy a list expression that
+starts or ends with that parenthesis; similarly, clicking just before
+an opening double-quote character or just after a closing double-quote
+character will copy a string; otherwise, clicking anywhere on a "word"
+(a character sequence demarcated by parentheses, spaces, tabs, and/or
+newlines) will copy that word (such as a symbol or number).
+</p>
+<p id="10">
+The buttons to the left of the dropping outline work as
+follows. (Placing the cursor over a button causes the tooltip to
+display. We identify the buttons by the tooltip description.)
+</p>
+<ul>
+<li id="11">
+<b>New Prompt</b>: click to get a new prompt. Any unprocessed input is
+discarded. In certain cases, the listener can become confused about
+input. Clicking this button clears that confusion.
+</li>
+
+<li id="12">
+
+<b>Complete History Expression</b>: if you start typing at the prompt
+and have matched the beginning of an expression in the history,
+clicking this button completes the expression. Thus, if you have
+earlier evaluated (+ 1.2 3.4), entering (+ 1.2 and pressing this
+button completes the expression to match the earlier input. 
+If more than one expression matches
+what you type, the initial completion is to the most recent. If the
+most recent match is not the one you are looking for, then this button
+may be pressed multiple times successively to retrieve older matches.
+ You are warned if nothing matches your input.
+
+</li>
+<li id="13">
+<b>The arrows</b> (Back in History and Forward in History): move
+forward or back in the history display. Typically you use these keys
+to select an earlier expression, and then use either the Paste
+button to copy the selected expression to the prompt for editing and
+re-evaluation, or the Paste and Evaluate button to re-evaluate the
+expression as is. The fastest way to reuse earlier expressions is to
+use the keyboard shortcuts for these buttons; the shortcuts are shown
+in the button tooltips.
+</li>
+<li id="14">
+<b>Paste and Evaluate</b> (a double line arrow with a tail): paste the
+current history expression (the visible one) to the prompt and
+evaluate it.
+</li>
+<li id="15">
+<b>Paste</b> (an arrow with a tail): paste the current history
+expression (the visible one) to the prompt but do not evaluate.
+</li>
+<li id="16">
+<b>Evaluate</b> (a double line arrow): evaluate the expression at the
+prompt (equivalent to pressing Enter). If the expression at the prompt
+is incomplete, go to the next line, indent appropriately, and wait for
+further input.
+</li>
+
+<li id="17">
+<b>Clear History</b> (a small blue X): clear everything from the
+history of evaluated Lisp forms and their returned values. This may be
+useful before calling <a href="../operators/excl/get-objects.htm"><b>get-objects</b></a> or <a href="../operators/excl/get-references.htm"><b>get-references</b></a> to examine the heap, so that
+the garbage collector can first remove this old information from the
+heap. This command does not trigger a garbage collection itself,
+though, so you may want to use this button and then
+call <a href="../operators/excl/gc.htm"><b>gc</b></a> before examining the
+heap. If you are using the inspector, then you may also want to
+right-click the inspector's background and use its <b>Clear
+History</b> command for the same reason.  Using
+the <a href="trace-dialog.htm">Trace
+Dialog</a>'s
+<b>Clear</b> button may also free old objects if needed.
+</li>
+
+</ul>
+
+<p id="18">
+An additional listener pane can be created by choosing <a href="view-menu.htm#new-listener">View | New
+Listener</a>.
+</p>
+
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/debug-window.htm">9.0 version</a></td></tr></table></body></html>

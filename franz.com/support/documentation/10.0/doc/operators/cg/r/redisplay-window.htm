@@ -1,0 +1,75 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>redisplay-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/redisplay-window.htm">9.0 version</a></td></tr></table><h2 id="2">redisplay-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window </i> &amp;optional <i>box</i><i>
+</i></p>
+
+<p id="4">
+This generic function is called by Common Graphics as needed in order
+to redisplay all or part of a window. Redisplay may happen either when
+part of the window becomes uncovered, or when the application has
+called <a href="../i/invalidate.htm"><b>invalidate</b></a>
+to explicitly cause the window to be redrawn. An application draws the
+content of its windows by writing <a href="../r/redisplay-window.htm"><b>redisplay-window</b></a> methods for the
+application's various window subclasses that it has defined.
+</p>
+<p id="5">
+Note that the application itself should never call
+redisplay-window. If the content of the window needs to change, the
+proper technique is to call <a href="../i/invalidate.htm"><b>invalidate</b></a> to tell the operating
+system that the window needs to be redrawn, and then to redraw the
+content inside the redisplay-window method as usual. The operating
+system will then send the paint message (which causes Common Graphics
+to call redisplay-window) only when all other event-handling activity
+in the thread has exited. This design is a feature of the operating
+system to avoid redundant redisplays, which not only slow down the
+interface but also may cause annoying screen flashing. If the window
+needs to be redrawn immediately, the application should call <a href="../u/update-window.htm"><b>update-window</b></a> just after
+calling <a href="../i/invalidate.htm"><b>invalidate</b></a>. That causes
+redisplay-window to be called at that time and informs the operating
+system that the window is now up-to-date so a later paint message is
+not necessary. To reduce flashing effects when a window is scrolled,
+resized, or animated, enable the <a href="../d/double-buffered.htm"><b>double-buffered</b></a> property of the window.
+</p>
+<p id="6">
+The <i>box</i> argument indicates the portion of the
+window that needs to be redrawn. In the simplest case, a
+redisplay-window method can just ignore this box and redraw everything
+on each call; in this case the OS will clip at the box boundaries so
+that nothing is actually drawn outside the box. But the method will
+likely be more efficient if it takes note of the box and does not even
+attempt to draw any objects that are known not to intersect with the
+box. The box argument is optional for backward compatibility reasons
+only; in fact, a box is always passed, and so methods do not need to
+check that a box has been passed.
+</p>
+<p id="7">
+Certain classes of windows do not need to be given redisplay-window
+methods. In particular, a <a href="../../../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> (auto-instantiated with
+a <a href="../../../classes/cg/bitmap-window.htm"><code>bitmap-window</code></a>) already has a
+redisplay-window method, which simply copies the window's backing
+store to the visible window. (But remember that the backing store
+memory bitmap can consume a lot of virtual memory, so it's usually
+best to use a "plain" window with a custom redisplay-window method
+unless the extra redisplay speed of a bitmap-pane is really needed.)
+And a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> is redrawn by the
+operating system, since it is actually a control supplied by the OS.
+</p>
+<p id="8"> An application may override the default method of this and several
+other generic functions in order to implement a custom scrolling
+scheme that scrolls by logical picture objects rather than by
+pixels. See the source code of the example entitled <b>Scrolling by
+arbitrary objects rather than pixels</b> on the <b>Examples</b> tab of
+the <a href="../../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog for a complete
+example. More on this point and a list of the relevant generic
+functions can be found on the <a href="../../../classes/cg/horizontal-scroll-bar.htm"><code>horizontal-scroll-bar</code></a> and <a href="../../../classes/cg/vertical-scroll-bar.htm"><code>vertical-scroll-bar</code></a>
+pages.
+</p>
+<p id="9">
+See <a href="../../../cg/cg-drawing.htm">cg-drawing.htm</a>
+for a discussion of the uses of <a href="../r/redisplay-window.htm"><b>redisplay-window</b></a>, <a href="../i/invalidate.htm"><b>invalidate</b></a>, and <a href="../u/update-window.htm"><b>update-window</b></a>.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/redisplay-window.htm">9.0 version</a></td></tr></table></body></html>

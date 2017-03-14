@@ -1,0 +1,192 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>simple-stream-read-line</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/simple-stream-read-line.htm">9.0 version</a></td></tr></table><h2 id="2">simple-stream-read-line</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream eof-error-p eof-value </i> &amp;optional <i>given-string</i><i>
+</i></p>
+
+
+<p id="4">
+This function implements <a href="../../../ansicl/dictentr/read-lin.htm"><b>read-line</b></a> for simple-streams.  In addition, it
+allows an optional string as a buffer into which to store characters
+being read. Unless an EOF is encountered immediately, in which case an
+error is signaled or <i>eof-value</i> is returned, the
+first return value is a string. If the
+<i>given-string</i> is supplied but is <a href="#large-enough">too small</a> to hold the whole line, a new
+string of the exact size needed is allocated and returned. (If a new
+string is allocated, the contents of a provided
+<i>given-string</i> when this function returns are
+undefined -- they will likely have been changed in anticipation of the
+string being used.)
+</p>
+<p id="5">
+Two values are always returned (following the behavior of <a href="../../../ansicl/dictentr/read-lin.htm"><b>read-line</b></a>) and a third value is
+sometimes returned. The first two return values are:
+</p>
+<ol>
+<li id="6">
+<b>The result string, or the eof-value</b>. If an EOF is not
+encountered immediately, and if the <i>given-string</i>
+is supplied but is <a href="#large-enough">not large enough</a>, this
+value will be a newly allocated string large enough to hold the entire
+line exactly.
+</li>
+<li id="7">
+<b>A flag indicating why reading stopped</b>: <code>nil</code>, if the line was terminated with a newline; and
+<code>t</code> if the line was not terminated with a
+newline (that is, the end of file was reached).
+</li>
+</ol>
+
+<p id="8">
+A third value is returned when <i>given-string</i> is <a href="#large-enough">large enough</a> to hold the line read. (No third
+value is returned when <i>given-string</i> is not
+supplied or when given-string is <a href="#large-enough">too
+small</a>). The third value is:
+</p>
+<ol start="3">
+<li id="9">
+The number of characters read and stored in
+<i>given-string</i>, (which does not include a newline
+if read).
+</li>
+</ol>
+<p id="10">
+Since you do not typically know in advance whether the
+<i>given-string</i> or a new string is returned, the
+number of characters read (not counting the newline) is the value of
+</p>
+<pre id="11">
+  (or end (length string))
+  ;; END is the third return value, STRING the first
+</pre>
+<p id="12">
+<i>given-string</i> may be simple or non-simple, but
+must be a string. The other arguments are as for <a href="../../../ansicl/dictentr/read-lin.htm"><b>read-line</b></a> (note there is no
+<i>recursive-p</i> argument and
+<i>stream</i>, <i>eof-error-p</i>, and
+<i>eof-value</i> are required, not optional).
+</p>
+
+<p id="13">
+The motivation for this function is twofold: to provide a direct
+implementation for <a href="../../../ansicl/dictentr/read-lin.htm"><b>read-line</b></a>
+for simple-streams, and to provide a tradeoff for consing between that
+of <a href="../../../ansicl/dictentr/read-lin.htm"><b>read-line</b></a> and that of
+<a href="read-line-into.htm"><b>excl:read-line-into</b></a> (<a href="read-line-into.htm"><b>excl:read-line-into</b></a> does no consing
+but requires more bookkeeping). If the supplied string is large
+enough, then most of the time consing will not occur, but for the
+occasional larger-than-expected line, the allocation of a string
+is automatic.
+</p>
+<p id="14">
+See also <a href="read-line-into.htm"><b>read-line-into</b></a>. That function is more space
+efficient than this one, but has a more complicated interface.
+</p>
+
+<h3 id="15">
+Examples
+</h3>
+<pre id="16">
+;; Assume the file myfile.txt contains (no trailing spaces):
+12345
+
+12345678901234567890
+123456789
+1234567890
+123456789012345
+
+;; That is 6 lines or lengths 5, 0, 20, 9, 10, 15, 0, not counting
+;; the newlines.
+;;
+;; We read the file one line at a time:
+(with-open-file (f "myfile.txt" :direction :input)
+  (let (res stopped end
+	(given-string (make-string 10 :initial-element #\a)))
+    (loop
+      (multiple-value-setq (res stopped end)
+	(simple-stream-read-line f nil f given-string))
+      (when (eq res f) (return))
+      (format t " res is ~S, eq to given-string ~S~% ~
+                     length ~D, given-string is ~S~%"
+	      res (eq res given-string) (or end (length res)) given-string))))
+ res is "12345aaaaa", eq to given-string t
+ length 5, given-string is "12345aaaaa"
+ res is "12345aaaaa", eq to given-string t
+ length 0, given-string is "12345aaaaa"
+ res is "12345678901234567890", eq to given-string nil
+ length 20, given-string is "1234567890"  ;; actual value may be different
+ res is "1234567890", eq to given-string t
+ length 9, given-string is "1234567890"   ;; given-string is used
+ res is "1234567890", eq to given-string nil
+ length 10, given-string is "1234567890"  ;; given-string is not used
+                                       ;; see <a href="#large-enough">below</a>
+ res is "123456789012345", eq to given-string nil
+ length 15, given-string is "1234567890"
+nil
+;;  One trick is, when a new string is allocated, use that string 
+;;  as the given-string from then on. (It already exists, so no 
+;;  extra allocation and it is bigger so more likely not to overflow.)
+;;  Here is the same example with using any newly allocated string:
+(with-open-file (f "myfile.txt" :direction :input)
+  (let (res stopped end
+	(given-string (make-string 10 :initial-element #\a)))
+    (loop
+      (multiple-value-setq (res stopped end)
+	(simple-stream-read-line f nil f given-string))
+      (when (eq res f) (return))
+      (format t " res is ~S, eq to given-string ~S~% ~
+                     length ~D, given-string is ~S~%"
+	      res (eq res given-string) (or end (length res)) given-string)
+      (unless end (setq given-string res))
+      )))
+ res is "12345aaaaa", eq to given-string t
+ length 5, given-string is "12345aaaaa"
+ res is "12345aaaaa", eq to given-string t
+ length 0, given-string is "12345aaaaa"
+ res is "12345678901234567890", eq to given-string nil
+ length 20, given-string is "1234567890"  ;; actual value may be different
+ res is "12345678901234567890", eq to given-string t
+ length 9, given-string is "12345678901234567890" ;; Note: given-string
+                                              ;; is now last returned string
+ res is "12345678901234567890", eq to given-string t
+ length 10, given-string is "12345678901234567890"
+ res is "12345678901234567890", eq to given-string t
+ length 15, given-string is "12345678901234567890"
+nil
+</pre>
+
+<h3 id="17">
+<a name="large-enough">How large must the given-string be?</a>
+</h3>
+
+<p id="18">
+The examples above include a case where the line has 10 characters,
+and the <i>given-string</i> is length 10 but it is not
+used. Instead, a new string of length 10 is allocated. Why is the
+given-string insufficient? The problem is that the most efficient time
+to allocate a new string when necessary is to do it when the
+<i>given-string</i> is full and there is known to be at
+least one more character to read, but before it is known what that
+character is. If that additional character turns out to be a newline,
+then in fact the <i>given-string</i> was big enough but
+by this time the new string is already allocated.
+</p>
+<p id="19">
+Therefore, <i>given-string</i> must be larger than the
+anticipated maximum line length in order that it always be used. (For
+common external formats, it must be one larger. There may be external
+formats where more that one extra character is needed.)
+</p>
+<p id="20">
+This need for a longer given-string than the maximal line length (not
+counting the newline) is suboptimal behavior, and may be replaced in a
+future release if an efficient implementation can be
+discovered. However, as currently implemented, too much extra time
+would have to be spent in order to determine whether a line is or is
+not exactly as big as the given-string.
+</p>
+
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/simple-stream-read-line.htm">9.0 version</a></td></tr></table></body></html>

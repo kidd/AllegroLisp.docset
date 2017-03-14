@@ -1,0 +1,88 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>get-pixmap</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/get-pixmap.htm">9.0 version</a></td></tr></table><h2 id="2">get-pixmap</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream </i>&amp;key <i>box</i><i>
+</i></p>
+
+<p id="4">
+Creates and returns a pixmap that is a copy of the image that is
+currently displayed in some rectangular area of the screen. The
+argument <i>stream</i> may be either the screen itself
+or a window (the screen is the value of <code>(screen
+*system*)</code>, see <a href="../s/screen.htm"><b>screen</b></a> and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>). If
+<i>box</i> is <code>nil</code>, then the
+area of the screen that is covered by the entire interior of
+<i>stream</i> is copied; otherwise
+<i>box</i> should be a box (see <a href="../m/make-box.htm"><b>make-box</b></a>) that specifies a portion
+of the page (scrollable canvas) of <i>stream</i>, to
+indicate the area of the screen to copy. When
+<i>stream</i> is the screen, then the
+<i>box</i> argument must be specified.
+</p>
+<p id="5">
+Note that the image copied is whatever appears on the screen at that
+moment; if other windows are covering <i>stream</i> then
+whatever covers the specified area of <i>stream</i> is
+what is copied. Therefore, when passing a window (rather than the
+screen) to <a href="../g/get-pixmap.htm"><b>get-pixmap</b></a>, an application
+typically will first ensure that the window being copied is not
+covered by other windows, and that the desired part of the window's
+page is currently scrolled into the window.
+</p>
+<p id="6">
+An exception to the above is that if <i>stream</i> is a
+<a href="../../../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>,
+then the image is copied from the memory bitmap of the bitmap-pane
+rather than from the screen. If <i>box</i> is <code>nil</code>, then the entire page of the bitmap-pane is
+copied; otherwise <i>box</i> should specify the portion
+of the bitmap-pane's page to copy. (The <a href="../../../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a> of a <a href="../../../classes/cg/bitmap-window.htm"><code>bitmap-window</code></a> may be found by
+calling <a href="../f/frame-child.htm"><b>frame-child</b></a> on the bitmap-window.)
+</p>
+
+<p id="7">
+Another exception is that if the <a href="../d/double-buffered.htm"><b>double-buffered</b></a> property of a window is true,
+then <a href="../g/get-pixmap.htm"><b>get-pixmap</b></a> will return an
+image from the window even if the window is covered, but only for the
+part of the window's page that is currently scrolled into the window's
+interior (see <a href="../v/visible-box.htm"><b>visible-box</b></a>).
+The reason is that a <a href="../d/double-buffered.htm"><b>double-buffered</b></a> window has a memory bitmap, but
+only for the interior area of the window.
+</p>
+
+<p id="8">
+The <a href="../b/bits-per-pixel.htm"><b>bits-per-pixel</b></a> of the returned
+pixmap is always the same as the <a href="../b/bits-per-pixel.htm"><b>bits-per-pixel</b></a> of the screen. This
+value depends on the end user's global operating system settings; in
+Windows this is set in the Display area of Control Panel.
+</p>
+<p id="9">
+<a href="../g/get-pixmap.htm"><b>get-pixmap</b></a> is
+functionally equivalent to the older function <a href="../g/get-texture.htm"><b>get-texture</b></a> (called
+<em>get-pixels</em> in earlier releases), except that it returns the
+new higher-level pixmap object rather than separate texture and
+texture-info objects, and the optional texture and texture-info
+parameters are not present on <a href="../g/get-pixmap.htm"><b>get-pixmap</b></a> (to avoid consing these
+arguments).
+</p>
+<p id="10">
+See also <a href="../g/get-screen-pixmap.htm"><b>get-screen-pixmap</b></a>.
+</p>
+
+
+<h3 id="11">
+GTK Note
+</h3>
+
+<p id="12">
+It does not work to pass the screen to <a href="../g/get-pixmap.htm"><b>get-pixmap</b></a> on GTK; you must pass a window
+instead. (If you do pass the screen, the <a href="../../../variables/cg/s_gtk-compatibility-warning-action_s.htm"><code>*gtk-compatibility-warning-action*</code></a> will be
+invoked.)  When called on a region of a window that is not visible, it
+may return whatever is on the screen at that location, but this cannot
+be guaranteed by Common Graphics.
+</p>
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/get-pixmap.htm">9.0 version</a></td></tr></table></body></html>

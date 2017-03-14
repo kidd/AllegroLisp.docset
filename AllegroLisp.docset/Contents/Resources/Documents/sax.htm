@@ -1,0 +1,2130 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>A Sax XML Parser for Allegro Common Lisp</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/sax.htm">9.0 version</a></td></tr></table><h1 id="2">A Sax XML Parser for Allegro Common Lisp</h1><p id="3">This document contains the following sections:</p><a href="#sax-intro-1">1.0 Sax parser introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#xml-intro-2">1.1 XML introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#xml-versions-2">1.2 XML versions</a><br>&nbsp;&nbsp;&nbsp;<a href="#xml-parsing-2">1.3 Parsing XML documents</a><br>&nbsp;&nbsp;&nbsp;<a href="#xml-well-formed-2">1.4 Well-formed XML documents</a><br>&nbsp;&nbsp;&nbsp;<a href="#xml-valid-2">1.5 Valid XML documents</a><br><a href="#sax-api-1">2.0 The sax API in Allegro CL</a><br><a href="#test-sax-parser-1">3.0 Testing the sax parser: the test-sax-parser class</a><br><a href="#lxml-1">4.0 LXML</a><br>&nbsp;&nbsp;&nbsp;<a href="#what-is-lxml-2">4.1 What is LXML?</a><br>&nbsp;&nbsp;&nbsp;<a href="#sax-lxml-2">4.2 The SAX-LXML Module</a><br>&nbsp;&nbsp;&nbsp;<a href="#pxml-sax-2">4.3 The PXML-SAX Module</a><br>&nbsp;&nbsp;&nbsp;<a href="#pxml-dual-2">4.4 The PXML-DUAL Module</a><br>&nbsp;&nbsp;&nbsp;<a href="#pxml-ref-2">4.5 PXML reference</a><br><a href="#sax-index-1">5.0 Index</a><br><hr><hr><h2 id="4"><a name="sax-intro-1">1.0 Sax parser introduction</a></h2>
+
+<p id="5">
+This document has been revised since its first release. A patch made
+available around June 7, 2004, updates the sax module to conform to
+the description in this document.
+</p>
+<p id="6">
+This utility provides a validating parser for XML 1.0 and XML 1.1.
+The interface to the parser is based on the SAX (<b>S</b>imple <b>A</b>PI
+for <b>X</b>ML) specification.
+</p>
+
+<p id="7">
+A SAX parser reads the input file and checks it for correctness.
+While it is parsing the file, it is making callbacks to user code
+that note what the parser is seeing. If the parser finds
+an error in the input file it signals an error.
+</p>
+<p id="8">
+There are two levels of correctness for an xml file: <b>well
+formed</b>, described in
+<a href="#xml-well-formed-2">Section 1.4 Well-formed XML documents</a> and <b>valid</b>,
+described in <a href="#xml-valid-2">Section 1.5 Valid XML documents</a>.
+</p>
+<p id="9">
+When the sax parser is invoked it creates as instance of the class
+<code>sax-parser</code> (or a subclass of
+<code>sax-parser</code>). This instance holds the data
+accumulated during the parse and this instance is also used to
+discriminate on the method to call when callbacks are done.  A user of
+the parser will usually subclass <code>sax-parser</code> and
+then write methods on this subclass for those callbacks that he wishes
+to handle.  The <code>sax-parser</code> class has a set of
+methods for the callbacks so the user need only write those methods
+whose behavior he wishes to change.
+</p>
+<p id="10">
+All symbols in this module are exported from the
+<code>net.xml.sax</code> package.  The module is named
+<code>sax</code>. You load the
+<code>sax</code> module with a form like:
+</p>
+<pre id="11">
+(require :sax)
+</pre>
+
+<p id="12">
+See also <a href="dom.htm">dom.htm</a>, which describes Document Object
+Model support in Allegro CL.
+</p>
+
+<hr><h2 id="13"><a name="xml-intro-2">1.1 XML introduction</a></h2>
+
+<p id="14">
+XML (the E<b>x</b>tensible <b>M</b>arkup <b>L</b>anguage) is a
+language for writing structured documents.  An XML document contains
+characters and elements. An element looks like
+</p>
+<pre id="15">
+&lt;name att1=&quot;value1&quot; att2=&quot;value2&quot;&gt; body content here &lt;/name&gt;
+</pre>
+<p id="16">
+or
+</p>
+<pre id="17">
+&lt;name att1=&quot;value1&quot; att2=&quot;value2&quot;/&gt;
+</pre>
+<p id="18">
+The elements are used to assign a meaning to the text between
+the start and end tags of the elements.  For example
+</p>
+<pre id="19">
+&lt;name&gt;
+   &lt;lastname&gt;Smith&lt;/lastname&gt;
+   &lt;firstname&gt;John&lt;/firstname&gt;
+&lt;/name&gt;
+</pre>
+<p id="20">
+The designers of XML intended to write a clear concise specification
+of a structured document language. While they did not achieve that
+very ambitious goal, XML has nevertheless become very popular, in
+large part because of the popularity of the world wide web and the
+HTML language on which it is written. XML is very similar to HTML.
+</p>
+
+
+
+
+
+<hr><h2 id="21"><a name="xml-versions-2">1.2 XML versions</a></h2>
+
+<p id="22">
+There are two versions of XML (1.0 and 1.1) and they differ in 
+the characters they permit inside documents. In XML 1.0 the
+XML designers decided what characters were permitted and declared that
+all other characters were forbidden. In XML 1.1 the XML designers
+decided which characters were forbidden and any characters not 
+forbidden were permitted. Far more characters are permitted in XML 1.1
+than XML 1.0.  All XML 1.0 documents are XML 1.1 documents but not 
+the other way around.
+</p>
+<p id="23">
+The way that the two versions of XML documents are distinguished is
+by what appears at the beginning of the document.  An XML 1.1 
+document always begins
+</p>
+<pre id="24">
+&lt;?xml version=&quot;1.1&quot;?&gt;
+</pre>
+<p id="25">
+and this form may also include encoding and standalone attributes.
+</p>
+<p id="26">
+An XML 1.0 document begins with
+</p>
+<pre id="27">
+&lt;?xml version=&quot;1.0&quot;?&gt;
+</pre>
+<p id="28">
+or begins with no <code>&lt;?xml..?&gt;</code> form at all.
+</p>
+
+
+<hr><h2 id="29"><a name="xml-parsing-2">1.3 Parsing XML documents</a></h2>
+
+<p id="30">
+There are two popular models for parsing an XML document, DOM and SAX:
+</p>
+
+<h3 id="31">
+1. DOM (Document Object Model) parsing
+</h3>
+
+<p id="32">
+The parser reads the whole XML document and returns a object which
+represents the whole XML document. A program can query this object and
+the objects this object points to in order to find out what is in the
+XML document.
+</p>
+<p id="33">
+The advantage of DOM parsing is the XML document is now in a form
+that's easily studied and manipulated by a program. It has the
+disadvantage that there is a limit to the size of the XML document you
+can parse this way since the whole document represented by objects
+must fit in the address space of the program.
+</p>
+<h3 id="34">
+2. SAX parsing
+</h3>
+<p id="35">
+While the parser is reading the XML document it is calling back to
+user code to tell it what it's encountering. The callbacks occur
+immediately, before the parser has even determined that the XML
+document is completely error free.
+</p>
+<p id="36">
+The advantage of SAX parsing is the user code can ignore what it
+does not care about and only keep the data it considers important.
+Thus it can handle huge XML documents. But the disadvantage is the
+callbacks occur before it's even known if this document is correct
+XML. If the goal is to analyze the document then the sax user code
+will often end up writing ad-hoc DOM structure.
+</p>
+
+
+<hr><h2 id="37"><a name="xml-well-formed-2">1.4 Well-formed XML documents</a></h2>
+
+<p id="38">
+An XML document must be well-formed or technically it is not
+an XML document. There is no simple definition of well-formed
+(and readers are invited to read the XML specification
+at <a href="http://www.w3c.org">http://www.w3c.org</a> for all the details). 
+Basically though a well-formed document follows these rules:
+</p>
+<ol>
+<li id="39">
+There is one top-level element (and no top-level characters other than
+whitespace, except Misc in the Prolog). Here are some well-formed XML
+documents based on that criterion:
+<pre id="40">
+  document 1:
+  &lt;foo/&gt;
+  
+  document 2:
+  &lt;foo&gt;&lt;/foo&gt; 
+  
+  document 3:
+  &lt;foo&gt; hello &lt;bar&gt;
+  &lt;/bar&gt;  hello
+  &lt;baz/&gt; hello
+  &lt;/foo&gt;
+</pre>
+<p id="41">
+and some not well-formed ones:
+</p>
+<pre id="42">
+  document 4:
+  &lt;foo/&gt;
+  &lt;bar/&gt;
+  
+  document 5:
+  &lt;foo/&gt;
+  hello
+  
+  document 6:
+  no elements here.
+</pre>
+</li>
+<li id="43">
+Every start tag has an end tag. So this document is well-formed
+<pre id="44">
+  &lt;foo&gt; &lt;/foo&gt;
+</pre>
+<p id="45">
+and this one isn't:
+</p>
+<pre id="46">
+  &lt;foo&gt;
+</pre>
+</li>
+<li id="47">
+Elements are nested correctly. This document is well-formed:
+<pre id="48">
+  &lt;foo&gt; hello &lt;bar/&gt; &lt;baz&gt; hello &lt;/baz&gt; &lt;/foo&gt;
+</pre>
+<p id="49">
+and this one isn't:
+</p>
+<pre id="50">
+  &lt;foo&gt; hello &lt;bar&gt; hello &lt;/foo&gt; hello &lt;/bar&gt;
+</pre>
+</li>
+</ol>
+
+<p id="51">
+The ACL Sax parser will signal an error if it detects
+that the document is not well-formed.
+</p>
+
+
+
+<hr><h2 id="52"><a name="xml-valid-2">1.5 Valid XML documents</a></h2>
+
+<p id="53">
+A well-formed document can also be <b>valid</b>. A valid document
+contains or references a DTD (document type description) and obeys
+that DTD.
+</p>
+<p id="54">
+A DTD contains two things:
+</p>
+<ol>
+<li id="55">
+Declarations that constrain what can be used in the XML document. For
+example the DTD can specify that within the body of the 'name' element
+you will have in sequence a 'lastname' element and a 'firstname' element
+and nothing else.
+</li>
+<li id="56">
+Definitions of entities (these are text substitution macros). Even
+documents that are not intended to be valid will include a DTD just for
+the purpose of declaring entities.
+</li>
+</ol>
+<p id="57">
+The ACL Sax parser will test a document for validity only if the
+<i>:validate</i> argument is given as true (the
+<i>:validate</i> argument defaults to false). The Sax
+parser takes longer to parse if it must validate as well. Even if the
+paser is not validating it may detect problems in the document for
+which it would have signaled an error if it were validating.  In this
+case the parser will issue a warning.  You can surpress those warnings
+by passing <code>nil</code> to the
+<i>:warn</i> argument (the default for
+<i>:warn</i> is true).
+</p>
+<p id="58">
+The parser collects all the DTD information about the document
+and stores it in the parser object that's passed to all
+the callback functions.   You can use the accessors shown below
+to retrieve information about the DTD.  
+</p>
+
+
+
+<hr><hr><h2 id="59"><a name="sax-api-1">2.0 The sax API in Allegro CL</a></h2>
+
+
+<p id="60">
+There are two predefined classes that you can pass to the :class
+argument of the sax-parse functions.
+</p>
+<p id="61">
+The class <code>sax-parser</code> defines callback functions
+that do nothing except for <a href="sax.htm#compute-external-address-op-bookmarkxx"><b>compute-external-address</b></a> and <a href="sax.htm#compute-external-format-op-bookmarkxx"><b>compute-external-format</b></a>, which do the work
+necessary to ensure that the parse will be able to handle external
+references.
+</p>
+<p id="62">
+In the example code shown below we'll assume that we've created our own
+subclass of <code>sax-parser</code> called
+<code>my-sax-parser</code>. We do this by evaluating:
+</p>
+<pre id="63">
+(defclass my-sax-parser (sax-parser)
+    ((private :initform nil :accessor private)))
+</pre>
+
+<p id="64">
+The class <code>test-sax-parser</code> defines the callback
+methods to bring the values of their arguments. This allows you to see
+how the sax parser would treat an xml document. See
+<a href="#test-sax-parser-1">Section 3.0 Testing the sax parser: the test-sax-parser class</a> for more information
+on this class.
+</p>
+
+<hr><h3 id="65"><a name="start-document-op-bookmarkxx"></a>start-document</h3><h3 id="66">Generic Function</h3><h4 id="67">Package: net.xml.sax</h4>
+
+<p id="68"><b>Arguments: </b><i>
+(parser sax-parser)
+</i></p>
+
+<p id="69">
+User should define their own method on their subclass of
+<code>sax-parser</code>. <a href="sax.htm#start-document-op-bookmarkxx"><b>start-document</b></a> is called just before
+the parser begins parsing its input. This function can be used to
+initialize values in the instance of the parser object. The default method
+returns <code>nil</code>.
+</p>
+<p id="70">
+This callback is a good place to do initialization of the data
+structures you will be using during the parse, as we do with the
+following method (we assume <b>private</b> and
+<b>make-private-object</b> are elsewhere defined):
+</p>
+<pre id="71">
+(defmethod start-document ((parser my-sax-parser))
+  (setf (private parser) (make-private-object)))
+</pre>
+
+<hr>
+
+<hr><h3 id="72"><a name="end-document-op-bookmarkxx"></a>end-document</h3><h3 id="73">Generic Function</h3><h4 id="74">Package: net.xml.sax</h4>
+
+<p id="75"><b>Arguments: </b><i>
+(parser sax-parser)
+</i></p>
+
+<p id="76">
+User should define their own method on their subclass of
+<code>sax-parser</code>. <a href="sax.htm#end-document-op-bookmarkxx"><b>end-document</b></a> is called after the parse
+is compete. <a href="sax.htm#end-document-op-bookmarkxx"><b>end-document</b></a> will only be called if the
+document is well formed, and in the case where the parser was called
+with <code>:validate t</code> then <a href="sax.htm#end-document-op-bookmarkxx"><b>end-document</b></a> will only be called if the
+document is also valid. The default method returns <code>nil</code>.
+</p>
+<h3 id="77">
+Example
+</h3>
+<pre id="78">
+(defmethod end-document ((parser my-sax-parser))
+  (finalize-parse (private parser)))
+</pre>
+
+<hr>
+
+<hr><h3 id="79"><a name="start-element-op-bookmarkxx"></a>start-element</h3><h3 id="80">Generic Function</h3><h4 id="81">Package: net.xml.sax</h4>
+
+<p id="82"><b>Arguments: </b><i>
+(parser sax-parser) iri localname qname attrs
+</i></p>
+
+<p id="83">
+This method is called when a start element (like &lt;foo&gt; or
+&lt;foo/&gt;) is seen. If you sax-parse with <code>:namespace
+t</code>, then <i>iri</i> is the iri that denotes the
+namespace of the start element tag (this is specified by a namespace
+binding); <i>localname</i> is the part after the colon
+in the element tag; <i>qname</i> is what was actually
+seen as the tag (e.g. <code>"rdf:foo"</code>); and
+<i>attrs</i> is a list of <code>("attrname"
+. "value")</code> where <code>attrname</code> can contain
+colons (e.g. namespace processing has not been done).
+</p>
+<p id="84">
+If, on the other hand, sax-parse with <code>:namespace
+nil</code>, then <i>iri</i> is <code>nil</code>; <i>localname</i> is the actual
+element tag (e.g. <code>"rdf:foo"</code>);
+<i>qname</i> is the same as
+<i>localname</i>; and <i>attrs</i> is a
+list of <code>("attrname" . "value")</code> where
+<code>attrname</code> can contain colons (e.g. namespace
+processing has not been done).
+</p>
+<p id="85">
+Given this xml source:
+</p>
+<pre id="86">
+&lt;foo xmlns=&quot;urn:defnamespace&quot; 
+     xmlns:pack=&quot;http://mydef.com/pack&quot;&gt;
+    &lt;bar/&gt;
+    &lt;pack:baz/&gt;
+&lt;/foo&gt;
+</pre>
+<p id="87">
+If the parser is called with <code>:namespace t</code> then
+during the parse three calls <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a> are made with the
+arguments to the calls being:
+</p>
+<pre id="88">
+iri="urn:defnamespace", localname="foo", qname="foo"
+
+iri="urn:defnamespace", localname="bar", qname="bar"
+
+iri="http://mydef.com/pack", localname="baz", qname="pack:baz"
+</pre>
+<p id="89">
+If the parse is called with <code>:namespace nil</code> then
+again three calls are made to <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a>, but this time the
+arguments are:
+</p>
+<pre id="90">
+iri=nil, localname="foo", qname="foo"
+
+iri=nil, localname="bar", qname="bar"
+
+iri=nil, localname="pack:baz", qname="pack:baz"
+</pre>
+<p id="91">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="92"><a name="end-element-op-bookmarkxx"></a>end-element</h3><h3 id="93">Generic Function</h3><h4 id="94">Package: net.xml.sax</h4>
+
+<p id="95"><b>Arguments: </b><i>
+(parser sax-parser) iri localname qname
+</i></p>
+
+<p id="96">
+This method is called when an end element (&lt;/foo&gt; or
+&lt;foo/&gt;) is seen. As with <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a>, the values of the iri,
+localname, and qname arguments depend on whether sax-parse is called
+with <code>:namespace t</code> or <code>:namespace
+nil</code>. See <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a> for details.
+</p>
+<p id="97">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="98"><a name="start-prefix-mapping-op-bookmarkxx"></a>start-prefix-mapping</h3><h3 id="99">Generic Function</h3><h4 id="100">Package: net.xml.sax</h4>
+
+<p id="101"><b>Arguments: </b><i>
+(parser sax-parser) prefix iri
+</i></p>
+
+<p id="102">
+This method is called when the parser enters a context where the
+namespace prefix is mapped to the given <i>iri</i>. A
+<i>prefix</i> of "" means the default mapping. <a href="sax.htm#start-prefix-mapping-op-bookmarkxx"><b>start-prefix-mapping</b></a> is called
+<b>before</b> the <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a> call for the element that
+defines the prefix mapping
+</p>
+<p id="103">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="104"><a name="end-prefix-mapping-op-bookmarkxx"></a>end-prefix-mapping</h3><h3 id="105">Generic Function</h3><h4 id="106">Package: net.xml.sax</h4>
+
+<p id="107"><b>Arguments: </b><i>
+(parser sax-parser) prefix
+</i></p>
+
+<p id="108">
+This method is called when the parser leaves a context where the
+prefix mapping applies.
+</p>
+<p id="109">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="110"><a name="processing-instruction-op-bookmarkxx"></a>processing-instruction</h3><h3 id="111">Generic Function</h3><h4 id="112">Package: net.xml.sax</h4>
+
+<p id="113"><b>Arguments: </b><i>
+(parser sax-parser) target data
+</i></p>
+
+<p id="114">
+This method is called when <code>&lt;?name data&gt;</code> is
+seen, with <i>target</i> being "name" and
+<i>data</i> being "data". If <code>&lt;?name data
+values&gt;</code> is seen then <i>target</i> is
+"name" and <i>data</i> is "data values".
+</p>
+<p id="115">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="116"><a name="content-op-bookmarkxx"></a>content</h3><h3 id="117">Generic Function</h3><h4 id="118">Package: net.xml.sax</h4>
+
+<p id="119"><b>Arguments: </b><i>
+(parser sax-parser) content start end ignorable
+</i></p>
+
+<p id="120">
+This method is called when text is seen between elements.  Note: for a
+given string of characters between elements, one or more calls to
+<a href="sax.htm#content-op-bookmarkxx"><b>content</b></a> or <a href="sax.htm#content-character-op-bookmarkxx"><b>content-character</b></a>
+may be made. For example, given the XML fragment
+<b>&lt;tag&gt;abcdefghijkl&lt;/tagg&gt;</b>, the content method may be
+called once with a string argument of "abcdefghijkl", or twice with
+string arguments "abcd" and then "efghijkl", etc for all the other
+permutations.
+</p>
+
+
+<p id="121">
+If an application requires access to the entire content string as a
+single string, the application program must collect the fragments into
+a contiguous string.  The <a href="sax.htm#parse-to-lxml-op-bookmarkxx"><b>parse-to-lxml</b></a> function and the DOM module
+implement normalize options that ensure contiguous string content
+appears as a single Lisp string.
+</p>
+
+<p id="122">
+<b>This is the most common error people make with this sax parser:
+assuming that all content between the start and end element tags will
+be passed in exactly one call to the <a href="sax.htm#content-op-bookmarkxx"><b>content</b></a> or <a href="sax.htm#content-character-op-bookmarkxx"><b>content-character</b></a>. As we said, the
+content may be provided in more than one call to <a href="sax.htm#content-op-bookmarkxx"><b>content</b></a> and <a href="sax.htm#content-character-op-bookmarkxx"><b>content-character</b></a>.</b>
+</p>
+<p id="123">
+<i>content</i> is a character array.
+<i>start</i> is the index of the first character with
+content. <i>end</i> is one past the index of the last
+character with content. 
+</p>
+<p id="124">
+<i>ignorable</i> is true if <i>content</i>
+is whitespace inside an element not permitting character data. This
+can only happen when the parser is validating since it is only then
+that the parser knows from an element's specification whether that
+element's body can contain non-whitespace characters.
+</p>
+<p id="125">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="126"><a name="content-character-op-bookmarkxx"></a>content-character</h3><h3 id="127">Generic Function</h3><h4 id="128">Package: net.xml.sax</h4>
+
+<p id="129"><b>Arguments: </b><i>
+(parser sax-parser) character ignorable
+</i></p>
+
+<p id="130">
+This method is called when a single character of text is seen between
+elements.  <i>character</i> is that character.
+</p>
+<p id="131">
+<i>ignorable</i> is true if <i>content</i>
+is whitespace inside an element not permitting character data. This
+can only happen when the parser is validating since it is only then
+that the parser knows from an element's specification whether that
+element's body can contain non-whitespace characters.
+</p>
+<p id="132">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+
+<hr><h3 id="133"><a name="comment-op-bookmarkxx"></a>comment</h3><h3 id="134">Generic Function</h3><h4 id="135">Package: net.xml.sax</h4>
+
+<p id="136"><b>Arguments: </b><i>
+(parser sax-parser) string
+</i></p>
+
+<p id="137">
+This method is called when an XML comment (i.e. <code>&lt;!--
+..... --&gt;</code>) is seen.
+</p>
+<p id="138">
+The default method does nothing and returns <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="139"><a name="compute-external-address-op-bookmarkxx"></a>compute-external-address</h3><h3 id="140">Generic Function</h3><h4 id="141">Package: net.xml.sax</h4>
+
+<p id="142"><b>Arguments: </b><i>
+(parser sax-parser) system public current-filename
+</i></p>
+
+<p id="143">
+This method is called when the parser has to locate another file in
+order to continue parsing. It should return a filename to open
+next. It can return <code>nil</code> if it cannot compute
+a name.
+</p>
+<p id="144">
+<i>system</i> is <code>nil</code> or a
+string holding the value after SYSTEM in the xml source.
+<i>public</i> is <code>nil</code> or a
+string holding the value after PUBLIC in the xml source.
+<i>current-filename</i> is the filename of the file
+being parsed.
+</p>
+<p id="145">
+The default method does not handle non-file identifiers such as those
+beginning with "http:". It merges the pathname of
+<i>system</i> with the pathname of
+<i>current-filename</i>, if
+<i>current-filename</i> is non-<code>nil</code>, and otherwise returns the value of
+<i>system</i>. The default method signals an error if
+<i>system</i> is <code>nil</code>.  Thus,
+the body of the default method looks like this:
+</p>
+<pre id="146">
+  (if* (null system)
+     then (error "Can't compute external address with no system address"))
+  
+  (if* current-filename
+     then (namestring (merge-pathnames (pathname system)
+                                       (pathname current-filename)
+                                       ))
+     else system))
+</pre>
+
+<hr>
+
+<hr><h3 id="147"><a name="compute-external-format-op-bookmarkxx"></a>compute-external-format</h3><h3 id="148">Generic Function</h3><h4 id="149">Package: net.xml.sax</h4>
+
+<p id="150"><b>Arguments: </b><i>
+(parser sax-parser) encoding ef
+</i></p>
+
+<p id="151">
+Given an encoding, this method should return an external format or the
+name of an external-format. The default method does the following:
+</p>
+
+<pre id="152">
+  (find-external-format
+   (if* (equalp encoding "shift_jis")
+      then :shiftjis
+    elseif (equalp encoding "euc-jp")
+      then :euc
+    elseif (equalp encoding "utf-16")
+      then ef ; already must have the correct ef
+      else encoding)))
+ </pre>
+
+<hr>
+
+<hr><h3 id="153"><a name="sax-parse-file-op-bookmarkxx"></a>sax-parse-file</h3><h3 id="154">Function</h3><h4 id="155">Package: net.xml.sax</h4>
+
+<p id="156"><b>Arguments: </b><i>
+filename 
+</i>&amp;key  (<i>namespace</i> t) (<i>external</i> t) (<i>validate</i> nil) (<i>class</i> (quote sax-parser)) (<i>warn</i> t)<i> comments show-xmlns</i><i>
+</i></p>
+
+<p id="157">
+This function parses the file specified by
+<i>filename</i>. The keyword arguments are:
+</p>
+<ul>
+<li id="158">
+<i>namespace</i>: if true then treat element tags as
+<i>namespace:localname</i>.
+</li>
+<li id="159">
+<i>external</i>: if true then follow references to other
+files referenced by the file being parsed. This must be true if
+<i>validate</i> is true.
+</li>
+<li id="160">
+<i>validate</i>: make sure that the content matches its
+DTD. If <i>validate</i> is <code>nil</code>
+then some validation will still be done but problems will be reported
+as warnings and not errors. Even if <i>validate</i> is
+<code>nil</code> the parser will signal an error if the
+xml is not <b>well formed</b>.
+</li>
+<li id="161">
+<i>class</i>: the name of the class of parser to
+create. Specify '<code>test-sax-parser</code> if you just want
+to experiment and see the parser in action. The value can be a symbol
+naming a class, a class object or an instance of the class
+<code>sax-parser</code> or a subclass of
+<code>sax-parser</code>. If an instance is passed then it must
+be a freshly created one that has never been passed to a sax parser
+function.
+</li>
+<li id="162">
+<i>warn</i>: if true (the default), the parser will emit
+warnings about things it finds unusual but not illegal.
+</li>
+<li id="163">
+<i>comments</i>: if true (the default is <code>nil</code>) then call <code>(comment parser
+string)</code> for comments seen in the xml.
+</li>
+<li id="164">
+<i>show-xmlns</i>: if <i>namespace</i> is
+true, then <i>show-xmlns</i> controls whether the xmlns
+and xmlns:xxx attributes are included in the list of attributes for an
+element in the <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a> callback.  A true value for
+<i>show-xmlns</i> means include the xmlns attributes.
+<p id="165">
+If <i>namespace</i> is <code>nil</code> then
+the xmlns attributes are always included with the list of attributes
+(since in this case there is nothing special about them).
+</p>
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="166"><a name="sax-parse-stream-op-bookmarkxx"></a>sax-parse-stream</h3><h3 id="167">Function</h3><h4 id="168">Package: net.xml.sax</h4>
+
+<p id="169"><b>Arguments: </b><i>
+stream 
+</i>&amp;key  (<i>namespace</i> t) (<i>external</i> t) (<i>validate</i> nil) (<i>class</i> (quote sax-parser)) (<i>warn</i> t)<i> comments show-xmlns</i><i>
+</i></p>
+
+<p id="170">
+This function is like <a href="sax.htm#sax-parse-file-op-bookmarkxx"><b>sax-parse-file</b></a> but parses the data from
+<i>stream</i>, which must be an open
+stream. <i>stream</i> is closed when <a href="sax.htm#sax-parse-stream-op-bookmarkxx"><b>sax-parse-stream</b></a> returns.
+</p>
+
+<hr>
+
+<hr><h3 id="171"><a name="sax-parse-string-op-bookmarkxx"></a>sax-parse-string</h3><h3 id="172">Function</h3><h4 id="173">Package: net.xml.sax</h4>
+
+<p id="174"><b>Arguments: </b><i>
+string
+</i>&amp;key  (<i>namespace</i> t) (<i>external</i> t) (<i>validate</i> nil) (<i>class</i> (quote sax-parser)) (<i>warn</i> t)<i> comments show-xmlns</i><i>
+</i></p>
+
+<p id="175">
+This function is like <a href="sax.htm#sax-parse-file-op-bookmarkxx"><b>sax-parse-file</b></a> but parses the data from
+the <i>string</i> argument, which should be a string.
+</p>
+<p id="176">
+Note that the xml form parsed should not contain an encoding
+declaration as a string-input stream does not have an 
+associated external format (since the contents of the string
+are characters already).
+</p>
+
+<hr>
+
+<hr><h3 id="177"><a name="sax-parser-flag-op-bookmarkxx"></a>sax-parser-flag</h3><h3 id="178">Function</h3><h4 id="179">Package: net.xml.sax</h4>
+
+<p id="180"><b>Arguments: </b><i>
+parser flag-name
+</i></p>
+
+<p id="181">
+The parser flags are initially set from the values supplied (or
+defaulted) to the <b>sax-parse-xxxx</b> functions (<a href="sax.htm#sax-parse-file-op-bookmarkxx"><b>sax-parse-file</b></a>,
+<a href="sax.htm#sax-parse-stream-op-bookmarkxx"><b>sax-parse-stream</b></a>, and <a href="sax.htm#sax-parse-string-op-bookmarkxx"><b>sax-parse-string</b></a>). You can use <a href="sax.htm#sax-parser-flag-op-bookmarkxx"><b>sax-parser-flag</b></a> to read the current value
+of the flag.  You can use <a href="sax.htm#sax-parser-flag-op-bookmarkxx"><b>(setf
+sax-parser-flag)</b></a> to set certain flags.  Some flags should not
+be modified after the parse has begun.
+</p>
+<p id="182">
+parser is an instance of the <code>sax-parser</code> class (or a
+subclass of
+<code>sax-parser</code>). <i>flag-name</i> is one
+of the values from the table below. <a href="sax.htm#sax-parser-flag-op-bookmarkxx"><b>sax-parser-flag</b></a>
+returns <code>t</code> or <code>nil</code> as
+the flag is or is not set. When you use <a href="../ansicl/dictentr/setfpset.htm"><b>setf</b></a> with this function to modify a flag,
+specify a non-<code>nil</code> value to set a flag and
+<code>nil</code> to unset it.
+</p>
+
+<hr>
+
+<h3 id="183">
+Flags
+</h3>
+
+<p id="184">
+The table below lists flags; <i>writeable</i> means that user code can
+change the value during the parse. Setting a flag denoted as not
+writeable will result in undefined behavior.
+</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2">
+<tr>
+<td>
+<b>Flag name</b>
+</td>
+<td>
+<b>Writeable</b>
+</td>
+<td>
+<b>Meaning</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>:namespace</code>
+</td>
+<td>
+no
+</td>
+<td>
+obey the xml namespace rules
+</td>
+</tr>
+<tr>
+<td>
+<code>:external</code>
+</td>
+<td>
+no
+</td>
+<td>
+read external entities
+</td>
+</tr>
+<tr>
+<td>
+<code>:validate</code>
+</td>
+<td>
+no
+</td>
+<td>
+do validation
+</td>
+</tr>
+<tr>
+<td>
+<code>:warn</code>
+</td>
+<td>
+yes
+</td>
+<td>
+issue warnings for items that may signify problems in the xml but
+which aren't actual errors.
+</td>
+</tr>
+<tr>
+<td>
+<code>:show-xmlns</code>
+</td>
+<td>
+yes
+</td>
+<td>
+add xmlns attributes to <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a> attribute lists
+</td>
+</tr>
+<tr>
+<td>
+<code>:comments</code>
+</td>
+<td>
+yes	
+</td>
+<td>
+call the <a href="sax.htm#comment-op-bookmarkxx"><b>comment</b></a> generic function when comments are
+seen.
+</td>
+</tr>
+</table>
+
+<h3 id="185">
+DTD  information acccess
+</h3>
+
+<p id="186">
+The parser first parses the DTD and then the content of
+the file.  The information found in the DTD is stored
+in the parser object where it is referenced by the parser
+during the parse. 
+</p>
+<p id="187">
+An xml document need not have a DTD.  However if you
+tell the parser to validate a document then the document
+must have a DTD.
+</p>
+<p id="188">
+When the first <a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a> callback is made the
+whole DTD has been parsed and the information is stored in the parser
+object.
+</p>
+<p id="189">
+After the parse completes the DTD information is still stored
+in the parser object.
+</p>
+<p id="190">
+The following accessors retrieve DTD information from the parser
+object.
+</p>
+
+<hr><h3 id="191"><a name="parser-root-op-bookmarkxx"></a>parser-root</h3><h3 id="192">Function</h3><h4 id="193">Package: net.xml.sax</h4>
+
+<p id="194"><b>Arguments: </b><i>
+parser
+</i></p>
+
+<p id="195">
+Returns a string naming the root element. Every xml file contains
+exactly one element at 'top level' and may contain other elements
+inside that root element.
+</p>
+
+<hr>
+
+<hr><h3 id="196"><a name="parser-general-entities-op-bookmarkxx"></a>parser-general-entities</h3><h3 id="197">Function</h3><h4 id="198">Package: net.xml.sax</h4>
+
+<p id="199"><b>Arguments: </b><i>
+parser
+</i></p>
+
+<p id="200">
+Returns a hash table where the key is the general entity name and the
+value is an entity object.
+</p>
+
+<hr>
+
+<hr><h3 id="201"><a name="parser-parameter-entities-op-bookmarkxx"></a>parser-parameter-entities</h3><h3 id="202">Function</h3><h4 id="203">Package: net.xml.sax</h4>
+
+<p id="204"><b>Arguments: </b><i>
+parser
+</i></p>
+
+<p id="205">
+Returns a hash table where the key is the parameter entity name and
+the value is an entity object.
+</p>
+
+<hr>
+
+<hr><h3 id="206"><a name="parser-notations-op-bookmarkxx"></a>parser-notations</h3><h3 id="207">Function</h3><h4 id="208">Package: net.xml.sax</h4>
+
+<p id="209"><b>Arguments: </b><i>
+parser
+</i></p>
+
+<p id="210">
+Returns a hash table where the key is the notation name and the value
+is a notation object.
+</p>
+
+<hr>
+
+<h3 id="211">
+Accessors for entity objects
+</h3>
+
+<hr><h3 id="212"><a name="entity-name-op-bookmarkxx"></a>entity-name</h3><h3 id="213">Function</h3><h4 id="214">Package: net.xml.sax</h4>
+
+<p id="215"><b>Arguments: </b><i>
+entity
+</i></p>
+
+<p id="216">
+Returns a string naming the entity.
+</p>
+
+<hr>
+
+<hr><h3 id="217"><a name="entity-replacment-text-op-bookmarkxx"></a>entity-replacment-text</h3><h3 id="218">Function</h3><h4 id="219">Package: net.xml.sax</h4>
+
+<p id="220"><b>Arguments: </b><i>
+entity
+</i></p>
+
+<p id="221">
+Returns <code>nil</code> or a string holding the
+replacement text for the entity. If the entity is internal then this
+field will be a string.
+</p>
+
+<hr>
+
+<hr><h3 id="222"><a name="entity-system-op-bookmarkxx"></a>entity-system</h3><h3 id="223">Function</h3><h4 id="224">Package: net.xml.sax</h4>
+
+<p id="225"><b>Arguments: </b><i>
+entity
+</i></p>
+
+<p id="226">
+Returns <code>nil</code> for internal entities. For
+external entities this is a string describing the location of the
+entity's value (the string is often a location on the filesystem
+relative to the file that references it).
+</p>
+
+<hr>
+
+
+<hr><h3 id="227"><a name="entity-public-op-bookmarkxx"></a>entity-public</h3><h3 id="228">Function</h3><h4 id="229">Package: net.xml.sax</h4>
+
+<p id="230"><b>Arguments: </b><i>
+entity
+</i></p>
+
+<p id="231">
+Returns <code>nil</code> or a string. For certain external
+entities that have public identifiers, this is that public
+identifier.
+</p>
+
+<hr>
+
+<hr><h3 id="232"><a name="entity-ndata-op-bookmarkxx"></a>entity-ndata</h3><h3 id="233">Function</h3><h4 id="234">Package: net.xml.sax</h4>
+
+<p id="235"><b>Arguments: </b><i>
+entity
+</i></p>
+
+<p id="236">
+Returns <code>nil</code> or a string. If this is an
+external unparsed entity then this is the name of a notation that
+describes its format.
+</p>
+
+<hr>
+
+<hr><h3 id="237"><a name="entity-ext-subset-op-bookmarkxx"></a>entity-ext-subset</h3><h3 id="238">Function</h3><h4 id="239">Package: net.xml.sax</h4>
+
+<p id="240"><b>Arguments: </b><i>
+entity
+</i></p>
+
+<p id="241">
+Returns true if this entity was defined in the 'external subset' which
+is a term referring to files other than the main file being parsed.
+</p>
+
+<hr>
+
+<hr><h3 id="242"><a name="notation-name-op-bookmarkxx"></a>notation-name</h3><h3 id="243">Function</h3><h4 id="244">Package: net.xml.sax</h4>
+
+<p id="245"><b>Arguments: </b><i>
+notation
+</i></p>
+
+<p id="246">
+Returns a string naming the notation.
+</p>
+
+<hr>
+
+<hr><h3 id="247"><a name="notation-public-op-bookmarkxx"></a>notation-public</h3><h3 id="248">Function</h3><h4 id="249">Package: net.xml.sax</h4>
+
+<p id="250"><b>Arguments: </b><i>
+notation
+</i></p>
+
+<p id="251">
+Returns <code>nil</code> or a string naming the public
+identifier for this notation.
+</p>
+
+<hr>
+
+<hr><h3 id="252"><a name="notation-system-op-bookmarkxx"></a>notation-system</h3><h3 id="253">Function</h3><h4 id="254">Package: net.xml.sax</h4>
+
+<p id="255"><b>Arguments: </b><i>
+notation
+</i></p>
+
+<p id="256">
+Returns a string naming the location of a description of the notation.
+</p>
+
+<hr>
+
+<hr><h3 id="257"><a name="attribute-name-op-bookmarkxx"></a>attribute-name</h3><h3 id="258">Function</h3><h4 id="259">Package: net.xml.sax</h4>
+
+<p id="260"><b>Arguments: </b><i>
+attribute
+</i></p>
+
+<p id="261">
+returns a string naming the attribute.
+</p>
+
+<hr>
+
+<hr><h3 id="262"><a name="attribute-type-op-bookmarkxx"></a>attribute-type</h3><h3 id="263">Function</h3><h4 id="264">Package: net.xml.sax</h4>
+
+<p id="265"><b>Arguments: </b><i>
+attribute
+</i></p>
+
+<p id="266">
+Returns the type of the attribute, which is one of:
+</p>
+<ul>
+<li id="267">
+<code>:cdata</code>
+</li>
+<li id="268">
+<code>:id</code>
+</li>
+<li id="269">
+<code>:idref</code>
+</li>
+<li id="270">
+<code>:idrefs</code>
+</li>
+<li id="271">
+<code>:entity</code>
+</li>
+<li id="272">
+<code>:entities</code>
+</li>
+<li id="273">
+<code>:nmtoken</code>
+</li>
+<li id="274">
+<code>:nmtokens</code>
+</li>
+<li id="275">
+<code>(:notation "name" ...)</code>
+</li>
+<li id="276">
+<code>(:enum "name" ....)</code>
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="277"><a name="attribute-default-op-bookmarkxx"></a>attribute-default</h3><h3 id="278">Function</h3><h4 id="279">Package: net.xml.sax</h4>
+
+<p id="280"><b>Arguments: </b><i>
+attribute
+</i></p>
+
+<p id="281">
+The value returned is one of: <code>:required</code>,
+<code>:implied</code>, <code><code>(:fixed
+value)</code></code><code>, (:value value)</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="282"><a name="attribute-ext-subset-op-bookmarkxx"></a>attribute-ext-subset</h3><h3 id="283">Function</h3><h4 id="284">Package: net.xml.sax</h4>
+
+<p id="285"><b>Arguments: </b><i>
+attribute
+</i></p>
+
+<p id="286">
+returns true if the attribute was declared in the external subset.
+</p>
+
+<hr>
+
+<hr><h3 id="287"><a name="element-name-op-bookmarkxx"></a>element-name</h3><h3 id="288">Function</h3><h4 id="289">Package: net.xml.sax</h4>
+
+<p id="290"><b>Arguments: </b><i>
+element
+</i></p>
+
+<p id="291">
+returns a string naming the element.
+</p>
+
+<hr>
+<hr><h3 id="292"><a name="element-attrs-op-bookmarkxx"></a>element-attrs</h3><h3 id="293">Function</h3><h4 id="294">Package: net.xml.sax</h4>
+
+<p id="295"><b>Arguments: </b><i>
+element
+</i></p>
+
+<p id="296">
+Returns a list of attribute objects describing the attributes of this
+element.
+</p>
+
+<hr>
+<hr><h3 id="297"><a name="element-spec-op-bookmarkxx"></a>element-spec</h3><h3 id="298">Function</h3><h4 id="299">Package: net.xml.sax</h4>
+
+<p id="300"><b>Arguments: </b><i>
+element
+</i></p>
+
+<p id="301">
+A description of the specification of the body of the element.
+The format is:
+</p>
+<pre id="302">
+spec := :empty
+         :any
+         cp 
+         (:mixed ["name" ...])    
+
+cp := (:cp cho/seq modifier)
+
+cho/seq := 
+           (:choice cp [cp ...])
+           (:sequence cp [cp ...])
+	    "name"
+
+ modifier :=
+            nil
+            "*"
+	    "?"
+            "+"
+</pre>
+<hr>
+
+<hr><h3 id="303"><a name="element-ext-subset-op-bookmarkxx"></a>element-ext-subset</h3><h3 id="304">Function</h3><h4 id="305">Package: net.xml.sax</h4>
+
+<p id="306"><b>Arguments: </b><i>
+element
+</i></p>
+
+<p id="307">
+Returns true if the element was defined in the external subset.
+</p>
+
+<hr>
+
+
+<hr><hr><h2 id="308"><a name="test-sax-parser-1">3.0 Testing the sax parser: the test-sax-parser class</a></h2>
+
+<p id="309">
+If you wish to test the sax-parser, we have defined several example
+classes.  The class <code>test-sax-parser</code> and its
+associated methods are already defined in the system (after the sax
+module is loaded). The class <code>sax-count-parser</code>,
+defined below in this section, is not defined in the sax module but
+the definition code can be copied from this document.
+</p>
+<p id="310">
+The examples in this section assume that the SAX module has been
+loaded and the relevant package (<code>net.xml.sax</code>) has
+been used. If you do not want to use the package, package-qualify the
+relevant symbols. The following forms load the module and use the
+package:
+</p>
+<pre id="311">
+(require :sax)
+(use-package :net.xml.sax)
+</pre>
+<p id="312">
+Here are the definitions of the class
+<code>test-sax-parser</code> and the associated methods (again,
+these definitions are included in the sax module so they need not be
+defined again). The methods on <code>test-sax-parser</code>
+print the arguments to the callbacks.
+</p>
+<pre id="313">
+
+This is the definition of this class:
+
+
+(defclass test-sax-parser (sax-parser)
+  ())
+
+
+(defmethod start-document ((parser test-sax-parser))
+  (format t &quot;sax callback: Start Document~%&quot;))
+
+(defmethod end-document ((parser test-sax-parser))
+  (format t  &quot;sax callback: End Document~%&quot;))
+
+(defmethod start-element ((parser test-sax-parser) iri localname qname attrs)
+  (format t &quot;sax callback: start element ~s (iri: ~s) (qname: ~s) attrs: ~s~%&quot;
+	  localname iri qname attrs)
+  nil)
+
+(defmethod end-element ((parser test-sax-parser) iri localname qname)
+  (format t &quot;sax callback: end element ~s (iri: ~s) (qname: ~s)~%&quot;
+	  localname iri qname)
+  nil)
+
+(defmethod start-prefix-mapping ((parser test-sax-parser) prefix iri)
+  
+  (format t &quot;sax callback: start-prefix-mapping ~s -&gt; ~s~%&quot; prefix iri)
+  nil
+  )
+
+(defmethod end-prefix-mapping ((parser test-sax-parser) prefix)
+  
+  (format t &quot;sax callback: end-prefix-mapping ~s~%&quot; prefix)
+  )
+
+(defmethod processing-instruction ((parser test-sax-parser) target data)
+  (format t &quot;sax callback: processing-instruction  target: ~s, data: ~s~%&quot; 
+	  target data)
+  ;; 
+  nil)
+
+
+(defmethod content ((parser test-sax-parser) content start end ignorable)
+  (format t &quot;sax callback: ~:[~;ignorable~] content(~s,~s) ~s~%&quot; ignorable
+	  start end
+	  (subseq content start end))
+  nil)
+
+
+(defmethod content-character ((parser test-sax-parser) character ignorable)
+  (format t &quot;sax callback: ~:[~;ignorable~] content-char ~s~%&quot; 
+	  ignorable character)
+  nil)
+
+(defmethod compute-external-format ((parser test-sax-parser) encoding ef)
+  (let ((ans (call-next-method)))
+    (format t &quot;sax callback: compute-external-format of ~s is ~s (current is ~s)~%&quot; 
+	    encoding ans ef)
+    ans))
+
+(defmethod comment ((parser test-sax-parser) string)
+  ;;
+  ;; called when &lt;!-- ..... --&gt; is seen
+  ;;
+  (format t &quot;sax callback: comment: ~s~%&quot; string)
+  nil)
+</pre>
+
+<h3 id="314">
+Counting elements in a document
+</h3>
+
+<p id="315">
+This is an example of another useful sax-parser subclass.  The
+<code>sax-count-parser</code> class maintains a count of the
+elements, attributes and characters in an xml file.  This class is not
+defined when the sax parser is loaded but you can just copy the
+definition below and load it into Lisp if you wish to try it.
+</p>
+<pre id="316">
+; definition of a sax parser to count items
+(defstruct counter
+  (elements 0)
+  (attributes 0)
+  (characters 0))
+
+
+(defclass sax-count-parser (sax-parser)
+  ((counts :initform (make-counter)
+	   :reader counts)))
+
+(defmethod start-element ((parser sax-count-parser) iri localname qname
+			  attrs)
+  (declare (ignore iri localname qname))
+  (let ((counter (counts parser)))
+    (incf (counter-elements counter))
+    (let ((attlen (length attrs)))
+      
+      (if* (&gt; attlen 0)
+	 then (incf (counter-attributes counter) attlen)))))
+
+(defmethod content ((parser sax-count-parser) content start end ignorable)
+  (declare (ignore content ignorable))
+  (let ((counter (counts parser)))
+    (incf (counter-characters counter) (- end start))))
+
+(defmethod content-character ((parser sax-count-parser) char ignorable)
+  (declare (ignore char ignorable))
+  (let ((counter (counts parser)))
+    (incf (counter-characters counter))))
+</pre>
+
+<hr><hr><h2 id="317"><a name="lxml-1">4.0 LXML</a></h2>
+
+<hr><h2 id="318"><a name="what-is-lxml-2">4.1 What is LXML?</a></h2>
+
+<p id="319">
+LXML is a list representation of an XML parse tree.  The notation was
+introduced initially with the PXML module (see
+<a href="pxml.htm">pxml.htm</a>, but note the PXML module is deprecated
+may may be removed in a release later than 9.0), and is supported for
+compatibility with existing applications. It is also a convenient
+representation for moderately sized XML documents.
+</p>
+<p id="320">
+The representation is made up of lists of LXML tags
+containing LXML nodes. An LXML node is either a string or a list of an
+LXML tag followed by an LXML node. An LXML tag is either a symbol or
+a list of a symbol followed by attribute/value pairs, where the
+attribute is a symbol and the value is a string. In brief:
+</p>
+<pre id="321">
+  LXML-node -&gt; string | (LXML-tag [LXML-node] ... )
+  LXML-tag  -&gt; symbol | (symbol [attr-name attr-value] ... )
+</pre>
+<p id="322">
+And more formally:
+</p>
+<pre id="323">
+  - An LXML node may be a string representing textual element content.
+  - An LXML node may be list representing a named XML element.
+       - The first element in the list represents the element tag
+             - If no attributes were present in the element tag,
+               then the element tag is represented by a Lisp symbol;
+               the symbol-name of the Lisp symbol is the local name of the tag;
+               the XML namespace of the tag is represented by the Lisp
+               home package of the symbol.
+             - If attributes were present in the element tag,
+               then the element tag is represented by a list where
+               the first element is the tag (as above) and the remainder of
+               the list is a lisp property list where the property keys are
+               lisp symbols that represent the attribute names and the
+               property values are strings that represent the property values.
+       - The remainder of the list is a list of LXML nodes that
+         represent the content of the XML tag.
+
+       - An LXML node may be a list of the form (:comment text-string)
+	 to represent a comment in the XML document.
+       - An LXML node may be a list of the form (:pi target data)
+	 to represent a processing instruction in the XML document.
+
+</pre>
+
+<p id="324">
+Each distinct XML namespace is mapped to a Lisp package.  An
+application may specify the namespace-to-package mapping in full, in
+part, or not at all.  If there is no pre-specified Lisp package for
+some XML namespace, then the parser creates a new package with a name
+"pppnn" where "ppp" is a prefix specified by the user and "nn" is an
+integer that guarantees uniqueness.  The default prefix is the
+symbol-name of <code>:net.xml.namespace.</code> (ending with a
+period).
+</p>
+
+
+
+<hr><h2 id="325"><a name="sax-lxml-2">4.2 The SAX-LXML Module</a></h2>
+
+<p id="326">
+The <code>:sax</code> module implements the
+<code>lxml-parser</code> sub-class of
+<code>sax-parser</code>. The methods on this class use the SAX
+parser to build an LXML data structure from the parsed XML input. (In
+earlier releases, it was possible to require a module named
+<code>:sax-lxml</code>, which would not be included by default
+in the <code>:sax</code> module. Now that module is always
+loaded when the <code>:sax</code> module is loaded and cannot be
+required separately.)
+</p>
+
+<hr><h3 id="327"><a name="lxml-parser-class-bookmarkxx"></a>lxml-parser</h3><h3 id="328">Class</h3><h4 id="329">Package: net.xml.sax</h4>
+
+<p id="330">
+A subclass of <code>sax-parser</code>. Slots include normalize,
+default-package, package-prefix, and skip-ignorable. The
+<b>add-parser-package</b> method is defined.
+</p>
+<p id="331">
+The initial value of the <b>package</b> slot is
+<code>:keyword</code>. The inital value of the <b>normalize</b>
+slot is <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="332"><a name="parser-normalize-op-bookmarkxx"></a>parser-normalize</h3><h3 id="333">Generic Function</h3><h4 id="334">Package: net.xml.sax</h4>
+
+<p id="335"><b>Arguments: </b><i>
+lxml-parser
+</i></p>
+<p id="336">
+Returns the value of the <b>normalize</b> slot os its argument, which
+must be an instance of <a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a>.
+</p>
+<p id="337">
+If the normalize slot is <code>nil</code>, string elemnt
+content may appear as a list of strings. The length of each fragment
+is determined by the implementation and may vary from one parse to the
+next.
+</p>
+<p id="338">
+If the normalize slot is non-<code>nil</code>, then if an
+element contains only string content, this content will appear as one
+contiguous string. This option will naturally require the parser to
+do more consing during the parse.
+</p>
+
+<hr>
+
+<hr><h3 id="339"><a name="add-parser-package-op-bookmarkxx"></a>add-parser-package</h3><h3 id="340">Generic Function</h3><h4 id="341">Package: net.xml.sax</h4>
+
+<p id="342"><b>Arguments: </b><i>
+parser iri package </i> &amp;rest <i>prefixes</i><i>
+</i></p>
+
+<p id="343">
+The default method, defined on <code>(lxml-parser t t)</code>,
+adds a new iri-to-package mapping to the parser or adds a prefix to an
+existing mapping.
+</p>
+<p id="344">
+The <i>iri</i> argument may be a string or a
+<code>net.uri:uri</code> instance (see
+<a href="uri.htm">uri.htm</a>). The <i>package</i> argument
+may be a package or the name of a package. The
+<i>prefixes</i> may be symbols or strings. When the
+<i>iri</i> argument is a uri instance, it is converted
+to its string form for use during the parse.
+</p>
+<p id="345">
+Note that the Allegro CL implementation of uri instances may map many
+different uri instances to the same string. To avoid possible
+ambiguities, it is best to specify the <i>iri</i>
+argument as a string that will be used without any interpretation or
+change.
+</p>
+<p id="346">
+To pre-specify namespace-to-package mappings in a program, the
+application program must call <a href="sax.htm#add-parser-package-op-bookmarkxx"><b>add-parser-package</b></a> in a <a href="sax.htm#start-document-op-bookmarkxx"><b>start-document</b></a> method for an
+application-specific sub-class of <a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a>.
+</p>
+
+<hr>
+
+<hr><h3 id="347"><a name="parser-default-package-op-bookmarkxx"></a>parser-default-package</h3><h3 id="348">Generic Function</h3><h4 id="349">Package: net.xml.sax</h4>
+
+<p id="350"><b>Arguments: </b><i>
+lxml-parser
+</i></p>
+
+<p id="351">
+Returns the default package of the <a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a> instance.
+</p>
+
+<hr>
+
+<hr><h3 id="352"><a name="parser-package-prefix-op-bookmarkxx"></a>parser-package-prefix</h3><h3 id="353">Generic Function</h3><h4 id="354">Package: net.xml.sax</h4>
+
+<p id="355"><b>Arguments: </b><i>
+lxml-parser
+</i></p>
+
+<p id="356">
+Returns the prefix string used to generate package names for packages
+that represent namespaces that were not specified with <a href="sax.htm#add-parser-package-op-bookmarkxx"><b>add-parser-package</b></a>. This default value is
+<code>:net.xml.namespace.</code> (with a trailing period).
+</p>
+
+<hr>
+
+
+<hr><h3 id="357"><a name="parser-skip-ignorable-op-bookmarkxx"></a>parser-skip-ignorable</h3><h3 id="358">Generic Function</h3><h4 id="359">Package: net.xml.sax</h4>
+
+<p id="360"><b>Arguments: </b><i>
+lxml-parser
+</i></p>
+
+<p id="361">
+Returns whether ignorable text will be skipped for the <a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a> instance. This default value
+is <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="362"><a name="parser-lxml-op-bookmarkxx"></a>parser-lxml</h3><h3 id="363">Generic Function</h3><h4 id="364">Package: net.xml.sax</h4>
+
+<p id="365"><b>Arguments: </b><i>
+lxml-parser
+</i></p>
+
+<p id="366">
+When a parse is complete, this accessor returns the resulting lxml
+data structure.
+</p>
+
+<hr>
+
+<hr><h3 id="367"><a name="pxml-parser-class-bookmarkxx"></a>pxml-parser</h3><h3 id="368">Class</h3><h4 id="369">Package: net.xml.sax</h4>
+
+<p id="370">
+A subclass of <a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a>. The initial value of the
+<b>package</b> slot is the value of <a href="../ansicl/dictentr/package.htm"><code>*package*</code></a>.  The inital value of the
+<b>normalize</b> slot is <code>t</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="371"><a name="parse-to-lxml-op-bookmarkxx"></a>parse-to-lxml</h3><h3 id="372">Generic Function</h3><h4 id="373">Package: net.xml.sax</h4>
+
+<p id="374"><b>Arguments: </b><i>
+string-or-stream </i>&amp;key <i>external-callback content-only general-entities parameter-entities uri-to-package package class normalize comments warn</i><i>
+</i></p>
+
+
+
+<p id="375">
+The arguments to this function are like the arguments to
+<b>net.xml.parser:parse-xml</b> (see <a href="pxml.htm">pxml.htm</a>).The
+class and methods are included for compatibility with pxml.
+</p>
+<p id="376">
+The <b><i>content-only</i></b>,
+<b><i>external-callback</i></b>,
+<b><i>general-entities</i></b>, and
+<b><i>parameter-entities</i></b> are ignored, silently
+in the case of <b><i>content-only</i></b>, with a
+warning for the others.
+</p>
+<p id="377">
+The <b><i>package</i></b> keyword argument specifies the
+Lisp package of XML names without a namespace qualifier. If the
+argument is omitted or <code>nil</code>, the initial value
+in the class is used.
+</p>
+<p id="378">
+The <b><i>class</i></b> keyword argument specifies the
+class of the parser. The choice of class can affect the default
+packege and normalize behavior, and many other behaviors.  The default
+is <a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a>.
+</p>
+<p id="379">
+The <i>class</i> argument may be the name of a class, a
+class object, or an instance of a suitable class. If an instance is
+passed, it must be one that has never been used by the SAX or LXML
+parser.
+</p>
+
+
+<p id="380">
+The <b><i>normalize</i></b> keyword argument specifies
+the value of the normalize slot in the parser.  Values other
+than <code>nil</code> or <code>t</code> must
+be specifed in the call.  It can be one of the following values:
+</p>
+<ul>
+<li id="381">
+<code>nil</code>: do not combine strings, do not delete
+anything
+</li>
+<li id="382">
+<code>:trim-simple</code>: applies only to elements where the
+only content is strings. Combine adjacent string content into a single
+string, delete leading and trailing whitespace in the combined string.
+</li>
+<li id="383">
+<code>:trim-complex</code>: applies only to elements that
+contain other named XML elements. Combine and delete as in
+:trim-simple. If resulting string is the empty string then delete it
+entirely.
+</li>
+<li id="384">
+<code>:trim-all</code>: apply both :trim-simple and
+:trim-complex
+</li>
+<li id="385">
+<code>:trim</code>: same as :trim-all
+</li>
+<li id="386">
+other non-<code>nil</code>: only combine adjacent string
+content into a single string.
+</li>
+</ul>
+<p id="387">
+Whitespace characters are defined by the parser-char-table in the 
+parser instance.  The various trim behaviors are not specified in the
+XML standard but are often useful when parsing to LXML.
+</p>
+
+<p id="388">
+The <b><i>uri-to-package</i></b> argument is a list of
+conses of the form <code>(iri . package)</code> where
+<code>iri</code> may be a string or a uri instance and
+<code>package</code> may be a package name or a package
+instance.
+</p>
+
+<p id="389">
+The <b><i>:comments</i></b> argument may
+be <code>nil</code> or non-<code>nil</code>.
+When <code>nil</code> (the default), XML comments are
+discarded during the parse.  When non-<code>nil</code>,
+XML comments are included in the LXML output as expressions of the
+form <code>(:comment text-string)</code>.
+</p>
+<p id="390">
+The <b><i>:warn</i></b> argument is propagated to the
+<b>sax-parse-*</b> function called by <b>parse-to-lxml</b>.
+</p>
+
+<p id="391">
+This form is more general than that allowed by the <a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a>
+function.
+</p>
+<h3 id="392">
+SAX parser flag value and how to change them
+</h3>
+<p id="393">
+This function calls the SAX parser with the following flag values
+</p>
+
+<pre id="394">
+      :namespace  t 
+      :show-xmlns t 
+      :comments   nil 
+      :validate   nil 
+      :external   as specified in argument
+      :warn       SAX parser default
+</pre>
+
+<p id="395">
+If it is necessary to modify the flag settings for a specific
+application, the following code can be used:
+</p>
+
+<pre id="396">
+  (defclass local-lxml (lxml-parser) ())
+
+  (defmethod start-document :before ((p local-lxml))
+     (setf (sax-parser-flag xxx) yyy)) 
+
+  (parse-to-lxml what :class 'local-lxml ...)
+</pre>
+
+<hr>
+
+<hr><h3 id="397"><a name="s_lxml-parser_s-var-bookmarkxx"></a>*lxml-parser*</h3><h3 id="398">Variable</h3><h4 id="399">Package: net.xml.sax</h4>
+
+<p id="400">
+The <a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a> instance created in the most
+recent call to <a href="sax.htm#parse-to-lxml-op-bookmarkxx"><b>parse-to-lxml</b></a>.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="401"><a name="pxml-sax-2">4.3 The PXML-SAX Module</a></h2>
+
+<p id="402">
+The <code>:pxml-sax</code> module implements a partial pxml API
+to the SAX parser.  This module replaces the <code>:pxml</code>
+module. It requires the modules
+<code>:sax</code>, and
+<code>:sax-lxml</code>. Symbols naming operators, variables,
+etc. in the module are in the <code>:net.xml.parser</code>
+package. Load this module with
+</p>
+<pre id="403">
+(require :pxml-sax)
+</pre>
+
+<p id="404">
+The operators in this module are:
+</p>
+
+<ul>
+<li id="405">
+<a href="sax.htm#pxml-version-op-bookmarkxx"><b>pxml-version</b></a>.
+</li>
+<li id="406">
+<a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a>.
+</li>
+</ul>
+
+
+
+<hr><h2 id="407"><a name="pxml-dual-2">4.4 The PXML-DUAL Module</a></h2>
+
+<p id="408">
+The <code>:pxml-dual</code> module allows an application to
+switch at run time between the base implementation of pxml and the
+partial SAX implementation. It requires the modules
+<code>:pxml</code>, <code>:sax</code>, and
+<code>:sax-lxml</code>. Symbols naming operators, variables,
+etc. in the module are in the <code>:net.xml.parser</code>
+package. Load this module with
+</p>
+<pre id="409">
+(require :pxml-dual)
+</pre>
+<p id="410">
+When the module is loaded, the initial setting is to use the SAX parser
+implementation.
+</p>
+<p id="411">
+We provide this module to allow mission-critical applications to test
+both parsers in the same run-time environment. You can switch between
+the base and the SAX parsers with <a href="sax.htm#pxml-version-op-bookmarkxx"><b>pxml-version</b></a>.
+</p>
+
+<p id="412">
+The operators in this module are:
+</p>
+
+<ul>
+<li id="413">
+<a href="sax.htm#pxml-version-op-bookmarkxx"><b>pxml-version</b></a>: this function allows
+switching between the base parser and the SAX parser.
+</li>
+<li id="414">
+<a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a>.
+</li>
+<li id="415">
+<a href="sax.htm#with-base-pxml-op-bookmarkxx"><b>with-base-pxml</b></a>: executes a body while the
+parser version is <code>:base</code>.
+</li>
+<li id="416">
+<a href="sax.htm#with-sax-pxml-op-bookmarkxx"><b>with-sax-pxml</b></a>: executes a body while the
+parser version is <code>:sax</code>.
+</li>
+</ul>
+
+
+
+<hr><h2 id="417"><a name="pxml-ref-2">4.5 PXML reference</a></h2>
+
+<p id="418">
+In this section, we list the operators and variables associated with
+the various PXML modules. In many cases, the operators behave
+differently depending on what module is loaded.
+</p>
+
+<h3 id="419">
+Compatibility Note:
+</h3>
+<blockquote>
+<p id="420">
+The PXML parser default behavior was to silently ignore external DTDs
+unless a function was specified for
+the <i>external-callback</i> argument. The SAX parser
+default behavior is to signal an error if an external DTD cannot be
+located. The built-in default function can only locate files in the
+local file system.
+</p>
+<p id="421">
+Existing applications that depend on the default external DTD behavior
+of the PXML parser may break when using the SAX parser through the
+PXML compatibility package. These application will need to use the
+SAX parser more explicitly and specify a suitable
+<a href="sax.htm#compute-external-address-op-bookmarkxx"><b>compute-external-address</b></a> method.
+</p>
+</blockquote>
+
+
+<hr><h3 id="422"><a name="pxml-version-op-bookmarkxx"></a>pxml-version</h3><h3 id="423">Function</h3><h4 id="424">Package: net.xml.parser</h4>
+
+<h3 id="425">
+:pxml-sax module behavior
+</h3>
+
+<p id="426"><b>Arguments: </b><i>
+</i></p>
+<p id="427">
+In the :pxml-sax module, this function works as described in
+<a href="pxml.htm">pxml.htm</a>: called with no arguments, this function
+returns a string naming the PXML version.
+</p>
+
+<h3 id="428">
+:pxml-dual module behavior
+</h3>
+
+<p id="429"><b>Arguments: </b><i>
+</i> &amp;optional <i>parser-type</i><i>
+</i></p>
+<p id="430">
+Called with no arguments, this function returns a string naming the
+PXML version. If <i>parser-type</i> is specified, it
+should be either <code>:sax</code>, <code>:base</code>, or
+<code>:query</code>. 
+</p>
+<p id="431">
+When <i>parser-type</i> is <code>:sax</code>, the
+SAX version of <a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a> is enabled. When
+<i>parser-type</i> is
+<code>:base</code>, the original version of <a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a> is enabled.
+</p>
+<p id="432">
+When <i>parser-type</i> is <code>:query</code>,
+this function returns <code>:base</code> or
+<code>:sax</code> depending on which version of <a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a> is enabled.
+</p>
+
+<hr> 
+
+
+<hr><h3 id="433"><a name="parse-xml-op-bookmarkxx"></a>parse-xml</h3><h3 id="434">Generic Function</h3><h4 id="435">Package: net.xml.parser</h4>
+
+
+<p id="436"><b>Arguments: </b><i>
+input-source </i>&amp;key <i>external-callback content-only general-entities parameter-entities uri-to-package</i><i>
+</i></p>
+
+<p id="437">
+The arguments and behavior are fully described in
+<a href="pxml.htm">pxml.htm</a>. The differences among modules is whether
+the keyword arguments <i>content-only</i>,
+<i>external-callback</i>,
+<i>general-entities</i>, and
+<i>parameter-entities</i> have effect or are ignored. In
+the <code>:pxml-sax</code> module and (thus) in the
+<code>:pxml-dual</code> module when in <code>:sax</code>
+mode, those arguments are ignored (silently in the case of
+<i>content-only</i>, with a warning for the others). The
+implementation of <a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a> in the SAX mode cannot at this
+time support the use of those arguments, but is much faster than in
+base mode. All arguments are considered when regular PXML is loaded or
+the <code>:pxml-dual</code> module is loaded and is in
+<code>:base</code> mode.
+</p>
+<p id="438">
+When the SAX implementation of <b>parse-xml</b> is used, the
+<i>uri-to-package</i> argument may be a list of conses
+of the form <code>(iri . package)</code> where
+<code>iri</code> may be a string or a uri instance and
+<code>package</code> may be a package name or a package
+instance.
+</p>
+<p id="439">
+This form is more general than the form accepted by the base
+implementation of <b>parse-xml</b>.  An application using the more
+general form will not be back-compatible with the base implementation
+of <b>parse-xml</b>.
+</p>
+
+<hr> 
+
+
+<hr><h3 id="440"><a name="with-base-pxml-op-bookmarkxx"></a>with-base-pxml</h3><h3 id="441">Macro</h3><h4 id="442">Package: net.xml.parser</h4>
+
+<p id="443"><b>Arguments: </b><i>
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="444">
+Defined in the <code>:pxml-dual</code> module only (see
+<a href="#pxml-dual-2">Section 4.4 The PXML-DUAL Module</a>).  Within the body of this
+macro the implemetation of <a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a> is dynamically bound to the base
+implementation. See also <a href="sax.htm#with-sax-pxml-op-bookmarkxx"><b>with-sax-pxml</b></a>.
+</p>
+
+<hr>
+
+
+<hr><h3 id="445"><a name="with-sax-pxml-op-bookmarkxx"></a>with-sax-pxml</h3><h3 id="446">Macro</h3><h4 id="447">Package: net.xml.parser</h4>
+
+
+<p id="448"><b>Arguments: </b><i>
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="449">
+Defined in the <code>:pxml-dual</code> module only (see
+<a href="#pxml-dual-2">Section 4.4 The PXML-DUAL Module</a>).  Within the body of this
+macro the implemetation of <a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a> is dynamically bound to the SAX
+implementation. See also <a href="sax.htm#with-base-pxml-op-bookmarkxx"><b>with-base-pxml</b></a>.
+</p>
+
+<hr>
+
+
+
+
+<hr><hr><h2 id="450"><a name="sax-index-1">5.0 Index</a></h2>
+
+<ul>
+<li id="451">
+<a href="sax.htm#add-parser-package-op-bookmarkxx"><b>add-parser-package</b></a>
+</li>
+<li id="452">
+<a href="sax.htm#attribute-default-op-bookmarkxx"><b>attribute-default</b></a>
+</li>
+<li id="453">
+<a href="sax.htm#attribute-ext-subset-op-bookmarkxx"><b>attribute-ext-subset</b></a>
+</li>
+<li id="454">
+<a href="sax.htm#attribute-name-op-bookmarkxx"><b>attribute-name</b></a>
+</li>
+<li id="455">
+<a href="sax.htm#attribute-type-op-bookmarkxx"><b>attribute-type</b></a>
+</li>
+<li id="456">
+<a href="sax.htm#compute-external-address-op-bookmarkxx"><b>compute-external-address</b></a>
+</li>
+<li id="457">
+<a href="sax.htm#compute-external-format-op-bookmarkxx"><b>compute-external-format</b></a>
+</li>
+<li id="458">
+<a href="sax.htm#comment-op-bookmarkxx"><b>comment</b></a>
+</li>
+<li id="459">
+<a href="sax.htm#content-op-bookmarkxx"><b>content</b></a>
+</li>
+<li id="460">
+<a href="sax.htm#content-character-op-bookmarkxx"><b>content-character</b></a>
+</li>
+<li id="461">
+<a href="sax.htm#element-attrs-op-bookmarkxx"><b>element-attrs</b></a> 
+</li>
+<li id="462">
+<a href="sax.htm#element-ext-subset-op-bookmarkxx"><b>element-ext-subset</b></a> 
+</li>
+<li id="463">
+<a href="sax.htm#element-name-op-bookmarkxx"><b>element-name</b></a> 
+</li>
+<li id="464">
+<a href="sax.htm#element-spec-op-bookmarkxx"><b>element-spec</b></a> 
+</li>
+<li id="465">
+<a href="sax.htm#end-document-op-bookmarkxx"><b>end-document</b></a> 
+</li>
+<li id="466">
+<a href="sax.htm#end-element-op-bookmarkxx"><b>end-element</b></a>
+</li>
+<li id="467">
+<a href="sax.htm#end-prefix-mapping-op-bookmarkxx"><b>end-prefix-mapping</b></a>
+</li>
+<li id="468">
+<a href="sax.htm#entity-ext-subset-op-bookmarkxx"><b>entity-ext-subset</b></a>
+</li>
+<li id="469">
+<a href="sax.htm#entity-name-op-bookmarkxx"><b>entity-name</b></a>
+</li>
+<li id="470">
+<a href="sax.htm#entity-ndata-op-bookmarkxx"><b>entity-ndata</b></a>
+</li>
+<li id="471">
+<a href="sax.htm#entity-public-op-bookmarkxx"><b>entity-public</b></a>
+</li>
+<li id="472">
+<a href="sax.htm#entity-replacment-text-op-bookmarkxx"><b>entity-replacment-text</b></a>
+</li>
+<li id="473">
+<a href="sax.htm#entity-system-op-bookmarkxx"><b>entity-system</b></a>
+</li>
+<li id="474">
+<a href="sax.htm#lxml-parser-class-bookmarkxx"><code>lxml-parser</code></a>
+</li>
+<li id="475">
+<a href="sax.htm#s_lxml-parser_s-var-bookmarkxx"><code>*lxml-parser*</code></a>
+</li>
+<li id="476">
+<a href="sax.htm#notation-name-op-bookmarkxx"><b>notation-name</b></a>
+</li>
+<li id="477">
+<a href="sax.htm#notation-public-op-bookmarkxx"><b>notation-public</b></a>
+</li>
+<li id="478">
+<a href="sax.htm#notation-system-op-bookmarkxx"><b>notation-system</b></a>
+</li>
+<li id="479">
+<a href="sax.htm#parse-to-lxml-op-bookmarkxx"><b>parse-to-lxml</b></a>
+</li>
+<li id="480">
+<a href="sax.htm#parse-xml-op-bookmarkxx"><b>parse-xml</b></a>
+</li>
+<li id="481">
+<a href="sax.htm#parser-default-package-op-bookmarkxx"><b>parser-default-package</b></a>
+</li>
+<li id="482">
+<a href="sax.htm#parser-general-entities-op-bookmarkxx"><b>parser-general-entities</b></a>
+</li>
+<li id="483">
+<a href="sax.htm#parser-lxml-op-bookmarkxx"><b>parser-lxml</b></a>
+</li>
+<li id="484">
+<a href="sax.htm#parser-notations-op-bookmarkxx"><b>parser-notations</b></a>
+</li>
+<li id="485">
+<a href="sax.htm#parser-package-prefix-op-bookmarkxx"><b>parser-package-prefix</b></a>
+</li>
+<li id="486">
+<a href="sax.htm#parser-parameter-entities-op-bookmarkxx"><b>parser-parameter-entities</b></a>
+</li>
+<li id="487">
+<a href="sax.htm#parser-root-op-bookmarkxx"><b>parser-root</b></a>
+</li>
+<li id="488">
+<a href="sax.htm#parser-skip-ignorable-op-bookmarkxx"><b>parser-skip-ignorable</b></a>
+</li>
+<li id="489">
+<a href="sax.htm#processing-instruction-op-bookmarkxx"><b>processing-instruction</b></a>
+</li>
+<li id="490">
+<a href="sax.htm#pxml-parser-class-bookmarkxx"><code>pxml-parser</code></a>
+</li>
+<li id="491">
+<a href="sax.htm#pxml-version-op-bookmarkxx"><b>pxml-version</b></a>
+</li>
+<li id="492">
+<a href="sax.htm#sax-parse-file-op-bookmarkxx"><b>sax-parse-file</b></a>
+</li>
+<li id="493">
+<a href="sax.htm#sax-parse-stream-op-bookmarkxx"><b>sax-parse-stream</b></a>
+</li>
+<li id="494">
+<a href="sax.htm#sax-parse-string-op-bookmarkxx"><b>sax-parse-string</b></a> 
+</li>
+<li id="495">
+<a href="sax.htm#sax-parser-flag-op-bookmarkxx"><b>sax-parser-flag</b></a>
+</li>
+<li id="496">
+<a href="sax.htm#start-document-op-bookmarkxx"><b>start-document</b></a>
+</li>
+<li id="497">
+<a href="sax.htm#start-element-op-bookmarkxx"><b>start-element</b></a>
+</li>
+<li id="498">
+<a href="sax.htm#start-prefix-mapping-op-bookmarkxx"><b>start-prefix-mapping</b></a>
+</li>
+<li id="499">
+<a href="sax.htm#with-base-pxml-op-bookmarkxx"><b>with-base-pxml</b></a>
+</li>
+<li id="500">
+<a href="sax.htm#with-sax-pxml-op-bookmarkxx"><b>with-sax-pxml</b></a>
+</li>
+
+</ul>
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/sax.htm">9.0 version</a></td></tr></table></html>

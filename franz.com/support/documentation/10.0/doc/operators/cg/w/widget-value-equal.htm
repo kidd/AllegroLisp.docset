@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>widget-value-equal</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/widget-value-equal.htm">9.0 version</a></td></tr></table><h2 id="2">widget-value-equal</h2>
+
+<p id="3"><b>Arguments: </b><i>
+value1 value2
+</i></p>
+
+<p id="4">
+This function is used as the initial value for the <a href="../o/on-change-test.htm"><b>on-change-test</b></a> property of a
+dialog-item.  When the two values are both strings, then the result of
+calling <a href="../../../../ansicl/dictentr/stringst.htm"><b>string=</b></a> on the two
+values is returned; otherwise the result of calling <a href="../../../../ansicl/dictentr/eql.htm"><b>eql</b></a> on the values is returned.  This special
+function is provided in order to match string values properly (so
+strings with identical characters will be considered the same), but
+without inefficiently recursing into deep trees or other complex
+widget values needlessly, as <a href="../../../../ansicl/dictentr/equal.htm"><b>equal</b></a> (which does consider strings with
+identical characters the same) might do.
+</p>
+<p id="5">
+This is a generic function, and could be extended with additional
+methods.  For example, if an application often uses RGB color objects
+as widget values (see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>), then the following
+method could be added to cause equivalent RGB widget values to always
+match, without changing the <a href="../o/on-change-test.htm"><b>on-change-test</b></a> property of every
+widget that might hold RGB's.  (<a href="../../../../ansicl/dictentr/eql.htm"><b>eql</b></a> will always return <code>nil</code> for two RGB objects.)
+</p>
+<pre id="6">
+(defmethod widget-value-equal ((value1 rgb)(value2 rgb))
+  (rgb-equal value1 value2))
+</pre>
+<p id="7">
+Since the <a href="../o/on-change-test.htm"><b>on-change-test</b></a> property is designed
+to use basic functions like <a href="../../../../ansicl/dictentr/equal.htm"><b>equal</b></a> that take only two arguments to be
+compared, there is no dialog-item argument to specialize on and, as a
+result, this generic function cannot be specialized on particular
+dialog-item subclasses.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/widget-value-equal.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>span-missing-items</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/span-missing-items.htm">9.0 version</a></td></tr></table><h2 id="2">span-missing-items</h2>
+
+<p id="3"><b>Arguments: </b><i>
+line-graph-view
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../s/span-missing-items.htm"><b>span-missing-items</b></a> property of
+a <a href="../../../classes/cg/line-graph-view.htm"><code>line-graph-view</code></a>. The value
+may be set at creation time by passing
+the <code>span-missing-items</code> initarg, or any
+time later by calling <a href="../s/span-missing-items.htm"><b>(setf span-missing-items)</b></a>.
+</p>
+<p id="5">
+A boolean value indicating whether line segments will be drawn across
+chart items that have no values in a <a href="../../../classes/cg/line-graph-view.htm"><code>line-graph-view</code></a> of a <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>. The default value
+is <code>nil</code>.
+</p>
+<p id="6">
+The chart-widget allows any combination of a chart item and chart
+object to either have a value or not. When there is no value, nothing
+is drawn on the chart for that chart item and object.
+</p>
+<p id="7">
+A special case is that a chart object may have no value for a sequence
+of one or more chart items, but have values for items on both sides of
+that sequence of items. This raises the question as to whether a line
+should be drawn between the groups of items that do have values.
+</p>
+<p id="8">
+If <a href="../s/span-missing-items.htm"><b>span-missing-items</b></a> is true,
+then a single straight line is drawn between the last chart item
+before the sequence of non-value items and the first item after the
+no-value items. If <a href="../s/span-missing-items.htm"><b>span-missing-items</b></a>
+is <code>nil</code>, then no such line is drawn, and lines
+will connect only contiguous items that all have values.
+</p>
+<p id="9">
+This property is used only when the <a href="../d/draw-lines.htm"><b>draw-lines</b></a> property is true.
+</p>
+
+
+<p id="10">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/span-missing-items.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,74 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>schedule-finalization</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/schedule-finalization.htm">9.0 version</a></td></tr></table><h2 id="2">schedule-finalization</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object function </i>&amp;key <i>queue</i><i>
+</i></p>
+
+
+
+<p id="4">
+Returns a finalization for <i>object</i>. When the
+garbage collector identifies <i>object</i> as garbage
+(meaning only the finalization and possibly weak vectors reference
+it), the garbage collector notes this fact and when it finishes
+garbage collecting, it either (depending on the value of
+the <i>queue</i> argument) calls the function denoted
+by <i>function</i> with <i>object</i> as
+the single argument or enqueues a list of two elements (the function
+from the finalization and the object in question) on the queue denoted
+by <i>queue</i>.
+</p>
+<p id="5">
+If <i>queue</i> is <code>nil</code> and thus
+the function is called by the system when object is marked as garbage,
+then after that function returns, the finalization is disabled so that
+(assuming that nothing in
+<i>function</i> caused <i>object</i> not
+to be garbage) the object is again identified as garbage during the
+next garbage collection and then scavenged (or global gc'ed)
+away.
+</p>
+<p id="6">
+If <b><i>queue</i></b> is
+non-<code>nil</code>, it must be an instance
+of <a href="../../classes/mp/queue.htm"><code>mp:queue</code></a>. The system
+only places the list of the finalization function and the object on
+that queue. It is the programs responsibility to apply the function
+<a href="call-finalizer.htm"><b>call-finalizer</b></a> to
+that list.
+</p>
+
+<p id="7">
+<i>object</i> can be any Lisp object;
+<i>function</i> can be a function object or a symbol
+denoting a function. The function must accept one argument.
+</p>
+<p id="8">
+Multiple finalizations can be scheduled for the same object; all are
+run if and when the gc identifies the object as garbage. The order of
+the running of multiple finalizations is unspecified.
+</p>
+<p id="9">
+A finalization can be unscheduled with <a href="unschedule-finalization.htm"><b>unschedule-finalization</b></a>.
+</p>
+<p id="10">
+<b>Note that a reference from a weak vector or hash-table is not a
+reference from the point of view of the garbage
+collector. Consequently, a weak vector or hash-table can contain a
+pointer to an object on which a finalization is being called, or has
+already been called.</b> See the section <a href="../../gc.htm#finalization-weak-objects-3">A finalized object may still be
+pointed to by a weak vector or hash-table</a>
+in <a href="../../gc.htm">gc.htm</a> for more information.
+</p>
+
+<p id="11">
+See also <a href="../../gc.htm">gc.htm</a> for general information on garbage
+collection Allegro CL. See section <a href="../../gc.htm#finalizations-2">Finalizations</a> in that document for
+details of finalizations.
+</p>
+
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/schedule-finalization.htm">9.0 version</a></td></tr></table></body></html>

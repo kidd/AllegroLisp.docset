@@ -1,0 +1,98 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>record-source-file</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/record-source-file.htm">9.0 version</a></td></tr></table><h2 id="2">record-source-file</h2>
+
+<p id="3"><b>Arguments: </b><i>fspec </i>&amp;key <i>type</i></p>
+
+<p id="4">
+This function is used to record the location of built-in and user
+defined objects in source files.
+</p>
+
+<p id="5">
+The built-in types and the forms that use them are: 
+</p>
+
+<table border="1" width="83%">
+  <tr>
+    <td width="37%"><strong>Type</strong></td>
+    <td width="63%"><strong>Used with these forms:</strong></td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:operator</code></td>
+    <td width="63%"><a href="../../../ansicl/dictentr/defun.htm"><b>defun</b></a>, 
+    <a href="../../../ansicl/dictentr/defmacro.htm"><b>defmacro</b></a></td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:variable</code></td>
+    <td width="63%"><a href="../../../ansicl/dictentr/defconst.htm"><b>defconstant</b></a>, 
+    <a href="../../../ansicl/dictentr/defparam.htm"><b>defparameter</b></a>,
+    <a href="../../../ansicl/dictentr/defparam.htm"><b>defvar</b></a></td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:special-declaration</code></td>
+    <td width="63%"><a href="../../../ansicl/dictentr/defconst.htm"><b>defconstant</b></a>, 
+    <a href="../../../ansicl/dictentr/defparam.htm"><b>defparameter</b></a>, 
+    <a href="../../../ansicl/dictentr/defparam.htm"><b>defvar</b></a></td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:compiler-macro</code></td>
+    <td width="63%"><a href="../../../ansicl/dictentr/define-2.htm"><b>define-compiler-macro</b></a></td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:setf-method</code></td>
+    <td width="63%"><a href="../../../ansicl/dictentr/defsetf.htm"><b>defsetf</b></a></td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:type</code></td>
+    <td width="63%"><a href="../../../ansicl/dictentr/defclass.htm"><b>defclass</b></a>,
+    <a href="../../../ansicl/dictentr/defstruc.htm"><b>defstruct</b></a>, 
+    <a href="../../../ansicl/dictentr/deftype.htm"><b>deftype</b></a></td>
+  </tr>
+</table>
+
+<p id="6">For example, putting the following form into a file, compile and
+loading it: <code>(defun foo (x) ...)</code> will cause
+<strong>foo</strong> to be recorded as an <code>:operator</code> in
+the file in which it was defined. </p>
+
+<p id="7">
+Redefinition warnings occur when a file is loaded and it defines
+an object of an already existing source file recording type. Objects
+of different types, say an <code>:operator</code> and
+<code>:type</code>, do not cause redefinition warnings.
+</p>
+
+<p id="8">
+Users can extend this facility to understand objects they
+define. The most usual case is a macro that defines a high-level
+object, such as: 
+</p>
+
+<pre id="9">
+(defmacro def-frob (name fram)
+  `(progn
+     (record-source-file ',name :type :frob)
+     (def-frob-1 ',name ,fram)))
+
+;;  We assume def-frob-1 exists and does something useful. 
+;;  Here is a dummy def-frob-1 that make sthe example work:
+(defun def-frob-1 (name fram) (declare (ignore name fram))
+  nil)
+</pre>
+
+<p id="10">Then, if the following form is put into <em>/a/b/foo.cl</em>: </p>
+
+<p id="11"><code>(def-frob akbar 'fez) </code></p>
+
+<p id="12">and is then compiled and loaded, <code>(source-file 'akbar
+:frob)</code> will return a pathname pointing to
+<em>/a/b/foo.cl</em>. </p>
+
+<p id="13">
+See also <a href="../../source-file-recording.htm">source-file-recording.htm</a> for general
+information on source file recording in Allegro
+CL.
+</p>
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/record-source-file.htm">9.0 version</a></td></tr></table></body></html>

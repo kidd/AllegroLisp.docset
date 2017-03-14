@@ -1,0 +1,109 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>recent-menu</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Menu</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/recent-menu.htm">9.0 version</a></td></tr></table><h2 id="2">Recent Menu</h2>
+
+<p id="3">
+The Recent menu allows editing or loading recently-used projects,
+files, and source code definitions by simply selecting them from a
+history list rather than re-browsing for them from scratch. This is
+especially useful for retrieving things that were being used in the
+previous invocation of lisp, since they are no longer present upon
+restarting Lisp.
+</p>
+<p id="4">
+The number of items in each submenu is the value of the <a href="../operators/ide/recent-limit.htm"><b>recent-limit</b></a>
+configuration property.
+</p>
+<p id="5">
+The submenu for each history list will be unavailable (grayed out) if
+there is nothing in the history for that type of item. This will be
+the case in a freshly installed Lisp, or in a fresh invocation of Lisp
+if the allegro-ide-options.cl file was deleted (since the history lists are kept
+there along with the configuration options).
+</p>
+<p id="6">
+If a submenu contains the same file name more than once, this
+indicates distinct files in different directories. To find out which
+file is which, hold the mouse briefly over the submenu until the
+tooltip appears with the full pathname for the menu-item currently
+under the mouse. (The tooltip delay is controlled by the <a href="../operators/cg/m/menu-tooltip-delay.htm"><b>menu-tooltip-delay</b></a>
+configuration property, which defaults to 1500 milliseconds.)
+</p>
+<p id="7">
+The items on the menu are:
+</p>
+
+<ul><li id="8"><b><a name="open-project">Open Project</a></b> -- 
+Displays a submenu of projects that have recently been opened, loaded,
+or saved, either in the current invocation of Lisp or a recent
+one. Selecting one of the projects opens it as the current project for
+editing. See also <a href="file-menu.htm#open-project">File | Open Project</a>, which prompts for a
+project to open.
+</li></ul>
+
+
+
+<ul><li id="9"><b><a name="load-project">Load Project</a></b> -- 
+Displays a submenu of projects that have recently been opened, loaded,
+or saved, either in the current invocation of lisp or a recent one.
+<p id="10">
+Selecting one of the projects loads it for general use in the IDE.  
+</p>
+<p id="11">
+A project may be loaded initially either with the <a href="file-menu.htm#load">File |
+Load</a> menu command or by calling the function <a href="../operators/ide/load-project.htm"><b>load-project</b></a>. Any
+number of projects may be loaded simultaneously in the IDE for testing
+or for use as utilities, though only a single project may be the
+current project, and thus opened for development.
+</p>
+</li></ul>
+
+
+
+<ul><li id="12"><b><a name="open-editor-file">Open Editor File</a></b> -- 
+Displays a submenu of files that have recently been opened in the IDE
+editor, either in the current invocation of Lisp or a recent
+one. Selecting one of the files edits it in the IDE editor. (If the
+file is already in the editor, it is found there rather than creating
+a second editor buffer.) The file may have originally been edited
+either directly from the <a href="file-menu.htm#open">File | Open</a> menu command, or
+indirectly, for example from a <a href="search-menu.htm#find-definition">Search | Find
+Definition</a> command or <a href="search-menu.htm#find-in-files">Search | Find in
+Files</a> command.
+</li></ul>
+
+
+
+<ul><li id="13"><b><a name="load-file">Load File</a></b> -- 
+Displays a submenu of files that have recently been loaded into the
+Lisp environment, either in the current invocation of Lisp or a recent
+one. The file must have originally been loaded with <a href="file-menu.htm#load">File |
+Load</a> (or its toolbar button). Selecting one
+of the files loads the file.
+</li></ul>
+
+
+
+<ul><li id="14"><b><a name="edit-definition">Edit Definition</a></b> -- 
+Displays a submenu of source code definitions that have recently been
+edited in the IDE editor. The definition must have originally been
+edited by using the <a href="search-menu.htm#find-definition">Search | Find Definition</a>, the <a href="search-menu.htm#quick-find-definition">Search | Quick Find Definition</a>
+menu command, or the <a href="search-menu.htm#find-in-files">Search | Find in Files</a> menu command or
+one of their shortcuts. Selecting one of the definitions edits its
+source code in the IDE editor.
+<p id="15">
+Note that this particular Recent submenu will not retain its history
+from one Lisp session to another, unlike the other Recent
+submenus. This is due to problems with reloading function name symbols
+into a fresh lisp where the symbol packages no longer exist. The
+history is still available within a given Lisp session though.
+</p>
+</li></ul>
+
+
+
+
+
+
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/recent-menu.htm">9.0 version</a></td></tr></table></body></html>

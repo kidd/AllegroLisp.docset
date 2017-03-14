@@ -1,0 +1,213 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>runtime-analyzer-results-dialog</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/runtime-analyzer-results-dialog.htm">9.0 version</a></td></tr></table><h2 id="2">Runtime Analyzer Results dialog</h2>
+
+<p id="3"><img src="../pictures/run-an-results.jpg"></p>
+
+<p id="4"><img src="../pictures/run-results-flat.jpg"></p>
+
+
+
+
+<p id="5">
+This dialog displays runtime analysis statistics. A runtime analysis
+is a collection of data about which functions were being called and
+where most of the time was being spent or where the most memory was
+being used by the creation of new lisp objects. (See
+<a href="../runtime-analyzer.htm">runtime-analyzer.htm</a>.)
+</p>
+<p id="6">
+To start collecting data, either invoke the <a href="run-menu.htm#runtime-analyzer-control">Run | Runtime Analyzer Control |
+Start/Resume Sampling</a> command or display the <a href="runtime-analyzer-control-dialog.htm">Runtime
+Analyzer Control dialog</a> (by invoking the <a href="run-menu.htm#runtime-analyzer-control">Run | Runtime Analyzer Control
+Dialog</a> command) and press its <b>Start Sampling</b>
+button. When you feel enough data has been collected, stop data collection
+either with <a href="run-menu.htm#runtime-analyzer-control">Run | Runtime Analyzer Control | Stop
+Sampling</a> command or the <b>Stop</b> button on the <a href="runtime-analyzer-control-dialog.htm">Runtime
+Analyzer Control dialog</a>. Now you are ready to analyze the
+data using this dialog.  (Alternately, you can call <a href="../operators/prof/start-profiler.htm"><b>start-profiler</b></a>, <a href="../operators/prof/stop-profiler.htm"><b>stop-profiler</b></a>, and related commands
+programmatically, and then display the results on this dialog.)
+</p>
+<p id="7">
+When the dialog is first displayed by the <a href="run-menu.htm#runtime-analyzer-results-dialog">Run | Runtime Analyzer Results
+Dialog</a> command, no information is displayed, and so you need
+to press the <b>Update</b> button to analyze the current analysis data
+and display it here.  Similarly, if a subsequent analysis is
+performed, invoking this dialog with the <a href="run-menu.htm#runtime-analyzer-results-dialog">Run | Runtime Analyzer Results
+Dialog</a> command will continue to show the currently-analyzed
+data until you again press the <b>Update</b> button to analyze the
+newer data. (On the other hand, pressing the <b>Show Results</b>
+button on the <a href="runtime-analyzer-control-dialog.htm">Runtime Analyzer Control
+dialog</a> will automatically update this dialog to show the new
+data.)
+</p>
+<p id="8">
+The three tabs summarize the collected data in up to three ways.
+Illustrated above is the <b>Outline</b> presentation (onthe Outline
+tab), which corresponds to the output from <a href="../operators/prof/show-call-graph.htm"><b>show-call-graph</b></a>, and the <b>Flat</b>
+presentation (on the Flat tab), which corresponds to the output from
+<a href="../operators/prof/show-flat-profile.htm"><b>show-flat-profile</b></a>.
+</p>
+<p id="9">
+The third tab is the <b>Call</b> Counts presentation,
+which corresponds to the output from <a href="../operators/prof/show-call-counts.htm"><b>show-call-counts</b></a>. 
+</p>
+<p id="10">
+(Data was just collected while running the IDE. One usually collects
+data when running your application or parts of your application. See
+<a href="../runtime-analyzer.htm">runtime-analyzer.htm</a> for discussion of how to use
+the runtime analyzer. Here we are only interested in the dialogs and
+how they display.)
+</p>
+<p id="11">
+Nodes in the outline presentation indicate functions or methods
+called, as do the entries in the left column of the Flat and Call
+Counts displays.  The Flat and Call Counts presentations may be sorted
+differently by clicking on the column headers.  And (as usual in the
+IDE dialogs), the 
+<a href="search-menu.htm#find-forward">Search | Find Forward</a> or <a href="search-menu.htm#find-backward">Search |
+Find Backward</a> command may be used to search for
+arbitrary strings in any of the presentations.
+</p>
+
+<p id="12">
+The outline (which is an instance of an <a href="../classes/cg/outline.htm"><code>outline</code></a> widget) can be navigated quickly by
+pressing the J, K, F, and D keys as alternatives to the down, up,
+right, and left arrow keys respectively, and the T and B keys for the
+Home and End keys. This works because the outline widgets in IDE tool
+dialogs enable their <a href="../operators/cg/h/handle-home-key-shortcuts.htm"><b>handle-home-key-shortcuts</b></a> property.
+</p>
+
+
+<a name="graph-button"></a><h3 id="13">The Graph button</h3>
+<p id="14">
+Clicking the <b>Graph</b> button presents the information from the Outline
+presentation as a tree graph. The blue bars on the left side of the
+graph nodes indicate the portion of the time spent (or space consed)
+in the node's branch as a fraction of the time spent in the parent
+node's branch. If the blue bar is as tall as the node itself, that
+indicates that 100% of the time in the parent branch was spent in this
+branch; a blue bar half as tall as the node indicates that 50% of the
+parent branch was spent in this branch.  If there is a green bar, that
+indicates the portion of the entire analysis time that was spent in
+this node's branch.  The yellow bar on the right side of a node
+indicates the portion of that node's branch that was spent within that
+node itself, as opposed to its sub-nodes; in other words, the portion
+of hits that occurred within that function itself rather than in the
+functions that it called.  The yellow bars are not drawn on the leaf
+nodes since they would always be the full node height on those nodes.
+</p>
+
+<p id="15">
+The appearance of nodes on the Windows platform can be controlled with
+the configuration options <a href="../operators/ide/use-color-gradients-in-tree-graphs.htm"><b>ide:use-color-gradients-in-tree-graphs</b></a> and
+<a href="../operators/ide/use-antialiased-text-in-tree-graphs.htm"><b>ide:use-antialiased-text-in-tree-graphs</b></a>.
+</p>
+
+<p id="16">
+Similarly, the blue bars are not drawn on "only child" nodes, since
+they would also always be the full node height.
+</p>
+<h3 id="17">The Filter button</h3>
+<p id="18">
+Press this button to display a dialog showing various types of nodes
+to exclude from the outline or graph. This can be useful to
+prune a huge number of nodes down to a more manageable set.
+Press the <b>Update</b> button after modifying the filter to update
+the display to reflect the new filter.
+</p>
+
+
+<h3 id="19">The Save to History button</h3>
+<p id="20">
+Press this button to allow re-viewing this analysis after further
+analyses have been performed (within this IDE session). You will be
+asked to enter a name for the analysis, which will be added to the
+combo-box list at the top of the dialog. Selecting the name from this
+combo-box at some later time will once again display that analysis in
+the dialog.
+</p>
+<h3 id="21">The Save to File button</h3>
+<p id="22">
+Press this button to save the contents of the currently displayed
+analysis to a plain text file. (The <a href="file-menu.htm#save">File | Save</a> command does this as
+well when this dialog is selected.) It sometimes may be useful to
+send this generated file to Franz with a bug report.
+</p>
+<p id="23">
+The file will contain only the lines are currently visible in the
+outline widget, so you may want to open the outline further to reveal
+any lines that look interesting before saving to file.  (As usual with
+a Common Graphics outline control, you can control-click on the
+open/close icon of an <a href="../classes/cg/outline-item.htm"><code>outline-item</code></a> to open all of its descendents, or
+type control-rightarrow.)
+</p>
+
+<h3 id="24">The right button menu</h3>
+<p id="25">
+The right-button menu in the Outline view or in a graph
+contains special analysis commands, rather than the usual selection of
+commands from the menu-bar as in most IDE dialogs. 
+</p>
+<ul>
+<li id="26">
+<b>Print Statistics</b>
+prints a textual summary of the selected node in the Debug Window.
+</li>
+<li id="27">
+<b>Graph Combined Subtree</b> displays a new
+analysis graph consisting of the combined data from all branches of
+this graph that start with a node for the method or function
+represented by the currently selected node; that is, a graph of
+everything called by the currently selected method or function.
+Analysis graphs are described <a href="#graph-button">above</a>.
+</li>
+<li id="28">
+<b>Graph Unfiltered Subtree</b> displays a new analysis graph showing
+the currently selected branch with no nodes filtered out of it, as if
+the Filter button on the Runtime Analyzer Results dialog were used to
+filter nothing out.  Analysis graphs are described <a href="#graph-button">above</a>.
+</li>
+<li id="29">
+<b>Graph Subtree</b> displays a new analysis graph showing the
+currently selected branch as a subtree. Analysis graphs are described
+<a href="#graph-button">above</a>.
+</li>
+<li id="30">
+<b>Disassemble</b> prints the assembly code for the method or function of the
+selected node to the Debug Window.  
+</li>
+<li id="31">
+<b>Inspect</b> inspects the actual
+analysis node in the IDE inspector.  
+</li>
+<li id="32">
+<b>Quick Find Definition</b>: find the source of the operator at the
+selected node, as if with <a href="search-menu.htm#quick-find-definition">Search | Quick Find
+Definition</a>.
+</li>
+<li id="33">
+<b>Print</b> will print the entire
+analysis outline or graph on multiple pages of hardcopy.
+</li>
+</ul>
+<p id="34">
+When a number appears after a method or function name, either in the
+outline view or a analysis graph, it is the number of times that that
+method or function was called. These numbers will be shown only when
+call counts were included in the analysis, and only for the particular
+methods or functions that were counted).  If the method or function
+appears in more than one branch of the analysis, the number is for the
+whole analysis rather than for that particular branch.
+</p>
+<p id="35">
+When the text in a node of an analysis graph is dark blue rather than
+black, it indicates that there are additional nodes in the graph for
+that method or function, where it was called in other places.  The
+commands "Print Statistics" and "Graph Combined Subtree" on the
+right-button menu may be particularly useful on these nodes, because
+they provide combined information on all of the branches that begin
+with that method or function.
+</p>
+
+<hr><p id="36"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/runtime-analyzer-results-dialog.htm">9.0 version</a></td></tr></table></body></html>

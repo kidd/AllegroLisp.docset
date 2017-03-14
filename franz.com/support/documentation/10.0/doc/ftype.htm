@@ -1,0 +1,1093 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Foreign Types</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ftype.htm">9.0 version</a></td></tr></table><h1 id="2">Foreign Types</h1><p id="3">This document contains the following sections:</p><a href="#foreign-type-intro-1">1.0 Foreign types introduction</a><br><a href="#foreign-type-facility-1">2.0 The foreign types facility</a><br><a href="#foreign-type-example-1">3.0 Examples</a><br><a href="#foreign-type-syntax-1">4.0 The Syntax for Foreign Types</a><br>&nbsp;&nbsp;&nbsp;<a href="#union-1">4.1 The union of two structs</a><br><a href="#primitive-types-1">5.0 Primitive Types</a><br><a href="#allocation-types-1">6.0 Allocation types</a><br><a href="#aligned-pointers-1">7.0 Aligned Pointers</a><br><a href="#bit-fields-1">8.0 Bit Fields</a><br><a href="#programming-interface-1">9.0 The Programming Interface</a><br><a href="#passing-foreign-objects-1">10.0 Passing Foreign Objects to Foreign Functions</a><br>&nbsp;&nbsp;&nbsp;<a href="#string-rep-2">10.1 String representation</a><br>&nbsp;&nbsp;&nbsp;<a href="#quiz-2">10.2 A Quiz</a><br><hr><hr><h2 id="4"><a name="foreign-type-intro-1">1.0 Foreign types introduction</a></h2>
+
+<p id="5">
+The purpose of the foreign types facility is to permit the
+creation, reading and modification of objects that are described in
+non-lisp terms. By non-lisp we generally mean C or C++.
+</p>
+
+<p id="6">
+The <b>cstruct</b> object, that is an object of type <b>(array
+excl::foreign)</b>, has been enhanced so that the first slot contains
+a Lisp object.<b> make-array</b> and the garbage collector have been
+enhanced to allow lisp-valued arrays to be stored in static
+space. Combining these two enhancements, you get the ability to
+allocate cstructs in static space and for those cstructs to contain a
+pointer to their lisp class (in the first slot). 
+</p>
+
+<p id="7">
+Symbols implementing ftype functionality are in
+the <code>:foreign-functions</code>
+(nicknamed <code>:ff</code>) package.
+</p>
+
+<hr><hr><h2 id="8"><a name="foreign-type-facility-1">2.0 The foreign types facility</a></h2>
+
+<p id="9">
+The foreign types facility tries to blend the best of the Allegro
+CL Unix and aclwin foreign types facility.
+</p>
+
+<ul>
+  <li id="10">It is functionally based. The primitives are all functions yet there are compile-time
+    macros to move some of the work to compile-time when that is possible.  </li>
+  <li id="11">It is navigationally based rather than defstruct-like. </li>
+  <li id="12">The definition of a type does not determine on which heap it is allocated. </li>
+  <li id="13">There is a foreign structure allocation type that is typed, leading to easier debugging
+    and runtime type and bounds checking. </li>
+</ul>
+
+<hr><hr><h2 id="14"><a name="foreign-type-example-1">3.0 Examples</a></h2>
+
+<p id="15">
+To get an idea of how this facility works, here are some
+examples. First we show how we can define, allocate, set and access
+values in a foreign structure.
+</p>
+
+<pre id="16">
+;; define the structure
+user(3): (ff:def-foreign-type my-point (:struct (x :int) (y :int)))
+#&lt;foreign-functions::foreign-structure my-point&gt;
+
+;; allocate an object, using the default 
+;; allocation type of :foreign
+user(4): (setq obj (ff:allocate-fobject 'my-point))
+#&lt;foreign object of class my-point&gt;
+
+;; set a slot in the object
+user(5): (setf (ff:fslot-value obj 'x) 3)
+3
+
+;; verify that the slot is set with the correct value
+user(6): (ff:fslot-value obj 'x)
+3
+</pre>
+
+<p id="17">
+The <a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a> macro defines
+the <b>my-point</b> structure and returns the clos class that was
+defined. Note that the metaclass of a foreign structure is
+<b>ff:foreign-structure</b>. 
+</p>
+<p id="18">
+Next an object is allocated with <a href="operators/ff/allocate-fobject.htm"><b>allocate-fobject</b></a>. We didn't
+specify an allocation type, thus the type 
+<code>:foreign</code> was used. A
+<code>:foreign</code> object is stored 
+in the lisp heap in an <code>(array
+excl::foreign)</code> object (which is commonly called
+<strong>cstruct</strong> object). A nice feature of a 
+<code>:foreign</code>
+object is that it is typed. You can use that type to specialize on
+objects of this foreign type in <strong>CLOS</strong> generic
+functions.
+</p>
+
+<p id="19">
+Another advantage of a foreign object being typed is that in the
+<a href="operators/ff/fslot-value.htm"><b>(setf
+fslot-value)</b></a> calls we didn't have to specify the type of
+<b>obj</b>. The type was automatically determined at runtime.
+</p>
+
+<p id="20">
+Runtime determination of the type is handy and enhances the safety of
+the program since checks will be made at runtime to ensure that the
+desired access is appropriate for the object given. There is a cost to
+this check though, and if the foreign structure access is to be done
+many times, you'll want to use an accessor that allows you to specify
+the type at compile time: 
+</p>
+
+<pre id="21">
+user(9): (setf (ff:fslot-value-typed 'my-point :foreign obj 'x) 3)
+3
+user(10): (ff:fslot-value-typed 'my-point :foreign obj 'x)
+3
+</pre>
+
+<p id="22">
+The <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a> function takes
+two extra arguments: a type and an allocation method. With certain
+settings of the optimization values (safety, size, space, speed), the
+compiler will generate code to do the access in a few machine
+instructions.
+</p>
+
+<p id="23">
+Allocations and accesses can be done of types that have no name. These
+are called <i>anonymous</i> types.
+</p>
+
+<pre id="24">
+user(15): (setq obj (ff:allocate-fobject '(:struct (x :int) (y :int))))
+#&lt;foreign object of class #:anon-type-2&gt;
+user(16): (setf (ff:fslot-value-typed 
+                  '(:struct (x :int) (y :int)) :foreign obj 'x) 
+                234)
+234
+user(17): (ff:fslot-value-typed 
+               '(:struct (x :int) (y :int)) :foreign obj 'x)
+234
+</pre>
+
+<p id="25">
+When you use anonymous types, you must use <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a>. <i>This may be
+relaxed in the future to permit <b>fslot-value</b> to be used.</i>
+</p>
+
+<hr><hr><h2 id="26"><a name="foreign-type-syntax-1">4.0 The Syntax for Foreign Types</a></h2>
+
+<p id="27">
+The type syntax of C is mostly postfix with occasional prefix
+bits. Also, C tries to get by describing structures using the fewest
+numbers of characters, and that doesn't always make things
+readable. Previous foreign types facilities have tried to mimic the C
+syntax, leading sometimes to even more confusion since they couldn't
+mimic it exactly.  This facility uses prefix syntax exclusively and is
+a bit more verbose where that is warranted. The syntax for a foreign
+type (ftype below) is described next. 
+</p>
+
+<pre id="28">
+ftype := scalar-type
+	 composite-type
+	 function-type
+	 user-type
+
+primitive-type :=   :fixnum
+                    :int
+	            :long
+	            :short
+	            :char
+		    :void
+	            :unsigned-int
+	            :unsigned-long
+	            :unsigned-short
+	            :unsigned-char
+                    :float
+                    :double
+                    :nat
+                    :unsigned-nat
+	       
+scalar-type :=  primitive-type
+		(* ftype)
+		(&amp; ftype)
+                (:aligned ftype)
+
+composite-type := (:struct sfield ...)
+		  (:class  field ...)  
+		  (:union  field ...)
+		  (:array  ftype  [dim ...])
+		  
+
+function-type  := (:function (ftype ...) ftype [attributes])
+
+user-type  := &lt;symbol&gt;      [where &lt;symbol&gt; has an associated foreign type]
+    
+dim := &lt;positive integer&gt;
+
+field := ftype
+	 (field-name ftype)
+
+[fields in structures can contain bit specifiers]
+
+sfield := field
+          bit-specifier
+          multibit-specifier
+
+bit-specifier :=
+          (:bit number-of-bits)
+          (field-name (:bit number-of-bits))
+
+number-of-bits := &lt;integer&gt;
+
+multibit-specifier :=
+	  (:bits number-of-bytes mbit-specifier ...)
+          (field-name (:bits number-of-bytes mbit-specifier ...))
+
+mbit-specifier  :=
+          number-of-bits
+          (field-name number-of-bits)
+
+number-of-bytes := &lt;integer&gt;
+</pre>
+
+<h3 id="29">
+Some notes on the syntax above:
+</h3>
+
+<ul>
+<li id="30">
+In scalar-type, the syntax (& ftype) denotes a C++ reference
+type. Currently we treat these just like pointer types, but we may
+make a distinction at some time in the future. In <a href="operators/ff/def-foreign-call.htm"><b>def-foreign-call</b></a> the type
+specifier (& ftype) means pass a reference to the argument to the
+foreign function.
+</li>
+<li id="31">
+In scalar-type, the syntax (:aligned ftype) denotes a pointer to an
+ftype where the low two bits of the pointerq will always be zero.
+Accessing such a slot will return an <em>aligned</em> pointer to the C
+object which will always fit into a fixnum.
+</li>
+<li id="32">
+A field name in a <b>:struct</b> composite type may be <b>nil</b>
+which means that the slot does not have a name, but is present in the
+structure. This is useful for padding structures to a certain size.
+</li>
+<li id="33">
+The function type is generally found inside a pointer type, that is a
+structure would contain a pointer to a function rather than the
+function itself. In a class however a field with a function type
+denotes a member function of that class, and such a function is not
+stored in the class object itself.  We do not yet make this
+distinction in <code>:class</code> objects. Therefore, do not
+declare slots to be simply of type <code>:function</code>.
+</li>
+<li id="34">
+The :fixnum type is like the :long type except that it implies that
+the value in that slot is between <a href="../ansicl/dictentr/most-pos.htm"><code>most-negative-fixnum</code></a> and <a href="../ansicl/dictentr/most-pos.htm"><code>most-positive-fixnum</code></a> inclusive. By specifying
+this limit on the value of the slot Allegro can generate faster code
+to access and set the slot.
+</li>
+<li id="35">
+A contiguous sequence of bit-fields is always padded out to an
+integral number of bytes. This applies to array elements as well.  A
+field of type <code>(:array (:bit 4) 8)</code> is 8 bytes wide
+since each element gets padded out to a whole byte.
+</li>
+<li id="36">
+<b>:nat and :unsigned-nat</b>: <b>:nat</b> is short for "natural", and
+is intended to be the size of integer which fits into the natural word
+size of the machine - 32 bits on a 32-bit lisp and 64 bits on a 64-bit
+lisp. Note that
+<b>:long</b> and <b>:unsigned-long</b> do not fit this bill - they are
+64-bits in some 32-bit lisps and 32 bits in the Windows XP/64 64-bit
+Lisp. See <a href="implementation.htm#nat-vs-int-2">The
+:nat and :unsigned-nat types</a>
+in <a href="implementation.htm">implementation.htm</a>.
+</li>
+</ul>
+
+<hr><h2 id="37"><a name="union-1">4.1 The union of two structs</a></h2>
+
+<p id="38">
+Here is an example of the <b>union</b> composite type.
+</p>
+
+<pre id="39">
+(in-package :user)
+(use-package :ff)
+
+(def-foreign-type changeable
+  (:struct
+   (key :int)
+   (varying
+    (:union
+     (numbers 
+      (:struct
+       (a :int)
+       (b :int)
+       (c :int)))
+     (strings
+      (:struct
+       (d (:array :char 6))
+       (c (:array :char 6))))
+     ))
+   ))
+
+(defun try-changeable ()
+  (let ((ch (allocate-fobject 'changeable :foreign)))
+    (setf (fslot-value-typed 'changeable :foreign ch 'varying 'numbers 'a) 123)
+    (setf (fslot-value-typed 'changeable :foreign ch 'varying 'numbers 'b) 456)
+    (setf (fslot-value-typed 'changeable :foreign ch 'varying 'numbers 'c) 789)
+    (format t &quot;~&amp; slots of numbers struct ~S ~S ~S ~%&quot;
+        (fslot-value-typed 'changeable :foreign ch 'varying 'numbers 'a)
+	    (fslot-value-typed 'changeable :foreign ch 'varying 'numbers 'b)
+	        (fslot-value-typed 'changeable :foreign ch 'varying 'numbers 'c))
+
+    (dotimes (i 6)
+      (setf (fslot-value-typed 'changeable :foreign ch 'varying 'strings 'd i)
+          (char-code (elt &quot;abcdef&quot; i)))
+      (setf (fslot-value-typed 'changeable :foreign ch 'varying 'strings 'c i)
+          (char-code (elt &quot;hijklm&quot; i)))
+      )
+    (format t &quot;~&amp; slots of strings struct ~S ~S ~%&quot;
+        (fslot-value-typed 'changeable :foreign ch 'varying 'strings 'd 0)
+	    (fslot-value-typed 'changeable :foreign ch 'varying 'strings 'c 0)
+	        )
+    ch))
+
+-------------------------------
+cl-user(20): (try-changeable)
+ slots of numbers struct 123 456 789 
+ slots of strings struct 97 104 
+#&lt;foreign object of class changeable&gt;
+cl-user(21):  :i *
+A new short simple foreign vector (6) @ #x205afd02
+   0-&gt; simple t vector (7) = #(483681 t 901 ...)
+   1-&gt; The field #x00000000
+   2-&gt; The field #x64636261
+   3-&gt; The field #x69686665
+   4-&gt; The field #x6d6c6b6a
+   5-&gt; The field #x00000000
+cl-user(22): 
+</pre>
+
+
+
+
+<hr><hr><h2 id="40"><a name="primitive-types-1">5.0 Primitive Types</a></h2>
+
+<p id="41">
+The sizes of the primitives types vary by machine architecture, as
+this table shows.
+</p>
+
+<table border="1" width="94%">
+  <tr>
+    <td width="18%"><strong>Type</strong></td>
+    <td width="18%"><strong>Size</strong></td>
+    <td width="18%"><strong>Alignment</strong></td>
+    <td width="45%"><strong>Notes</strong></td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:void</code></td>
+    <td width="18%">0</td>
+    <td width="18%">0</td>
+    <td width="45%">Used in <code>(* :void)</code> 
+    type specifications and used to prototype a foreign call
+    of no arguments, just like C and C++ do (i.e. an argument list 
+    specification of () really says that we don't know how many 
+    arguments there are, whereas an arg list specification of 
+    (:void) says that there are precisely 0 arguments expected.)</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:char</code></td>
+    <td width="18%">1</td>
+    <td width="18%">1</td>
+    <td width="45%">A signed one byte access</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:unsigned-char</code></td>
+    <td width="18%">1</td>
+    <td width="18%">1</td>
+    <td width="45%">[none]</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:short</code></td>
+    <td width="18%">2</td>
+    <td width="18%">2</td>
+    <td width="45%">A signed two byte access</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:unsigned-short</code></td>
+    <td width="18%">2</td>
+    <td width="18%">2</td>
+    <td width="45%">[none]</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:int</code></td>
+    <td width="18%">4</td>
+    <td width="18%">4</td>
+    <td width="45%">A signed four byte access</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:unsigned-int</code></td>
+    <td width="18%">4</td>
+    <td width="18%">4</td>
+    <td width="45%">[none]</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:long</code></td>
+    <td width="18%">4 on all machines except the Dec Alpha, IRIX, and
+    all 64-bit implementations (Alpha, HP, Sparc), where it is 8</td>
+    <td width="18%">4 on all machines except the Dec Alpha, IRIX, and
+    all 64-bit implementations (Alpha, HP, Sparc), where it is 8</td>
+    <td width="45%">A signed access of an architecture specific size.</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:unsigned-long</code></td>
+    <td width="18%">4 on all machines except the Dec Alpha, IRIX, and
+    all 64-bit implementations (Alpha, HP, Sparc), where it is 8</td>
+    <td width="18%">4 on all machines except the Dec Alpha, IRIX, and
+    all 64-bit implementations (Alpha, HP, Sparc), where it is 8</td>
+    <td width="45%">[none]</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:float</code></td>
+    <td width="18%">4</td>
+    <td width="18%">4</td>
+    <td width="45%">[none]</td>
+  </tr>
+  <tr>
+    <td width="18%"><code>:double</code></td>
+    <td width="18%">8</td>
+    <td width="18%">8 on all machines except Linux 
+    and FreeBSD on an x86 and the RS/6000 where it is 4</td>
+    <td width="45%">[none]</td>
+  </tr>
+</table>
+
+<hr><hr><h2 id="42"><a name="allocation-types-1">6.0 Allocation types</a></h2>
+
+<p id="43">
+Objects can be allocated in a variety of places. The default
+allocation location is <code>:foreign</code>.
+</p>
+
+<ul>
+
+<li id="44">
+<code>:foreign</code> - The object is allocated in the
+lisp heap using a lisp data type unique to Allegro called the
+<code>(array excl::foreign)</code>. This kind of array has
+one lisp slot at the beginning, with all subsequent slots holding
+raw integer data.  The foreign types facility uses the first,
+lisp-valued, slot to hold a pointer to a description of the type of
+data held in this object. Because these objects are stored in the
+Lisp heap, it doesn't make sense to ask for the address of a slot of
+one of these objects, as it may have moved by the time you get your
+answer.
+</li>
+<li id="45">
+<code>:foreign-static-gc</code> - These
+objects look just like <code>:foreign</code> allocated
+objects. The difference is that they are allocated in static space
+(i.e. space allocated with the C function <i>aclmalloc</i>). Unlike
+other objects allocated in static space, these objects are
+automatically gc'ed (the C <i>aclfree</i> function is called on
+them) when the last pointer to them in the Lisp heap disappears.
+The advantage of this allocation type over
+<code>:foreign</code> is that the object doesn't move. This
+makes it very useful when the object must be passed to a C
+foreign-function that releases the heap (e.g. most functions in the
+Windows package).
+See <a href="foreign-functions.htm#releasing-the-heap-2">Releasing the
+heap when calling foreign functions</a> in
+<a href="foreign-functions.htm">foreign-functions.htm</a> for more information on
+releasing the heap.
+</li>
+<li id="46">
+
+<code>:lisp</code> - A lisp array of type
+<code>(unsigned-byte 8)</code> of sufficient size to hold the
+object is allocated in the lisp heap. The object does not record the
+foreign type of which it is an instance. This allocation type is
+useful if you've got a binary file you want to read and take apart,
+and the format of the file is described by a C struct definition. In
+that case you can allocate an object of type <code>:lisp</code>
+and then call <b>read-sequence</b> to read the data from the binary
+file into the foreign object. Note, however, that <a href="../ansicl/dictentr/read-seq.htm"><b>read-sequence</b></a> will also work for
+<code>:foreign</code> allocated objects. There is one tricky
+case: if the foreign structure requires 8 byte alignment (e.g. it
+begins with a double float and you are running on an architecture like
+the Sparc that requires 8 byte alignment for double floats) then the
+first four bytes of the Lisp array allocated will not be used by
+<a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a>.  If you
+<b>read-sequence</b> into such an array, then your data will be
+displaced 4 bytes from where <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a> thinks it is.
+<p id="47">
+The function <a href="operators/ff/foreign-type-lisp-pre-padding.htm"><b>foreign-type-lisp-pre-padding</b></a>
+returns the amount of this offset for the given structure on the
+current architecture.
+</p>
+
+</li>
+<li id="48">
+<code>:lisp-short</code> - A lisp short-array of type
+<code>(unsigned-byte 8)</code> of sufficient size to hold the
+object is allocated in the lisp heap. This type is the same as the
+<code>:lisp</code> type described just above, except that the
+data is held in a short-array. (short-arrays are a new data type
+corresponding to the older array type in Allegro CL. See <a href="implementation.htm#arrays-1">Arrays and short
+arrays</a> section in <a href="implementation.htm">implementation.htm</a>.)
+Except for using a short-array, this type is the same as
+<code>:lisp</code>.
+</li>
+<li id="49">
+<code>:c</code> - The object is
+allocated in static space (via <em>aclmalloc() </em>which is like
+C's <em>malloc</em> except that the data is preserved through a call
+to dumplisp) and a pointer to the space is returned. Thus the object
+is represented by an integer value.  The object is
+<strong>not</strong> automatically freed.  You must do the freeing
+with <a href="operators/ff/free-fobject.htm"><b>free-fobject</b></a>
+</li>
+<li id="50">
+<code>:aligned</code> - This is just like
+<code>:c</code> except that it returns an <em>aligned</em>
+pointer.
+</li>
+</ul>
+
+<hr><hr><h2 id="51"><a name="aligned-pointers-1">7.0 Aligned Pointers</a></h2>
+
+<p id="52">
+Lisp can reference data stored in the Lisp heap or outside the heap in
+what we call <em>C-space</em>.  Objects in C-space are normally
+referenced by their addresses, and on many platforms addresses in
+C-space are so large they must be represented as bignums. In most
+programs the overhead of allocating a bignum to represent a C-space
+object isn't a big factor in the overall speed of the program. In
+those cases where the allocation is a problem we offer the <em>aligned
+</em>pointer to a C-space object.
+</p>
+
+<p id="53">
+If the address of the C-space object is a multiple of four (in 32-bit
+Lisps) or eight (in 64-bit Lisps), then we can divide the address by
+four/eight and its value will be small enough to be represented by a Lisp
+<em>fixnum</em> object. We call such a fixnum an <em>aligned</em>
+pointer. There is no space overhead in allocating a fixnum.
+</p>
+
+<p id="54">
+It's impossible for Lisp to distinguish an aligned pointer from a
+normal C-space pointer. Thus when an aligned pointer is used, the
+programmer must specify that the value is an aligned pointer.
+</p>
+
+<p id="55">
+There are two ways to create an aligned pointer: allocating an object
+with an <code>:aligned</code> allocation type or referencing a
+slot of a foreign object that is declared of type 
+<code>(:aligned some-type)</code>. Next, we'll show 
+these cases in detail.
+</p>
+
+<p id="56">
+Given any foreign type <strong>foo</strong> we can allocate an aligned
+pointer to it with
+</p>
+
+<pre id="57">
+(allocate-fobject 'foo :aligned)
+</pre>
+
+<p id="58">The return value will always be a fixnum.</p>
+
+<p id="59">Suppose we have types point and rect:</p>
+
+<pre id="60">
+(def-foreign-type point
+    (:struct (x :int)
+             (y :int)))
+
+(def-foreign-type rect
+    (:struct  (topleft (* point))
+              (bottomright (:aligned point))))
+</pre>
+
+<p id="61">
+Suppose the variable <strong>rr</strong> contains a pointer to a rect
+object. We'll further assume that the pointer to the rect object was
+passed back to us from a C program and that the pointer is a normal
+<strong>:c </strong>(not aligned) pointer. We can access the x slot
+of the topleft and bottomright fields using the same kind of
+expression:
+</p>
+
+<pre id="62">
+(fslot-value-typed 'rect :c rr :topleft '* :x)
+(fslot-value-typed 'rect :c rr :bottomright '* :x)
+</pre>
+
+<p id="63">
+This shows that you can treat the (* ftype) and (:aligned ftype)
+specifier the same when you're referencing objects through them.
+</p>
+
+<p id="64">
+If you just access the pointer values, you'll see big differences.
+</p>
+
+<pre id="65">
+(fslot-value-typed 'rect :c rr :topleft)
+</pre>
+
+<p id="66">
+is a normal <strong>:c </strong>pointer whereas 
+</p>
+
+<pre id="67">
+(fslot-value-typed 'rect :c rr :bottomright)
+</pre>
+
+<p id="68">
+is an <strong>:aligned</strong> pointer.
+</p>
+
+<p id="69">
+Using aligned pointers requires careful programming.  Here are the
+rules for using aligned pointers:
+</p>
+
+<ol>
+<li id="70">
+If an aligned pointer is used in <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a> or
+<strong>(setf fslot-value-typed)</strong> then the allocation type of
+<strong>:aligned</strong> must be specified.
+</li>
+<li id="71">
+Setting a slot of an object declared to be <code>(:aligned
+some-type)</code> must be done with an aligned pointer. The
+function <a href="operators/ff/address-to-aligned.htm"><b>address-to-aligned</b></a> is useful in
+creating an aligned pointer from a normal <strong>:c</strong>
+pointer. <a href="operators/ff/aligned-to-address.htm"><b>aligned-to-address</b></a> takes an
+aligned pointer and returns the object.
+</li>
+<li id="72">
+When accessing a slot of an object declared as <code>(:aligned
+some-type)</code>, the pointer contained therein must have its low
+two bits zero. Failure to abide by this will likely result in illegal
+lisp object pointers being stored in the heap, which will usually
+cause lisp to exit during the next garbage collection when the illegal
+pointers are discovered.
+</li>
+<li id="73">
+<a href="operators/ff/fslot-address.htm"><b>fslot-address</b></a>
+and <a href="operators/ff/fslot-address-typed.htm"><b>fslot-address-typed</b></a> will always
+return a normal <strong>:c </strong>pointer.
+</li>
+</ol>
+
+<hr><hr><h2 id="74"><a name="bit-fields-1">8.0 Bit Fields</a></h2>
+
+<p id="75">
+Since C compilers use a variety of alignment and packing rules for
+bitfields, the Allegro CL foreign type facility must attempt to
+accommodate all of them. Therefore the basic facility allows bitfields
+to be packed into bytes on arbitrary byte boundaries.
+</p>
+
+<p id="76">
+The <a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a> definition of a
+particular structure must be adapted to the format required by a
+specific compiler.
+</p>
+
+<p id="77">
+For example, consider the following declaration:
+</p>
+
+<pre id="78">
+struct {
+	long a[1];
+	char aa;
+	unsigned int b : 3;
+	unsigned int c : 5;
+	unsigned int d : 3;
+	unsigned int e : 7;
+	unsigned int f : 17;
+	char w;
+	long z;
+};
+</pre>
+
+<p id="79">
+MSVC 2.1 allocates 6 longs with a, aa, b, f, w, and z on long
+boundaries. Gcc 2.7 on Solaris allocates only 5 longs by packing the
+fields b, c, d, and e into the the 3 bytes following aa.
+</p>
+
+<p id="80">
+The following Allegro CL definition would match the layout generated
+by the Microsoft Visual C compiler or the GNU C compiler on
+Solaris. 
+</p>
+
+<pre id="81">
+(def-foreign-type foo
+  (:struct
+     (a (:array :long 1))
+     (aa :char)
+     #+mswindows
+     (:array :char 3) ;; filler needed to match MSVC alignment
+     (b (:bit 3))
+     (c (:bit 5))
+     (d (:bit 3))
+     (e (:bit 7))
+     (:bit 14)       ;; filler to align next field to int
+     (f (:bit 17))
+     (:bit 15)       ;; filler to align next field to int
+     (w :char)
+     (z :long)))
+</pre>
+
+<hr><hr><h2 id="82"><a name="programming-interface-1">9.0 The Programming Interface</a></h2>
+
+<p id="83">
+The foreign type interface includes the following operators:
+</p>
+
+<table border="1" width="92%">
+  <tr>
+    <td width="26%"><strong>Name</strong></td>
+    <td width="24%"><strong>Arguments</strong></td>
+    <td width="50%"><strong>Notes</strong></td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/address-to-aligned.htm"><b>address-to-aligned</b></a></td>
+    <td width="24%">address</td>
+    <td width="50%">Convert the integer pointer to an object in memory to an aligned
+    pointer. See the section
+    <a href="#aligned-pointers-1">Section 7.0 Aligned Pointers</a> for
+    more information.</td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/aligned-to-address.htm"><b>aligned-to-address</b></a></td>
+    <td width="24%">aligned</td>
+    <td width="50%">Convert the aligned pointer (which is a fixnum) to the address of the
+    object into memory to which it points.  See the section
+    <a href="#aligned-pointers-1">Section 7.0 Aligned Pointers</a> for more information.</td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/allocate-fobject.htm"><b>allocate-fobject</b></a></td>
+    <td width="24%"><i>type</i> &optional <i>allocation size</i></td>
+    <td width="50%">Allocate an object of the given type in heap described by the allocation
+    argument. If the <em>size</em> argument is given, then it is the minimum size (in bytes)
+    of the data portion of the object that will be allocated. The valid allocation arguments
+    are shown above. </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/canonical-ftype.htm"><b>canonical-ftype</b></a></td>
+    <td width="24%"><i>type</i></td>
+    <td width="50%"><p id="84">If <em>type</em> is or names a foreign type, 
+    return the symbol or list
+    that describes that type, otherwise return nil.</p>
+    <p id="85">If <em>type</em> is a symbol defined
+    using <a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a>, then the
+    definition form is returned. If <em>type</em> is one of the 
+    primitive foreign type
+    symbols or is a list in the form valid for 
+    <a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a>, 
+    then <em>type</em>
+    itself is returned.  If <em>type</em> is a symbol that 
+    has been given a foreign type
+    definition through <a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a>,
+    then the foreign definition is returned. 
+    Using canonical-ftype allows a quick
+    determination of whether a symbol names a simple type or a 
+    structured type.</p></td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/describe-fobject.htm"><b>describe-fobject</b></a></td>
+    <td width="24%"><i>fobject</i> &optional <i>ftype</i></td>
+    <td width="50%">This function prints a description of the contents 
+    of a foreign object.</td>
+  </tr>
+
+  <tr>
+    <td width="26%"><a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a></td>
+    <td width="24%"><i>name definition</i></td>
+    <td width="50%">defines <i>name</i> to be a user-defined foreign type with the given <i>definition</i>.
+    <i>Name</i> must either be a symbol or a list beginning with a symbol and followed by
+    attributes (see below). <i>Definition</i> is not evaluated and must be a foreign type
+    description.</td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/ensure-foreign-type.htm"><b>ensure-foreign-type</b></a></td>
+    <td width="24%">&key <i>name definition</i></td>
+    <td width="50%">This is the functional equivalent of the macro <a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a>. </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/fobjectp.htm"><b>fobjectp</b></a></td>
+    <td width="24%"><i>obj</i></td>
+    <td width="50%">This function returns <code>t</code> if
+<i>object</i> is appropriate as an argument to foreign
+type accessors.</td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/free-fobject.htm"><b>free-fobject</b></a></td>
+    <td width="24%"><i>obj</i></td>
+    <td width="50%">Free an object that was allocated by <a href="operators/ff/allocate-fobject.htm"><b>allocate-fobject</b></a> with the :allocation
+    of <code>:c</code>. An object should only be freed once.</td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/free-fobject-aligned.htm"><b>free-fobject-aligned</b></a></td>
+    <td width="24%"><i>obj</i></td>
+    <td width="50%">Free an object that was allocated by <a href="operators/ff/allocate-fobject.htm"><b>allocate-fobject</b></a> with the :allocation
+    of <code>:aligned</code>. An object should only be freed once.</td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a></td>
+    <td width="24%"><i>type allocation object</i> &rest <i>slot-names</i></td>
+    <td width="50%">Access a slot from an object. The <i>type</i> must be <ul>
+      <li id="86">a symbol naming a foreign type. </li>
+      <li id="87">a type description using the syntax shown above. </li>
+      <li id="88">a compiled foreign type object </li>
+    </ul>
+    <p id="89">The <i>allocation</i> must be one of <code>:foreign</code>, 
+    <code>:foreign-static-gc</code>, <code>:lisp</code>,
+    <code>:c</code>, <code>:aligned</code> 
+    or <code>nil</code>. If the allocation is 
+    <code>nil</code> then the allocation type will
+    be computed from the <i>object</i> argument. Note that 
+    an allocation type of <code>:foreign</code>
+    or <code>:foreign-static-gc</code> will yield identical 
+    results, so you can specify either.
+    </p></td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/fslot-value.htm"><b>fslot-value</b></a></td>
+    <td width="24%"><i>object</i> &rest <i>slot-names</i></td>
+    <td width="50%">This is like <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a>
+    except it can only be used to access slots from objects with 
+    <code>:foreign</code> or <code>:foreign-static-gc</code>
+    allocations, since these are the only objects that are runtime typed. 
+    This function is a
+    lot more convenient to use than <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a>
+    since the type and allocation needn't be specified, 
+    however it can't at present be open
+    coded. Thus for speed critical parts of the program, 
+    <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a> 
+    should be used. </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/fslot-address-typed.htm"><b>fslot-address-typed</b></a></td>
+    <td width="24%"><i>type allocation object</i> &rest <i>slot-names</i></td>
+    <td width="50%">This is just like <a href="operators/ff/fslot-value-typed.htm"><b>fslot-value-typed</b></a>
+    except that it returns the address of the object rather than the value. Asking for the
+    address of a <code>:lisp</code> allocated object isn't useful since that object can
+    move during a garbage collection and a program can't predict when a garbage collection can
+    occur. </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/fslot-address.htm"><b>fslot-address</b></a></td>
+    <td width="24%"><i>object</i> &rest <i>slot-names</i></td>
+    <td width="50%">This is just like <a href="operators/ff/fslot-address-typed.htm"><b>fslot-address-typed</b></a>
+    except that it works only for <code>:foreign</code> and <code>:foreign-static-gc</code>
+    objects and can't be open coded by the compiler. </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/foreign-type-p.htm"><b>foreign-type-p</b></a></td>
+    <td width="24%"><i>name</i></td>
+    <td width="50%"><i>name</i> must be a symbol. If <i>name</i> is the name of a foreign type
+    defined using this facility, then <b>t</b> is returned. </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/sizeof-fobject.htm"><b>sizeof-fobject</b></a></td>
+    <td width="24%"><i>ftype</i></td>
+    <td width="50%"><i>ftype</i> must be a symbol naming a foreign type. 
+    The size of an object of the foreign type <i>ftype</i>
+    is returned. </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/with-stack-fobject.htm"><b>with-stack-fobject</b></a></td>
+    <td width="24%">(<i>var type</i>) &rest <i>body</i>)</td>
+    <td width="50%">Allocate an object of type <i>type</i> on the 
+    stack and bind it to <i>var</i>
+    while evaluating <i>body</i> </td>
+  </tr>
+  <tr>
+    <td width="26%"><a href="operators/ff/with-stack-fobjects.htm"><b>with-stack-fobjects</b></a></td>
+    <td width="24%"><i>bind-clauses</i> &rest <i>body</i>)</td>
+    <td width="50%">This variant of <a href="operators/ff/with-stack-fobject.htm"><b>with-stack-fobject</b></a> 
+    allows multiple bindings.</td>
+  </tr>
+</table>
+
+<hr><hr><h2 id="90"><a name="passing-foreign-objects-1">10.0 Passing Foreign Objects to Foreign Functions</a></h2>
+
+<p id="91">
+We will take a bottom up approach to describing just what foreign type
+descriptions mean, and how that relates to what a C program would see
+receiving a foreign object. We'll use the <code>:int</code> type
+as an example.
+</p>
+
+<ol>
+  <li id="92">Suppose you want to pass an integer to a foreign function. You do that by just passing
+    the integer value in the foreign function call. You don't need to use the foreign type
+    structures at all. </li>
+  <li id="93">Suppose you execute this: <b>(allocate-fobject :int)</b> What does this do? Does it
+    return an integer? No, it doesn't. As per case 1, we can use lisp integers to represent
+    integers to be passed to foreign code. In order to understand 
+    <strong>(allocate-fobject
+    :int)</strong> you should remember that allocate-fobject always allocates foreign
+    structures (or arrays of foreign structures) and thus you can rewrite this as <b>(allocate-fobject
+    (:struct (nil :int)))</b> [The <code>nil</code> means that this slot has no name.]
+    Thus you can see that <a href="operators/ff/allocate-fobject.htm"><b>allocate-fobject</b></a> is going to create a foreign
+    structure that has one field, an <code>:int</code> valued field. If you pass the
+    result of this <strong>allocate-fobject</strong> to C, what happens is that the lisp
+    foreign-function interface passes a pointer to the start of the
+    <code>:int</code>
+    field. Thus the C program should declare a parameter of type '<strong>int *</strong>' to
+    receive this value.</li>
+  <li id="94">Suppose you execute this: 
+    <strong>(allocate-fobject '(* :int))</strong> From the
+    discussion above we can conclude that this creates a structure 
+    with one unnamed field of
+    type <code>(* :int)</code>. When this object is passed to C, 
+    it should declare the
+    argument as '<code>int **</code>' </li>
+  <li id="95">Suppose you execute this: 
+    <strong>(allocate-fobject '(:array :int 5))</strong> You end
+    up with a structure with 5 <code>:int</code> objects. 
+    If passed to C, you can either
+    declare the arguments to be '<code>int *</code>' or 
+    <code>int[]</code>, depending
+    on the syntax you want to use to reference the objects. </li>
+</ol>
+
+<p id="96">
+Now lets look at what <a href="operators/ff/fslot-value.htm"><b>fslot-value</b></a> operations are
+possible on each of the kinds of objects mentioned above.
+</p>
+
+<ol>
+  <li id="97">a raw integer:
+    lisp integers are constants. Their values can't be changed. </li>
+  <li id="98"><code>(setq x (allocate-fobject :int))</code> 
+    This is a structure with single unnamed slot of type 
+    <code>:int</code>. We might refer
+    to this an an <code>:int</code> box. We can get the value 
+    with <code>(fslot-value x)</code>
+    and set it with <code>(setf (fslot-value x) 4)</code> or, 
+    more verbosely: get the
+    value with <code>(fslot-value-typed :int nil x)</code> 
+    and set it with <code>(setf
+    (fslot-value-typed :int nil x) 4)</code> </li>
+  <li id="99"><code>(setq x (allocate-fobject '(* :int)))</code> 
+    with this we can either get/set the value in the box, or what it 
+    points to. To set the
+    value in the box: <code>(setf (fslot-value x) 1321231)</code> 
+    or <code>(setf
+    (fslot-value-typed '(* :int) nil x) 1321231)</code>. 
+    To set the value at the
+    location pointed to by the value in the box 
+    <code>(setf (fslot-value x '*) 1231)</code>
+    or <code>(setf (fslot-value-typed '(* :int) nil x '*) 1231) </code></li>
+  <li id="100"><code>(setq x (allocate-fobject '(:array :int 5)))</code> 
+    we can get/set each individual object, for example: 
+    <code>(setf (fslot-value x 3) 4444)</code>
+    or <code>(setf (fslot-value-typed '(:array :int 5) nil x 3) 4444)</code></li>
+</ol>
+
+<p id="101">
+Notes: 
+</p>
+
+<ol>
+  <li id="102">A foreign type <code>X</code> 
+   is equivalent to the foreign type <code>(:struct
+    (nil X))</code></li>
+  <li id="103">We never specified an allocation type in the examples above, 
+    and this is because what is
+    written above applies to all allocation types 
+    (<code>:foreign</code>, 
+    <code>:foreign-static-gc</code>,
+    <code>:lisp</code>, <code>:c</code>) </li>
+</ol>
+
+<hr><h2 id="104"><a name="string-rep-2">10.1 String representation</a></h2>
+
+<p id="105">
+Allegro CL has images that represent characters with 16-bits and images
+that represent characters with 8-bits (only one representation is
+available in each image). See <a href="startup.htm#executable-names-1">Allegro CL Executables</a> in
+<a href="startup.htm">startup.htm</a> for a list of executables.
+</p>
+<p id="106">
+If you create a foreign type for a string and store a Lisp string in
+it, what character representation will be used? Consider this definition:
+</p>
+<pre id="107">
+(def-foreign-type foo
+  (:struct (str (:array :char 20))))
+
+(setq obj (allocate-fobject 'foo :foreign-static-gc))
+</pre>
+<p id="108">
+Now store a string in the array:
+</p>
+<pre id="109">
+(setf (fslot-value obj 'str) "abcde")
+</pre>
+<p id="110">
+The system will store the external format of the string (computed by
+<a href="operators/excl/string-to-native.htm"><b>string-to-native</b></a>) into the
+foreign object. In a lisp with 8-bit characters the external format of
+a string is identical to the string itself. In a Lisp with 16-bit
+characters, it will not be.
+</p>
+<p id="111">
+A lisp string can be created from the values in
+the foreign object by
+</p>
+<pre id="112">
+(native-to-string (fslot-value obj 'str))
+</pre>
+<p id="113">
+See <a href="operators/excl/native-to-string.htm"><b>native-to-string</b></a>.
+</p>
+
+
+<hr><h2 id="114"><a name="quiz-2">10.2 A Quiz</a></h2>
+
+<p id="115">
+Now a little quiz to see how well you understand what was done
+above. A lisp function is passed an integer value <code>str</code>
+which is the address of a sequence of characters in memory. How do you
+access the third character in the string? 
+</p>
+
+<table cellspacing="5">
+  <tr>
+    <td>a.</td>
+    <td><code>(fslot-value-typed '(* :char) :c str 2)</code></td>
+  </tr>
+  <tr>
+    <td>b.</td>
+    <td><code>(fslot-value-typed '(:array :char 10) :c str 2)</code> </td>
+  </tr>
+  <tr>
+    <td>c.</td>
+    <td>all of the above</td>
+  </tr>
+  <tr>
+    <td>d.</td>
+    <td>none of the above</td>
+  </tr>
+</table>
+
+<p id="116">
+<strong>The answer to the quiz</strong>: The correct answer is
+<strong>b</strong>. Answer <strong>a</strong> can't be right since the
+type <code>(* :char)</code> is the same as <code>(:struct (nil
+(* :char)))</code> and thus says that <code>str</code> points to
+a structure in memory with one slot, that slot being a pointer to a
+character string. But we know that <code>str</code> itself points
+to the string. Answer <strong>b</strong> is correct. The size of the
+array we specified isn't important (as long as it is greater than the
+index we are using to access the array). 
+</p>
+
+<h3 id="117">Calling C code:</h3>
+
+<p id="118">
+As we've seen above, we take a C type (be it a struct or primitive
+type) and create a Lisp equivalent type. Let <code>X</code> be the
+C type and <code>Y</code> the Lisp type. When we pass
+<code>Y</code> to C, the C code gets not an <code>X</code>
+object but an <strong>X*</strong> object since we always pass a
+pointer to a foreign structure. Likewise when C returns an
+<code>X</code> structure, it doesn't usually return the
+<code>X</code> structure, it returns an <strong>X*</strong>
+value. Lisp then sees that value as an instance of the
+<code>Y</code> foreign type. Thus going to C we add a
+'<code>*</code>' to the type since we pass by reference. Coming
+back from C we remove a '<code>*</code>' from the type since Lisp
+always refers to types by pointers, thus using the
+'<code>*</code>' is superfluous. 
+</p>
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ftype.htm">9.0 version</a></td></tr></table></html>

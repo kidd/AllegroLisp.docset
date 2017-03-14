@@ -1,0 +1,97 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>mask-contents</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mask-contents.htm">9.0 version</a></td></tr></table><h2 id="2">mask-contents</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pixmap
+</i></p>
+
+<p id="4">
+Returns a value that specifies which pixels of a <a href="../../../classes/cg/pixmap.htm"><code>pixmap</code></a> are transparent (if any). The value may
+be set either by calling <a href="../m/mask-contents.htm"><b>(setf mask-contents)</b></a> or by passing the
+<code>:mask-contents</code> initarg to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> when creating the pixmap.
+</p>
+<p id="5">
+<i>pixmap</i> should be a pixmap object.  See <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a> for an overview of pixmap
+functionality.
+</p>
+<p id="6">
+The value returned by <a href="../m/mask-contents.htm"><b>mask-contents</b></a> or passed to <a href="../m/mask-contents.htm"><b>(setf mask-contents)</b></a> is
+<code>nil</code> when the pixmap has no mask.  Otherwise
+it is a list of lists, where each inner list represents a row of the
+pixmap and each member of an inner list represents a pixel in that
+row.  Each row member should be 1 to make the pixmap transparent at
+that pixel, or 0 to make it opaque.  In addition, each transparent
+pixel must have a 0 in the main <a href="../t/texture.htm"><b>texture</b></a> of the pixmap.
+</p>
+<p id="7">
+The number of inner lists reflects the number of rows in the pixmap,
+and the number of members in each inner list (these should all be the
+same) reflect the number of columns. These sizes for the mask should
+match the sizes that were used to specify the main image via the
+<a href="../c/contents.htm"><b>contents</b></a> or <a href="../t/texture.htm"><b>texture</b></a> property.
+</p>
+<p id="8">
+The <a href="../m/mask.htm"><b>mask</b></a> of a pixmap may
+alternately be specified either by passing a texture to <a href="../m/mask.htm"><b>(setf mask)</b></a>, or by calling
+<a href="../g/generate-mask.htm"><b>generate-mask</b></a>.
+</p>
+
+<h3 id="9">
+Example
+</h3>
+<p id="10">
+Here is how Common Graphics makes the
+<code>:default-leaf-with-mask</code> pixmap, which is used by
+leaf nodes of <a href="../../../classes/cg/outline.htm"><code>outline</code></a>
+widgets.
+</p>
+<pre id="11">
+(cache-pixmap
+ (make-instance 'pixmap
+   :name :default-leaf-with-mask
+   :contents
+   '(( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+     ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+     ( 0  0  0 15 15 15 15 15  0  0  0  0  0  0  0  0)
+     ( 0  0  0 15 15 15 15 15  0 15  0  0  0  0  0  0)
+     ( 0  0  0 15 15 15 15 15  0 15 15  0  0  0  0  0)
+     ( 0  0  0 15 15 15 15 15  0 15 15 15  0  0  0  0)
+     ( 0  0  0 15 15 15 15 15  0  0  0  0  0  0  0  0)
+     ( 0  0  0 15 15 15 15 15 15 15 15 15 15  0  0  0)
+     ( 0  0  0 15 15 15 15 15 15 15 15 15 15  0  0  0)
+     ( 0  0  0 15 15 15 15 15 15 15 15 15 15  0  0  0)
+     ( 0  0  0 15 15 15 15 15 15 15 15 15 15  0  0  0)
+     ( 0  0  0 15 15 15 15 15 15 15 15 15 15  0  0  0)
+     ( 0  0  0 15 15 15 15 15 15 15 15 15 15  0  0  0)
+     ( 0  0  0 15 15 15 15 15 15 15 15 15 15  0  0  0)
+     ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0)
+     ( 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0))
+   :mask-contents
+   '((1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)
+     (1 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1)
+     (1 1 0 0 0 0 0 0 0 0 1 1 1 1 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 1 1 1 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 1 1 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 1 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1)
+     (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1))))
+</pre>
+<p id="12">
+<a href="../m/mask-contents.htm"><b>mask-contents</b></a> is
+a property of the <a href="../../../classes/cg/pixmap.htm"><code>pixmap</code></a> and <a href="../../../classes/cg/texture.htm"><code>texture</code></a> classes.
+</p>
+
+
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mask-contents.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,56 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>send-request</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dde</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dde/send-request.htm">9.0 version</a></td></tr></table><h2 id="2">send-request</h2>
+
+<p id="3"><b>Arguments: </b><i>
+client-port item </i>&amp;key <i>link</i><i>
+ timeout
+</i></p>
+
+<p id="4">
+Sends a DDE "Request" or "Advice" message to retrieve information from
+a DDE server for a particular item.
+</p>
+<p id="5">
+If link is :cold (which is the default), then the values returned by
+the DDE server application are synchronously returned from the call to
+send-request. If link is :warm or :hot, then send-request does not
+return an answer from the DDE server application, but instead starts
+an "advice" link with the server; whenever the server's value for the
+requested item has changed, the server asynchronously sends a message
+to Allegro CL, and the <a href="receive-advice.htm"><b>receive-advice</b></a> method for this
+DDE port is then called with the values from the server. If link is
+:stop, then any advice link that was previously started for this item
+is stopped.
+</p>
+<p id="6">
+When unsuccessful, send-request returns <code>nil</code>. When successful, it returns a value from the DDE
+server for a :cold link, or t for a :warm, :hot, or :stop
+link. <code>nil</code> normally indicates that the DDE
+server does not support the particular request that was made.
+</p>
+<p id="7">
+The raw data buffer returned by the DDE server is first passed to the
+<a href="convert-returned-dde-buffer.htm"><b>convert-returned-dde-buffer</b></a> method
+for the port. That method should return a single value (perhaps
+constructing a list from multiple values that the server has encoded
+into the buffer), which is then either returned from send-request for
+a :cold link or passed to the port's <a href="receive-advice.htm"><b>receive-advice</b></a> method for a :warm
+or :hot link. Refer to <a href="convert-returned-dde-buffer.htm"><b>convert-returned-dde-buffer</b></a> and
+<a href="convert-returned-dde-string.htm"><b>convert-returned-dde-string</b></a>
+for more information on converting the values from the server. If the
+request is unsuccessful, as when the server doesn't handle the
+requested item, then <code>nil</code> is returned.
+</p>
+<p id="8">
+Many applications that act as DDE servers implement a topic called
+system and an item called sysitems, and sometimes an item called
+topics, to which you can send a request to find out about additional
+topics.
+</p>
+<p id="9">
+See <a href="../../dde.htm">dde.htm</a> for information about
+DDE support.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dde/send-request.htm">9.0 version</a></td></tr></table></body></html>

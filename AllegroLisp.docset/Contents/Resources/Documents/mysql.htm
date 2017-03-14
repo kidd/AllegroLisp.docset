@@ -1,0 +1,924 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Allegro MySQL Direct Connect Library</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/mysql.htm">9.0 version</a></td></tr></table><h1 id="2">Allegro MySQL Direct Connect Library</h1><p id="3">This document contains the following sections:</p><a href="#mysql-intro-1">1.0 Allegro MySQL introduction</a><br><a href="#mysql-basic-1">2.0 The Basic Operation of Allegro MySQL</a><br>&nbsp;&nbsp;&nbsp;<a href="#mysql-errors-2">2.1 MySQL Errors</a><br><a href="#examples-1">3.0 MySQL Examples</a><br><a href="#conversions-1">4.0 Conversions</a><br><a href="#mysql-stored-proc-1">5.0 MySQL and stored procedures</a><br><a href="#mysql-mp-1">6.0 MySQL and multiprocessing</a><br><a href="#mysql-api-1">7.0 MySQL programming interface</a><br><hr><hr><h2 id="4"><a name="mysql-intro-1">1.0 Allegro MySQL introduction</a></h2>
+
+
+
+
+<p id="5">
+MySQL is a powerful, efficient, production ready open-source database
+that runs on all popular platforms. There are language bindings for
+most popular languages. This document describes the bindings for the
+Allegro Common Lisp language.
+</p>
+
+<p id="6">
+MySQL was written by the founders of the
+MySQL AB company. It supports and enhances MySQL and owns the code.
+They release an open source version with restrictions and will license
+you to use MySQL for commercial purposes. See <a href="http://www.mysql.com">http://www.mysql.com</a>.
+</p>
+<p id="7">
+There exist ODBC drivers for MySQL.  ODBC offers a method of
+programmatically accessing a database that's somewhat portable
+across very different databases.
+</p>
+<p id="8">
+Allegro CL users can access MySQL through the Allegro ODBC
+library. With this being the case one might ask why 
+would anyone want to use the library we describe here?  We'll
+describe the pros and cons of ODBC first:
+</p>
+
+<h3 id="9">
+Using ODBC:
+</h3>
+
+<ol>
+<li id="10">
+ODBC offers a portable framework for accessing varying databases.
+Once connected to a database you direct the database via
+SQL commands in the database's native format. Thus if you want
+portability between database vendors you still have to be careful 
+not to use SQL commands that are not portable.
+</li>
+<li id="11">
+ODBC imposes its own model of what a database is and this
+may not be a good match to a particular database. Thus you may
+lose efficiency when interacting with certain databases.
+</li>
+<li id="12">
+Since ODBC was started by Microsoft, ODBC is available
+for free on Windows and well supported by database vendors.
+On Unix, ODBC drivers are generally not database vendor written, 
+can be expensive (although one could use ODBC with MySQL using 
+totally free libraries.)
+</li>
+<li id="13">
+Using ODBC requires using
+ODBC driver manager libraries which are usually written in C.
+When a command is sent to a database the C library sits
+and waits for a response to be returned. While it is waiting
+Lisp is blocked from running.
+</li>
+</ol>
+
+<h3 id="14">
+Using Allegro MySQL Direct Connect:
+</h3>
+
+<ol>
+<li id="15">
+This library connects directly to the MySQL server and 
+speaks the same protocol used by all clients in all languages
+that work with the MySQL server.  Therefore there is no
+more efficient way to programmatically access a MySQL database.
+</li>
+<li id="16">
+When data is returned by the MySQL server Lisp has access
+to the network buffers in which the data arrives.  Lisp can convert
+the data into the desired final form immediately without
+allocating space for intermediate forms of the data needed
+in a multi-level MySQL interface.
+</li>
+<li id="17">
+Each database has important and unique features and MySQL
+is no exception.  MySQL has the notion of an autoincrement column
+that's ideal for automatically creating a unique number to
+represent a row in a table. Inserting a new row and 
+retrieving the unique id assigned is a complex process using ODBC.
+With this library however the response to the insert command
+includes the unique id value, thus it's trivial to use this feature.
+</li>
+<li id="18">
+Because normal Lisp socket I/O is used to communicate with 
+the MySQL server, only one Lisp thread will block
+while awaiting a response from the server.
+</li>
+<li id="19">
+The downside of using this library is that the code
+will only work with MySQL.  However, the code looks very 
+similar to Allegro ODBC so if there were a need to port 
+to Allegro ODBC it wouldn't be too difficult (depending on how
+many unique features of MySQL (like autoincrement columns) were used.
+</li>
+</ol>
+
+<p id="20">
+Symbols implementing the Allegro MySQL facility are in the
+<code>dbi.mysql</code> package. The Allegro MySQL module is the
+<code>:mysql</code> module and can be loaded by evaluating
+<code>(require :mysql)</code>. 
+</p>
+
+<hr><hr><h2 id="21"><a name="mysql-basic-1">2.0 The Basic Operation of Allegro MySQL</a></h2>
+
+<p id="22">
+To access a MySQL database you call <a href="operators/mysql/connect.htm"><b>connect</b></a> to connect to the database.  Then
+you repeatedly call <a href="operators/mysql/sql.htm"><b>sql</b></a>
+to send commands to the database and get results back.  Finally you
+call <a href="operators/mysql/disconnect.htm"><b>disconnect</b></a> to
+disconnect from the database.
+</p>
+<p id="23">
+You can call <a href="operators/mysql/connect.htm"><b>connect</b></a>
+more than once to establish multiple simultaneous connections to the
+database. This is useful, for example, if you want to create a pool
+of ready-to-use database connections for an AllegroServe web server
+application.
+</p>
+<p id="24">
+<a href="operators/mysql/connect.htm"><b>connect</b></a> has an
+<i>external-format</i> keyword argument which allows you
+to specify the external format of the connection.
+</p>
+<p id="25">
+When data is returned it is converted to the appropriate format.
+See <a href="#conversions-1">Section 4.0 Conversions</a> below for details.
+</p>
+
+<p id="26">
+A single MySQL connection can only handle one query at a time (where
+is a query begins when an sql command is executed and ends when the
+last result row is returned). It is oaky to create more than one
+connection to a mysql database and run a query in each connection
+simultaneously. In this case you must be careful to pass the
+connection you want to use as the value of the <b>:db</b> keyword
+argument to the mysql functions.
+</p>
+
+<hr><h2 id="27"><a name="mysql-errors-2">2.1 MySQL Errors</a></h2>
+
+<p id="28">
+MySQL errors have condition <a href="classes/mysql/mysql-error.htm"><code>mysql-error</code></a> or, when appropriate,
+the <a href="classes/mysql/mysql-protocol-error.htm"><code>mysql-protocol-error</code></a>, a subclass
+of <a href="classes/mysql/mysql-error.htm"><code>mysql-error</code></a>.
+</p>
+
+
+
+<hr><hr><h2 id="29"><a name="examples-1">3.0 MySQL Examples</a></h2>
+
+<p id="30">
+Examples of connecting to the database:
+</p>
+
+<pre id="31">
+; if the server is on the same machine and is setup to 
+; accept anonymous connections then this is 
+; the simplest way to connect:
+
+cl-user(23): (use-package :dbi.mysql)
+t
+cl-user(24): (connect)
+#&lt;mysql connected to localhost/3306 @ #x7199102a&gt;
+cl-user(25): 
+
+
+; to connect and set the current database:
+cl-user(25): (connect :database &quot;test&quot;)
+#&lt;mysql connected to localhost/3306 @ #x7199454a&gt;
+cl-user(26): 
+
+
+; to connect to MySQL running on machine tiger as user &quot;jkf&quot;
+; with password &quot;mypass&quot; and to set the active database to &quot;test&quot;
+cl-user(26): (connect :host &quot;tiger&quot; :user &quot;jkf&quot; 
+                      :password &quot;mypass&quot; :database &quot;test&quot;)
+#&lt;mysql connected to tiger.franz.com/3306 @ #x71997bf2&gt;
+cl-user(27): 
+
+; to connect via the unix-domain socket
+cl-user(27): (connect :file &quot;/var/lib/mysql/mysql.sock&quot;)
+#&lt;mysql connected to &quot;/var/lib/mysql/mysql.sock&quot; @ #x7199e102&gt;
+cl-user(28): 
+</pre>
+
+<h3 id="32">MySQL interface examples</h3>
+
+<p id="33">
+Here we see how to connect to the MySQL server, tell it we'll be using
+the database "test", and then create a table in that database
+and populate it.   Then we retrieve all rows from the table.
+</p>
+<p id="34">
+Note that we count on the fact that the <a href="operators/mysql/connect.htm"><b>connect</b></a> function not only returns the
+connection to the database but also sets the <a href="variables/mysql/s_mysql_s.htm"><code>*mysql*</code></a> variable to the value of that
+connection. The value of <a href="variables/mysql/s_mysql_s.htm"><code>*mysql*</code></a> is used as the default value for
+the <i>db</i> keyword argument, thus this last
+connection is used for subsequent <a href="operators/mysql/sql.htm"><b>sql</b></a> and <a href="operators/mysql/disconnect.htm"><b>disconnect</b></a> functions.  This makes it easy
+to work interactively with the database
+</p>
+
+<pre id="35">
+cl-user(13): (connect :user &quot;jkf&quot; :password &quot;jkf&quot; :database &quot;test&quot;)
+#&lt;mysql connected to localhost/3306 @ #x71f4d082&gt;
+cl-user(14): (sql &quot;create table sample(i int, j int)&quot;)
+nil
+cl-user(17): (sql &quot;insert into sample values(1,2)&quot;)
+nil
+cl-user(18): (sql &quot;insert into sample values(3,4)&quot;)
+nil
+cl-user(19): (sql &quot;select * from sample&quot;)
+((1 2) (3 4))
+(&quot;i&quot; &quot;j&quot;)
+cl-user(20): (disconnect)
+nil
+cl-user(21): 
+</pre>
+
+<p id="36">
+In this example we store the value of the connection in the variable
+<i>db</i> and use it in subsequent <a href="operators/mysql/sql.htm"><b>sql</b></a> and <a href="operators/mysql/disconnect.htm"><b>disconnect</b></a> calls. This is the preferred
+style when writing programs that use this interface. In a program it is
+best to be explicit about the database you're accessing and not depend
+on a global variable that some other component of your program may
+modify.
+</p>
+<p id="37">
+In this example we show how to build an sql statement at runtime using
+the <a href="../ansicl/dictentr/format.htm"><b>format</b></a> function. We
+populate the database with 100 rows using a dotimes statement.
+</p>
+
+<pre id="38">
+cl-user(21): (setq db (connect :user &quot;jkf&quot; :password &quot;jkf&quot; :database &quot;test&quot;))
+#&lt;mysql connected to localhost/3306 @ #x71f50d72&gt;
+cl-user(22): (sql &quot;create table samp2(val int, square int)&quot; :db db)
+nil
+cl-user(23): (dotimes (i 100) (sql (format nil &quot;insert into samp2 values(~d,~d)&quot; i (* i i)) :db db))
+nil
+cl-user(24): (sql &quot;select * from samp2&quot; :db db)
+((0 0) (1 1) (2 4) (3 9) (4 16) (5 25) (6 36) (7 49) (8 64) (9 81) ...)
+(&quot;val&quot; &quot;square&quot;)
+cl-user(25): (disconnect :db db)
+nil
+cl-user(26): 
+</pre>
+
+<p id="39">
+MySQL's version of the sql language supports a number of extensions
+which allow you to get information about the database itself.
+This information is returned as rows of data just like 
+the data in the tables you create.  Here is an example of
+the use of these sql extensions to find out the names of all
+the tables in the database and to find out the scheme
+of a particular table
+</p>
+
+<pre id="40">
+cl-user(26): (connect :user &quot;jkf&quot; :password &quot;jkf&quot; :database &quot;test&quot;)
+#&lt;mysql connected to localhost/3306 @ #x71f5725a&gt;
+cl-user(27): (sql &quot;show tables&quot;)
+((&quot;bar&quot;) (&quot;bblob&quot;) (&quot;bigtab&quot;) (&quot;foo&quot;) (&quot;samp2&quot;) (&quot;sample&quot;) (&quot;snart&quot;) (&quot;snob&quot;)
+ (&quot;testetab&quot;) (&quot;testtab&quot;) ...)
+(&quot;Tables_in_test&quot;)
+cl-user(28): (sql &quot;describe samp2&quot;)
+((&quot;val&quot; &quot;int(11)&quot; &quot;YES&quot; &quot;&quot; #:null &quot;&quot;) (&quot;square&quot; &quot;int(11)&quot; &quot;YES&quot; &quot;&quot; #:null &quot;&quot;))
+(&quot;Field&quot; &quot;Type&quot; &quot;Null&quot; &quot;Key&quot; &quot;Default&quot; &quot;Extra&quot;)
+cl-user(29): (disconnect)
+nil
+cl-user(30): 
+</pre>
+
+<p id="41">
+MySQL can store large binary objects (blobs) as well as numbers and
+strings.  Here we see how to store a five element array of type
+(unsigned-byte 8) in the database.  This is done by converting the
+array into a string with <a href="operators/mysql/mysql-escape-sequence.htm"><b>mysql-escape-sequence</b></a> and then storing it
+like any other string.  Note that <a href="operators/mysql/mysql-escape-sequence.htm"><b>mysql-escape-sequence</b></a> must be used to
+escape strings as well as arrays of (unsigned-byte 8).  This is
+because we are generating an sql statement at runtime and it is
+important that the MySQL parser be able to parse that sql statement.
+Certain characters appearing unescaped in the string would confuse the
+sql parser.
+</p>
+
+<pre id="42">
+cl-user(30): (connect :user &quot;jkf&quot; :password &quot;jkf&quot; :database &quot;test&quot;)
+#&lt;mysql connected to localhost/3306 @ #x71f5a4da&gt;
+cl-user(31): (setq val 
+                   (make-array 5 
+                               :element-type '(unsigned-byte 8) 
+                               :initial-contents '(10 20 30 40 50)))
+#(10 20 30 40 50)
+cl-user(32): (sql &quot;create table btest(i int, bl blob)&quot;)
+nil
+cl-user(33): (sql (format nil &quot;insert into btest values(1,'~a')&quot; 
+                    (mysql-escape-sequence val)))
+nil
+
+;; even though we declared the type of the field to be blob
+;; the default behavior of the sql statement is to return
+;; the value as a string, and in this case the array data 
+;; returned as a string results in gibberish:
+cl-user(34): (sql &quot;select * from btest&quot;)
+((1 &quot;
+^T^^(2&quot;))
+(&quot;i&quot; &quot;bl&quot;)
+
+;; if we tell the sql function to return the field as a blob
+;; then we see the correct array value returned:
+cl-user(35): (sql &quot;select * from btest&quot; :blob t)
+((1 #(10 20 30 40 50)))
+(&quot;i&quot; &quot;bl&quot;)
+cl-user(36): (disconnect)
+nil
+cl-user(37): 
+</pre>
+
+<p id="43">
+Often you would like for a row in one table to reference
+a row in another table. This is done using keys.
+If you want a row in table A to point to a row in table B
+then in table B you designate one column as a key column.
+No two rows in a table have the same value for a key 
+column, thus a key column value can be used to find
+a distinct row.  Thus in table B one column is designated
+a key column and in a column in table A you store a
+key column value from table B.  The value in column
+A is called a 'foreign key' since it's a key value
+from some other table.
+</p>
+<p id="44">
+One problem you face then is how do you create a unique key value for
+each row in a table?  MySQL makes this very easy.  You designate a row
+to be auto_increment and every time you add a row MySQL will
+automatically give that column a value one higher that the last value
+it stored in that column.  You can find out what value was stored in
+the auto_increment column by using the <a href="operators/mysql/mysql-insert-id.htm"><b>mysql-insert-id</b></a> function right after the
+row was inserted.  This saves you the trouble of doing a query to find
+out the key value for the last inserted row.
+</p>
+<p id="45">
+Here's an example of using an auto_increment column.  We're
+setting up a contest between pairs of players.  We want
+to record the players' first and last names and then
+record the pairings between the players.
+</p>
+
+<p id="46">
+We create a table <i>usertab</i> to hold the players names and we add
+a key column <i>usernum</i> to give each player a unique number. And we
+create a table <i>pairs</i> to record the matchups.
+</p>
+
+<pre id="47">
+(defun setup-tables (db)
+  ;;   call this once to setup the tables
+  (sql &quot;create table usertab(usernum int auto_increment primary key, 
+                               lastname varchar(30), 
+                               firstname varchar(30))&quot;
+       :db db)
+  (sql &quot;create table pairs(first int, second int)&quot;
+       :db db))
+
+
+(defun add-pair (db first second)
+  ;; call this for each pair of players.
+  ;; first and second are player names.  A player name
+  ;; is  list  (&quot;lastname&quot; &quot;firstname&quot;)
+  (sql (format nil &quot;insert into pairs values(~d,~d)&quot;
+	       (get-user-id db first)
+	       (get-user-id db second))
+       :db db))
+
+(defun get-user-id (db name)
+  ;; retrieve the user identifier for the given name
+  ;; if the user is not known, add the user to the database.
+  (let ((lastname (car name))
+	(firstname (cadr name)))
+    
+    ;; since we are going to check first for the user
+    ;; and if not found, add him , we want to make sure
+    ;; that no other process does the same thing and
+    ;; he gets added twice.  Thus we lock the table
+    ;; while we do this two step process.
+    (sql &quot;lock tables usertab write&quot;)
+    (with-locked-tables (db)
+
+      ;; check first to see if the user is known.  Note
+      ;; we use mysql-escape-sequence to escape characters
+      ;; in the names that could confuse the sql parser.
+      (let ((uid (caar 
+		  (sql 
+		   (format nil
+			   &quot;select usernum from usertab 
+                                where lastname = '~a' and
+                                      firstname = '~a'&quot;
+			   (mysql-escape-sequence lastname)
+			   (mysql-escape-sequence firstname))
+		   :db db))))
+	(if* uid
+	   then (return-from get-user-id uid))
+	  
+        ;; user is not known, add him.
+	(sql (format 
+	      nil
+	      &quot;insert into usertab(lastname, firstname) values('~a','~a')&quot;
+	      (mysql-escape-sequence lastname)
+	      (mysql-escape-sequence firstname))
+	     
+	     :db db)
+	  
+        ;; return the value of usernum, the auto_increment column
+	(mysql-insert-id db)))))
+
+;;; here it is in action
+
+cl-user(54): (setq db (connect :user &quot;jkf&quot; :password &quot;jkf&quot; :database &quot;test&quot;))
+#&lt;mysql connected to localhost/3306 @ #x71f90552&gt;
+cl-user(55): (setup-tables db)
+nil
+cl-user(58): (add-pair db '(&quot;franklin&quot; &quot;joe&quot;)   '(&quot;douglas&quot; &quot;mike&quot;))
+nil
+cl-user(59): (add-pair db '(&quot;namath&quot; &quot;joe&quot;) '(&quot;montana&quot; &quot;joe&quot;))
+nil
+
+;; here we refer to users we've seen before:
+
+cl-user(60): (add-pair db '(&quot;franklin&quot; &quot;joe&quot;) '(&quot;montana&quot; &quot;joe&quot;))
+nil
+
+;; we see that four users have been added:
+cl-user(61): (sql &quot;select * from usertab&quot; :db db)
+((1 &quot;franklin&quot; &quot;joe&quot;) (2 &quot;douglas&quot; &quot;mike&quot;) (3 &quot;namath&quot; &quot;joe&quot;)
+ (4 &quot;montana&quot; &quot;joe&quot;))
+(&quot;usernum&quot; &quot;lastname&quot; &quot;firstname&quot;)
+
+;; and here are the matchups
+
+cl-user(62): (sql &quot;select * from pairs&quot; :db db)
+((1 2) (3 4) (1 4))
+(&quot;first&quot; &quot;second&quot;)
+cl-user(63): (disconnect :db db)
+nil
+cl-user(64): 
+</pre>
+
+<p id="48">
+The macro <a href="operators/mysql/with-db-rows.htm"><b>with-db-rows</b></a>
+creates sql statements based on input, executes the statements, and
+processes the results. The description of <a href="operators/mysql/with-db-rows.htm"><b>with-db-rows</b></a> has numerous examples.
+</p>
+
+<hr><hr><h2 id="49"><a name="conversions-1">4.0 Conversions</a></h2>
+
+<p id="50">
+All data returned by the MySQL server is in the form of characters.
+Even numbers like 385 are returned as a sequence of the characters
+#\3, #\8 and #\5. The application retrieving the data may want the
+data returned as a Lisp string of characters or it may want a more
+appropriate Lisp data object returned (e.g. the Lisp integer 385 is
+probably more useful to the application than the string "385").
+</p>
+<p id="51">
+The <a href="operators/mysql/sql.htm"><b>sql</b></a> and <a href="operators/mysql/sql-start.htm"><b>sql-start</b></a> functions send an sql
+command to the server. If this is a command that returns values the
+server will be responding with a table (that is a sequence of rows
+with each row comprising the same columns of data).  Before the data
+is returned descriptions of the columns are returned. This description
+includes the column name and the type of data found in the
+column. Based on column type data, the <a href="operators/mysql/sql.htm"><b>sql</b></a> function computes the conversion it
+will do for each column. All of the column information is stored in a
+list of mysql-field objects stored in the MySQL object that holds the
+current database connection (and accessible with <a href="operators/mysql/mysql-fields.htm"><b>mysql-fields</b></a>). After the conversion is
+computed the rows are retrieved and the directed conversion done
+(unless overridden by arguments to the <a href="operators/mysql/sql.htm"><b>sql</b></a> function).
+</p>
+<p id="52">
+If you use the <a href="operators/mysql/sql.htm"><b>sql</b></a>
+function you can only override the conversion process using the
+keyword arguments: <i>convert</i>,
+<i>blob</i> and <i>float</i>. If you call
+<a href="operators/mysql/sql-start.htm"><b>sql-start</b></a> instead then
+when <a href="operators/mysql/sql-start.htm"><b>sql-start</b></a> returns
+the query has been sent to the database and the column information
+returned. You can examine the column information and change the
+conversion chosen by <a href="operators/mysql/sql-start.htm"><b>sql-start</b></a>. Then you call <a href="operators/mysql/get-next-row.htm"><b>get-next-row</b></a> to retrieve each
+row of data until it returns <code>nil</code> which means
+no more rows are available.
+</p>
+<p id="53">
+At the end of this section, we describe the datatypes that might be
+converted and what they will be converted to. Briefly, integers,
+floats, and text or blobs are dataypes suitable for conversion. 
+</p>
+<p id="54">
+The application can tell the MySQL interface whether it should convert
+the data returned by the MySQL server. The
+<i>convert</i> argument to <a href="operators/mysql/sql.htm"><b>sql</b></a> and <a href="operators/mysql/sql-start.htm"><b>sql-start</b></a> serves this purpose. The
+<i>convert</i> argument is a list of values one for each
+column to be returned. If the value for a column is true then the
+column data is converted to the appropriate type. If the value is
+<code>nil</code> then the data is returned as a string.
+</p>
+<p id="55">
+If there are more columns then elements in the list, no conversion is
+done on the extra columns (as if the elements were <code>nil</code>). 
+</p>
+<p id="56">
+<i>convert</i> can also be a symbol, in which case it is
+treated as if it were a list with as many elements as columns, each
+entry being the symbol. So if <i>convert</i> is <code>t</code>, it is treated as the list <code>(t t t t
+... t)</code>, and if <i>convert</i> is
+<code>:blob</code>, it is treated as the list <code>(:blob
+:blob :blob ... :blob)</code>.
+</p>
+<p id="57">
+The typical values are <code>nil</code> (meaning convert
+nothing) or <code>t</code>. Another meaningful value is
+<code>:blob</code>. (Any other non-<code>nil</code>
+non cons value is equivalent to <code>t</code>.) In the
+remaining discussion, we assume <i>convert</i> is a
+list.
+</p>
+<p id="58">
+The default value for the <i>convert</i> argument is
+<code>t</code>.
+</p>
+
+<p id="59">
+The MySQL server returns the type of each column with the result set
+and it is this type that determines which conversions are possible on
+this data. 
+</p>
+
+<p id="60">
+Because there are several types of columns suitable for conversion, it
+is somewhat complicated to make sure that each column is converted as
+you wish. (You may want integers converted but floats not, for
+example, and you probably do want blobs converted but text not, as the
+default string format is suitable for text but not for blobs.)
+</p>
+<p id="61">
+The <i>blob</i> and <i>float</i> arguments
+to <a href="operators/mysql/sql.htm"><b>sql</b></a> and <a href="operators/mysql/sql-start.htm"><b>sql-start</b></a> provide finer control
+over conversion, as described under the headings below.
+</p>
+<p id="62">
+Integer data in a column is converted when the corresponding element
+of the <i>convert</i> list is non-<code>nil</code>.
+</p>
+
+<h4 id="63">Conversion of float columns</h4>
+
+<p id="64">
+MySQL supports single and double float values. The default conversion
+function for these column types will return an integer if the database
+returns an integer value (e.g. "385") and otherwise will return
+either a single-float or double-float value if the database returns a
+value with a fractional part (e.g. "385.44").
+</p>
+<p id="65">
+If the <i>float</i> argument is <code>nil</code>, no float columns are converted regardless of the
+value of <i>convert</i>. If <i>float</i>
+is non-<code>nil</code>, a float column is converted if
+the element of the <i>convert</i> list corresponding to
+the column is non-<code>nil</code>.
+</p>
+
+<p id="66">
+When the conversion is done to a float, as must be done for a number
+like "-123.12", the type of float (single or double) created is
+determined as follows:
+</p>
+<ol>
+<li id="67">
+If the column whose value is being converted has type
+<code>float</code> then the resulting value is a Lisp integer or
+a single-float value.
+</li>
+<li id="68">
+If the column whose value is being converted has type
+<code>double</code> then the resulting value is a Lisp integer
+or a double-float value.
+</li>
+<li id="69">
+If the column whose value is being converted has type
+<code>decimal</code> then the resulting value is a Lisp integer
+or a double-float value. A decimal value is a fixed point number
+(e.g. decimal(13,2) is a 13 digit number with two digits to the right
+of the decimal point.)
+</li>
+</ol>
+
+<h4 id="70">Conversion of text or blob columns</h4>
+
+<p id="71">
+MySQL supports both text and blob valued columns. The only difference
+between text and blob in MySQL is that text values are compared case
+insensitively and blob values are compared case sensitively. When a
+text or blob valued column is retrieved the MySQL interface is told
+only that the column is "text or blob", but not which one it is.
+</p>
+<p id="72">
+If the value is a text value then the application would typically like
+a Lisp string returned.  If the value is a blob (e.g. a jpeg picture)
+then the application most likely wants an array of bytes (an
+(unsigned-byte 8) array in Lisp terms) returned. 
+</p>
+<p id="73">
+The <i>blob</i> argument combined with
+<i>convert</i> determines how "text or blob" columns are
+converted. If <i>blob</i> is true, then if the element
+in the <i>convert</i> list corresponding to a "text or
+blob" column is also true, the string is converted to an array of
+(unsigned-byte 8) values. 
+</p>
+<p id="74">
+If <i>blob</i> is <code>nil</code>, then
+conversion of a text or blob column is still controlled by the value
+of the corresponding element in the <i>convert</i> list:
+if that value is <code>:blob</code>, conversion is done. If that
+value is <code>nil</code> or any non-<code>nil</code> value other than <code>:blob</code>, no
+conversion is done and contents are returned as a Lisp string.
+</p>
+<p id="75">
+The <i>blob</i> argument
+defaults to <code>nil</code>.
+</p>
+<p id="76">
+Thus <i>convert</i> and <i>blob</i>
+together provide extra control for columns whose data is
+text or blobs. There are three cases:
+</p>
+<ol>
+<li id="77">
+All text or blob columns contain text.
+</li>
+<li id="78">
+All text or blob columns contain blobs.
+</li>
+<li id="79">
+Some text or blob columns contain text and some contain blobs.
+</li>
+</ol>
+<p id="80">
+In the first case, no conversion should be done (because all text or
+blob columns are text and text is already in the correct format). Make
+<i>blob</i> &nbsp;<code>nil</code>
+make sure none of the relevant elements of the
+<i>convert</i> list has value <code>:blob</code>.
+</p>
+<p id="81">
+In the second, assuming you want conversion at all, all text or blob
+columns should be converted to (unsigned-byte 8) arrays (because all
+text or blob columns are blobs and blobs need conversion). Make
+<i>blob</i> &nbsp;<code>t</code>
+and control conversion using the <i>convert</i>
+argument.
+</p>
+<p id="82">
+In the third case, assuming you want conversion at all, some columns
+should be converted and some not converted. If most are blobs, make
+<i>blob</i> &nbsp;<code>t</code>
+and make the value of <i>convert</i> a list with <code>nil</code> for each text column. If most columns are text,
+make <i>blob</i> &nbsp;<code>nil</code> and make the value of
+<i>convert</i> a list with <code>:blob</code>
+for each blob column.
+</p>
+
+<p id="83">
+The following table summarizes what we have just said, showing whether
+or not conversion is done, given the value of
+<i>blob</i> and the value of the
+<i>convert</i> argument for the column in
+question. (Again, if <i>convert</i> is a symbol, it is
+interpreted to be a list all of whose elements are that symbol.)
+</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><strong>Value of <i>convert</i> for
+    the column</strong></td> 
+    <td WIDTH="25%" VALIGN="TOP"><strong>Value of <i>blob</i></strong></td> 
+    <td WIDTH="43%" VALIGN="TOP"><strong>Conversion
+    performed?</strong></td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="43%" VALIGN="TOP">No</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="43%" VALIGN="TOP">No</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="43%" VALIGN="TOP">No</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="43%" VALIGN="TOP">Yes</td>
+  </tr>
+
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:blob</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><code>nil</code></td>
+    <td WIDTH="43%" VALIGN="TOP">Yes</td>
+  </tr>
+  <tr>
+    <td WIDTH="31%" VALIGN="TOP"><code>:blob</code></td>
+    <td WIDTH="25%" VALIGN="TOP"><code>t</code></td>
+    <td WIDTH="43%" VALIGN="TOP">Yes</td>
+  </tr>
+</table>
+
+
+
+<h3 id="84">Datatypes and conversions</h3>
+
+<p id="85">
+These datatypes are converted to Lisp integers:
+</p>
+<ul>
+<li id="86">
+all integer based datatypes (tiny, short, long, etc).
+</li>
+<li id="87">
+set
+</li>
+<li id="88">
+enum
+</li>
+</ul>
+
+<p id="89">
+These datatypes are converted to Lisp integers or single-float or 
+double-float:
+</p>
+<ul>
+<li id="90">
+float
+</li>
+<li id="91">
+double
+</li>
+<li id="92">
+decimal
+</li>
+</ul>
+
+<p id="93">
+These datatypes are converted to arrays of (unsigned-byte 8) if the
+<i>blob</i> argument is true or
+<i>convert</i> is a list whose value corresponding to a
+column is <code>:blob</code>:
+</p>
+<ul>
+<li id="94">
+all text datatypes
+</li>
+<li id="95">
+all blob datatypes
+</li>
+</ul>
+
+<p id="96">
+All other datatypes are not converted, they are returned as Lisp strings.
+</p>
+
+
+<hr><hr><h2 id="97"><a name="mysql-stored-proc-1">5.0 MySQL and stored procedures</a></h2>
+
+<p id="98">
+Allegro MySQL provides limited support for stored procedure calls. At
+present, only stored procedures that return a single set of results
+can be used. To turn on this support, you must establish a database
+connection using <a href="operators/mysql/connect.htm"><b>dbi.mysql:connect</b></a> that includes
+<code>dbi.mysql:CLIENT_MULTI_RESULTS</code> in the set of flags
+passed as the <i>client-flags</i> keyword argument.
+</p>
+<p id="99">
+If you require support for multiple result set query responses, please
+contact Franz Support at <a href="operators/mysql/connect.htm"><b>connect</b></a>.
+</p>
+
+
+<hr><hr><h2 id="100"><a name="mysql-mp-1">6.0 MySQL and multiprocessing</a></h2>
+
+<p id="101">
+A database connection is a socket connection which is used to
+transmit requests to MySQL and to retrieve responses.  Sending a
+request is not an atomic operation and retrieving a response is not an
+atomic operation.
+</p>
+<p id="102">
+Thus two separate Lisp threads using the same connection will likely
+overlap in their writes and reads leading to garbage being sent to the
+mysql server or incomplete results being read by the Lisp threads.
+</p>
+<p id="103">
+So there are two choices:
+</p>
+<ol>
+<li id="104">
+Use a locking to ensure that one thread makes a complete request and
+retrieves a complete response before any other thread is allowed to
+use this connection. (See <a href="multiprocessing.htm#process-locks-1">Process locks</a>
+in <a href="multiprocessing.htm">multiprocessing.htm</a> for more information on
+process locks in Allegro CL. See
+also <a href="multiprocessing.htm#gates-1">gates</a>
+in the same document for another way to effectively lock processes.
+</li>
+<li id="105">
+Allocate one a database connection per Lisp thread. MySQL then
+thinks it's talking to multiple separate clients and this works
+perfectly well.
+</li>
+</ol>
+
+
+<hr><hr><h2 id="106"><a name="mysql-api-1">7.0 MySQL programming interface</a></h2>
+
+<p id="107">
+The programming interface contains the following operators, variables,
+and classes:
+</p>
+
+<h3 id="108">Operators</h3>
+
+<p id="109">
+All are functions except <a href="operators/mysql/with-locked-tables.htm"><b>with-locked-tables</b></a>, which is a macro.
+</p>
+
+<ul>
+<li id="110">
+<a href="operators/mysql/connect.htm"><b>connect</b></a> (function)
+</li>
+<li id="111">
+<a href="operators/mysql/disconnect.htm"><b>disconnect</b></a> (function)
+</li>
+<li id="112">
+<a href="operators/mysql/sql.htm"><b>sql</b></a> (function)
+</li>
+<li id="113">
+<a href="operators/mysql/sql-start.htm"><b>sql-start</b></a> (function)
+</li>
+<li id="114">
+<a href="operators/mysql/get-next-row.htm"><b>get-next-row</b></a> (function)
+</li>
+<li id="115">
+<a href="operators/mysql/mysql-escape-sequence.htm"><b>mysql-escape-sequence</b></a> (function)
+</li>
+<li id="116">
+<a href="operators/mysql/mysql-external-format.htm"><b>mysql-external-format</b></a>
+(function)
+</li>
+<li id="117">
+<a href="operators/mysql/mysql-affected-rows.htm"><b>mysql-affected-rows</b></a> (function)
+</li>
+<li id="118">
+<a href="operators/mysql/mysql-insert-id.htm"><b>mysql-insert-id</b></a> (function)
+</li>
+<li id="119">
+<a href="operators/mysql/lock-tables.htm"><b>lock-tables</b></a> (function)
+</li>
+<li id="120">
+<a href="operators/mysql/table-list.htm"><b>table-list</b></a> (function)
+</li>
+<li id="121">
+<a href="operators/mysql/insert-db.htm"><b>insert-db</b></a> (function)
+</li>
+<li id="122">
+<a href="operators/mysql/update-db.htm"><b>update-db</b></a> (macro)
+</li>
+<li id="123">
+<a href="operators/mysql/with-locked-tables.htm"><b>with-locked-tables</b></a> (macro)
+</li>
+<li id="124">
+<a href="operators/mysql/with-db-rows.htm"><b>with-db-rows</b></a> (macro)
+</li>
+</ul>
+
+<h3 id="125">Variables</h3>
+
+<ul>
+<li id="126">
+<a href="variables/mysql/s_mysql_s.htm"><code>*mysql*</code></a>
+</li>
+<li id="127">
+<a href="variables/mysql/s_null_s.htm"><code>*null*</code></a>
+</li>
+</ul>
+
+<h3 id="128">Classes</h3>
+
+<ul>
+<li id="129">
+<a href="classes/mysql/mysql.htm"><code>mysql</code></a>
+</li>
+<li id="130">
+<a href="classes/mysql/mysql-error.htm"><code>mysql-error</code></a>
+</li>
+<li id="131">
+<a href="classes/mysql/mysql-protocol-error.htm"><code>mysql-protocol-error</code></a>
+</li>
+</ul>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/mysql.htm">9.0 version</a></td></tr></table></html>

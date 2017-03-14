@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>alter-flags</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.post-office</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/alter-flags.htm">9.0 version</a></td></tr></table><h2 id="2">alter-flags</h2>
+
+<p id="3"><b>Arguments: </b><i>mailbox messages
+</i>&amp;key <i>flags add-flags remove-flags silent uid</i><i>
+</i></p>
+
+<p id="4">
+This function changes the flags of the messages in the specified
+way. Exactly one of <i>flags</i>,
+<i>add-flags</i>, and <i>remove-flags</i>
+must be specified.
+</p>
+<p id="5">
+<i>flags</i> specifies the complete set of flags to be
+stored in the <i>messages</i> and the other two add or
+remove flags. If <i>uid</i> is true then
+<i>messages</i> will be interpreted as unique ids rather
+than message sequence numbers. 
+</p>
+<p id="6">
+Normally <a href="alter-flags.htm"><b>alter-flags</b></a> returns a data
+structure that describes the state of the flags after the alteration
+has been done. This data structure can be examined with the <a href="fetch-field.htm"><b>fetch-field</b></a> function. But
+if <i>silent</i> is true then this data structure won't
+be created thus saving some time and space.
+</p>
+
+<p id="7">
+Removing a message from a mailbox is done by adding the
+<strong>:\\deleted</strong> flag to the message and then either
+calling <a href="close-mailbox.htm"><b>close-mailbox</b></a> or <a href="expunge-mailbox.htm"><b>expunge-mailbox</b></a>.
+</p>
+
+<p id="8">
+See <a href="../../imap.htm">imap.htm</a> for more information.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/alter-flags.htm">9.0 version</a></td></tr></table></body></html>

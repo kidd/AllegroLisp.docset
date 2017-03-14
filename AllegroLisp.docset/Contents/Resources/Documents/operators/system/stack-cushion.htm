@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>stack-cushion</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/stack-cushion.htm">9.0 version</a></td></tr></table><h2 id="2">stack-cushion</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">
+This function and <a href="set-stack-cushion.htm"><b>set-stack-cushion</b></a> allow inspection
+(this function) and modification (<a href="set-stack-cushion.htm"><b>set-stack-cushion</b></a>) of the current
+process's soft stack limit. The cushion value is either:
+</p>
+
+<ul>
+<li id="5">
+number of nats between the current frame pointer and the soft stack
+limit (see <a href="../../implementation.htm#nat-vs-int-2">The
+:nat and :unsigned-nat types</a>
+in <a href="../../implementation.htm">implementation.htm</a> for a discussion of the nat
+type), or
+</li> 
+<li id="6">
+<code>nil</code> if there is no effective
+soft stack limit.
+</li>
+</ul>
+
+<p id="7">
+Typically, each process has a hard limit and a soft limit. Exceeding
+the hard limit causes Lisp to fail. Each operating system has a
+different way of setting the hard limit. Exceeding the soft limit
+signals an error (a signal 1000). Usually things are set up so the
+soft limit is hit before the hard limit. Exceeding the soft limit is a
+continuable error.
+</p>
+
+<h3 id="8">Stack allocation on windows</h3>
+
+<ul>
+<li id="9">
+The initial Lisp process gets a hard limit of 16 megabytes and a soft
+limit of 4 megabytes. Functions that create new processes (such as
+<a href="../mp/make-process.htm"><b>make-process</b></a>)
+accept a keyword argument <i>stack-allocation</i> to
+specify the size to request from the OS.
+</li>
+</ul>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/stack-cushion.htm">9.0 version</a></td></tr></table></body></html>

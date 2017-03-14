@@ -1,0 +1,86 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>scroll-section</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/scroll-section.htm">9.0 version</a></td></tr></table><h2 id="2">scroll-section</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-widget grid-section scroll-pos
+</i></p>
+
+<p id="4">
+This function scrolls a grid-section programmatically.
+The arguments are:
+</p>
+<ul>
+<li id="5">
+<i>grid-widget</i> is the grid that contains the section
+to be scrolled.
+</li>
+<li id="6">
+<i>grid-section</i> is the <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a> or <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a> of
+<a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> that
+is to be scrolled.
+</li>
+<li id="7">
+<i>scroll-pos</i> is a non-negative integer indicating
+the position to which the section should be scrolled. For a <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a>, this
+is the number of pixels that will be scrolled off the top edge of the
+section, and for a <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a> it is the
+number of pixels that will be scrolled off the left edge.
+<p id="8">
+A <i>scroll-pos</i> of zero scrolls a section to its
+beginning, which will display the left end of the subsections of a
+column-section or the top end of the subsections of a row-section.
+<i>scroll-pos</i> may be specified as the value of
+<a href="../../../../ansicl/dictentr/most-pos.htm"><code>most-positive-fixnum</code></a> (or other
+large integer) to scroll the section exactly to its end (with the last
+subsection right-aligned with the end of the section), because a grid
+section is guaranteed not to scroll past either end of its contents.
+</p>
+</li>
+</ul>
+<p id="9">
+To scroll a grid-row to the top of a <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a> or a <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a> to the
+left of a <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a>, pass the
+<a href="../e/edge-position.htm"><b>edge-position</b></a> of
+the row or column to <a href="../s/scroll-section.htm"><b>scroll-section</b></a>.
+</p>
+<p id="10">
+The following example may be run when the "Employee Information"
+window still exists after running the "Employee Chart" example on the
+Examples tab of the <a href="../../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog. This code will
+find that example grid and scroll its "main" column section
+programmatically. First the section will scroll to its beginning
+(with the "Full Time?" column left-aligned), then scroll explicitly to
+the "Inspect" column, and then scroll to the end of the section. This
+is done four times, waiting a second at each scroll position.
+</p>
+<pre id="11">
+(let* ((window (find-window :employee-chart))
+       grid column-section inspect-column-position)
+  (unless window
+    (error "Couldn't find the Employee Information example window.  ~
+            Run the Employee Chart example and try again."))
+  (select-window window)
+  (setq grid (find-component :employee-grid window))
+  (setq column-section (column-section grid :worksheet))
+  (setq inspect-column-position (edge-position
+                                 (subsection column-section :inspect)))
+  (dotimes (j 4)
+    (scroll-section grid column-section 0)
+    (sleep 1)
+    (scroll-section grid column-section inspect-column-position)
+    (sleep 1)
+    (scroll-section grid column-section most-positive-fixnum)
+    (sleep 1)))
+</pre>
+<p id="12">
+See <a href="../s/section-scrolled.htm"><b>section-scrolled</b></a> on how to be
+notified whenever a grid-section is scrolled either programmatically
+or interactively.
+</p>
+
+
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/scroll-section.htm">9.0 version</a></td></tr></table></body></html>

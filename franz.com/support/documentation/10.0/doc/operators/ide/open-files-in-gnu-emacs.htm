@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>open-files-in-gnu-emacs</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/open-files-in-gnu-emacs.htm">9.0 version</a></td></tr></table><h2 id="2">open-files-in-gnu-emacs</h2>
+
+<p id="3"><b>Arguments: </b><i>
+configuration
+</i></p>
+
+
+
+<p id="4">
+The value of this configuration property can
+be <code>nil</code>, <code>:open-only</code>, or any
+other true value.  If this configuration property is true and the
+Emacs-Lisp Interface is running, then the IDE will open lisp source
+code files in GNU emacs. Otherwise it will open them in the IDE
+editor. The <code>:open-only</code> value  affects the behavior of <a href="../../ide-menus-and-dialogs/file-menu.htm#save-all">File | Save All</a> menu command,
+as described below in a way different from its modified behavior when
+this propert is true but not <code>:open-only</code>. This
+property affects the following commands:
+</p>
+
+<ul>
+<li id="5">
+<a href="../../ide-menus-and-dialogs/file-menu.htm#open">File |
+Open</a>
+</li>
+<li id="6">
+<a href="../../ide-menus-and-dialogs/search-menu.htm#find-in-files">Search | Find In Files</a>
+</li>
+<li id="7">
+<a href="../../ide-menus-and-dialogs/search-menu.htm#find-definition">Search | Find Definition</a>
+</li>
+<li id="8">
+<a href="../../ide-menus-and-dialogs/search-menu.htm#quick-find-definition">Search | Quick Find Definition</a>
+</li>
+</ul>
+<p id="9">
+When this option is enabled, the IDE's <a href="../../ide-menus-and-dialogs/file-menu.htm#save-all">File | Save All</a> command will
+tell Emacs to save all of its modified buffers (in addition to <b>Save
+All</b>'s usual functionality). As a special case, if the value
+of this option is the keyword <code>:open-only</code>, then the
+IDE will open files in Emacs but never tell emacs to save modified
+buffers.
+</p>
+<p id="10">
+A check box for this configuration property is located on the <a href="../../ide-menus-and-dialogs/options-dialog-editor.htm">Editor</a> tab of
+the <a href="../../ide-menus-and-dialogs/options-dialog.htm">Options</a>
+dialog. 
+</p>
+
+
+<p id="11">
+The property is off by default. The special
+value <code>:open-only</code> cannot be specified on the Options
+dialog, but it could be set by evaluating the following form:
+</p>
+
+<pre id="12">
+(setf (ide:open-files-in-gnu-emacs (cg:configuration ide:*ide-system*))
+      :open-only)
+</pre>
+
+<p id="13">
+<a href="open-files-in-gnu-emacs.htm"><b>open-files-in-gnu-emacs</b></a> is a
+property of the <a href="../../classes/cg/configuration.htm"><code>configuration</code></a> class.
+</p>
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/open-files-in-gnu-emacs.htm">9.0 version</a></td></tr></table></body></html>

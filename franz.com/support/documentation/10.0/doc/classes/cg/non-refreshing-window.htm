@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>non-refreshing-window</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/non-refreshing-window.htm">9.0 version</a></td></tr></table><h2 id="2">non-refreshing-window</h2>
+
+<p id="3">
+A class of window that has a frame and automatically adds a child
+pane. This is a subclass of <a href="frame-with-single-child.htm"><code>frame-with-single-child</code></a>, indicating
+that by default a <a href="non-refreshing-window.htm"><code>non-refreshing-window</code></a> has a
+title-bar and a border as a <a href="frame-window.htm"><code>frame-window</code></a> does, and also that it
+automatically adds a <a href="../../operators/cg/f/frame-child.htm"><b>frame-child</b></a> pane window, in this
+case a <a href="non-refreshing-pane.htm"><code>non-refreshing-pane</code></a>, and is
+therefore suitable when a toolbar or status-bar is to be added to the
+window.
+</p>
+<p id="4">
+The name "non-refreshing" means that the window does not automatically
+know how to redraw itself when it is uncovered, and so an application
+must supply a <a href="../../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method (on the
+child pane class) that will be called whenever the window needs to be
+redrawn. This is actually the case of every window class except for
+<a href="bitmap-window.htm"><code>bitmap-window</code></a>
+and <a href="bitmap-pane.htm"><code>bitmap-pane</code></a>
+(and <a href="text-edit-pane.htm"><code>text-edit-pane</code></a>, because it is
+actually a control internally). If backing-store is desired for
+automatic redisplay, use a <a href="bitmap-window.htm"><code>bitmap-window</code></a> instead.  When adding
+controls, a <a href="dialog.htm"><code>dialog</code></a> is recommended.
+</p>
+
+
+
+
+<p id="5">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="6"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/non-refreshing-window.htm">9.0 version</a></td></tr></table></body></html>

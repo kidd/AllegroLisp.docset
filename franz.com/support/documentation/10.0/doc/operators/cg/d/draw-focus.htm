@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>draw-focus</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-focus.htm">9.0 version</a></td></tr></table><h2 id="2">draw-focus</h2>
+
+<p id="3"><b>Arguments: </b><i>
+widget
+</i></p>
+
+
+<p id="4">
+<a href="../d/draw-focus.htm"><b>draw-focus</b></a> returns whether a
+focus rectangle is drawn in a <a href="../../../classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a>, <a href="../../../classes/cg/picture-button.htm"><code>picture-button</code></a>, <a href="../../../classes/cg/static-picture.htm"><code>static-picture</code></a>, <a href="../../../classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a>, or <a href="../../../classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a>. The value may
+be set at creation time by passing the <i>draw-focus</i>
+initarg, or any time later by calling <a href="../d/draw-focus.htm"><b>(setf draw-focus)</b></a>.
+</p>
+<p id="5">
+The value may be true or <code>nil</code>.  The default is
+<code>t</code> except for <a href="../../../classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a>, where it is <code>nil</code>.
+</p>
+
+<h2 id="6">
+Draw-focus for a multi-picture-button
+</h2>
+
+<p id="7">
+If true, then when the widget has the keyboard focus it draws a focus
+rectangle around the particular button that has the focus within the
+widget.  Pressing the spacebar will then press or unpress that button.
+The arrow keys will move the focus to other buttons, scrolling as
+needed, and clicking on a button will move the focus to that button.
+</p>
+<p id="8">
+If <code>nil</code>, then no focus rectangle is drawn, and
+pressing the spacebar will not press a button because no particular
+button has the keyboard focus.  Clicking the mouse on buttons will
+still press and unpress them.
+</p>
+
+<h2 id="9">
+Draw-focus for a scrolling-static-text
+</h2>
+
+<p id="10">
+When the <a href="../d/draw-focus.htm"><b>draw-focus</b></a> property
+of a <a href="../../../classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a>
+is true and the widget has the keyboard focus, then a focus rectangle
+is drawn that overrides the rectangle that would be drawn by the
+<a href="../b/border-color.htm"><b>border-color</b></a> property, if any.
+This focus rectangle will use the <a href="../s/system-edge-shadow-color.htm"><b>system-edge-shadow-color</b></a> unless the usual
+<a href="../b/border-color.htm"><b>border-color</b></a> is that same
+color, in which case the focus rectangle will be <a href="../../../variables/cg/black.htm"><code>black</code></a>.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-focus.htm">9.0 version</a></td></tr></table></body></html>

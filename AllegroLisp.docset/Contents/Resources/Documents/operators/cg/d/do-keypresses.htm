@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>do-keypresses</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/do-keypresses.htm">9.0 version</a></td></tr></table><h2 id="2">do-keypresses</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(window-or-widget-or-handle-or-nil t)
+(object t)
+</i>&amp;key  (<i>preview-seconds</i> 0.5) (<i>down-seconds</i> 0.5)<i>
+</i></p>
+
+<p id="4">
+Calls <a href="../d/do-keypress.htm"><b>do-keypress</b></a>
+once for each character in a string.
+</p>
+<p id="5">
+<i>window-or-widget-or-handle-or-nil</i> may be either a
+window, a dialog-item, an internal window "handle", or <code>nil</code>.  This is passed as the
+<i>window-or-widget-or-handle-or-nil</i> argument to
+<a href="../d/do-keypress.htm"><b>do-keypress</b></a>.
+</p>
+<p id="6">
+If <i>object</i> is a string, it is used directly.  If
+it is a symbol, its symbol-name is used as the string.  Otherwise a
+string obtained by calling <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a> on
+<i>object</i>.
+</p>
+<p id="7">
+The <i>preview-seconds</i> keyword argument to <a href="../d/do-keypress.htm"><b>do-keypress</b></a> will be the
+<i>preview-seconds</i> to <a href="../d/do-keypresses.htm"><b>do-keypresses</b></a> for the first
+character and as <code>nil</code> for all other
+characters.
+</p>
+<p id="8">
+The <i>down-seconds</i> keyword argument to <a href="../d/do-keypress.htm"><b>do-keypress</b></a> will be
+the <i>down-seconds</i> keyword argument to
+<a href="../d/do-keypresses.htm"><b>do-keypresses</b></a> for
+the last character and as <code>nil</code> for all other
+characters.
+</p>
+
+<h4 id="9">
+Examples
+</h4>
+<pre id="10">
+;; Type a whole string of characters into a window.
+(do-keypresses some-window "How about that.")
+
+;; Print an arbitrary object into whatever window has the keyboard
+;; focus.
+(do-keypresses nil (list :one "Foo"))
+</pre>
+
+<h3 id="11">
+GTK Note
+</h3>
+
+<p id="12">
+This function is not implemented on GTK, and we doubt that there is
+any feasible way to implement it.  The function does not exist at all
+on the GTK platform, so you should use <code>#+mswindows</code>
+to conditionalize any calls to it.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/do-keypresses.htm">9.0 version</a></td></tr></table></body></html>

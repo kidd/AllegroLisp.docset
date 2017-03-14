@@ -1,0 +1,185 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>define-property</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/define-property.htm">9.0 version</a></td></tr></table><h2 id="2">define-property</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name </i> &amp;rest <i>args</i><i>
+</i>&amp;key <i>reader writer accessor type dependent-properties initarg help-string remake editor-type read-only choices hidden repositioning</i><i>
+</i></p>
+
+<p id="4">
+7.0 release note: the keyword argument called
+<code>:editor-mode</code> in earlier releases is now called
+<code>:editor-type</code>.
+</p>
+
+<p id="5">
+Defines an individual property within a <a href="../d/defproperties.htm"><b>defproperties</b></a> form. On the <a href="../d/defproperties.htm"><b>defproperties</b></a> page, there
+is an example which contains examples of calls to <a href="../d/define-property.htm"><b>define-property</b></a>. 
+</p>
+<p id="6">
+This macro defines a property but does not associate it with any class
+or object.  A property is an attribute of an object that defines a
+high-level means of accessing the attribute value. Properties are
+largely used by the inspector for editing objects that have
+properties, though they are useful programmatically as well mostly
+because a property defines how to cause any appropriate side effects
+when the property value is modified. A property for a CLOS object is
+typically based on a slot of the object, but properties are generally
+independent of any internal representation and can be defined for any
+lisp type.
+</p>
+<p id="7">
+A property may define any of the following property facets, listed
+here with the initarg that is used to specify each:
+</p>
+<ul>
+<li id="8">
+<b>:reader</b>: the name of a function for reading the property
+value. Defaults to the property name. (Always naming the property the
+same as the reader function is recommended.)
+</li>
+<li id="9">
+<b>:writer</b>: the name of a function for writing the property
+value. Defaults to the setf of the property name. (Using the setf of
+the reader function for the writer is recommended.) If a separate
+writer function is provided, it should be written to perform any side
+effects that are needed to keep the object and its environment in a
+consistent state.
+<p id="10">
+<b>Note on :reader and :writer</b>: the name of the reader and writer
+functions for a property default to the name of the property and the
+setf of the name of the property respectively.  But defining a
+property does not actually create the reader and writer functions for
+the property (regardless of whether the reader and writer names are
+specified explicitly), so the application must define these functions
+separately. Typically, a property is defined for a class and has the
+same name as a slot of the class, and the accessor methods that are
+created for the slot serve as the reader and writer of the property as
+well. Otherwise the reader and writer functions must be defined
+explicitly. See the examples at the end of the <a href="../d/defproperties.htm"><b>defproperties</b></a> entry.
+</p>
+</li>
+<li id="11">
+<b>:accessor</b>: use instead of :read and :writer. Provides a reader
+and a setf method for the reader which works as a writer. Using the
+same name as the property is recommended.  :type A lisp type that the
+property value must satisfy. The inspector will prevent invalid values
+from being used. Defaults to t, to allow any value.
+:dependent-properties A list of the names of other properties of the
+object whose values might be changed by the writer function as side
+effects. The Inspector uses this to redisplay related properties
+whenever the user changes a property value in the inspector. (In
+general, the Inspector does not know automatically to redisplay values
+that have changed once it has inspected an object, and the Refresh
+Values command on the Inspector's right-button shortcut menu may be
+used to ensure that the displayed values are current.)
+</li>
+<li id="12">
+<b>:type</b>: a type-specifier indicating the type of values that are
+allowed for this property. Any type-specifier may be used, such as the
+symbol <code>integer</code> or the list <code>(and integer
+(satisfies evenp))</code>, just as with the type-specifier argument
+to <a href="../../../../ansicl/dictentr/typep.htm"><b>typep</b></a>. This
+type is used only by the IDE inspector, which will reject a value that
+a user interactively enters for a property if the value is not of that
+type.
+</li>
+<li id="13">
+<b>:dependent-properties</b>: a list of the names of other properties
+whose values may change as a direct result of changing the value of
+this property. This list is used only by the IDE inspector, which
+will immediately update its display of any of these dependent
+properties that exist for an inspected object whenever the user
+interactively changes the value of this property.
+</li>
+<li id="14">
+<b>:initarg</b>: a keyword used by <a href="../r/recreation-code.htm"><b>recreation-code</b></a> to generate a lisp
+expression for recreating an object that has this property. Defaults
+to the keyword that has the same name as the property name symbol.
+</li>
+<li id="15">
+<b>:help-string</b>: a short documentation string for the property, or
+<code>nil</code>. Defaults to <code>nil</code>.
+</li>
+<li id="16">
+<b>:editor-type</b>: specifies which kind of extended editing will be
+used by the inspector for the property when the user clicks on the
+small button to the right of the value. (This argument was called
+:editor-mode in releases prior to 7.0.) The options are:
+<ul>
+<li id="17">
+<b>:long-expression</b>: Pops up a multi-line text editor. This is the default.
+</li>
+<li id="18">
+<b>:multiple-choice</b>: Drops a list of choices.
+</li>
+<li id="19">
+<b>:toggle</b>: toggles between the choices when clicked. The default
+choices for :toggle are <code>t</code> and <code>nil</code>.
+</li>
+<li id="20">
+<b>:color</b>: Pops up the color-selection dialog.
+</li>
+<li id="21">
+<b>:font</b>: Pops up the font selection dialog.
+</li>
+<li id="22">
+<b>:path</b>: Pops up the file selection dialog.
+</li>
+<li id="23">
+<b>:menu</b>: Pops up the menu editor dialog.
+</li>
+<li id="24">
+<b>:function</b>: Finds source code or generates skeleton code.
+</li>
+</ul>
+</li>
+<li id="25">
+<b>:choices</b>: a list of possible values for use by the inspector
+when the editor-type is :multiple-choice or :toggle. Defaults to
+<code>nil</code>, unless the editor-type is
+<code>:toggle</code>, in which case the default is a list of
+<code>t</code> and <code>nil</code>.
+</li>
+<li id="26">
+<b>:read-only</b>: a flag to prevent modification of the property in
+the inspector. Defaults to <code>nil</code>.
+</li>
+<li id="27">
+<b>:remake</b>: a flag to indicate that the object that has this
+property should be recreated when this property is modified in order
+to completely effect the change. Defaults to <code>nil</code>.
+</li>
+<li id="28">
+<b>:hidden</b>: a flag to indicate that the inspector should not show
+this property. Useful when a property is inherited but is not useful
+on a particular subclass. Defaults to <code>nil</code>.
+</li>
+<li id="29">
+<b>:repositioning</b> (for controls): a flag to indicate that the
+control may be moved or resized when this property value is
+modified. Used internally to update handles on forms when
+needed. Defaults to <code>nil</code>.
+</li>
+</ul>
+<p id="30">
+Properties of CLOS classes inherit similarly to slots. Only those
+facets that differ from the inherited property need be specified for a
+given class, and properties that have no differing facets need not be
+specified at all.
+</p>
+<p id="31">
+Properties are shown on a separate tab of the inspector, and thus can
+serve as a relatively high-level interface to the object by providing
+a selected subset of the object's internal attributes, where each
+property knows to either disallow modification or to cause appropriate
+side effects upon modification in order to maintain a consistant
+environment.
+</p>
+
+
+
+
+
+<hr><p id="32"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/define-property.htm">9.0 version</a></td></tr></table></body></html>

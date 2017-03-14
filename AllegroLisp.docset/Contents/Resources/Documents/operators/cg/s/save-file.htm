@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>save-file</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/save-file.htm">9.0 version</a></td></tr></table><h2 id="2">save-file</h2>
+
+<p id="3"><b>Arguments: </b><i>
+text-edit-pane file
+</i></p>
+
+<p id="4">
+Saves the current text of a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> to a file.
+<i>text-edit-pane</i> should be a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> (for a <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a>, use
+<a href="../r/rich-edit-save.htm"><b>rich-edit-save</b></a>
+instead).
+</p>
+<p id="5">
+<i>file</i> should be a pathname or path namestring
+indicating where to save the file.  If a file already exists at this
+location, it is replaced by the newly-saved file.  (The existing file
+is backed up temporarily during the save, and if an error occurs then
+the original file is restored when the error is unwound).
+</p>
+
+<p id="6">
+On the Windows platform, the file typically will be written using the
+character encoding that <a href="../l/load-file.htm"><b>load-file</b></a> deemed the file to have,
+if <a href="../l/load-file.htm"><b>load-file</b></a> has been called
+on the <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>. See
+<a href="../e/external-format-for-saved-files.htm"><b>external-format-for-saved-files</b></a> for more
+information.
+</p>
+<p id="7">
+On the GTk platforms, the file will be always be written with a UTF8
+character encoding, which GTk generally always uses (as does Allegro
+by default on *nix platforms).
+</p>
+
+<p id="8">
+<b>Compatibility note</b>: In earlier releases, this function would
+invoke the file dialog if a file argument (which was optional) was not
+supplied. This is no longer done, primarily because there was no way
+to specify the various options of the file dialog (unless we copied
+all the paramaters of <a href="../a/ask-user-for-new-pathname.htm"><b>ask-user-for-new-pathname</b></a> to
+<a href="../s/save-file.htm"><b>save-file</b></a>, which
+would be poor design). If an application wishes to call <a href="../s/save-file.htm"><b>save-file</b></a> with a
+user-specified file, it should now first call <a href="../a/ask-user-for-new-pathname.htm"><b>ask-user-for-new-pathname</b></a> if
+needed, and then pass the returned file to <a href="../s/save-file.htm"><b>save-file</b></a> (unless <code>nil</code> was returned due to the user canceling the
+dialog). save-file used to (but no longer does) accept an
+<i>allowed-types</i> keyword argument (although this was
+not documented). If an <i>allowed-types</i> argument is
+desired, then it should be passed to <a href="../a/ask-user-for-new-pathname.htm"><b>ask-user-for-new-pathname</b></a> instead.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/save-file.htm">9.0 version</a></td></tr></table></body></html>

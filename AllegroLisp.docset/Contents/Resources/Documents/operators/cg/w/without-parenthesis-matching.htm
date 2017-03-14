@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>without-parenthesis-matching</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/without-parenthesis-matching.htm">9.0 version</a></td></tr></table><h2 id="2">without-parenthesis-matching</h2>
+
+<p id="3"><b>Arguments: </b><i>(lisp-edit-pane </i>&amp;key <i>no-draw</i><i>)
+</i> &amp;body <i>body</i></p>
+
+<p id="4">
+Executes <i>body</i> with parenthesis matching disabled
+in <i>lisp-edit-pane</i>.  This means that no search
+will be done for matching parentheses or double-quote marks, and so
+parenthesis-matching marks will not be drawn or erased, and <a href="../p/parentheses-matched.htm"><b>parentheses-matched</b></a> will
+not be called.
+</p>
+<p id="5">
+This macro may be useful to avoid wasting time searching for matching
+parentheses within code that is moving the text cursor around in a
+<a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a>, or to avoid
+flashing effects as the text cursor is moved to multiple positions
+that may be next to parentheses or double-quote marks on literal
+strings.  See also <a href="../w/with-motionless-text-control.htm"><b>with-motionless-text-control</b></a> (which
+always calls this macro internally).
+</p>
+<p id="6">
+If <i>no-draw</i> is <code>nil</code> (the
+default), then any parenthesis-matching mark that was visible in the
+window will be erased before the body is executed, and the usual
+parenthesis-matching check will be made afterward at the current text
+cursor position, drawing the usual mark if needed.  If
+<i>no-draw</i> is true, then neither of those things is
+done.  Drawing glitches could result if <i>no-draw</i>
+were always passed as true, but you may pass it as true if you know
+that the text cursor will be at the same index on entry to and exit
+from the <i>body</i> (and the characters on either side
+of the text cursor will be the same); this may avoid a needless
+redrawing of the parenthesis-matching mark.
+</p>
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/without-parenthesis-matching.htm">9.0 version</a></td></tr></table></body></html>

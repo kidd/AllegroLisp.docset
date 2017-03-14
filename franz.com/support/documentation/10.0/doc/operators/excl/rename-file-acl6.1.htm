@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rename-file-acl6.1</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/rename-file-acl6.1.htm">9.0 version</a></td></tr></table><h2 id="2">rename-file-acl6.1</h2>
+
+<p id="3"><b>Arguments: </b><i>
+filespec new-name
+</i></p>
+
+<p id="4">
+The function is similar to <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> in that it renames the file or
+directory specified by the <i>filespec</i> to the file
+or directory specified by the <i>new-name</i> argument.
+It is the Allegro CL 6.1 version of <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>. In Allegro CL 6.2, errors in the
+implementation of <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> have been corrected, and a new
+function, <a href="rename-file-raw.htm"><b>rename-file-raw</b></a>,
+has been added (it mimics the behavior of the UNIX <b>mv</b>/Windows
+<b>Move</b> commands with regard to relative pathnames). Both <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a> and <a href="rename-file-raw.htm"><b>rename-file-raw</b></a> behave differently under
+certain circumstances than they did in release 6.1 (and in earlier
+releases). Users who want the exact Allegro CL 6.1 behavior can use
+this function.
+</p>
+<p id="5">
+The behavior of <a href="rename-file-acl6.1.htm"><b>rename-file-acl6.1</b></a> depends on the value of
+<a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. If that value is an
+absolute pathname, <a href="rename-file-acl6.1.htm"><b>rename-file-acl6.1</b></a> works like <a href="rename-file-raw.htm"><b>rename-file-raw</b></a>.  If that value is
+an empty pathname (#p""), <a href="rename-file-acl6.1.htm"><b>rename-file-acl6.1</b></a> works like <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>.  The difference can be
+seen with the following example:
+</p>
+<pre id="6">
+*default-pathname-defaults*
+  -&gt; #p&quot;/usr/home/user1/&quot;
+
+(rename-file-acl6.1 &quot;tmp/foo.cl&quot; &quot;tmp/baz.cl&quot;)
+  -&gt; #p&quot;/usr/home/user1/tmp/baz.cl&quot; [and additional values]
+
+;;  OR
+
+*default-pathname-defaults* -&gt; #p&quot;&quot;
+
+(rename-file-acl6.1 &quot;tmp/foo.cl&quot; &quot;tmp/baz.cl&quot;)
+  -&gt; #p&quot;/usr/home/user1/tmp/tmp/baz.cl&quot; [and additional values]
+</pre>
+
+<p id="7">
+Like <a href="../../../ansicl/dictentr/rename-f.htm"><b>cl:rename-file</b></a>, <a href="rename-file-acl6.1.htm"><b>rename-file-acl6.1</b></a> returns
+three values: The new name, the truename of filespec, and the truename
+of the new name. 
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/rename-file-acl6.1.htm">9.0 version</a></td></tr></table></body></html>

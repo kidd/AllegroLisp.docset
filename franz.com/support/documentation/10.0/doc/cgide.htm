@@ -1,0 +1,2960 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Common Graphics and the Integrated Development Environment</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#FFFF00"><b>CGDoc</b></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cgide.htm">9.0 version</a></td></tr></table><h1 id="2">Common Graphics and the Integrated Development Environment</h1><p id="3">This document contains the following sections:</p><a href="#cg-docs-1">1.0 About Common Graphics and IDE documentation</a><br><a href="#menus-dialogs-1">2.0 About Menus and Dialogs in the IDE</a><br><a href="#cg-platforms-1">3.0 Platform-specific information</a><br><a href="#simple-streams-1">4.0 Common Graphics Streams</a><br><a href="#startup-1">5.0 About IDE startup</a><br>&nbsp;&nbsp;&nbsp;<a href="#allegro-8bit-2">5.1 How to create an 8-bit image which starts the IDE</a><br><a href="#user-options-file-1">6.0 The user options file allegro-ide-options.cl</a><br><a href="#bug-reports-1">7.0 About submitting a bug report from a break in the IDE</a><br><a href="#child-parent-overlapped-etc-1">8.0 About child, parent, and owner windows</a><br><a href="#code-creating-controls-1">9.0 About how to get sample code for creating controls</a><br><a href="#cg-multithreading-1">10.0 About using multiple windowing processes in a Common Graphics application</a><br>&nbsp;&nbsp;&nbsp;<a href="#modal-cg-2">10.1 Modal CG utility dialogs are not shared between processes</a><br>&nbsp;&nbsp;&nbsp;<a href="#cg-re-entrancy-2">10.2 CG re-entrancy</a><br>&nbsp;&nbsp;&nbsp;<a href="#cg-break-key-2">10.3 Enhanced Break Key functionality</a><br>&nbsp;&nbsp;&nbsp;<a href="#ide-multithreaded-debugging-2">10.4 Debugging Multiple Processes in the IDE</a><br>&nbsp;&nbsp;&nbsp;<a href="#using-ide-when-busy-2">10.5 Using the IDE while user code is busy</a><br><a href="#cg-event-driven-design-1">11.0 About design considerations for event-driven applications</a><br>&nbsp;&nbsp;&nbsp;<a href="#mh-routines-run-long-2">11.1 Message-handling routines that run for a long time</a><br>&nbsp;&nbsp;&nbsp;<a href="#mh-routines-that-block-2">11.2 Message-handling routines that block</a><br><a href="#widget-classes-1">12.0 Widget and window classes</a><br><a href="#touch-gesture-1">13.0 About Touch Gesture Support in Common Graphics on Windows</a><br><a href="#noproject-app-1">14.0 About creating a Standalone Common Graphics Application without using the Project System</a><br><a href="#position-class-1">15.0 About the position class</a><br><a href="#cg-ifuns-1">16.0 The I[cl-math-function] functions</a><br><a href="#nocg-winapp-1">Appendix A. The Windows API and a Windows API program with windows but without CG</a><br><p id="4">
+The IDE and Common Graphics are supported on the Windows SMP
+(Symmetric Multi Processing) Lisp but are not supported on the SMP
+version of Allegro CL 10.0 on the Mac and
+on Linux. They are supported on the non-SMP version of Allegro
+CL 10.0 on those platforms. The feature
+:smp is on the features list in the SMP version and not in the non-SMP
+version.
+</p><p id="5">
+This document provides a high-level set of links to documentation
+for the Common Graphics (CG) windowing system and the Integrated
+Development Environment (IDE).  It also includes a number of
+miscellaneous CG and IDE topics that have no other home in the
+documentation.
+</p><p id="6">
+Common Graphics is a code library that allows writing windowized
+graphical user interfaces (GUIs) in applications.  The IDE is a set of
+integrated tools that facilitate the writing and debugging of
+applications, including CG applications. Both of these tools are available only on Windows, on
+x86-based Linux platforms with GTK, and on the Mac.
+</p><p id="7">
+Symbols in common-graphics are generally accessible in
+the <code>:cg</code> package, though their actual home package
+might be a subpackage (in the hierarchical package sense) of
+the <code>:cg</code> package. Symbols naming IDE functionality
+which are not intended to be present in applications are in
+the <code>:ide</code> package. One normally starts an image
+(named allegro.dxl or something similar) which includes both
+common-graphics and the IDE, but <code>(require :ide)</code> and
+<code>(require :cg)</code> will load the relevant modules into
+an image where they are not present.
+</p><hr><hr><h2 id="8"><a name="cg-docs-1">1.0 About Common Graphics and IDE documentation</a></h2>
+
+
+<p id="9">
+Each object (operator, variable or constant, class) has an HTML page
+in <i>operators/cg/</i>,
+<i>variables/cg/</i>, or
+<i>classes/cg/</i>, as
+appropriate. The index (<a href="index.htm">index.htm</a>) includes Common
+Graphics symbols.
+</p>
+<p id="10">
+There are a number of essays, including the IDE User
+Guide, which are also provided. They are listed here.
+</p>
+<ul>
+<li id="11">
+<a href="cg/ide-ug/ide_user_guide_1.htm">Ide User
+Guide</a>. The link goes to the first chapter.
+</li> 
+<li id="12">
+<a href="cg/cg-application-help.htm">cg-application-help.htm</a>. A discussion of 
+adding help facilities to Common Graphics applications.
+</li>
+
+<li id="13">
+
+<a href="cg/cg-chart-widget.htm">cg-chart-widget.htm</a>. Examples of the
+<a href="classes/cg/chart-widget.htm"><code>chart-widget</code></a>.
+
+</li>
+
+<li id="14">
+<a href="cg/cg-clipboard.htm">cg-clipboard.htm</a>. A discussion of 
+the use of the clipboard in Common Graphics.
+</li>
+<li id="15">
+<a href="cg/cg-color-palettes.htm">cg-color-palettes.htm</a>. A discussion of 
+the use of color palettes in Common Graphics.
+</li>
+<li id="16">
+<a href="cg/cg-coordinates.htm">cg-coordinates.htm</a>. A discussion of coordinates
+in Common Graphics.
+</li>
+<li id="17">
+<a href="dde.htm">dde.htm</a>. A discussion of DDE support. This is now
+separated from Common Graphics but only works on Windows. 
+</li>
+<li id="18">
+<a href="cg/cg-drawing.htm">cg-drawing.htm</a>. A discussion of drawing
+graphics in Common Graphics.
+</li>
+<li id="19">
+<a href="cg/cg-events.htm">cg-events.htm</a>. A discussion of event
+handling in Common Graphics.
+</li>
+<li id="20">
+<a href="cg/cg-icons.htm">cg-icons.htm</a>. A discussion of icons
+handling in Common Graphics.
+</li>
+<li id="21">
+<a href="cg/cg-mci.htm">cg-mci.htm</a>. A discussion of MCI
+support in Common Graphics.
+</li>
+
+<li id="22">
+
+<a href="cg/cg-object-editor-and-class-grid.htm">cg-object-editor-and-class-grid.htm</a>. Examples of
+the <a href="classes/cg/object-editor.htm"><code>object-editor</code></a> and the
+<a href="classes/cg/class-grid.htm"><code>class-grid</code></a>.
+
+</li>
+
+<li id="23">
+<a href="cg/cg-pixmaps.htm">cg-pixmaps.htm</a>. A discussion of
+pixmaps.
+</li>
+<li id="24">
+<a href="cg/cg-rich-text.htm">cg-rich-text.htm</a>. A discussion of
+rich text editing in Common Graphics.
+</li> 
+<li id="25">
+<a href="cg/cg-system.htm">cg-system.htm</a>. A discussion of the
+<a href="variables/cg/s_system_s.htm"><code>*system*</code></a>
+variable and its value.
+</li>
+<li id="26">
+<a href="cg/cg-timers.htm">cg-timers.htm</a>. A discussion of the
+Common Graphics timer facility.
+</li>
+</ul>
+
+<p id="27">
+Links to the various CG widget and window classes can be found below
+in <a href="#widget-classes-1">Section 12.0 Widget and window classes</a>.
+</p>
+
+<p id="28">
+Information on projects, forms, and menus is found in the
+<a href="cg/ide-ug/ide_user_guide_1.htm">Ide User
+Guide</a>, as follows:
+</p>
+<ul>
+<li id="29">
+<b>Projects</b> are described in <a href="cg/ide-ug/ide_user_guide_4.htm">Chapter 4:
+Projects</a>.
+</li>
+<li id="30">
+<b>Forms</b> are described in <a href="cg/ide-ug/ide_user_guide_6.htm">Chapter 6:
+Designng a user interface using forms</a>.
+</li>
+<li id="31">
+<b>Menus</b> are described in <a href="cg/ide-ug/ide_user_guide_7.htm">Chapter 7:
+Menus</a>.
+</li>
+</ul>
+
+
+<hr><hr><h2 id="32"><a name="menus-dialogs-1">2.0 About Menus and Dialogs in the IDE</a></h2>
+<p id="33">
+This section describes the menus on the Allegro CL IDE menu bar and
+the various dialogs that present information about the running Lisp
+and about your project. Note
+that the IDE is available on Windows, Linux (with Intel x86
+processors), and the Mac only.
+</p>
+<h3 id="34">
+Dialogs:
+</h3>
+<ul>
+<li id="35">
+<a href="ide-menus-and-dialogs/add-component-dialog.htm">Add Component</a>
+</li>
+<li id="36">
+<a href="ide-menus-and-dialogs/common-graphics-tree-of-knowledge.htm">Allegro Tree of Knowledge</a>
+</li>
+<li id="37">
+<a href="ide-menus-and-dialogs/apropos-dialog.htm">Apropos</a>
+</li>
+<li id="38">
+<a href="ide-menus-and-dialogs/check-for-new-patches-dialog.htm">Check for
+New Patches</a>
+</li>
+<li id="39">
+<a href="ide-menus-and-dialogs/class-browser-dialog.htm">Class Browser</a>
+</li>
+<li id="40">
+<a href="ide-menus-and-dialogs/clipboard-dialog.htm">Clipboard</a>
+</li>
+<li id="41">
+<a href="ide-menus-and-dialogs/debug-window.htm">Debug Window</a>
+</li>
+<li id="42">
+<a href="ide-menus-and-dialogs/definitions-dialog.htm">Definitions</a>
+</li>
+<li id="43">
+<a href="ide-menus-and-dialogs/download-dialog.htm">Download
+Patches</a>
+</li>
+<li id="44">
+<a href="ide-menus-and-dialogs/editor-workbook.htm">Editor Workbook</a>
+</li>
+<li id="45">
+<a href="ide-menus-and-dialogs/find-dialog.htm">Find</a>
+</li>
+<li id="46">
+<a href="ide-menus-and-dialogs/find-in-files-dialog.htm">Find in Files</a>
+</li>
+<li id="47">
+<a href="ide-menus-and-dialogs/form-dialog.htm">Form</a>
+</li>
+<li id="48">
+<a href="ide-menus-and-dialogs/inspect-dialog.htm">Inspect</a>
+</li>
+<li id="49">
+<a href="ide-menus-and-dialogs/menu-editor-dialog.htm">Menu Editor</a>
+</li>
+<li id="50">
+<a href="ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a>
+</li>
+<li id="51">
+<a href="ide-menus-and-dialogs/new-form-dialog.htm">New Form</a>
+</li>
+<li id="52">
+<a href="ide-menus-and-dialogs/new-project-directory-dialog.htm">New
+Project Directory</a>
+</li>
+<li id="53">
+<a href="ide-menus-and-dialogs/options-dialog.htm">Options</a>
+</li>
+<li id="54">
+<a href="ide-menus-and-dialogs/package-list-dialog.htm">Package List</a>
+</li>
+<li id="55">
+<a href="ide-menus-and-dialogs/process-dialog.htm">Process</a>
+</li>
+<li id="56">
+<a href="ide-menus-and-dialogs/project-manager-dialog.htm">Project Manager</a>
+</li>
+<li id="57">
+<a href="ide-menus-and-dialogs/project-parent-directory-dialog.htm">Project Parent
+Directory</a>
+</li>
+<li id="58">
+<a href="ide-menus-and-dialogs/replace-dialog.htm">Replace</a>
+</li>
+<li id="59">
+<a href="ide-menus-and-dialogs/runtime-analyzer-control-dialog.htm">Runtime Analyzer
+Control</a>
+</li>
+<li id="60">
+<a href="ide-menus-and-dialogs/runtime-analyzer-results-dialog.htm">Runtime Analyzer
+Results</a>
+</li>
+<li id="61">
+<a href="ide-menus-and-dialogs/select-a-completion-dialog.htm">Select a Completion</a>
+</li>
+<li id="62">
+<a href="ide-menus-and-dialogs/shortcut-keys-dialog.htm">Shortcut Keys</a>
+</li>
+<li id="63">
+<a href="ide-menus-and-dialogs/startup-dialog.htm">Startup Action</a>
+</li>
+
+<li id="64">
+<a href="ide-menus-and-dialogs/stepper-dialog.htm">Stepper Dialog</a>
+</li>
+
+<li id="65">
+<a href="ide-menus-and-dialogs/tab-order-dialog.htm">Tab Order</a>
+</li>
+<li id="66">
+<a href="ide-menus-and-dialogs/trace-dialog.htm">Trace</a>
+</li>
+
+<li id="67">
+<a href="ide-menus-and-dialogs/widget-palette-dialog.htm">Widget Palette</a>
+</li>
+
+<li id="68">
+<a href="ide-menus-and-dialogs/window-list-dialog.htm">Window List</a>
+</li>
+</ul>
+<h3 id="69">
+Menus:
+</h3>
+<ul>
+<li id="70">
+<a href="ide-menus-and-dialogs/file-menu.htm">File menu</a>
+</li>
+<li id="71">
+<a href="ide-menus-and-dialogs/edit-menu.htm">Edit menu</a>
+</li>
+<li id="72">
+<a href="ide-menus-and-dialogs/search-menu.htm">Search menu</a>
+</li>
+<li id="73">
+<a href="ide-menus-and-dialogs/view-menu.htm">View menu</a>
+</li>
+<li id="74">
+<a href="ide-menus-and-dialogs/windows-menu.htm">Windows menu</a>
+</li>
+<li id="75">
+<a href="ide-menus-and-dialogs/tools-menu.htm">Tools menu</a>
+</li>
+<li id="76">
+<a href="ide-menus-and-dialogs/run-menu.htm">Run menu</a>
+</li>
+<li id="77">
+<a href="ide-menus-and-dialogs/form-menu.htm">Form menu</a>
+</li>
+<li id="78">
+<a href="ide-menus-and-dialogs/recent-menu.htm">Recent menu</a>
+</li>
+
+<li id="79">
+<a href="ide-menus-and-dialogs/install-menu.htm">Install menu</a>
+</li>
+
+<li id="80">
+<a href="ide-menus-and-dialogs/help-menu.htm">Help menu</a>
+</li>
+</ul>
+
+
+<hr><hr><h2 id="81"><a name="cg-platforms-1">3.0 Platform-specific information</a></h2>
+
+<p id="82">
+Common Graphics and the IDE runs on Windows, Linux, and Mac OS
+X. While broadly, CG and the IDE are same on all three platforms,
+there are some differences. Both Linux and the Mac use
+GTK. Differences between Windows and GTK are described
+in <a href="cggtk-relnotes.html">cggtk-relnotes.html</a>.
+</p>
+
+<h2 id="83">
+Linux-specific details
+</h2>
+<p id="84">
+See <a href="release-notes.htm#cg-win-gtk-2">Functionality
+to handle differences between Windows and GTK</a>
+in <a href="release-notes.htm">release-notes.htm</a>.
+</p>
+
+<h2 id="85">
+Mac-specific differences
+</h2>
+<ul>
+<li id="86">
+See <a href="release-notes.htm#cg-win-gtk-2">Common Graphics and the IDE on the Mac</a>
+in <a href="release-notes.htm">release-notes.htm</a>.
+</li>
+<li id="87">
+See <a href="operators/cg/m/map-control-left-click-to-right-click.htm"><b>map-control-left-click-to-right-click</b></a>, which
+describes how to make interpreting mouse clicks more Mac-like.
+</li>
+<li id="88">
+See <a href="release-notes.htm#mac-ide-2">Functionality
+to handle differences between Windows and GTK</a>
+in <a href="release-notes.htm">release-notes.htm</a>.
+</li>
+</ul>
+
+
+<hr><hr><h2 id="89"><a name="simple-streams-1">4.0 Common Graphics Streams</a></h2>
+
+<p id="90">
+In addition to being a window for displaying graphical output and
+accepting user gestures, a Common Graphics window is also a Common
+Lisp stream.  This means that text can be printed to a window by
+calling CL stream output functions like <b>print</b> and
+<b>format</b>, as an alternative to calling a CG function like <a href="operators/cg/d/draw-string-in-box.htm"><b>draw-string-in-box</b></a>.  (And CL stream
+input functions work with a few classes such as <a href="classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>.)
+</p>
+<p id="91">
+Common Graphics streams are interactive streams (see
+<a href="../ansicl/dictentr/interact.htm"><b>interactive-stream-p</b></a>), and so
+you typically will not need to call <a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> or <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> to make printed output appear
+immediately in a Common Graphics window.  But if you call lower-level
+Common Lisp stream output functions (basically <a href="../ansicl/dictentr/write-st.htm"><b>write-string</b></a>, <a href="../ansicl/dictentr/write-ch.htm"><b>write-char</b></a>, and <a href="../ansicl/dictentr/write-se.htm"><b>write-sequence</b></a>) then no
+<a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> is
+done internally even for interactive streams.  After calling such
+functions on a Common Graphics stream, you should call <a href="../ansicl/dictentr/finish-o.htm"><b>force-output</b></a> or
+<a href="../ansicl/dictentr/finish-o.htm"><b>finish-output</b></a> on the stream
+before subsequently calling any graphics-related Common Graphics
+functions, or else the sequencing of graphical output may be
+incorrect. For more information,
+see <a href="streams.htm#force-finish-output-2">Force-output and finish-output policy</a>
+in <a href="streams.htm">streams.htm</a>.
+</p>
+
+<hr><hr><h2 id="92"><a name="startup-1">5.0 About IDE startup</a></h2>
+
+
+<p id="93">
+The pre-built lisp images <i>allegro.dxl</i> and
+<i>allegro-ansi.dxl</i> contain CG and the IDE. (The
+image supplied with Allegro CL Express is
+<i>allegro-express</i> and is equivalent to
+<i>allegro-ansi.dxl</i>.) The IDE (with CG) may be started directly
+by running the associated executable files, whose names on Windows are
+
+<i>allegro.exe</i> and <i>allegro-ansi.exe</i>
+(allegro-express.exe for Allegro CL Express), and on Linux and the Mac are
+<i>allegro</i> and <i>allegro-ansi</i>.  The "allegro-ansi" images are
+case-insensitive, as in the ANSI Common Lisp specification, while the
+"allegro" images are case-sensitive to be more compatible with other
+modern software. Both use 16-bit characters. There are no pre-built
+8-bit character images that contain the IDE. (See
+<a href="#allegro-8bit-2">Section 5.1 How to create an 8-bit image which starts the IDE</a> for information on
+starting the IDE in an 8-bit image and information on building an
+8-bit image that includes Common Graphics and the IDE and starts the
+IDE when invoked.)
+</p>
+<p id="94">
+On Windws, there are menu items on the Allegro CL submenu of the
+Windows Start menu for Modern Images and ANSI Images. Each has an
+`Allegro CL (w IDE)' item. Choosing one of those starts Allegro CL and
+automatically starts the IDE. See <a href="startup.htm#starting-windows-2">Starting on Windows machines</a> in
+<a href="startup.htm">startup.htm</a> for more information on starting
+Allegro CL on Windows. Starting on Linux and the Mac is
+similar to starting on any UNIX machine;
+see <a href="startup.htm#starting-unix-2">Starting on UNIX
+machines</a> in
+<a href="startup.htm">startup.htm</a>. 
+</p>
+
+<p id="95">
+The IDE is started by calling <a href="operators/ide/start-ide.htm"><b>start-ide</b></a> with no arguments. This function is
+called automatically when running one of the IDE images, or can be
+called explicitly in a base lisp after requiring the
+<code>:ide</code> module by evaluating <code>(require
+:ide)</code>. (You cannot load the IDE into an image on Linux
+Express Edition. You must use either the <b>allegro</b> or the
+<b>allegro-ansi</b> executable/image.)
+</p>
+<p id="96">
+When <a href="operators/ide/start-ide.htm"><b>start-ide</b></a> is called, it performs
+the following steps:
+</p>
+<ol>
+<li id="97">
+If the command line that started the lisp contains the
+<code>-batch</code> flag (see <a href="startup.htm#command-line-args-1">Command line arguments</a> in
+<a href="startup.htm">startup.htm</a>), then <a href="operators/ide/start-ide.htm"><b>start-ide</b></a> exits immediately,
+returning nil, and nothing else is done.
+</li>
+<li id="98">
+Multiprocessing is started (if necessary), and the "IDE GUI" process
+is created. <a href="operators/ide/start-ide.htm"><b>start-ide</b></a> returns the new IDE GUI
+process. The rest of the startup procedure is performed in the IDE GUI
+process.
+</li>
+<li id="99">
+The <a href="variables/cg/s_system_s.htm"><code>*system*</code></a>
+object is created (or recreated if this is a dumplisp'ed image).
+</li>
+<li id="100">
+Common Graphics is initialized, and the main IDE owner window (see
+<a href="operators/cg/d/development-main-window.htm"><b>development-main-window</b></a>) and the
+IDE menu-bar window are created.
+</li>
+
+
+<li id="101">
+If a user <a href="#user-options-file-1">options
+file</a> named <i>allegro-ide-options.cl</i>
+exists in your home directory (on Windows in your personal documents
+directory) exists, it is loaded to restore configuration options that
+were saved most recently in an earlier IDE session. If no such file
+exists in your home or personal documents directory, the file is
+looked for in the main Allegro directory and loaded if there. If no
+user options file exists is any of the listed locations, default
+settings are used. See
+<a href="#user-options-file-1">user-options-file-1</a>
+and also see
+<a href="operators/ide/save-options-to-user-specific-file.htm"><b>save-options-to-user-specific-file</b></a>. 
+</li>
+
+<li id="102">
+The IDE toolbars and status-bar are added according to the <a href="operators/ide/display-toolbars.htm"><b>display-toolbars</b></a> and
+<a href="operators/ide/display-status-bar.htm"><b>display-status-bar</b></a> configuration
+options.
+</li>
+<li id="103">
+
+If an initial project was specified either by using the "-project"
+command line argument or by double-clicking a .lpr project definition
+file to start the IDE, then <a href="operators/ide/open-project.htm"><b>open-project</b></a> is called to open that existing
+project. If no initial project was specified, then the IDE starts without a
+current project. If there were recent projects previously open, a
+dialog appears asking if you want to open any of them. Canceling
+causes the IDE to open without a project.
+
+</li>
+<li id="104">
+Additional IDE windows are created if the following
+configuration options are true:
+<ul>
+<li id="105">
+<a href="operators/ide/new-project-show-form.htm"><b>new-project-show-form</b></a> exposes the
+initial form window of the project and creates an inspector window
+inspecting that form.
+</li>
+<li id="106">
+<a href="operators/ide/new-project-show-project-manager.htm"><b>new-project-show-project-manager</b></a>
+shows the <a href="ide-menus-and-dialogs/project-manager-dialog.htm">Project Manager</a> dialog.
+</li>
+<li id="107">
+<a href="operators/ide/new-project-show-editor.htm"><b>new-project-show-editor</b></a> creates and
+displays an <a href="ide-menus-and-dialogs/editor-workbook.htm">Editor
+Workbook</a>.
+</li>
+</ul>
+</li>
+<li id="108">
+The "Listener 1" process is created to evaluate expressions in the
+initial lisp listener pane of the Debug Window, and to evaluate user
+code when commands such as 
+<a href="ide-menus-and-dialogs/tools-menu.htm">Tools</a> |
+<a href="ide-menus-and-dialogs/tools-menu.htm#incremental-evaluation">Incremental Evaluation</a> and
+<a href="ide-menus-and-dialogs/file-menu.htm">File</a> | <a href="ide-menus-and-dialogs/file-menu.htm#load">Load</a>
+are invoked when this listener is the selected one. <a href="variables/cg/s_default-cg-bindings_s.htm"><code>*default-cg-bindings*</code></a> is passed as
+the :initial-bindings argument to <a href="operators/mp/process-run-function.htm"><b>process-run-function</b></a> when creating
+this process (this should always be done when creating a process that
+may create Common Graphics windows or to allow debugging that process
+in the IDE). The user may create additional similar listeners later by
+using the <a href="ide-menus-and-dialogs/view-menu.htm#new-listener">View | New Listener</a> command.
+</li>
+<li id="109">
+The IDE GUI process enters an event-handling loop to handle events
+for IDE windows, which are created in this process. An abort restart
+around the loop ensures that the IDE GUI process re-enters this
+event-handling loop when it is reset or otherwise aborted.
+</li>
+<li id="110">
+The Listener 1 process tells the IDE GUI process to create its listener
+pane. This follows the convention where all IDE windows are created in
+the IDE GUI process so that their events are all received and handled
+in that process. The value of <code>(ide-evaluator-listener
+*system*)</code> (see <a href="operators/ide/ide-evaluator-listener.htm"><b>ide-evaluator-listener</b></a>) is set to
+this initial listener pane.
+</li>
+<li id="111">
+If the file <i>startup.cl</i> exists in the main allegro
+directory, then the Listener 1 process loads this file.  Users may
+create this file to evaluate arbitrary forms whenever the IDE is
+started. (If the file <i>startup.fasl</i> exists and is
+not older than <i>startup.cl</i>, then
+<i>startup.fasl</i> is loaded instead.)
+<p id="112">
+If an error is signaled while loading this file (or the
+<i>prefs.cl</i> file above), a modal dialog informs you
+of this and then the IDE continues to start up without loading the
+rest of the file.  Debugging is not possible at this point because the
+process is not yet in an event-loop to which it can return when
+aborting from the debugger. You can, however, load the file
+explicitly after the IDE is running in order to debug it.
+</p>
+</li>
+<li id="113">
+If the value of <a href="variables/ide/s_ide-startup-hook_s.htm"><code>*ide-startup-hook*</code></a> is non-<code>nil</code>, then its value is expected to be a list of
+function names and/or function objects. Each function in the list is
+funcalled with no arguments in the Listener 1 process.
+</li>
+<li id="114">
+The Listener 1 process sets the variable <a href="variables/ide/s_ide-is-running_s.htm"><code>*ide-is-running*</code></a> to <code>t</code>. The process that called <a href="operators/ide/start-ide.htm"><b>start-ide</b></a> could check this variable
+to know when the IDE has completely finished starting up.
+</li>
+<li id="115">
+The Listener 1 process passes <a href="operators/tpl/top-level-read-eval-print-loop.htm"><b>top-level-read-eval-print-loop</b></a> to <a href="operators/tpl/start-interactive-top-level.htm"><b>start-interactive-top-level</b></a> to
+enter a read-eval-print loop. As with other lisp listeners, an abort
+restart ensures that the read-eval-print loop continues whenever this
+process is reset or otherwise aborted.
+</li>
+</ol>
+<h3 id="116">Note on the initial package</h3>
+<p id="117">
+By default, the initial package when the IDE starts up is the
+<code>common-graphics-user</code> package, nicknamed
+<code>cg-user</code>. The IDE starts with this as the initial
+package rather than the more traditional
+<code>common-lisp-user</code> package (nicknamed
+<code>cl-user</code>) so that IDE users do not need to add
+package qualifiers to external Common Graphics symbols, since the
+<code>cg-user</code> package uses the cg package in addition to
+the packages used by the <code>cl-user</code> package. On
+startup the Debug window prints <b>[changing package from
+"common-lisp-user" to "common-graphics-user"]</b>, which notes the
+change of package. This message is normal and no user action is
+necessary. The cg-user package does not use the ide package
+starting in release 8.1. ide package symbols must be
+package-qualified.
+</p>
+<p id="118">
+One of the entries in the list of <a href="variables/cg/s_default-cg-bindings_s.htm"><code>*default-cg-bindings*</code></a> (which
+establishes bindings for listeners started by the IDE) binds <a href="../ansicl/dictentr/package.htm"><code>*package*</code></a> to the value returned by
+<a href="operators/ide/initial-package.htm"><b>initial-package</b></a>. As we said, that
+value is initially the <code>common-graphics-user</code>
+package.  If you would rather have IDE listeners start up in a
+different package, you can set the <a href="operators/ide/initial-package.htm"><b>initial-package</b></a> configuration
+option. You do this with the following steps (we assume you want the
+initial package to be the package named <code>:mypackage</code>
+-- replace <code>:mypackage</code> with a keyword naming the
+package you actually want):
+</p>
+<ol>
+<li id="119">
+Start Allegro CL and the IDE. (The initial package will be the
+<code>common-graphics-user</code> package).
+</li>
+<li id="120">
+Evaluate the following form:
+<pre id="121">
+(setf (initial-package (configuration *system*)) :mypackage)
+</pre>
+<p id="122">
+(Alternately, edit the value of the Initial Package widget on the
+<b>IDE 1</b> tab of the <a href="ide-menus-and-dialogs/options-dialog.htm">Options dialog</a>, and press that dialog's
+<b>OK</b> or <b>Apply</b> button.)
+</p>
+</li>
+<li id="123">
+Choose the menu command <a href="ide-menus-and-dialogs/tools-menu.htm#save-options-now">Tools | Save Options Now</a>.
+</li>
+</ol>
+<p id="124">
+The next time you start Allegro CL with the IDE, all IDE listeners
+will have <code>(find-package :my-package)</code> as the initial
+value of <a href="../ansicl/dictentr/package.htm"><code>*package*</code></a>.
+</p>
+<p id="125">
+Note that:
+</p>
+<ul>
+<li id="126">
+The information on the desired value for <a href="operators/ide/initial-package.htm"><b>initial-package</b></a> is stored in the
+<i>prefs.cl</i> file. If that file is deleted, the value
+returned by <a href="operators/ide/initial-package.htm"><b>initial-package</b></a> reverts to
+<code>common-graphics-user</code> and this process must be
+repeated.
+</li>
+<li id="127">
+The value of <a href="operators/ide/initial-package.htm"><b>initial-package</b></a> must be a keyword
+whose symbol-name is the name of the desired package. It must not be a
+package object (as returned by <a href="../ansicl/dictentr/find-pac.htm"><b>find-package</b></a>).
+</li>
+</ul>
+
+<hr><h2 id="128"><a name="allegro-8bit-2">5.1 How to create an 8-bit image which starts the IDE</a></h2>
+
+
+<p id="129">
+As delivered, Allegro CL only provides 16-bit character size images
+that contain the IDE and start the IDE when invoked. These images are
+<i>allegro.dxl</i> (and its associated executable
+<i>allegro.exe</i>), which is modern (case-sensitive),
+and <i>allegro-ansi.dxl</i> (and its associated
+executable <i>allegro-ansi.exe</i>), which is ANSI
+(case-insensitive). See <a href="startup.htm#executable-names-1">Allegro CL Executables</a> in
+<a href="startup.htm">startup.htm</a> for a general discussion of execuatble
+and image names.
+</p>
+<p id="130">
+If you want to run an 8-bit character size image with the IDE, you
+can start an 8-bit image
+(<i>alisp8.exe/alisp8.dxl</i> or
+<i>mlisp8.exe/mlisp8.dxl</i>, that is <b>Start |
+Programs | Allegro CL 8.0 | ANSI Images | Allegro CL (non Int'l,
+ANSI)</b> or <b>Start | Programs | Allegro CL 8.0 | Modern Images |
+Allegro CL (non Int'l, Modern)</b>), and then load the IDE and call
+<a href="operators/ide/start-ide.htm"><b>start-ide</b></a>, by
+evaluating these forms:
+</p>
+<pre id="131">
+(require :ide)
+(start-ide)
+</pre>
+
+<p id="132">
+You can also build an 8-bit image that has Common Graphics and the IDE
+already loaded into it, and that starts up the IDE automatically.
+Evaluating the following expression, for example, would build an 8-bit
+Modern IDE:
+</p>
+
+<pre id="133">
+(progn
+  (build-lisp-image
+   "sys:allegro8.dxl"
+   :build-executable (namestring (translate-logical-pathname
+                                  "sys:mlisp8.exe"))
+   :include-ide t
+   :restart-init-function 'ide:start-ide
+   :case-mode :case-sensitive-lower)
+  (sys:copy-file "sys:mlisp8.exe" "sys:allegro8.exe"
+                 :overwrite t))
+</pre>
+<p id="134">
+That example builds a Modern (case-sensitive) IDE.  To build an ANSI
+(case-insenstive) IDE instead, then you would need to specify the
+<i>:case-mode</i> argument as
+<b>:case-insensitive-upper</b>.  And to match the names of the 16-bit
+IDE images, you might want to use the name "allegro8-ansi" in place of
+"allegro8".  On Linux/Unix you should exclude the ".exe" suffixes in
+either case.
+</p>
+<p id="135">
+After the build completes, the files <b>allegro8.exe</b> and
+<b>allegro8.dxl</b> will be in the Allegro directory. You can use the
+new 8-bit IDE by running <b>allegro8.exe</b>.  (As usual, you could
+run this file by double-clicking on <b>allegro8.exe</b> in the file
+explorer, or by entering "allegro8" in the proper directory in a
+command window, or by setting up a shortcut that invokes
+<b>allegro8.exe</b>).
+</p>
+
+
+
+
+<hr><hr><h2 id="136"><a name="user-options-file-1">6.0 The user options file allegro-ide-options.cl</a></h2>
+
+
+<p id="137">
+The user options file saves the various options which can be set on
+the various options dialogs displayed by
+the <a href="ide-menus-and-dialogs/tools-menu.htm#options">Tools | Options</a> menu choice. The file is
+named <i>allegro-ide-options.cl</i> is is typically
+located in the user's home directory (on UNIX) or in the personal
+documents directory on Windows. It can also be located in the main
+Allegro directory. (The user-specific location if for an individual
+user. The Allegro directory location affects all users who do not have
+personal versions.)
+</p>
+
+<p id="138">
+In releases prior to 10.0, the options file had a complicated name
+which included the work <i>prefs</i> and also typically information
+about the version number. Starting in 10.0, the file has a new
+structure which is version-independent and so the same file can be
+used when the version is upgraded (with any newly irrevalent entries
+ignored).
+</p>
+
+
+<p id="139">
+The options file is written when the <a href="ide-menus-and-dialogs/tools-menu.htm#save-options-now">Tools | Save Options
+Now</a> menu choice is selected and automatically upon exit when
+the <a href="ide-menus-and-dialogs/tools-menu.htm#save-options-on-exit">Tools | Save Options on Exit</a>
+choice is selected (as indicated by a checkmark -- it is initially
+enabled by default). To suppress saving on exit, disable the option by
+clicking on the menu item and then
+choose <a href="ide-menus-and-dialogs/tools-menu.htm#save-options-now">Tools | Save Options Now</a>. (Just
+disabling <a href="ide-menus-and-dialogs/tools-menu.htm#save-options-on-exit">Tools | Save Options on Exit</a> means
+that options will not be saved when the current Allegro CL is exited
+but unless that option is saved, it will be enabled when Allegro CL is
+next started up.)
+</p>
+<p id="140">
+Do not edit the options file by hand. Your edits may be overwritten
+and an error in editing may cause loading the file on startup to
+fail. (Errors in the options file are protected against, so Allegro CL
+will start when the options file causes an error, but you will not get
+the settings you want. Instead, modify the file by selecting the
+desired options from the Options dialog and
+selecting <a href="ide-menus-and-dialogs/tools-menu.htm#save-options-now">Tools | Save Options Now</a>.
+</p>
+<p id="141">
+The full pathname of the options file can be found by calling
+<a href="operators/ide/options-path.htm"><b>ide:options-path</b></a>.
+</p>
+
+<hr><hr><h2 id="142"><a name="bug-reports-1">7.0 About submitting a bug report from a break in the IDE</a></h2>
+
+<p id="143">
+This page describes how to generate an automatic textual bug report
+when an error occurs in the IDE environment. If the error appears to
+be due to an Allegro bug, emailing this report to Franz will often
+help us to debug the error.
+</p>
+<p id="144">
+When an error occurs and the Restarts dialog (shown on the <a href="ide-menus-and-dialogs/debug-window-after-error.htm">Debug Windows after
+an error</a> page) appears with options for proceeding from the
+error, click the Debug button. This will show the current function
+stack as a graphical outline control. 
+</p>
+<p id="145">
+If the keyboard focus is not already in the stack outline control,
+move the focus there by clicking anywhere in the stack outline or
+perhaps by using the <a href="ide-menus-and-dialogs/view-menu.htm">View</a> | <a href="ide-menus-and-dialogs/view-menu.htm#manage">Manage</a> menu commands for
+selecting windows that are near the top. 
+</p>
+<p id="146">
+Then write the bug information to a file. This can be done in several ways:
+</p>
+<ul>
+<li id="147">
+<b>Click on the Write a Bug Report button above the Debug Pane</b>.
+</li>
+<li id="148">
+<b>Invoke the
+<a href="ide-menus-and-dialogs/file-menu.htm">File</a> | <a href="ide-menus-and-dialogs/file-menu.htm#save">Save</a>
+command</b>.
+</li>
+<li id="149">
+
+<b>Invoke the <a href="ide-menus-and-dialogs/file-menu.htm">File</a> |
+<a href="ide-menus-and-dialogs/file-menu.htm#save-as">Save
+As</a> command</b>.
+
+</li>
+<li id="150">
+
+Use the <a href="ide-menus-and-dialogs/help-menu.htm#bug-report">Help | Write a Bug Report</a> menu command
+(which also lets you choose a process).
+
+</li>
+</ul>
+<p id="151">
+Whichever you choose, a modal dialog appears asking for a pathname
+(even if you have chosen <b>Save</b> or <b>Save As</b> before). Select
+a pathname to write the bug report to. The entire function stack will
+be saved textually to that file, with brief platform information at
+the top of the file, and complete dribble-bug (as generated by <a href="operators/excl/dribble-bug.htm"><b>dribble-bug</b></a>) and
+<i>prefs.cl</i> information at the bottom. The stack
+information will include all of the arguments and local variables for
+each stack frame, regardless of whether you have opened the outline
+items to show the arguments and variables in the IDE. The bug report
+that was written will then be shown in the IDE editor for your review.
+</p>
+<p id="152">
+The stack information will include the normally "hidden" frames only
+if the "Include Hidden Frames" button on the stack outline's toolbar
+is currently pressed. Though the additional information is not always
+necessary, it is best to click on this button before generating the
+bug report.
+</p>
+<hr><hr><h2 id="153"><a name="child-parent-overlapped-etc-1">8.0 About child, parent, and owner windows</a></h2>
+
+<h3 id="154">
+Some definitions
+</h3>
+
+<ul>
+<li id="155">
+<b>Owner</b>: 
+every window has an owner, which is either another window or
+the screen. If the owner is another window, then the window will
+always remain in front of the owner window and will shrink, expand,
+minimize, maximize, and close whenever the owner window does.
+</li>
+<li id="156">
+<b>Parent</b>: every window has a parent, which is either another
+window or the screen. If the parent is a window, then the window will
+be visible only within the interior of the parent window (in other
+words, it is "clipped" at the interior border of the parent window),
+it will move along with the parent window whenever the parent moves,
+and it will scroll within the interior of the parent window whenever
+the parent scrolls. When the parent of a window is another window, the
+parent is also the owner. An existing window may be given a new parent
+by calling <a href="operators/cg/p/parent.htm"><b>(setf parent)</b></a>.
+</li>
+<li id="157">
+<b>Child window</b>:
+a child window is a window whose parent is a window (not the screen).
+</li>
+<li id="158">
+<b>Top-level window</b>: a top-level window is a window whose parent
+is the screen (and not another window).
+</li>
+<li id="159">
+<b>Owned window</b>:
+an owned window is a window whose owner is a window.
+</li>
+<li id="160">
+<b>Non-owned or free window</b>: a non-owned window, also called a
+free window, is a window whose owner is the screen.
+</li>
+<li id="161">
+<b>Child windows</b>: the child windows of a window are
+the windows whose parent is that window. 
+</li>
+<li id="162">
+<b>Child windows of the screen</b>: the child windows of the screen
+are the windows whose parent is the screen. Note the slight ambiguity
+here: child windows of the screen are not themselves <i>child
+windows</i> but <i>top-level windows</i>.
+</li>
+<li id="163">
+<b>Owned windows</b>: 
+the owned windows of a window or the screen are the windows whose
+owner is that window or screen.
+</li>
+</ul>
+
+<p id="164">
+Since a window can be either a child window or a top-level window, and
+can also be either an owned window or not, there are four possible
+combinations of these attributes. But since a child window is always
+also an owned window (where the parent is also the owner), that leaves
+three actual types of windows, in terms of their relationships to a
+parent or owner:
+</p>
+<ol>
+<li id="165">
+Child windows, where the parent is a window. Such windows are created
+by passing an existing window as the value of the
+<code>:owner</code> keyword argument to <a href="operators/cg/m/make-window.htm"><b>make-window</b></a>, and true as the value
+of the <code>:child-p</code> argument. (Note that the
+<code>:child-p</code> argument defaults to t, so it's not
+necessary to specify a value when creating a child window.)
+</li>
+<li id="166">
+Owned top-level windows, where the owner is a window but the parent is
+the screen. These windows appear to be independent, moving freely
+about on the desktop (screen), but still have an owner window with
+which they shrink and so on. Such windows are created by passing an
+existing window as the value of the <code>:owner</code> argument
+to <a href="operators/cg/m/make-window.htm"><b>make-window</b></a>,
+and passing <code>nil</code> as the value of the
+<code>:child-p</code> argument. Note that the owner of an owned
+top-level window must always be a top-level window; if a child window
+is passed as the owner, its top-level parent (or ancestor) will become
+the owner, not the child window specified.
+</li>
+<li id="167">
+Non-owned top-level windows, where both the owner and parent are
+the screen. These windows are truly independent, and have their own
+icons in the Windows taskbar and alt-tab window (unless their 
+<a href="operators/cg/b/border.htm"><b>border</b></a>
+property is :palette). Create a non-owned top-level window by passing
+<code>(screen *system*)</code> as the value of the 
+<code>:owner</code> argument to 
+<a href="operators/cg/m/make-window.htm"><b>make-window</b></a>
+(in which case the <code>:child-</code>p argument will be 
+essentially ignored).
+</li>
+</ol>
+<p id="168">
+In the IDE, the default value of the <code>:owner</code>
+argument to <a href="operators/cg/m/make-window.htm"><b>make-window</b></a> is
+<code>(development-main-window *system*)</code>, which is the
+owner window of the various IDE dialogs (see <a href="operators/cg/d/development-main-window.htm"><b>development-main-window</b></a>
+and <a href="variables/cg/s_system_s.htm"><code>*system*</code></a>). This default allows a
+user-created window to access the IDE menubar commands by using the
+menubar's keyboard shortcuts when the user-created window has the
+keyboard focus, and also allows the window to intermingle with the
+various IDE windows, rather than being either behind all of the IDE
+windows or in front of all of them. In a generated standalone
+application, on the other hand, the default value of the
+<code>:owner</code> argument is the screen. So to test a
+top-level window just as it would behave in a standalone application,
+specify <code>(screen *system*)</code> as the owner of the
+window rather than letting the owner default to the IDE owner window.
+These two alternatives are used by the <a href="ide-menus-and-dialogs/run-menu.htm#run-form">Run Form</a> and <a href="ide-menus-and-dialogs/run-menu.htm#run-project">Run
+Project</a> commands (both on the <a href="ide-menus-and-dialogs/run-menu.htm">Run</a> menu): The 
+<a href="ide-menus-and-dialogs/run-menu.htm#run-form">Run Form</a> command places the
+running window on the IDE owner window for easy access within the IDE,
+whereas the  <a href="ide-menus-and-dialogs/run-menu.htm#run-project">Run
+Project</a> command creates the main window of the project
+on the screen to more closely emulate the standalone application that
+would be created from the project.
+</p>
+<p id="169">
+The IDE is multi-threaded, so you may find that a user
+window created on the IDE owner window leads to "message timeout"
+errors if it interacts with IDE windows in certain ways, due to the
+windows having been created in different processes and therefore
+handling their messages in those different processes. If this should
+happen, the workaround is to not create those user windows on the IDE
+owner window.
+</p>
+<p id="170">
+Some related functions: <a href="operators/cg/p/parent.htm"><b>parent</b></a> returns the parent of a
+window, while <a href="operators/cg/o/owner.htm"><b>owner</b></a> returns the owner.  <a href="operators/cg/w/windows.htm"><b>windows</b></a> returns a list of
+all of the child or owned windows of a window.  <a href="operators/cg/c/child-p.htm"><b>child-p</b></a> returns whether a window is
+a child window. <a href="operators/cg/t/top-level-window.htm"><b>top-level-window</b></a> returns the
+top-level ancestor window of a window.
+</p>
+<h3 id="171">
+Some Notes
+</h3>
+<ul>
+<li id="172">
+Because the <code>:owner</code> argument was inappropriately
+called <code>:parent</code> in earlier releases (inappropriate
+because the argument was only an owner and not a parent when creating
+an owned top-level window), the <code>:parent</code> argument
+still works for compatibility, but <code>:owner</code> is
+preferred.
+</li>
+
+<li id="173">
+In earlier releases, passing the <code>:pop-up</code> argument
+to <a href="operators/cg/m/make-window.htm"><b>make-window</b></a> as true
+simply created a top-level window. Now it more specifically creates a
+top-level window appropriate for use as a modal dialog, by coercing
+<code>:child-p</code> to <code>nil</code>,
+<code>:state</code> to <code>:shrunk</code>,
+<code>:minimize-button</code> and
+<code>:maximize-button</code> to <code>nil</code>,
+and <code>:scrollbars</code> to <code>nil</code>.
+</li>
+</ul>
+
+<hr><hr><h2 id="174"><a name="code-creating-controls-1">9.0 About how to get sample code for creating controls</a></h2>
+
+<p id="175">
+All controls (buttons, single-item-lists, combo-boxes,
+multiline-editable-text controls, etc.) are represented in the Allegro
+CL Integrated Development Environment (IDE) as classes. Instances are
+created with <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, which takes a class
+name and initialization arguments.
+</p>
+<p id="176">
+Using the IDE, you can add a control to a form. The code for creating
+an instance of the control is generated automatically. That
+automatically generated code provides examples of code that creates
+instances of controls (and also windows).
+</p>
+<p id="177">
+You can add a form to a project with the <a href="ide-menus-and-dialogs/file-menu.htm#new-form">File | New
+Form</a> command. The first form added will typically be labeled
+form1. If you click <a href="ide-menus-and-dialogs/run-menu.htm#run-project">Run | Run Project</a>, files named
+<i>form1.cl</i> and <i>form1.bil</i> are
+saved (along with <i>project1.lpr</i>, which does not
+concern us here). Here is the contents of
+<i>form1.bil</i> (slightly edited, note: do not try to
+run this code as it has pathnames likely invalid on your machine):
+</p>
+<pre id="178">
+;;;
+;;; Define :form1
+ 
+(in-package :common-graphics-user)
+
+;; Return the window, creating it the first time or when it's closed.
+;; Use only this function if you need only one instance.
+(defun form1 () (find-or-make-application-window :form1 'make-form1))
+ 
+;; The maker-function, which always creates a new window.
+;; Call this function if you need more than one copy,
+;; or the single copy should have a parent or owner window.
+;; (Pass :owner to this function; :parent is for compatibility.)
+(defun make-form1
+    (&key parent (owner (or parent (screen *system*)))
+     (exterior (make-box 256 149 960 519)) (name :form1)
+     (title "Form1") (border :frame) (child-p nil) form-p)
+  (let ((owner
+         (make-window name
+           :owner owner
+           :class 'dialog
+           :exterior exterior
+           :border border
+           :child-p child-p
+           :close-button t
+           :cursor-name :arrow-cursor
+           :font (make-font-ex :swiss "MS Sans Serif / ANSI" 11 nil)
+           :form-state :normal
+           :maximize-button t
+           :minimize-button t
+           :name :form1
+           :form-package-name nil
+           :path #p"C:\\Program Files\\acl70\\form1.bil"
+           :help-string nil
+           :pop-up nil
+           :resizable t
+           :scrollbars nil
+           :state :normal
+           :status-bar nil
+           :system-menu t
+           :title title
+           :title-bar t
+           :dialog-items (make-form1-widgets)
+           :toolbar nil
+           :form-p form-p
+           :help-string nil)))
+    owner))
+</pre>
+<p id="179">
+Note in the definition of the function <b>make-form1</b> is a call to
+<a href="operators/cg/m/make-window.htm"><b>make-window</b></a>
+suitable for creating a dialog window (that is, an instance of class
+<a href="classes/cg/dialog.htm"><code>dialog</code></a>). Note
+that only some of the possible arguments are included. Now, stop
+running the form and place a button on it by clicking on the button
+icon on the component toolbar and clicking on the blank form1. Run the
+form again, saving <i>form1.cl</i>. Again, look at the
+<i>form1.bil</i> file:
+</p>
+<pre id="180">
+;;;
+;;; Define :form1
+ 
+(in-package :common-graphics-user)
+
+;; Return the window, creating it the first time or when it's closed.
+;; Use only this function if you need only one instance.
+(defun form1 () (find-or-make-application-window :form1 'make-form1))
+ 
+;; The maker-function, which always creates a new window.
+;; Call this function if you need more than one copy,
+;; or the single copy should have a parent or owner window.
+;; (Pass :owner to this function; :parent is for compatibility.)
+(defun make-form1
+    (&key (owner (or parent (screen *system*)))
+     (exterior (make-box 256 149 960 519)) (name :form1)
+     (title "Form1") (border :frame) (child-p nil) form-p)
+  (let ((owner
+         (make-window name
+           :owner owner
+           :class 'dialog
+           :exterior exterior
+           :border border
+           :child-p child-p
+           :close-button t
+           :cursor-name :arrow-cursor
+           :font (make-font-ex :swiss "MS Sans Serif / ANSI" 11 nil)
+           :form-state :normal
+           :maximize-button t
+           :minimize-button t
+           :name :form1
+           :form-package-name nil
+           :path #p"C:\\Program Files\\acl70\\form1.bil"
+           :help-string nil
+           :pop-up nil
+           :resizable t
+           :scrollbars nil
+           :state :normal
+           :status-bar nil
+           :system-menu t
+           :title title
+           :title-bar t
+           :dialog-items (make-form1-widgets)
+           :toolbar nil
+           :form-p form-p
+           :help-string nil)))
+    owner))
+
+(defun make-form1-widgets ()
+  (list (make-instance 'button :font
+                       (make-font-ex nil "Tahoma / ANSI" 11 nil) :left
+                       114 :name :button4 :top 80)))
+</pre>
+<p id="181">
+Note that the call to <a href="operators/cg/m/make-window.htm"><b>make-window</b></a> now has another
+argument provided, :dialog-items. Its value is a call to
+<b>make-form1-widgets</b>, which is defined (in the file, appearing
+above as well) as:
+</p>
+<pre id="182">
+(defun make-form1-widgets ()
+  (list (make-instance 'button :font
+                       (make-font-ex nil "Tahoma / ANSI" 11 nil) :left
+                       114 :name :button4 :top 80)))
+</pre>
+<p id="183">
+If you further customize the button, additional arguments will be
+provided. Here is the call after we have changed the <a href="operators/cg/t/title.htm"><b>title</b></a> to "Here", added an <a href="operators/cg/o/on-click.htm"><b>on-click</b></a> event handler,
+and modified the <a href="operators/cg/w/width.htm"><b>width</b></a> from their default
+values:
+</p>
+<pre id="184">
+(defun make-form1-widgets ()
+  (list (make-instance 'button :font
+                       (make-font-ex nil "Tahoma / ANSI" 11 nil) :left
+                       114 :name :button4 :on-click
+                       'form1-button4-on-click :title "Here" :top 80
+                       :width 33)))
+</pre>
+<p id="185">
+The <i>title</i>, <i>width</i>, and
+<i>on-click</i> arguments have all been added.
+</p>
+<p id="186">
+You can reasonably easily generate similar examples creating forms of
+various classes and by adding controls to a form, running the form,
+and looking at the resulting <i>.bil</i> file.
+</p>
+<hr><hr><h2 id="187"><a name="cg-multithreading-1">10.0 About using multiple windowing processes in a Common Graphics application</a></h2>
+
+<p id="188">
+Multiple application processes can create CG windows, where each
+process will handle all events for the windows that it creates.
+</p>
+<p id="189">
+We advise against creating windows in multiple processes within a 
+single window hierarchy, though, because deadlocks may occur when
+messages are sent from a window in one process to a window in 
+another process within the hierarchy. 
+</p>
+<p id="190">
+The generic function <a href="operators/cg/c/creation-process.htm"><b>creation-process</b></a> applied to a
+window returns the process that called <a href="operators/cg/m/make-window.htm"><b>make-window</b></a> to create the window.
+</p>
+<p id="191">
+The function <a href="operators/cg/s/set-foreground-window.htm"><b>set-foreground-window</b></a>
+makes the process that created the specified window be
+the foreground process, and selects the specified window.
+</p>
+<p id="192">
+A process that is to create windows must be set up as follows:
+</p>
+<ol>
+<li id="193">
+When creating the process by calling <a href="operators/mp/process-run-function.htm"><b>process-run-function</b></a>, pass <a href="variables/cg/s_default-cg-bindings_s.htm"><code>*default-cg-bindings*</code></a> as the value
+of the :initial-bindings keyword argument. If other bindings are
+needed, a union of those bindings with <a href="variables/cg/s_default-cg-bindings_s.htm"><code>*default-cg-bindings*</code></a> may be
+passed, but of course do not modify the <a href="variables/cg/s_default-cg-bindings_s.htm"><code>*default-cg-bindings*</code></a> list.
+</li>
+<li id="194">
+At the end of the preset-function passed to <a href="operators/mp/process-run-function.htm"><b>process-run-function</b></a>, enter an
+event-handling loop by calling <a href="operators/cg/e/event-loop.htm"><b>event-loop</b></a>. This allows any
+messages that are sent to windows that are created in this process to
+be handled. Typically a "main window" is passed to <a href="operators/cg/e/event-loop.htm"><b>event-loop</b></a> so that the event-loop
+and its process will exit when the user has closed the specified
+window.
+</li>
+</ol>
+
+<p id="195">
+A convenient way to do the above two steps is to use the macro <a href="operators/cg/i/in-cg-process.htm"><b>in-cg-process</b></a>.
+</p>
+
+<p id="196">
+These steps are not necessary when using the project system to create
+an application with a single windowing process (which is typical),
+because these steps are done automatically for the process created by
+the <a href="ide-menus-and-dialogs/run-menu.htm#run-project">Run | Run Project</a> command in the IDE and by
+the corresponding initial process of the generated standalone
+application.
+</p>
+
+<p id="197">
+To print debugging output to an IDE listener from a CG process that is
+neither a listener nor a <a href="ide-menus-and-dialogs/run-menu.htm#run-project">Run | Run Project</a> process,
+see <a href="operators/ide/format-debug.htm"><b>format-debug</b></a> and <a href="operators/ide/with-output-to-ide-listener.htm"><b>with-output-to-ide-listener</b></a>.
+(Otherwise standard output will be directed to the console window,
+which is typically hidden.)
+</p>
+
+
+<h3 id="198">
+Trivial example
+</h3>
+<pre id="199">
+;; This example simply starts up a process to create a window,
+;; and exits its event-loop (and therefore the process) when
+;; the user closes the window.
+
+(mp:process-run-function
+ (list :name "My dummy thread"
+       :initial-bindings cg:*default-cg-bindings*)
+ #'(lambda ()
+     (let* ((win (cg:make-window :my-window
+                   :owner (cg:screen cg:*system*)
+                   :title "A window in its own thread.")))
+       (event-loop :window win))))
+</pre>
+<h3 id="200">
+Simple example
+</h3>
+<pre id="201">
+;; This example lets the user click the window to specify a position.
+;; A list is kept of the positions, and the window draws a circle
+;; at each one.  As soon as the user adds the third circle, the
+;; event-loop exit-test causes the event-loop to exit, and so
+;; the process dies and its window is therefore closed (this
+;; will happen before you actually see the third circle).
+
+(defclass my-frame (frame-window)
+  ((circle-centers :initform nil :accessor circle-centers)))
+
+(defmethod redisplay-window ((window my-frame) &amp;optional box)
+  (declare (ignore box))
+  (call-next-method) ;; Clear the window
+  (dolist (center (circle-centers window))
+    (draw-circle window center 50)))
+
+(defmethod mouse-left-down ((window my-frame) buttons cursor-pos)
+  (declare (ignore buttons))
+  (push cursor-pos (circle-centers window)) ;; Add a new circle
+  (invalidate window)) ;; Redraw the window to include the new circle
+
+(mp:process-run-function
+ `(:name &quot;Three Circles&quot; :initial-bindings ,*default-cg-bindings*)
+ #'(lambda ()
+     (let* ((window (make-window :three-circles
+                      :class 'my-frame
+                      :owner (screen *system*)
+                      :title &quot;Click to give me three circles&quot;)))
+       (event-loop :window window
+                   :exit-test
+                   #'(lambda (win)
+                       (&gt;= (length (circle-centers win)) 3))))))
+</pre>
+<p id="202">
+When the Run | Run Project command in the IDE is invoked, a new process 
+is created automatically to run the project, and is set up as described 
+above for debugging in the IDE and for handling events.
+</p>
+<p id="203">
+DDE can now work in multiple processes. See <a href="dde.htm">dde.htm</a>.
+</p>
+<hr><h2 id="204"><a name="modal-cg-2">10.1 Modal CG utility dialogs are not shared between processes</a></h2> 
+
+<p id="205">
+Multiple processes may simultaneously invoke modal dialogs without
+interference, even if the two dialogs are the "same" CG utility
+dialog, such as the <a href="operators/cg/a/ask-user-for-choice-from-list.htm"><b>ask-user-for-choice-from-list</b></a>
+dialog.
+</p>
+
+
+<hr><h2 id="206"><a name="cg-re-entrancy-2">10.2 CG re-entrancy</a></h2>
+
+<p id="207">
+Various global objects have been modified to avoid re-entrancy
+problems when multiple processes enter the same CG functions
+simultaneously. Among the things modified are many box and position
+constants. The functions <a href="operators/cg/w/with-boxes.htm"><b>with-boxes</b></a>, <a href="operators/cg/w/with-positions.htm"><b>with-positions</b></a>, and <a href="operators/cg/w/with-positions-and-boxes.htm"><b>with-positions-and-boxes</b></a>
+are provided for applications that similarly need to remove box and
+position constants.
+</p>
+
+
+<hr><h2 id="208"><a name="cg-break-key-2">10.3 Enhanced Break Key functionality</a></h2>
+
+<p id="209">
+When the break key is pressed in the IDE, the IDE will look for a
+listener process that is currently busy evaluating user code.  If it
+finds such a process, then it calls <a href="operators/mp/process-interrupt.htm"><b>process-interrupt</b></a>
+on that process to tell that process to call break.  This allows you
+to interrupt and debug user code that may be in an infinite loop, for
+example, or is otherwise taking longer than expected.  The rest of
+this section describes what is done only when a busy listener process
+is not found.
+</p>
+<p id="210">
+When the break key is pressed and no busy listener process is found,
+the Restarts dialog will be 
+created and presented in a new process that exists solely
+for handling the break; this may avoid problems with interrupting 
+another process that is in a problematic state. 
+</p>
+<p id="211">
+Before the Restarts dialog appears, the <a href="operators/mp/process-quantum.htm"><b>process-quantum</b></a> of every process
+is set to 0.1 seconds, to make any processes that are used for debugging
+more responsive if another process is in a busy loop. The process
+quanta are set back to their earlier values when the break process goes
+away, which happens when you either abort from the break key's
+Restarts dialog or from the backtrace pane that is created for the
+break in the Debug Window if you select Debug from the Restarts
+dialog.
+</p>
+<p id="212">
+Also before the Restarts dialog appears, any modal dialogs that 
+are currently invoked will be brought to the front. This may help to 
+recover from a possible problem where a modal dialog gets buried and 
+then prevents further work due to its modality. 
+</p>
+
+
+
+<hr><h2 id="213"><a name="ide-multithreaded-debugging-2">10.4 Debugging Multiple Processes in the IDE</a></h2>
+
+<p id="214">
+Multiple processes may be debugged in the IDE. Any process can be
+debugged in the IDE if it is set up using <a href="variables/cg/s_default-cg-bindings_s.htm"><code>*default-cg-bindings*</code></a> initial
+bindings as described <a href="#cg-multithreading-1">above</a>. See also the section
+<a href="#using-ide-when-busy-2">Section 10.5 Using the IDE while user code is busy</a>.
+</p>
+
+<p id="215">
+<b>Multiple Listeners may be used.</b> A new <a href="ide-menus-and-dialogs/view-menu.htm">View</a> | <a href="ide-menus-and-dialogs/view-menu.htm#new-listener">New Listener</a> menu command
+allows for the creation of additional all-purpose lisp listeners. Each
+listener uses an independent process for evaluations, and has its own
+command history and backtrace window (when needed). All of the
+listeners are grouped into a single frame window, with a tab for each
+listener.  The name of the process and its listener will be
+"Listener X", where X is a number to make the name unique.
+</p>
+<p id="216">
+<b>The "Listener 1" listener window always exists while the 
+IDE is running,</b> along with the "Listener 1" process. Forms evaluated 
+in this listener or elsewhere in the IDE are evaluated in the 
+Listener 1 process, which is distinct from the "IDE GUI" process, 
+which handles the actual user gestures in the IDE such as mouse 
+clicks and keypresses (since the IDE windows are created in the IDE GUI 
+process). The main implication of this is that if the evaluation of a 
+user form is taking a while, the IDE GUI itself will still 
+respond to interactive gestures since these are handled in a 
+different process (though it may be very sluggish if the evaluation is 
+in a tight loop). 
+</p>
+
+<p id="217">
+The additional listeners may be closed with the 
+<a href="ide-menus-and-dialogs/file-menu.htm">File</a> | <a href="ide-menus-and-dialogs/file-menu.htm#close-pane">Close Pane</a> 
+command (control-alt-X). The initial IDE listener, named
+Listener 1, cannot be closed. 
+</p>
+<p id="218">
+<b>Each process being debugged will have its own listener and backtrace
+pane.</b> If a break occurs in one of the listener processes, the
+listener that already exists for that process will be used for the
+backtrace if the debugger is selected from the Restarts dialog. For
+other processes, a new listener will be created, assuming that IDE
+debugging has been enabled for the process.
+</p>
+<p id="219">
+<b>Listeners that are created for debugging a break will go away 
+automatically when the break is aborted or entirely popped out of.</b> 
+When a process is debugged by clicking the Debug button of the 
+Processes dialog, the listener that is created does evaluations in a 
+new separate "proxy" process, similar to focusing on a process in 
+non-IDE listener; this is unlike listeners created when a break occurs and 
+is debugged, which do evaluations in the broken process itself. 
+</p>
+<p id="220">
+<b>Shortcut keystrokes can be used for moving amongst the different listeners 
+and break levels with the keyboard.</b> Shortcut keys
+are shown on the right-button shortcut menus of the 
+listener tabs.
+</p>
+<p id="221">
+<b>Dialog modality in user processes will not disable IDE interaction.</b> 
+Only modal dialogs invoked by the IDE itself in the IDE GUI process will 
+prevent further interaction with the IDE while the modal dialog is present. 
+Modal dialogs invoked by user code will run independently. 
+</p>
+<p id="222">
+<b>The trace dialog reports which process each call was made in.</b>
+When a function call is selected in the trace dialog's outline
+control, the process in which that call occurred is displayed in 
+the titlebar of the trace dialog. 
+</p>
+<p id="223">
+The <a href="ide-menus-and-dialogs/view-menu.htm">View</a> | <a href="ide-menus-and-dialogs/view-menu.htm#debug-window">Debug
+Window</a> command will generate its new prompt in the main IDE
+listener unless the focus is in a listener already, in which
+case the prompt is generated in that listener.
+</p>
+<p id="224">
+The Debug button on the Processes dialog will arrest the selected 
+process for debugging, and create a new process with a listener that is 
+focused on the selected process. The new process and its listener tab 
+will be named "Proxy for FOO", where FOO is the process that is focused on.  
+Aborting out of the new listener will unarrest the focused process.
+</p>
+
+
+
+<hr><h2 id="225"><a name="using-ide-when-busy-2">10.5 Using the IDE while user code is busy</a></h2>
+
+<p id="226">
+Multiple processes are used by the IDE to allow IDE windows to be
+responsive while arbitrary user code is busy executing. This is
+accomplished by creating all of the IDE windows in the "IDE GUI"
+process, but evaluating user code in an IDE Listener process such as the
+initial "Listener 1" process, which is associated with the Debug
+window. The listener processes are used not only for evalutions in the
+listener pane itself, but also by IDE commands that involve user code,
+such as the <a href="ide-menus-and-dialogs/tools-menu.htm">Tools</a> |
+<a href="ide-menus-and-dialogs/tools-menu.htm#incremental-evaluation">Incremental Evaluation</a> and
+<a href="ide-menus-and-dialogs/file-menu.htm">File</a> | <a href="ide-menus-and-dialogs/file-menu.htm#load">Load</a>
+commands.
+</p>
+<p id="227">
+The IDE windows will not respond at all while a listener process is
+busy, however, if there are any open user windows (windows that were
+created in a listener process) on the IDE owner window (see <a href="operators/cg/d/development-main-window.htm"><b>development-main-window</b></a>).
+There are two cases (described below) where a user window may
+commonly end up on the IDE owner window, and so these cases should be
+avoided (and any existing user windows on the IDE owner should be
+closed) at times when it is desirable to use IDE windows while user
+code is busy running.
+</p>
+<p id="228">
+The first case is the <a href="ide-menus-and-dialogs/run-menu.htm">Run</a> | <a href="ide-menus-and-dialogs/run-menu.htm#run-form">Run Form</a> command. <a href="ide-menus-and-dialogs/run-menu.htm#run-form">Run
+Form</a> creates the running window in an IDE listener process,
+with the IDE owner window as the owner. This is done so that
+particular IDE windows may be used alongside the running window
+without bringing the entire IDE in front of the running window, and so
+that keyboard shortcuts for IDE commands may be used while the running
+window is selected. <a href="ide-menus-and-dialogs/run-menu.htm#run-project">Run Project</a> (also on the <a href="ide-menus-and-dialogs/run-menu.htm">Run</a> menu), on the other hand,
+does not use the IDE owner window, since its purpose is to simulate
+the final standalone application more closely. So if a widget on a
+dialog of the current project initiates a long procedure, and it is
+desirable to use the IDE while this procedure is running, you should
+use <a href="ide-menus-and-dialogs/run-menu.htm#run-project">Run Project</a> rather than <a href="ide-menus-and-dialogs/run-menu.htm#run-form">Run
+Form</a>. (If you need to interrupt something that is running and
+the IDE windows are not responsive, you can still do so by
+right-clicking the Franz icon in the Windows Tray and selecting
+"Interrupt Lisp".)
+</p>
+<p id="229">
+The second case involves arbitrary user calls to <a href="operators/cg/m/make-window.htm"><b>make-window</b></a> where no :owner
+argument is specified. When this is done in the IDE, the owner of the
+new window defaults to the IDE owner window. This default is used for
+the same reasons as <a href="ide-menus-and-dialogs/run-menu.htm#run-form">Run Form</a> above. If it is desirable to use the
+IDE while such a window is open and while user code is busy running,
+then the window should be created with the screen as its owner by
+specifying the value of the :owner argument to <a href="operators/cg/m/make-window.htm"><b>make-window</b></a> as <code>(screen
+*system*)</code>.  See <a href="operators/cg/s/screen.htm"><b>screen</b></a> and <a href="variables/cg/s_system_s.htm"><code>*system*</code></a>.
+</p>
+<p id="230">
+As an alternative, see <a href="operators/cg/p/process-pending-events.htm"><b>process-pending-events</b></a> on how to
+use cooperative multitasking, which allows other processes to run in
+any situation.
+</p>
+
+
+
+
+<hr><hr><h2 id="231"><a name="cg-event-driven-design-1">11.0 About design considerations for event-driven applications</a></h2>
+
+<p id="232">
+As documented in <a href="#cg-multithreading-1">Section 10.0 About using multiple windowing processes in a Common Graphics application</a>
+above, any process that is set up to create windows and handle the
+messages that are sent to them needs to call <a href="operators/cg/e/event-loop.htm"><b>event-loop</b></a> at the end of its
+<a href="operators/mp/process-run-function.htm"><b>process-run-function</b></a>
+preset-function. The process will then spend its remaining time inside
+<a href="operators/cg/e/event-loop.htm"><b>event-loop</b></a>,
+running code that is triggered by the messages that are sent to any
+windows that are created in that process. The messages include user
+mouse and keyboard events as well as messages sent by code that the
+application is running and messages from the operating system.
+</p>
+<p id="233">
+This interactive event-driven model requires an application to be
+designed somewhat differently than one that simply runs from start to
+end to complete a pre-defined task. We describe two kinds of potential
+problems that are good to keep in mind when designing an interactive
+Common Graphics application: <a href="#mh-routines-run-long-2">problems with message-handling routines
+that run for a long time</a> and <a href="#mh-routines-that-block-2">problems with message-handling routines
+that block</a>.
+</p>
+
+<hr><h2 id="234"><a name="mh-routines-run-long-2">11.1 Message-handling routines that run for a long time</a></h2>
+
+
+<p id="235">
+When mouse and keyboard events (and other messages) are sent to
+various windows of a Common Graphics application, the messages are
+held in a queue, and generally the application code that handles each
+message is run completely before the next message in the queue is
+handled. This allows the code to run in a predictable order, even
+though the messages themselves are queued asynchronously.
+</p>
+<p id="236">
+This can be a problem when the code that handles a message runs for a
+long time, because no other messages for windows in the same process
+will be handled until that code returns, and so end users will see no
+response to their gestures in the meantime.  If future user actions
+might depend on the current routine completing, then not much can be
+done about this except showing an hourglass cursor (see <a href="operators/cg/w/with-hourglass.htm"><b>with-hourglass</b></a>) or using
+other cues to tell the user to wait. In this default case, further
+messages will be queued and handled later in order, and this is how
+most windowing applications work.
+</p>
+<p id="237">
+But sometimes it is desirable for the user to be able to go ahead and
+perform other independent actions (when there are any). One way to do
+this is to call <a href="operators/mp/process-run-function.htm"><b>process-run-function</b></a> to create a
+new process that performs the time-consuming operation.  Note that if
+the new process needs to create windows that will handle messages,
+then it needs to follow the guidelines for creating a Common Graphics
+process described in
+<a href="#cg-multithreading-1">Section 10.0 About using multiple windowing processes in a Common Graphics application</a> above; otherwise
+any ordinary process may be created and used. Another general option
+is to hand off a command to an existing process, perhaps with
+process-interrupt or using a custom queue of some sort.
+</p>
+<p id="238">
+A different approach is to call <a href="operators/cg/p/process-pending-events.htm"><b>process-pending-events</b></a> at frequent
+intervals in the long-running code, which handles subsequent queued
+messages at that time. This function can cause unknown messages to be
+handled in a different order than usual, though, and so it should be
+used with care.
+</p>
+<p id="239">
+<a href="operators/cg/p/process-pending-events.htm"><b>process-pending-events</b></a> should not
+be called when an exclusive resource (such as a process lock) is
+currently being held, if it is possible that the processing of
+subsequent events may lead to a request for that resource that will
+block until the resource is no longer held. If it is the same process
+that requests the resource again, then this would always cause a
+deadlock, since the process will not unwind to the earlier use of the
+resource in order to free it (unless the second request knows how to
+see that that process already has the resource, and then either
+proceed or return, as appropriate).  Even if the second request is
+from another process, complex interactions could still lead to
+deadlock unless this is carefully avoided in the application design.
+</p>
+<p id="240">
+Similarly, a Common Graphics process that an application creates
+normally should not grab an exclusive resource in its <a href="operators/mp/process-run-function.htm"><b>process-run-function</b></a>
+preset-function and not release it before it calls <a href="operators/cg/e/event-loop.htm"><b>event-loop</b></a>, as this would hoard the
+resource for the entire life of the process. Likewise, a project's
+<a href="operators/ide/on-initialization.htm"><b>on-initialization</b></a>
+function should avoid returning while holding an exclusive resource.
+</p>
+<p id="241">
+With either of the above approaches (handing a long-running command
+off to another process, or calling <a href="operators/cg/p/process-pending-events.htm"><b>process-pending-events</b></a> frequently),
+it is up to the application to prevent the user from doing an action
+that depends on the result of an earlier action that has not yet
+completed.
+</p>
+
+
+
+<hr><h2 id="242"><a name="mh-routines-that-block-2">11.2 Message-handling routines that block</a></h2>
+
+<p id="243">
+A less obvious kind of problem may arise due to the fact that there
+are certain other exceptions to the general rule where one message is
+handled completely before the next message is handled.  In particular,
+there are certain functions such as <a href="operators/mp/process-wait.htm"><b>process-wait</b></a> that wait an arbitrary
+amount of time until some condition is met (this is usually called
+blocking). When such functions are called in a Common Graphics
+process, any messages that were already queued or that occur during
+the waiting period are handled while the call is blocking.
+</p>
+<p id="244">
+This handling of further messages during blocking is done to avoid
+failing to respond to arbitrary messages for long periods, including
+messages sent by other processes, or messages that the operating
+system may send to all top-level windows, expecting a timely reply.
+Also, the process may be waiting on a condition that will not be
+reached until further messages are handled by that same process, and
+so the process would be hung if further messages were not handled
+while blocking.
+</p>
+<p id="245">
+This design means that when a blocking function is called in code that
+is itself handling a message, later messages are handled while the
+code handling the current message is still running, and so the
+messages are not handled totally in the usual order.  In particular,
+if the same type of message occurs again during the waiting period,
+the code that handles the message may be re-entered a number of
+times, which the application may not be written to handle.
+</p>
+<p id="246">
+And normally almost all Common Graphics code in an application is
+message-handling code (namely everything except the <a href="operators/ide/on-initialization.htm"><b>on-initialization</b></a> function of a
+standalone application, or setup code that a newly-created Common
+Graphics process calls before it calls <a href="operators/cg/e/event-loop.htm"><b>event-loop</b></a>).  So this warning
+applies to nearly all Common Graphics code in a typical application,
+if it calls blocking functions that process intervening messages.
+</p>
+<p id="247">
+The functions and macros that cause intervening messages to be handled
+immediately include the following:
+</p>
+<ul>
+<li id="248">
+<a href="operators/mp/process-wait.htm"><b>process-wait</b></a>
+</li>
+<li id="249">
+<a href="operators/mp/with-process-lock.htm"><b>with-process-lock</b></a>
+</li>
+<li id="250">
+<a href="../ansicl/dictentr/sleep.htm"><b>sleep</b></a>
+</li>
+<li id="251">
+<a href="operators/cg/p/process-pending-events.htm"><b>process-pending-events</b></a>
+</li>
+<li id="252">
+<b>astore:with-transaction</b> (in AllegroStore applications)
+</li>
+</ul>
+
+<p id="253">
+Other functions (either in Allegro itself or in the application) that
+call the above functions would exhibit this behavior as well, and
+there may be other primitive functions in Allegro that behave this way
+but are not noted here.
+</p>
+<p id="254">
+A particular kind of deadlock can result if one of these functions is
+called while holding an exclusive resource of some kind, such as a
+process lock.  For example, say an application has a <a href="operators/cg/m/mouse-in.htm"><b>mouse-in</b></a> method that grabs a
+process lock and then calls either <a href="operators/mp/process-wait.htm"><b>process-wait</b></a> or <a href="operators/cg/p/process-pending-events.htm"><b>process-pending-events</b></a>. If the user
+moves the mouse into a window a second time and that event is handled
+while the call to the method for the first <a href="operators/cg/m/mouse-in.htm"><b>mouse-in</b></a> is still inside the call
+to <a href="operators/mp/process-wait.htm"><b>process-wait</b></a>
+or <a href="operators/cg/p/process-pending-events.htm"><b>process-pending-events</b></a>, then the
+<a href="operators/cg/m/mouse-in.htm"><b>mouse-in</b></a> method
+will be re-entered and wait for the lock. This will deadlock (with
+the default arguments to <a href="operators/mp/with-process-lock.htm"><b>with-process-lock</b></a>) because that
+event-handling process will wait for the lock forever and therefore
+never unwind to the first call to the <a href="operators/cg/m/mouse-in.htm"><b>mouse-in</b></a> method, as it would need
+to do to release the lock.
+</p>
+<p id="255">
+The function <a href="operators/cg/p/post-funcall-in-cg-process.htm"><b>post-funcall-in-cg-process</b></a> has been
+supplied as a general single-process solution to this kind of problem.
+If code that calls any of the blocking functions listed above is
+passed to this function instead of being called directly, then the
+code will be run later after all window messages in this process have
+been handled and all code that was queued by earlier calls to this
+function have run and returned. The important point is that all
+function calls that are passed to <a href="operators/cg/p/post-funcall-in-cg-process.htm"><b>post-funcall-in-cg-process</b></a> for a
+given process are guarranteed to run sequentially (in the order of
+posting), eliminating problems that might arise if the calls
+overlapped.  See <a href="operators/cg/p/post-funcall-in-cg-process.htm"><b>post-funcall-in-cg-process</b></a> for more
+information and an example.  Further window messages are handled as
+usual by the process whenever a queued function is not running, and
+users will still see response to their interactive gestures while
+posted function calls are queued or blocking.
+</p>
+
+
+
+
+<hr><hr><h2 id="256"><a name="widget-classes-1">12.0 Widget and window classes</a></h2>
+
+
+<p id="257">
+The <a href="ide-menus-and-dialogs/common-graphics-tree-of-knowledge.htm">Tree of Knowledge</a>
+displays the classes associated with windows and widgets: follow
+<b>Common Graphics | Interface Objects | Windows | Window Classes</b>
+or <b>Common Graphics | Interface Objects | Controls | Control
+Classes</b> (and look at the subentries). Here we list the classes for
+windows and widgets:
+</p>
+<h3 id="258">
+Windows classes
+</h3>
+<pre id="259">
+<a href="classes/cg/cg-stream.htm"><code>cg-stream</code></a>
+  <a href="classes/cg/graphical-stream.htm"><code>graphical-stream</code></a>
+    <a href="classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a>
+    <a href="classes/cg/printer.htm"><code>printer</code></a>
+    <a href="classes/cg/screen-stream.htm"><code>screen-stream</code></a>
+      <a href="classes/cg/basic-pane.htm"><code>basic-pane</code></a>
+        <a href="classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>
+        <a href="classes/cg/frame-window.htm"><code>frame-window</code></a>
+          <a href="classes/cg/dialog.htm"><code>dialog</code></a>
+            <a href="classes/cg/html-browser.htm"><code>html-browser</code></a>
+            <a href="classes/cg/object-editor-pane.htm"><code>object-editor-pane</code></a>
+            <a href="classes/cg/rich-edit-dialog.htm"><code>rich-edit-dialog</code></a>
+            <a href="classes/cg/status-bar.htm"><code>status-bar</code></a>
+            <a href="classes/cg/toolbar.htm"><code>toolbar</code></a>
+          <a href="classes/cg/form.htm"><code>form</code></a>
+          <a href="classes/cg/frame-with-single-child.htm"><code>frame-with-single-child</code></a>
+            <a href="classes/cg/bitmap-window.htm"><code>bitmap-window</code></a>
+            <a href="classes/cg/non-refreshing-window.htm"><code>non-refreshing-window</code></a>
+            <a href="classes/cg/object-editor.htm"><code>object-editor</code></a>
+            <a href="classes/cg/text-edit-window.htm"><code>text-edit-window</code></a>
+              <a href="classes/cg/lisp-edit-window.htm"><code>lisp-edit-window</code></a>
+        <a href="classes/cg/non-refreshing-pane.htm"><code>non-refreshing-pane</code></a>
+          <a href="classes/cg/transparent-pane.htm"><code>transparent-pane</code></a>
+        <a href="classes/cg/widget-window.htm"><code>widget-window</code></a>
+          <a href="classes/cg/lisp-widget-window.htm"><code>lisp-widget-window</code></a>
+            <a href="classes/cg/grid-drawing-pane.htm"><code>grid-drawing-pane</code></a>
+              <a href="classes/cg/class-grid-drawing-pane.htm"><code>class-grid-drawing-pane</code></a>
+            <a href="classes/cg/lisp-widget-top-window.htm"><code>lisp-widget-top-window</code></a>
+              <a href="classes/cg/chart-or-plot-pane.htm"><code>chart-or-plot-pane</code></a>
+                <a href="classes/cg/chart-widget-pane.htm"><code>chart-widget-pane</code></a>
+              <a href="classes/cg/drawable-pane.htm"><code>drawable-pane</code></a>
+              <a href="classes/cg/grid-top-pane.htm"><code>grid-top-pane</code></a>
+                <a href="classes/cg/class-grid-top-pane.htm"><code>class-grid-top-pane</code></a>
+              <a href="classes/cg/group-box-pane.htm"><code>group-box-pane</code></a>
+              <a href="classes/cg/lamp-pane.htm"><code>lamp-pane</code></a>
+              <a href="classes/cg/multi-picture-button-pane.htm"><code>multi-picture-button-pane</code></a>
+              <a href="classes/cg/outline-widget-pane.htm"><code>outline-widget-pane</code></a>
+                <a href="classes/cg/outline-display-pane.htm"><code>outline-display-pane</code></a>
+                <a href="classes/cg/outline-pane.htm"><code>outline-pane</code></a>
+                  <a href="classes/cg/outline-dropping-pane.htm"><code>outline-dropping-pane</code></a>
+                  <a href="classes/cg/outline-top-pane.htm"><code>outline-top-pane</code></a>
+              <a href="classes/cg/rich-edit-ruler-pane.htm"><code>rich-edit-ruler-pane</code></a>
+              <a href="classes/cg/scrolling-static-text-pane.htm"><code>scrolling-static-text-pane</code></a>
+          <a href="classes/cg/ocx-widget-window.htm"><code>ocx-widget-window</code></a>
+            <a href="classes/cg/html-widget-pane.htm"><code>html-widget-pane</code></a>
+              <a href="classes/cg/html-widget-pane-for-browser.htm"><code>html-widget-pane-for-browser</code></a>
+          <a href="classes/cg/os-widget-window.htm"><code>os-widget-window</code></a>
+            <a href="classes/cg/combo-box-pane.htm"><code>combo-box-pane</code></a>
+            <a href="classes/cg/common-status-bar.htm"><code>common-status-bar</code></a>
+            <a href="classes/cg/header-control-pane.htm"><code>header-control-pane</code></a>
+            <a href="classes/cg/item-list-pane.htm"><code>item-list-pane</code></a>
+              <a href="classes/cg/multi-item-list-pane.htm"><code>multi-item-list-pane</code></a>
+              <a href="classes/cg/single-item-list-pane.htm"><code>single-item-list-pane</code></a>
+            <a href="classes/cg/list-view-pane.htm"><code>list-view-pane</code></a>
+            <a href="classes/cg/progress-indicator-pane.htm"><code>progress-indicator-pane</code></a>
+            <a href="classes/cg/scroll-bar-pane.htm"><code>scroll-bar-pane</code></a>
+              <a href="classes/cg/horizontal-scroll-bar-pane.htm"><code>horizontal-scroll-bar-pane</code></a>
+              <a href="classes/cg/vertical-scroll-bar-pane.htm"><code>vertical-scroll-bar-pane</code></a>
+            <a href="classes/cg/tab-control-pane.htm"><code>tab-control-pane</code></a>
+            <a href="classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>
+              <a href="classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a>
+              <a href="classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a>
+            <a href="classes/cg/text-widget-pane.htm"><code>text-widget-pane</code></a>
+              <a href="classes/cg/editable-text-pane.htm"><code>editable-text-pane</code></a>
+                <a href="classes/cg/lisp-text-pane.htm"><code>lisp-text-pane</code></a>
+              <a href="classes/cg/static-text-pane.htm"><code>static-text-pane</code></a>
+            <a href="classes/cg/toggling-widget-pane.htm"><code>toggling-widget-pane</code></a>
+              <a href="classes/cg/button-pane.htm"><code>button-pane</code></a>
+              <a href="classes/cg/check-box-pane.htm"><code>check-box-pane</code></a>
+              <a href="classes/cg/picture-widget-pane.htm"><code>picture-widget-pane</code></a>
+                <a href="classes/cg/picture-button-pane.htm"><code>picture-button-pane</code></a>
+                <a href="classes/cg/static-picture-pane.htm"><code>static-picture-pane</code></a>
+              <a href="classes/cg/radio-button-pane.htm"><code>radio-button-pane</code></a>
+            <a href="classes/cg/trackbar-pane.htm"><code>trackbar-pane</code></a>
+            <a href="classes/cg/up-down-control-pane.htm"><code>up-down-control-pane</code></a>
+      <a href="classes/cg/screen.htm"><code>screen</code></a>
+  <a href="classes/cg/menu.htm"><code>menu</code></a>
+    <a href="classes/cg/menu-bar.htm"><code>menu-bar</code></a>
+    <a href="classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a>
+      <a href="classes/cg/pull-down-menu.htm"><code>pull-down-menu</code></a>
+      <a href="classes/cg/shortcut-menu.htm"><code>shortcut-menu</code></a>
+</pre>
+<h3 id="260">
+Widget classes
+</h3>
+<pre id="261">
+<a href="classes/cg/dialog-item.htm"><code>dialog-item</code></a>
+  <a href="classes/cg/lisp-widget.htm"><code>lisp-widget</code></a>
+    <a href="classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a>
+      <a href="classes/cg/chart-widget.htm"><code>chart-widget</code></a>
+    <a href="classes/cg/drawable.htm"><code>drawable</code></a>
+    <a href="classes/cg/grid-widget.htm"><code>grid-widget</code></a>
+      <a href="classes/cg/class-grid.htm"><code>class-grid</code></a>
+        <a href="classes/cg/slot-editing-class-grid.htm"><code>slot-editing-class-grid</code></a>
+    <a href="classes/cg/group-box.htm"><code>group-box</code></a>
+      <a href="classes/cg/lisp-group-box.htm"><code>lisp-group-box</code></a>
+    <a href="classes/cg/lamp.htm"><code>lamp</code></a>
+    <a href="classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a>
+      <a href="classes/cg/rich-edit-multipic.htm"><code>rich-edit-multipic</code></a>
+    <a href="classes/cg/outline.htm"><code>outline</code></a>
+      <a href="classes/cg/dropping-outline.htm"><code>dropping-outline</code></a>
+    <a href="classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a>
+    <a href="classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a>
+  <a href="classes/cg/ocx-widget.htm"><code>ocx-widget</code></a>
+    <a href="classes/cg/html-widget.htm"><code>html-widget</code></a>
+      <a href="classes/cg/html-widget-for-browser.htm"><code>html-widget-for-browser</code></a>
+  <a href="classes/cg/os-widget.htm"><code>os-widget</code></a>
+    <a href="classes/cg/combo-box.htm"><code>combo-box</code></a>
+      <a href="classes/cg/rich-edit-combo-box.htm"><code>rich-edit-combo-box</code></a>
+        <a href="classes/cg/font-face-combo-box.htm"><code>font-face-combo-box</code></a>
+        <a href="classes/cg/font-size-combo-box.htm"><code>font-size-combo-box</code></a>
+    <a href="classes/cg/header-control.htm"><code>header-control</code></a>
+    <a href="classes/cg/item-list.htm"><code>item-list</code></a>
+      <a href="classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>
+      <a href="classes/cg/single-item-list.htm"><code>single-item-list</code></a>
+    <a href="classes/cg/list-view.htm"><code>list-view</code></a>
+    <a href="classes/cg/progress-indicator.htm"><code>progress-indicator</code></a>
+    <a href="classes/cg/scroll-bar.htm"><code>scroll-bar</code></a>
+      <a href="classes/cg/horizontal-scroll-bar.htm"><code>horizontal-scroll-bar</code></a>
+      <a href="classes/cg/vertical-scroll-bar.htm"><code>vertical-scroll-bar</code></a>
+    <a href="classes/cg/tab-control.htm"><code>tab-control</code></a>
+    <a href="classes/cg/text-widget.htm"><code>text-widget</code></a>
+      <a href="classes/cg/editable-text.htm"><code>editable-text</code></a>
+        <a href="classes/cg/lisp-text.htm"><code>lisp-text</code></a>
+        <a href="classes/cg/multi-line-editable-text.htm"><code>multi-line-editable-text</code></a>
+          <a href="classes/cg/multi-line-lisp-text.htm"><code>multi-line-lisp-text</code></a>
+          <a href="classes/cg/rich-edit.htm"><code>rich-edit</code></a>
+      <a href="classes/cg/static-text.htm"><code>static-text</code></a>
+    <a href="classes/cg/toggling-widget.htm"><code>toggling-widget</code></a>
+      <a href="classes/cg/button.htm"><code>button</code></a>
+        <a href="classes/cg/cancel-button.htm"><code>cancel-button</code></a>
+        <a href="classes/cg/default-button.htm"><code>default-button</code></a>
+      <a href="classes/cg/check-box.htm"><code>check-box</code></a>
+      <a href="classes/cg/picture-widget.htm"><code>picture-widget</code></a>
+        <a href="classes/cg/picture-button.htm"><code>picture-button</code></a>
+        <a href="classes/cg/static-picture.htm"><code>static-picture</code></a>
+      <a href="classes/cg/radio-button.htm"><code>radio-button</code></a>
+    <a href="classes/cg/trackbar.htm"><code>trackbar</code></a>
+    <a href="classes/cg/up-down-control.htm"><code>up-down-control</code></a>
+</pre>
+
+
+
+
+<hr><hr><h2 id="262"><a name="touch-gesture-1">13.0 About Touch Gesture Support in Common Graphics on Windows</a></h2>
+
+<p id="263">
+On the Windows platform, Common Graphics provides an interface to
+Microsoft's support for touchscreen gestures, which was new in Windows
+7 and works the same way in Windows 8. The Common Graphics facility
+corresponds closely to the Microsoft API and uses similar names for
+functions and arguments, though adpated for use in Common Graphics and
+Lisp. We also provide a higher-level but less general facility that is
+not discussed here; see <a href="classes/cg/two-stroke-mixin.htm"><code>two-stroke-mixin</code></a>.
+</p>
+<p id="264">
+There are two separate interfaces, one at a somewhat higher level than
+the other.  Any window can use only one of the interfaces at any given
+time, though you can switch a window back and forth between the two
+interfaces.
+</p>
+<p id="265">
+Microsoft generally speaks of the higher-level interface as the
+<i>gesture</i> interface and the lower-level one as the <i>touch</i>
+interface, so we will follow that convention even though they both
+deal with touch gestures.
+</p>
+<p id="266">
+In Windows, the gesture interface uses the WM_GESTURE message, which
+in Common Graphics results in calls to the <a href="operators/cg/g/gesture-event.htm"><b>gesture-event</b></a> generic function.  The touch
+interface uses the WM_TOUCH message, which in Common Graphics results
+in calls to the <a href="operators/cg/t/touch-event.htm"><b>touch-event</b></a>
+generic function.  To handle touch gestures, a Common Graphics
+application needs to supply one or more methods for one (or possibly
+both) of these generic functions (but see note just below). By
+default the gesture interface is used, but an application can call
+<a href="operators/cg/r/register-touch-window.htm"><b>register-touch-window</b></a> on any
+window to use the touch interface for that window instead.
+</p>
+<p id="267">
+<b>Note</b>: actually a few gestures automatically map to pre-existing
+Windows events by default, without needing to write any
+touch-gesture-specific code at all. These include a single-finger tap
+to emulate a left-click, a single-finger press and hold to emulate a
+right-click, and a two-finger drag to scroll.
+</p>
+<p id="268">
+Both interfaces send a series of messages for a single gesture, one
+message for each different position of one or more fingers on the
+screen.  (The interface also works for pens, but we will speak only of
+fingers here.)  This results in a series of calls to either
+<a href="operators/cg/t/touch-event.htm"><b>touch-event</b></a>
+or <a href="operators/cg/g/gesture-event.htm"><b>gesture-event</b></a> for a single
+gesture.  The first and last calls for a single gesture will indicate
+that they are the first and last.  It is up to an application to
+interpret the different positions in the multiple calls to decide
+things like how far to scroll a window or how much to zoom it by.
+This typically requires saving positions from earlier calls in order
+to compare the positions in later calls to them.  It is up to the
+application to save this information in some way.
+</p>
+<p id="269">
+The main difference between the two interfaces is that the gesture
+interface will first determine which of several standard gestures the
+user is performing before it sends any messages.  It provides that
+information along with the finger positions that are provided by both
+interfaces.  These standard gesture types are:
+</p>
+<ul>
+<li id="270">
+pan
+</li>
+<li id="271">
+zoom
+</li>
+<li id="272">
+rotate,
+</li>
+<li id="273">
+two-finger tap
+</li>
+<li id="274">
+press and tap  
+</li>
+</ul>
+<p id="275">
+To handle any other arbitrary
+gestures, the lower-level touch interface must be used instead.
+</p>
+<p id="276">
+There is a trade-off problem where if you want to handle one of the
+standard gestures like zoom and also some other gesture like a
+three-finger tap in the same window, then you would need to use the
+touch interface to handle the three-finger tap and therefore cannot
+use the gesture interface to figure out for you when a zoom gesture is
+being done.  (The standard zoom gesture is a two-finger pinch to zoom
+out or a spread to zoom in).  So in general if the standard gestures
+do not suffice, then you will need to use the touch interface where
+you will always need to first determine from the series of finger
+positions what kind of gesture is being performed.  With either
+interface you will need to determine from the series of finger
+positions something like the size of the gesture to decide on the
+corresponding size of your response.
+</p>
+<p id="277">
+Below are two complete examples to demonstrate each of the two APIs.
+The first one is a simple finger-painting example that uses the
+lower-level touch API, and the second is a longer example that uses
+higher-level gesture API for typical panning, zooming, and rotating of
+a line drawing.
+</p>
+
+<pre id="278">
+;;; -------------------
+;;; touch-event example
+;;; -------------------
+
+;;; This example uses a custom touch-event method to handle
+;;; lower-level touch messages.  It emulates finger painting
+;;; by simply drawing a thick line wherever any fingers are
+;;; dragged across the screen.  It changes the current color
+;;; whenever all fingers have left the screen.  Run the example by
+;;; evaluating the commented-out call to touch-demo at the bottom.
+
+(in-package :cg-user)
+
+(defclass my-touch-window (bitmap-window)
+  ((finger-positions :accessor finger-positions :initform nil)))
+
+(defclass my-touch-pane (bitmap-pane)())
+
+(defmethod default-pane-class ((frame my-touch-window))
+  'my-touch-pane)
+
+(defmethod touch-event ((pane my-touch-pane) touch-points count)
+
+  ;; This is the method to define to use the lower-level
+  ;; Microsoft touch API.  That API simply sends the positions
+  ;; of a number of fingers that are on the screen, every
+  ;; time one of the fingers moves.
+
+  (let* ((frame (parent pane))
+
+         ;; Anti-aliasing has weird behavior with very
+         ;; short but very thick lines, so don't use it.
+         (*antialiasing* nil))
+
+    ;; Handle each finger that's now on the screen.
+    (dotimes (index count)
+
+      ;; Retrieve the current state of this finger.
+      (let* ((touch-point (aref touch-points index))
+             (id (touch-point-id touch-point))
+             (type (touch-point-type touch-point))
+             (x (touch-point-x touch-point))
+             (y (touch-point-y touch-point)))
+        (case type
+
+          ;; When a finger first makes contact with the screen,
+          ;; save a new entry for remembering its previous
+          ;; position.  Initialize it to this first position.
+          (:down (push (list id x y)(finger-positions frame)))
+
+          ;; On subsequent messages for the same stroke of
+          ;; this finger, find the existing entry for this
+          ;; finger from its ID ...
+          (t (let* ((previous (assoc id (finger-positions frame))))
+
+               ;; ... and draw a line segment from the previous
+               ;; position of this finger to this new position.
+               (draw-line-x-y
+                pane (second previous)(third previous) x y)
+
+               ;; Remember this position as the previous one
+               ;; for this finger.
+               (setf (second previous) x)
+               (setf (third previous) y))))
+
+        ;; When the last finger is removed from the screen,
+        ;; clear the finger entries to clean up garbage ...
+        (when (and (eq type :up)(= count 1))
+          (setf (finger-positions frame) nil)
+
+          ;; ... and select a new random drawing color
+          ;; for the next (possibly multi-finger) stroke.
+          (setf (foreground-color pane)
+            (make-rgb :red (random 256) :green (random 256)
+                      :blue (random 256))))))))
+
+(defun touch-demo (&key (line-width 24))
+  (let* ((frame (make-window :painting
+                  :class 'my-touch-window
+                  :title "Paint Me"
+                  :exterior (make-box-relative 100 50 800 600)))
+         (pane (frame-child frame)))
+
+    ;; This must be called to switch any window from the
+    ;; higher-level "gesture" API to the lower-level "touch" API.
+    (register-touch-window pane)
+
+    (setf (line-width pane) line-width)
+    frame))
+
+#+test
+(touch-demo)
+
+
+;;; ---------------------
+;;; gesture-event example
+;;; ---------------------
+
+;;; This example uses a custom gesture-event method to handle
+;;; higher-level gesture messages for panning, zooming, and
+;;; rotating a line drawing.  Run the example by evaluating
+;;; the commented-out call to gesture-demo at the bottom.
+
+;;; Perhaps this could be turned into a general Common Graphics
+;;; facility, though it's not clear that it could be
+;;; generalized sufficiently for any application.  But you
+;;; may be able to start with this code and adapt it to
+;;; your own application.
+
+(in-package :cg-user)
+
+(defclass my-gesture-window (frame-window)
+
+  ;; Define some custom slots for remembering the state of things.
+  ;; This includes state that has been established by earlier
+  ;; gestures, plus the state at the beginning of a gesture to be
+  ;; referenced later during that same gesture.  The latter slots
+  ;; begin with "initial".
+
+  ((initial-distance :accessor initial-distance :initform nil)
+   (initial-x :accessor initial-x :initform nil)
+   (initial-y :accessor initial-y :initform nil)
+   (initial-scroll-x :accessor initial-scroll-x :initform nil)
+   (initial-scroll-y :accessor initial-scroll-y :initform nil)
+   (offset-x :accessor offset-x :initform 0)
+   (offset-y :accessor offset-y :initform 0)
+   (initial-offset-x :accessor initial-offset-x :initform 0)
+   (initial-offset-y :accessor initial-offset-y :initform 0)
+   (initial-page-width :accessor initial-page-width :initform nil)
+   (initial-page-height :accessor initial-page-height :initform nil)
+   (zoom-factor :accessor zoom-factor :initform 1)
+   (initial-zoom-factor :accessor initial-zoom-factor :initform nil)
+   (rotation-angle :accessor rotation-angle :initform 0)
+   (initial-rotation-angle :accessor initial-rotation-angle :initform 0)
+
+   ;; Add some slots for information about the thing to draw.
+
+   (line-segments :accessor line-segments :initarg :line-segments
+                  :initform nil)
+   (drawing-margin :accessor drawing-margin :initarg :drawing-margin
+                   :initform 0)
+   (drawing-width :accessor drawing-width :initarg :drawing-width
+                  :initform 500)
+   (drawing-height :accessor drawing-height :initarg :drawing-height
+                   :initform 500))
+
+  (:default-initargs
+
+      ;; Double-buffering is important for smooth animation.
+      :double-buffered t))
+
+(defmethod redisplay-window ((window my-gesture-window) &optional box)
+
+  ;; As usual, this method draws the complete picture at any time.
+
+  (erase-contents-box window box)
+  (let* ((zoom-factor (zoom-factor window))
+         (offset-x (offset-x window))
+         (offset-y (offset-y window))
+         (width (drawing-width window))
+         (height (drawing-height window))
+         (margin (drawing-margin window))
+         (middle-x (- (round width 2) margin))
+         (middle-y (- (round height 2) margin))
+
+         ;; Reverse the angle because Common Graphics increases
+         ;; the Y coordinate downward rather than upward.
+         (angle (- (rotation-angle window)))
+         (cos (cos angle))
+         (sin (sin angle))
+         x1 y1 x2 y2)
+
+    ;; Transform each coordinate pair according to the current
+    ;; position, zoom factor, and rotation of the drawing.
+    ;; Always rotate about the middle of the drawing.
+    (flet ((transform (x y)
+                      (values
+                       (+ offset-x
+                          (round (* (+ middle-x
+                                       (* cos (- x middle-x))
+                                       (- (* sin (- y middle-y)))
+                                       margin)
+                                    zoom-factor)))
+                       (+ offset-y
+                          (round (* (+ middle-y
+                                       (* sin (- x middle-x))
+                                       (* cos (- y middle-y))
+                                       margin)
+                                    zoom-factor))))))
+
+      ;; Draw each line segment after transforming its endpoints.
+      (let* ((*antialiasing* t))         ;; for smoother lines
+        (with-line-width (window 2)
+          (dolist (line-segment (line-segments window))
+            (multiple-value-setq (x1 y1)
+              (transform (first line-segment)(second line-segment)))
+            (multiple-value-setq (x2 y2)
+              (transform (third line-segment)(fourth line-segment)))
+            (draw-line-x-y window x1 y1 x2 y2)))))))
+
+(defmethod gesture-event ((window basic-pane)(target my-gesture-window)
+                          gesture x y distance beginning ending inertia)
+  (declare (ignore ending inertia))
+
+  ;; This is the method to define to use the higher-level Microsoft
+  ;; gesture API.  That API first figures out which of several
+  ;; standard gestures is being done, and then starts calling this
+  ;; method as the user's fingers move through the gesture.
+
+  (case gesture
+
+    ;; Handle the standard zoom gesture, which is placing two fingers
+    ;; on the screen and then either pinching them closer together
+    ;; to zoom out or spreading them apart to zoom in.
+    (:zoom
+
+     ;; When the first message of a new zoom gesture arrives,
+     ;; save the state of the beginning of the gesture.
+     ;; On subsequent messages for the same gesture, we will
+     ;; compare the state at that time to this beginning state
+     ;; to decide how to update the display.  Some of this state
+     ;; comes from the initial touch position of this gesture,
+     ;; and some of it is the state that was left by earlier gestures.
+     (cond (beginning
+
+            ;; Save the initial distance between the two fingers and
+            ;; the initial point that's midway between the two fingers.
+            ;; Use these on subsequent messages for the same gesture
+            ;; to decide how much to zoom by, and for centering the
+            ;; zoom at this initial position of the fingers.
+            (setf (initial-distance target)(max 1 distance))
+            (setf (initial-x target)(- x (offset-x target)))
+            (setf (initial-y target)(- y (offset-y target)))
+
+            ;; Also save the initial page size and scroll position.
+            ;; This will be used later to adjust the page size so
+            ;; the user can still scroll the entire drawing into view
+            ;; when zoomed in, and to decide where to scroll the
+            ;; window to in order to zoom around the point that's
+            ;; midway between the initial two finger positions.
+            (setf (initial-page-width target)(page-width target))
+            (setf (initial-page-height target)(page-height target))
+            (with-positions (pos)
+              (nscroll-position target pos)
+              (setf (initial-scroll-x target)(- (position-x pos)
+                                                (offset-x target)))
+              (setf (initial-scroll-y target)(- (position-y pos)
+                                                (offset-y target))))
+            (setf (initial-offset-x target)(offset-x target))
+            (setf (initial-offset-y target)(offset-y target))
+
+            ;; Save the initial zoom factor that resulted from earlier
+            ;; zoom gestures, so that we can multiply the current zoom
+            ;; factor of this gesture by that one to arrive at the
+            ;; combined zoom factor to use.
+            (setf (initial-zoom-factor target)(zoom-factor target)))
+
+           ;; When subsequent messages arrive for the same zoom gesture,
+           ;; zoom the drawing according to how the current finger
+           ;; positions compare to the initial positions for this gesture
+           ;; that we saved above.
+           (t
+
+            ;; Regard the zoom factor for this gesture so far as being
+            ;; the current distance between the two fingers divided by
+            ;; the initial distance between them.  This is just one
+            ;; interpretation of the gesture, whereas an application
+            ;; could use some other interpretation.
+            (let* ((gesture-zoom-factor (/ distance
+                                           (initial-distance target))))
+
+              ;; Calculate the current zoom factor by which the
+              ;; redisplay-window method will draw the picture as the
+              ;; current zoom factor from before this gesture multiplied
+              ;; by the zoom factor of this gesture so far.
+              (setf (zoom-factor target)(* (initial-zoom-factor target)
+                                           gesture-zoom-factor))
+
+              ;; Avoid any jerkiness when the scrollbars get turned
+              ;; on and off.
+              (with-delayed-redraw (target :invalidate nil)
+
+                ;; Multiply the page size by the zoom factor so that the
+                ;; scrollable canvas will still hold a larger image.
+                ;; The rounding is because CG positions must use integers.
+                (set-page-size target
+                               (round (* gesture-zoom-factor
+                                         (initial-page-width target)))
+                               (round (* gesture-zoom-factor
+                                         (initial-page-height target))))
+
+                ;; Scroll the window to keep the central finger position
+                ;; scrolled to the same place.  Implementing the intuitive
+                ;; behavior here seems to require some unintuitive code.
+                (let* ((initial-x (initial-x target))
+                       (initial-y (initial-y target))
+                       (scroll-x (- (round (* gesture-zoom-factor
+                                              initial-x))
+                                    (- initial-x
+                                       (initial-scroll-x target))))
+                       (scroll-y (- (round (* gesture-zoom-factor
+                                              initial-y))
+                                    (- initial-y
+                                       (initial-scroll-y target)))))
+                  (scroll-to target (make-position (max scroll-x 0)
+                                                   (max scroll-y 0)))
+
+                  ;; An offset is needed when the scrollbars are off
+                  ;; to still zoom out around the pinch position.
+                  ;; It essentially stores a logical negative scroll
+                  ;; position when the scrollbars themselves can't
+                  ;; scroll below zero.
+                  (multiple-value-bind (max-scroll-x max-scroll-y)
+                      (scroll-range target)
+                    (setf (offset-x target)
+                      (min (max 0 (- scroll-x))
+
+                           ;; A negative offset seems to be needed when
+                           ;; zooming out would otherwise require
+                           ;; scrolling beyond the end of the range.
+                           (- max-scroll-x scroll-x)))
+
+                    (setf (offset-y target)
+                      (min (max 0 (- scroll-y))
+                           (- max-scroll-y scroll-y))))))
+
+              ;; Redraw the window at the current mid-gesture state.
+              (invalidate target))))
+
+     ;; Return true to say that we handled this zoom event ourselves,
+     ;; to override any default bevavior.
+     t)
+
+    ;; Handle the standard panning gesture, which is simply dragging
+    ;; one or two fingers in any direction.
+
+    ;; Panning would work automatically using the default system
+    ;; behavior when the window has scrollbars.  But let's handle
+    ;; it ourselves so that we can also move the drawn object around
+    ;; even when the scrollbars are off (when zoomed out).
+    (:pan
+
+     ;; For the pan gesture we need to save only some of the
+     ;; information at the beginning of the gesture that we save
+     ;; for a zoom gesture above.
+     (cond (beginning
+            (setf (initial-x target) x)
+            (setf (initial-y target) y)
+            (with-positions (pos)
+              (nscroll-position target pos)
+              (setf (initial-scroll-x target)(- (position-x pos)
+                                                (offset-x target)))
+              (setf (initial-scroll-y target)(- (position-y pos)
+                                                (offset-y target))))
+            (setf (initial-offset-x target)(offset-x target))
+            (setf (initial-offset-y target)(offset-y target)))
+
+           ;; On subsequent messages for the same pan gesture, pan by
+           ;; the difference between the current finger position and
+           ;; the initial finger position that we saved above
+           ;; at the beginning of the gesture.
+           (t
+            (let* ((scroll-x (- x (initial-x target)))
+                   (scroll-y (- y (initial-y target)))
+                   (zoom-factor (zoom-factor target)))
+
+              ;; If either scrollbar is present (because we're zoomed
+              ;; in enough for there to be content that's scrolled out
+              ;; of view), then implement the pan gesture by adjusting
+              ;; one or both scrollbars.
+              (multiple-value-bind (scroll-range-x scroll-range-y)
+                  (scroll-range target)
+                (cond ((or (plusp scroll-range-x)
+                           (plusp scroll-range-y))
+                       (decf scroll-x
+                         (- (position-x (scroll-position target))
+
+                            ;; A subtle point:  For smooth scrolling,
+                            ;; we must subtract the initial scroll
+                            ;; position from the stream coordinates
+                            ;; (scrolled coordinates) that Common
+                            ;; Graphics passes in, and use the
+                            ;; resulting window coordinates
+ 			    ;; (unscrolled coordinates) that
+                            ;; correspond to the series of touch
+                            ;; points on the window itself.
+                            ;; Otherwise each incremental scroll
+                            ;; would adjust the coordinates that we
+                            ;; are using, leading to jerkiness.
+                            (initial-scroll-x target)))
+
+                       (decf scroll-y
+                         (- (position-y (scroll-position target))
+                            (initial-scroll-y target)))
+                       (with-positions (pos)
+                         (scroll-to target
+                                    (nmake-position pos
+                                      (- (initial-scroll-x target)
+                                         scroll-x)
+                                      (- (initial-scroll-y target)
+                                         scroll-y))
+                                    :delay-redraw t))
+                       (invalidate target)
+                       t)
+
+                      ;; If neither scrollbar is present, then implement
+                      ;; the pan gesture by adjusting our offset values,
+                      ;; to move all of the content around in the window.
+                      (t
+                       (setf (offset-x target)
+
+                         ;; Don't let the user drag the object
+                         ;; out of the window.
+                         (max 0 (min (- (interior-width target)
+                                        (round (* (drawing-width target)
+                                                  zoom-factor)))
+
+                                     (+ (initial-offset-x target)
+                                        scroll-x))))
+                       (setf (offset-y target)
+                         (max 0 (min (- (interior-height target)
+                                        (round (* (drawing-height target)
+                                                  zoom-factor)))
+                                     (+ (initial-offset-y target)
+                                        scroll-y))))
+                       (invalidate target)
+                       t)))))))
+
+    ;; Handle the standard rotate gesture, which is placing two fingers
+    ;; on the screen and then rotating them about a central point.
+
+    ;; We will always rotate around the center of the drawing, rather
+    ;; than around the finger position, and so this operation is
+    ;; relatively simple.  Just save the pre-existing rotation angle
+    ;; as well as the initial angle at the beginning of the gesture,
+    ;; then add the current angle of rotation for this gesture to that
+    ;; to find final angle at which to redraw everything.
+    ;; For the :rotate gesture, the "distance" argument is actually
+    ;; the angle between the two fingers, measured in radians.
+    (:rotate
+     (cond (beginning
+            (setf (initial-rotation-angle target)(rotation-angle target))
+            (setf (initial-distance target) distance))
+           (t (setf (rotation-angle target)
+                (+ (initial-rotation-angle target) distance))
+              (invalidate target))))
+
+    ;; For other gestures that we don't handle ourselves here, return
+    ;; nil to allow Windows to pass the event up through any ancestor
+    ;; windows, and finally to perform default bevavior if no ancestor
+    ;; window handles the event.  (Though most gestures have no
+    ;; default behavior.)
+    (t nil)))
+
+(defun gesture-demo (line-segments &key (margin 100))
+  (let* ((max-x (apply 'max
+                       (mapcar (lambda (line-segment)
+                                 (max (first line-segment)
+                                      (third line-segment)))
+                         line-segments)))
+         (max-y (apply 'max
+                       (mapcar (lambda (line-segment)
+                                 (max (second line-segment)
+                                      (fourth line-segment)))
+                         line-segments)))
+         (drawing-width (+ max-x (* 2 margin)))
+         (drawing-height (+ max-y (* 2 margin)))
+         (window (make-window :my-gesture-window
+                   :class 'my-gesture-window
+                   :line-segments line-segments
+                   :drawing-margin margin
+                   :drawing-width drawing-width
+                   :drawing-height drawing-height
+                   :exterior (make-box-relative 100 20 850 700)))
+         )
+    (set-page-size window drawing-width drawing-height)
+
+    ;; Request all of the built-in gestures, but turn off
+    ;; pan-with-gutter so that the user can pan immediately
+    ;; in any direction.  (pan-with-gutter would restrict the
+    ;; drag to only horizontal or vertical unless the user
+    ;; also drags far enough in the other direction to
+    ;; "break out of the gutter".)
+    (configure-gestures
+     window :zoom t :rotate t
+     :two-finger-tap t :press-and-tap t
+     :pan t :pan-with-gutter nil
+     :pan-with-inertia t
+     :pan-with-single-finger-horizontally t
+     :pan-with-single-finger-vertically t)
+
+    ;; Return the demo window.
+    window))
+
+#+test ;; Test a simple drawing of a house.  (Or possibly a pencil.)
+(gesture-demo '((0 390 0 200) ;; lower left
+                (0 200 200 250)
+                (200 250 200 450)
+                (200 450 0 390)
+                (0 200 120 100) ;; upper left
+                (120 100 200 250)
+                (200 450 600 330) ;; lower right
+                (600 330 600 150)
+                (600 150 200 250)
+                (600 150 480 30) ;; upper right
+                (480 30 120 100)))
+</pre>
+
+
+<hr><hr><h2 id="279"><a name="noproject-app-1">14.0 About creating a Standalone Common Graphics Application without using the Project System</a></h2>
+
+<p id="280">
+A Common Graphics application is typically built as a project in the
+IDE, and then turned into a standalone application with the IDE's
+<a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a>. See <a href="cg/ide-ug/ide_user_guide_4.htm">Chapter 4:
+Projects</a> of the <a href="cg/ide-ug/ide_user_guide_1.htm">Ide User Guide</a>
+for information on using projects to create appplications.
+</p>
+<p id="281">
+You can also create a standalone Common Graphics application with a
+direct call to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, but you must make sure
+you do everything that needs to be done correctly. Most importantly,
+note that it is <b>not</b> sufficient to specify as a value for the
+<code>:restart-app-function</code> or
+<code>:restart-init-function</code> argument (to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>) a function
+that would work as the <a href="operators/ide/on-initialization.htm"><b>on-initialization</b></a> function of a project.
+Instead, the restart function must do additional setup that would have
+been handled automatically by the project system.  Generally, the
+restart function should do the following:
+</p>
+
+<ol>
+<li id="282">
+Call <a href="operators/cg/i/initialize-cg.htm"><b>initialize-cg</b></a>.
+</li>
+<li id="283">
+Create any initial windows and other setup that would be done by a
+project's <a href="operators/ide/on-initialization.htm"><b>on-initialization</b></a> function.
+</li>
+<li id="284">
+Call <a href="operators/cg/e/event-loop.htm"><b>event-loop</b></a>
+to handle events until the application exits.
+</li>
+<li id="285">
+Call <a href="operators/excl/exit.htm"><b>excl:exit</b></a>,
+passing the return code that was returned from the call to event-loop.
+</li>
+</ol>
+
+<p id="286">
+In addition, the :pre-load-form argument to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> should require any needed
+Common Graphics modules, since these will not be included
+automatically as the project system would do.
+</p>
+
+
+<hr><hr><h2 id="287"><a name="position-class-1">15.0 About the position class</a></h2>
+
+<p id="288">
+Because of a design flaw which is hard to back out of,
+there is a class named <code>position</code> which is the class
+of position objects in Common Graphics. This is a design flaw because
+<code>position</code> is a Common Lisp symbol (naming a sequence
+function). It is actually outside the ANSI spec to overload Common
+Lisp symbols with additional functionality. However, because the
+violation is not very serious and because changing it would involve
+substantial costs, we have decided to leave the class
+<code>position</code> rather than renaming it.
+</p>
+<p id="289">
+The <code>position</code> class is documented here because we
+arrange our documentation by package and documenting the
+<code>position</code> class with other Common Lisp symbols is
+inappropriate.
+</p>
+<p id="290">
+The <code>position</code> class is the class of position
+objects. A position is created with <a href="operators/cg/m/make-position.htm"><b>make-position</b></a>, and indicates a
+location in some coordinate system by specifying its x and y
+coordinates. Positions are useful for determining such things as a
+window's location or where to draw something on a graphical stream.
+</p>
+
+
+<hr><hr><h2 id="291"><a name="cg-ifuns-1">16.0 The I[cl-math-function] functions</a></h2>
+
+<p id="292">
+An artifact left over from a very early release of Common Graphics is
+various mathematical functions named
+<i>i&lt;cl-math-function&gt;</i>. In the very earliest release, these
+were quite fast on Windows machines because they used 16-bit
+arithmetic. With the release of 5.0, the 16-bit operators were
+replaced by corresponding regular Common Lisp math functions with
+wrapped declarations identifying the arguments as fixnums. These were
+named by symbols in the <code>aclwin</code> package and were not
+documented. These symbols are now
+in the cg package. Because we document all exported symbols in that
+package, we document the <i>i&lt;cl-math-function&gt;</i> operators
+here. They are defined for backward compatibility only. Please do not
+use them in new code. Instead, use the Common Lisp function determined
+by removing the initial <b>i</b> from the symbol name.
+</p>
+<p id="293">
+<b>i*</b>, <b>i+</b>, <b>i-</b>, <b>i/</b>, <b>i/=</b>, <b>i1+</b>,
+<b>i1-</b>, <b>i&gt;</b>, <b>i&lt;</b>, <b>i&lt;=</b>, <b>i&gt;=</b>,
+<b>i=</b>, <b>iabs</b>, <b>iceiling</b>, <b>idecf</b>, <b>ievenp</b>,
+<b>ifloor</b>, <b>iincf</b>, <b>ilogand</b>, <b>ilogandc1</b>,
+<b>ilogandc2</b>, <b>ilogbitp</b>, <b>ilogior</b>, <b>ilognand</b>,
+<b>ilognor</b>, <b>ilognot</b>, <b>ilogorc1</b>, <b>ilogorc2</b>,
+<b>ilogtest</b>, <b>ilogxor</b>, <b>imin</b>, <b>iminusp</b>,
+<b>imod</b>, <b>ioddp</b>, <b>iplusp</b>, <b>irem</b>, <b>iround</b>,
+<b>isquare</b>, itruncate, <b>izerop</b>.
+</p>
+
+
+<hr><hr><h2 id="294"><a name="nocg-winapp-1">Appendix A: The Windows API and a Windows API program with windows but without CG</a></h2>
+
+<p id="295">
+The winapi module contains certain Windows-related functionality that
+does not need Common Graphics to work. Among the functions are:
+</p>
+<ul>
+<li id="296">
+
+<a href="operators/windows/directory-subdirectories.htm"><b>directory-subdirectories</b></a>
+
+</li>
+<li id="297">
+
+<a href="operators/windows/file-system-info.htm"><b>file-system-info</b></a>
+
+</li>
+<li id="298">
+
+<a href="operators/windows/file-system-type.htm"><b>file-system-type</b></a>
+
+</li>
+<li id="299">
+
+<a href="operators/windows/file-systems.htm"><b>file-systems</b></a>
+
+</li>
+<li id="300">
+<a href="operators/windows/file-systems-info.htm"><b>file-systems-info</b></a>
+</li>
+
+<li id="301">
+<a href="operators/windows/file-version-info.htm"><b>file-version-info</b></a>
+</li>
+
+<li id="302">
+
+<a href="operators/windows/memory-status.htm"><b>memory-status</b></a>
+
+</li>
+<li id="303">
+
+<a href="operators/windows/network-machines.htm"><b>network-machines</b></a>
+
+</li>
+<li id="304">
+
+<a href="operators/windows/network-shares.htm"><b>network-shares</b></a>
+
+</li>
+<li id="305">
+
+<a href="operators/windows/os-version-info.htm"><b>os-version-info</b></a>
+
+</li>
+<li id="306">
+
+<a href="operators/windows/set-application-icon.htm"><b>set-application-icon</b></a>
+
+</li>
+<li id="307">
+
+<a href="operators/windows/set-default-command-line-arguments.htm"><b>set-default-command-line-arguments</b></a>
+
+</li>
+<li id="308">
+<a href="operators/windows/set-exe-icons.htm"><b>set-exe-icons</b></a>
+</li>
+
+<li id="309">
+<a href="operators/windows/set-file-version-info.htm"><b>set-file-version-info</b></a>
+</li>
+
+<li id="310">
+<a href="operators/windows/set-exe-icons-nt.htm"><b>set-exe-icons-nt</b></a>
+</li>
+<li id="311">
+
+<a href="operators/windows/special-windows-directory.htm"><b>special-windows-directory</b></a>
+
+</li>
+</ul>
+<p id="312">
+It is, of course, possible to write a Windows program that makes
+direct calls to the Windows API and does not use Common Graphics.
+Below is an example of a trivial but complete program written using
+Allegro CL's foreign function interface to the Windows API. Writing
+directly in the Windows API may be useful if you want to port an
+existing Windows program from C, or if you want the application to be
+smaller than it would be if it included Common Graphics. Note that
+many functions are defined but not documented. Use standard tools
+(like <a href="../ansicl/dictentr/do-symbo.htm"><b>do-external-symbols</b></a> and
+<a href="../ansicl/dictentr/symbol-f.htm"><b>symbol-function</b></a>) to
+find the available operators.
+</p>
+<p id="313">
+This program simply creates a window that draws a box inside itself,
+but it illustrates how to set up the usual basic structure of a
+Windows program in Allegro CL.  This example runs in a base lisp that
+does not include Common Graphics. (Note that the package is the
+<b>cl-user</b> package, not the <b>cg-user</b> package -- which may
+not exist in the base Lisp. If you run this program in the IDE, be
+sure to use the <b>cl-user::</b> package qualifier when necessary.)
+</p>
+<p id="314">
+The functions above will work in either modern (case-sensitive) Lisp
+or in ANSI (case-insensitive) Lisp. However, the symbols naming other
+functions named by symbols in the win package must be escaped if they
+are to work properly in an ANSI Lisp, as is done in the example below.
+</p>
+<pre id="315">
+
+;; We have escaped all WIN package symbol names are also all
+;; mixed-case keyword in this example. Therefore this code will work in
+;; either an ANSI (case-insensitive) Lisp or a modern (case-sensitive)
+;; Lisp.  The escaping could also be avoided by placing (in-case-mode :local)
+;; at the very beginning of the file.
+
+(in-package :cl-user)
+
+(eval-when (compile load eval)
+  (require :winapi)
+  (require :winapi-dev))
+
+;;; An arbitrary Windows class name to use for our windows.
+(defconstant *my-window-class-name* "My Window Class")
+
+;;; Call this function to run the application in a development lisp.
+(defun run-my-windows-app ()
+  
+  ;; Create a new process for this app since it will
+  ;; remain tied up in its message-handling loop.
+  (mp:process-run-function "My Windows App" 'my-windows-app))
+
+;;; Call this function to run the application as a standalone app.
+(defun my-windows-app ()
+  
+  ;; Register a window class with Microsoft for all of the
+  ;; windows of this application.  Their messages will be
+  ;; received by my-window-procedure-callback.
+  (register-window-class *my-window-class-name*
+                         'my-window-procedure-callback)
+  
+  ;; Make an initial top-level window.
+  (let* ((window-handle
+          (with-native-string (native-class-name *my-window-class-name*)
+            (with-native-string (native-window-name "My Window")
+              (with-native-string (dummy-string "x")
+                (win:|CreateWindowEx|
+                 0       ;; extended style
+                 native-class-name
+                 native-window-name
+                 
+                 ;; Specify the style of this window.
+                 #.(logior
+                    win:|WS_CAPTION|     ;; title bar
+                    win:|WS_SYSMENU|     ;; system menu and close button
+                    win:|WS_MAXIMIZEBOX| ;; maximize button
+                    win:|WS_MINIMIZEBOX|)
+                 
+                 100     ;; left
+                 200     ;; top
+                 400     ;; width
+                 300     ;; height
+                 0       ;; parent window (0 is the screen)
+                 0       ;; system menu
+                 (lisp-hinstance)
+                 dummy-string)))))) ;; value to pass to WM_CREATE
+    
+    ;; Expose the window.
+    (win:|ShowWindow| window-handle win:|SW_SHOWNOACTIVATE|)
+    
+    ;; Give the window the keyboard focus.
+    (win:|SetForegroundWindow| window-handle)
+    
+    ;; Process incoming messages in a loop.
+    (ff:with-stack-fobject (message 'win:|msg|)
+      (loop (unless (win:|GetMessage| message 0 0 0)
+            
+              ;; Exit the application when a WM_QUIT message is
+              ;; received, causing GetMessage to return nil.
+              (return))
+            
+            ;; Dispatch each message so that it is passed
+            ;; to our window procedure callback function.
+            (win:|DispatchMessage| message))
+    
+      ;; Return an exit code to the operating system
+      ;; (if this is a standalone app).  This is the
+      ;; exit code that we passed to PostQuitMessage.
+      (ff:fslot-value-typed 'win:|msg| :foreign message :wparam))))
+
+(ff:defun-foreign-callable my-window-procedure-callback
+    (window-handle message-number wparam lparam)
+  
+  ;; This is the window procedure that is called for all
+  ;; messages that are sent to "My Window Class" windows.
+  
+  ;; It is very important to use the :stdcall convention for
+  ;; winapi callback functions.  Otherwise lisp will crash.
+  (declare (:convention :stdcall))
+  
+  ;; Make this foreign callback function call a generic function
+  ;; that we can specialize for various messages.
+  (my-window-procedure window-handle message-number wparam lparam))
+
+(defmethod my-window-procedure (handle message wparam lparam)
+  
+  ;; This default message-handling method passes the message back
+  ;; to the operating system to let it do its default behavior.
+  ;; It needs to return whatever the DefWindowProc returns.
+  (win:|DefWindowProc| handle message wparam lparam))
+
+(defmethod my-window-procedure (handle (message (eql win:|WM_DESTROY|))
+                                       wparam lparam)
+  (declare (ignore handle wparam lparam))
+  
+  ;; When our only window is being closed, post a WM_QUIT message.
+  ;; Our call to GetMessage will return nil when it reads this
+  ;; WM_QUIT message, and then we exit our event-handling loop.
+  (win:|PostQuitMessage| 0)
+  
+  ;; Call the default message-handling method to pass
+  ;; the message back to the OS for default behavior.
+  ;; (If we didn't call call-next-method, then we would need
+  ;; to return the proper type of value for this message,
+  ;; which is usually win:|FALSE|.)
+  (call-next-method))
+
+(defmethod my-window-procedure (handle (message (eql win:|WM_PAINT|))
+                                       wparam lparam)
+  (declare (ignore wparam lparam))
+  (declare (optimize (speed 3)(safety 1))) ;; for with-stack-fobject
+  
+  ;; The WM_PAINT message is sent by the operating system whenever
+  ;; we need to redraw all or part of our window.
+  
+  ;; Do nothing if the window currently has no update region.
+  (unless (eq (win:|GetUpdateRect| handle 0 0) 0)
+    
+    ;; Do the standard preparation for painting.
+    (ff:with-stack-fobject (ps 'win:|paintstruct|)
+      (win:|BeginPaint| handle ps)
+      (unwind-protect
+          
+          ;; Find the area of the window that needs to be redrawn.
+          (let* ((left (ff:fslot-value-typed
+                        'win:|paintstruct| :foreign ps :rcPaint :left))
+                 (top (ff:fslot-value-typed
+                       'win:|paintstruct| :foreign ps :rcPaint :top))
+                 (right (ff:fslot-value-typed
+                         'win:|paintstruct| :foreign ps :rcPaint :right))
+                 (bottom (ff:fslot-value-typed
+                          'win:|paintstruct| :foreign ps :rcPaint :bottom)))
+            
+            ;; We're not actually using the refresh area in this
+            ;; simple example, so just ignore it.  A real app can
+            ;; be made more efficient by not drawing anything that
+            ;; doesn't intersect this refresh rectangle.
+            (declare (ignore left top right bottom))
+            
+            ;; Draw and fill a simple rectangle in our window.
+            ;; This illustrates the convolutions required in Windows
+            ;; to simply draw colored lines and areas.
+            (let* ((hdc (win:|GetDC| handle))
+                   (brush (win:|CreateSolidBrush| (win-color 0 255 0)))
+                   (pen (win:|CreatePen| win:|PS_SOLID| 1
+                                       (win-color 0 0 128)))
+                   old-brush old-pen)
+              (unwind-protect
+                  (progn
+                    (setq old-brush (win:|SelectObject| hdc brush))
+                    (setq old-pen (win:|SelectObject| hdc pen))
+                    (win:|Rectangle| hdc 20 20 100 100))
+                (win:|SelectObject| hdc old-brush)
+                (win:|SelectObject| hdc old-pen)
+                (win:|DeleteObject| brush)
+                (win:|DeleteObject| pen)
+                (win:|ReleaseDC| handle hdc))))
+        
+        ;; Do the standard painting cleanup.
+        (win:|EndPaint| handle ps)
+        
+        ;; Always return zero to the OS for WM_PAINT mesages.
+        0))))
+  
+;;; ------------------------------------------------
+;;; Utility Functions --- These could be used as is.
+
+(defun register-window-class
+    (class-name window-procedure
+                &key
+                (style-flags #.(logior win:|CS_OWNDC| win:|CS_DBLCLKS|))
+                (large-icon-handle (franz-icon-handle))
+                (small-icon-handle 0))
+  (declare (optimize (speed 3)(safety 1))) ;; for with-stack-fobject
+  
+  ;; Registers a window class in the Windows OS.
+  ;; Messages sent to windows of this class will call
+  ;; the specified window-procedure callback function.
+  (let* ((hinstance (lisp-hinstance)))
+    (ff:with-stack-fobject (class 'win:|wndclassex|)
+      
+      ;; If we have already registered this Windows class name
+      ;; in this lisp session, then don't don't do so again.
+      (when (with-native-string (native class-name)
+              (win:|GetClassInfo| hinstance native class))
+        (return-from register-window-class))
+      
+      ;; Fill the WNDCLASSEX foreign structure with the
+      ;; attributes for our window class.
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :cbSize)
+        (ff:sizeof-fobject 'win:|wndclassex|))
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :style)
+        style-flags)
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :|lpfnWndProc|)
+        (ff:register-foreign-callable window-procedure
+                                      :reuse :return-value))
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :|cbClsExtra|)
+        0)
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :|cbWndExtra|)
+        win:DLGWINDOWEXTRA)
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :|hInstance|)
+        hinstance)
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :|hIcon|)
+        large-icon-handle)
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :|hCursor|) 0)
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class
+                                  :|hbrBackground|)
+        (1+ win:COLOR_WINDOW))
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class
+                                  :|lpszMenuName|) 0)
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class
+                                  :|lpszClassName|)
+        (string-to-native class-name))
+      (setf (ff:fslot-value-typed 'win:|wndclassex| nil class :|hIconSm|)
+        small-icon-handle)
+      
+      ;; Register the class, signaling an error on failure.
+      (when (zerop (win:|RegisterClassEx| class))
+        (error "Failed to register the window class ~s."
+          class-name)))))
+  
+(defun franz-icon-handle ()
+  (with-native-string (native "aclicon")
+    (win:|LoadIcon| (lisp-hinstance) native)))
+
+(defun lisp-hinstance ()
+  (declare (optimize (speed 3)(safety 1))) ;; for with-stack-fobject
+  
+  ;; Returns the handle of the lisp executable that's running.
+  (ff:with-stack-fobject (vector '(:array :long 4))
+    (win:|GetWinMainArgs| vector)
+    (ff:fslot-value-typed '(:array :long 4) nil vector 0)))
+
+(defun win-color (red green blue)
+  (+ (ash blue 16)
+     (ash green 8)
+     red))
+
+</pre>
+
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#FFFF00"><b>CGDoc</b></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cgide.htm">9.0 version</a></td></tr></table></html>

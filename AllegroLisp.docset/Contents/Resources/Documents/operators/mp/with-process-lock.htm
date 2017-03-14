@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-process-lock</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/with-process-lock.htm">9.0 version</a></td></tr></table><h2 id="2">with-process-lock</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(lock </i>&amp;key <i>timeout norecursive seized whostate</i><i>)
+ </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+This macro executes the body with <i>lock</i>
+seized. Unlike <a href="process-lock.htm"><b>process-lock</b></a>,
+<a href="with-process-lock.htm"><b>with-process-lock</b></a> protects
+against a single process trying to seize a lock it already owns. If
+executed dynamically inside another <a href="with-process-lock.htm"><b>with-process-lock</b></a> for the same lock, and if
+<i>norecursive</i> is <code>nil</code>,
+<a href="with-process-lock.htm"><b>with-process-lock</b></a> behaves as
+if the lock was seized successfully, and the body is executed. If
+<i>norecursive</i> is <code>t</code>, an
+error is signaled. The default value of
+<i>norecursive</i> is <code>nil</code>.
+</p>
+<p id="5">
+If a <i>timeout</i> is specified and
+non-<code>nil</code>, the value should be an integer; the
+units are seconds. Non-positive timeout values time out immediately. A
+value of <code>nil</code> is equivalent to an unspecified
+timeout argument.
+</p>
+<p id="6">
+If the form times out before the lock is available, the
+<a href="with-process-lock.htm"><b>with-process-lock</b></a> form returns
+<code>nil</code> without the body being executed. If you
+want to take specific action if the lock does not become available
+when <i>timeout</i> is specified, use a form like this:
+</p>
+<pre id="7">
+(block ok
+  (with-process-lock (lock :timeout 10)
+    (return-from ok (progn body-forms ...)))
+  (... action if lock never becomes available ...))
+</pre>
+
+<p id="8">
+See also <a href="process-unlock.htm"><b>process-unlock</b></a>, 
+<a href="process-lock-locker.htm"><b>process-lock-locker</b></a>, and 
+<a href="make-process-lock.htm"><b>make-process-lock</b></a>.
+</p>
+
+<p id="9">
+See <a href="../../cgide.htm#cg-event-driven-design-1">About
+design considerations for event-driven applications</a> in
+<a href="../../cgide.htm">cgide.htm</a> and <a href="../cg/p/post-funcall-in-cg-process.htm"><b>post-funcall-in-cg-process</b></a> if you
+intend to call this function is a Common Graphics process.
+</p>
+
+<p id="10">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a> for general information on
+multiprocessing in Allegro CL and see <a href="../../multiprocessing.htm#process-locks-1">Process
+locks</a> for more information on process locks in Allegro CL.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/with-process-lock.htm">9.0 version</a></td></tr></table></body></html>

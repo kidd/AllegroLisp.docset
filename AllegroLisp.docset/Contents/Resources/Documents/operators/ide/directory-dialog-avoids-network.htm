@@ -1,0 +1,35 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>directory-dialog-avoids-network</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/directory-dialog-avoids-network.htm">9.0 version</a></td></tr></table><h2 id="2">directory-dialog-avoids-network</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+This IDE configuration option could be enabled if you notice a long
+delay before a dialog appears in the IDE to ask you for a new
+directory.  This option would skip the search for directories on other
+machines in the network, which is probably the reason for any
+significant delay that might occur.
+</p>
+<p id="5">
+This directory dialog is invoked by the IDE when creating a new
+project, when generating a distribution for the current project, or
+when using the <a href="../../ide-menus-and-dialogs/find-in-files-dialog.htm">Find In Files</a> dialog's
+<b>Browse</b> button.  If <a href="directory-dialog-avoids-network.htm"><b>directory-dialog-avoids-network</b></a> is enabled, then
+the IDE passes the <code>:scope</code> argument to <a href="../cg/a/ask-user-for-new-or-existing-directory.htm"><b>ask-user-for-new-or-existing-directory</b></a>
+as <code>nil</code> to offer only directories on the local
+machine.  (If an application uses this function, it could pass
+<code>:scope :local</code> itself.)
+</p>
+<p id="6">
+This option does not appear on the <a href="../../ide-menus-and-dialogs/options-dialog.htm">Tools | Options dialog</a>, but it does
+appear in the list of all IDE configuration options that is shown in
+the inspector by the <a href="../../ide-menus-and-dialogs/tools-menu.htm#inspect-system-data">Tools | Inspect System Data</a> |
+<b>IDE Configuration Options</b> menu command. It may be set
+programmatically by calling <a href="directory-dialog-avoids-network.htm"><b>(setf
+directory-dialog-avoids-network)</b></a>.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/directory-dialog-avoids-network.htm">9.0 version</a></td></tr></table></body></html>

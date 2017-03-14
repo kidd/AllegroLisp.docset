@@ -1,0 +1,153 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-pop-connection</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.post-office</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/make-pop-connection.htm">9.0 version</a></td></tr></table><h2 id="2">make-pop-connection</h2>
+
+<p id="3"><b>Arguments: </b><i>
+host </i>&amp;key <i>user password port timeout</i><i>
+</i></p>
+
+<p id="4">
+This function creates a connection to the <strong>pop</strong> server
+on machine <i>host</i> and logs in as
+<i>user</i> with password
+<i>password</i>. The <i>port</i> argument
+defaults to 110, which is the port on which the <strong>pop</strong>
+server normally listens. The <i>timeout</i> argument
+defaults to 30 (seconds) and this value is used to limit the amount of
+time this pop interface code will wait for a response from the server
+before giving up. In certain circumstances the server may get so busy
+that you see timeout errors signaled in this code. In that case you
+should specify a larger timeout when connecting. 
+</p>
+
+<p id="5">
+See <a href="#host-arg">below</a> for how to specify
+the <i>host</i> argument.
+</p>
+
+
+<p id="6">
+The value returned by this function is a <strong>mailbox</strong>
+object (such as is returned by <a href="make-imap-connection.htm"><b>make-imap-connection</b></a>). You can call
+<a href="mailbox-message-count.htm"><b>mailbox-message-count</b></a> on the
+<strong>mailbox</strong> object to determine how many letters are
+currently stored in the mailbox.
+</p>
+
+
+<h2 id="7">
+<a name="host-arg">The host argument</a>
+</h2>
+
+<p id="8">
+The <b><i>host</i></b> argument can serve several
+functions as well as just specifying the host, which it does in all
+cases. It can also specify a port number. And it can specify SSL and
+STARTTLS details. We discuss each use in turn.
+</p>
+
+<h3 id="9">
+Using host to specify the server only
+</h3>
+
+<p id="10">
+The value can be a string naming a
+machine, or an IP address (in dotted form, as an integer for IPv4
+addresses, or an IPv6 address structure). 
+</p>
+
+<p id="11">
+By default, this function makes a connection to port 110 on
+<i>host</i>.
+</p>
+<h3 id="12">
+Specifing a server and a port number
+</h3>
+<p id="13">
+If you need to connect to a port other than the default (port 110), you
+can specify the <i>host</i> argument in one of
+the following two ways to specify the alternate port number (and, as
+described below, an alternate port can be specified along with SSL and
+STARTTLS information):
+</p>
+<ol>
+<li id="14">
+
+<b>As a cons:</b> if <i>host</i> is specified as
+a cons, the car should be the name or IP address of the host
+and the cdr should be the alternate port number.  e.g. you could
+specify <code>'("smtp.example.com" . 99)</code> and port 99 will
+be used.
+
+</li>
+<li id="15">
+
+<b>As a colon-separate string:</b> the text before the colon specifies
+the hostname or IP address of the host and the text
+after the colon specifies the alternate port number.  e.g.
+<code>"smtp.example.com:99"</code>.  Note that this form is not
+suitable if the host is specified as an IPv6 dotted address
+(because the dotted address uses colons as separators).
+
+</li>
+</ol>
+
+<h3 id="16">
+Specifying the server, the port, and SSL and STARTTLS information
+</h3>
+<p id="17">
+The most general form of the mail-server argument is a list of the form:
+</p>
+<pre id="18">
+(server-name &key (port 110) (ssl nil) (starttls nil) ...ssl-client-keywords...)
+</pre>
+<p id="19">
+where
+</p>
+<ul>
+<li id="20">
+<b><i>server-name</i></b> is as described above for
+specifying the server only (i.e. a string or an IP address).
+</li>
+<li id="21">
+<b><i>port</i></b> allows for another way to specify the
+port to connect to. The default port for tcp connections is 110. When
+<i>ssl</i> is non-<code>nil</code>, the
+default port is 995.
+</li>
+<li id="22">
+If <b><i>ssl</i></b> is
+non-<code>nil</code>, <a href="../socket/make-ssl-client-stream.htm"><b>make-ssl-client-stream</b></a> will be called
+after establishing a connection to the smtp server. All
+<i>ssl-client-keywords</i> are passed to <a href="../socket/make-ssl-client-stream.htm"><b>make-ssl-client-stream</b></a> as well.
+</li>
+<li id="23">
+If <b><i>starttls</i></b> is
+non-<code>nil</code>, it allows for negotiation of a
+secure connection (TLSv1) if the server supports it. If the server
+supports both auth and starttls, starttls will be negotiated before
+attempting authentication.
+</li>
+<li id="24">
+<b><i>...ssl-client-keywords...</i></b>: all keyword
+args to <a href="../socket/make-ssl-client-stream.htm"><b>make-ssl-client-stream</b></a> are
+accepted. e.g. :method :ciphers, certificate related args, etc. They
+are only used if <i>ssl</i> is
+non-<code>nil</code>.
+</li>
+</ul>
+<p id="25">
+No error is signalled if both <i>ssl</i>
+and <i>starttls</i> are
+non-<code>nil</code>. The SSL connection is established
+before any starttls negotiation would begin.
+</p>
+
+
+
+<p id="26">
+See also <a href="with-pop-connection.htm"><b>with-pop-connection</b></a>. See
+<a href="../../imap.htm">imap.htm</a> for more information.
+</p>
+
+<hr><p id="27"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/make-pop-connection.htm">9.0 version</a></td></tr></table></body></html>

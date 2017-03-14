@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*open-rename-function*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_open-rename-function_s.htm">9.0 version</a></td></tr></table><h2 id="2">*open-rename-function*</h2>
+
+<p id="3">
+Bound to a function taking a pathname as an argument and returning
+a new pathname. Normally the new pathname will differ only in the
+filename and type slots, with both being some reasonable modification
+of the original filename and type. This function is run when the value
+of the <i>if-exists</i> keyword argument to
+<a href="../../../ansicl/dictentr/open.htm"><b>open</b></a> is <code>:rename</code> or
+<code>:rename-and-delete</code> (and the
+<i>direction</i> argument is
+<code>:io</code> or <code>:output</code>, so the
+<i>if-exists</i> argument is not
+ignored).
+</p>
+
+<p id="4">
+The function that is the initial value of this variable prepends the
+value of <a href="s_open-rename-prefix_s.htm"><code>*open-rename-prefix*</code></a> to the file name and
+appends the value of <a href="s_open-rename-suffix_s.htm"><code>*open-rename-suffix*</code></a> as the new file type (the
+old type, if present, becomes part of the file name). Thus, using the
+initial values for the three variables, a file named <i>foo.bar</i>
+will be renamed <i>foo.bar.bak</i>: the file name is <em>foo.bar</em>
+and the type is <em>bak</em>. A file named <em>foo</em> will be
+renamed <em>foo.bak</em>.
+</p>
+
+
+
+
+<h4 id="5">
+Note of location of the renamed file
+</h4>
+
+<p id="6">
+The renamed file will be written to the directory that is the result
+of merging the pathname of the opened file with <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. This means
+that the renamed file will typically be in the same directory as the
+file being opened.
+</p>
+
+<p id="7">
+In releases prior to 8.0, the renamed file was written to the
+directory that is the result of merging the pathname of the opened
+file with the current directory (as returned by <a href="../../operators/excl/current-directory.htm"><b>excl:current-directory</b></a>) rather than merging it
+with <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. When the
+current directory was different from the directory component of
+<a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>, the
+renamed file was typically located in a different directory than the
+file which was opened.
+</p>
+
+
+
+<p id="8">
+See <a href="../../implementation.htm#extensions-to-clfuns-one-2">Extensions to cl:make-package,
+cl:disassemble, cl:open</a> in
+<a href="../../implementation.htm">implementation.htm</a> for information on the
+implementation of <a href="../../../ansicl/dictentr/open.htm"><b>open</b></a>.</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_open-rename-function_s.htm">9.0 version</a></td></tr></table></body></html>

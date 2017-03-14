@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>paper-size</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/paper-size.htm">9.0 version</a></td></tr></table><h2 id="2">paper-size</h2>
+
+<p id="3"><b>Arguments: </b><i>
+printer
+</i></p>
+
+<p id="4">
+Returns the paper size available in the argument printer. 
+</p>
+<p id="5">
+<a href="../p/paper-size.htm"><b>paper-size</b></a> is a
+property of the <a href="../../../classes/cg/printer.htm"><code>printer</code></a> class.
+</p>
+<p id="6">
+This generic function is not and cannot be setf'able. This property
+may be specified with the :paper-size initarg to <a href="../o/open-stream.htm"><b>open-stream</b></a> when creating a printer
+stream, though a particular printer driver may or may not pay any
+attention to the value. Otherwise the property will reflect what the
+end user has either selected or allowed to default (when available) on
+the print job dialog that appears by default when a printer stream is
+created.
+</p>
+<p id="7">
+It's probably best not to specify this property programmatically
+unless it is somehow known that the printer being used supports the
+specified paper size, since otherwise a printer driver may blindly
+attempt to use a size that it does not really support. This property
+is typically read after opening a printer stream to find out which
+standard paper size the application must arrange its output on.
+</p>
+<p id="8">
+Possible values are:
+</p>
+<pre id="9">
+:letter :letter-small :legal :folio :quarto
+:csheet :dsheet :esheet
+:tabloid :ledger :statement :executive :note
+:a3 :a4 :a4-small :a5 :b4 :b5
+:10x14 :11x17
+:envelope-9 :envelope-10 :envelope-11 :envelope-12 :envelope-14
+:envelope-dl :envelope-c3 :envelope-c4 :envelope-c5 :envelope-c6
+:envelope-c65 :envelope-b4 :envelope-b5 :envelope-b6
+:envelope-italy :envelope-monarch :envelope-personal
+:fanfold-us :fanfold-standard-german :fanfold-legal-german
+</pre>
+
+
+
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/paper-size.htm">9.0 version</a></td></tr></table></body></html>

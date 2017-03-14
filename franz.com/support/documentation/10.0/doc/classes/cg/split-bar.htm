@@ -1,0 +1,145 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>split-bar</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/split-bar.htm">9.0 version</a></td></tr></table><h2 id="2">split-bar</h2>
+
+<p id="3">
+The <a href="split-bar.htm"><code>split-bar</code></a> control can
+be used to allow the end user to interactively resize multiple tiled
+windows panes, or to move and resize groups of widgets.
+</p>
+<p id="4">
+This is done by creating a <a href="split-bar.htm"><code>split-bar</code></a> widget that lies between other sibling
+widgets or windows that it should affect. When used to resize window
+panes, typically you would leave just enough room between the panes to
+insert the split-bar like another tiled pane.  (The parent window does
+not need to be a dialog, though the <a href="split-bar.htm"><code>split-bar</code></a> is always a
+<a href="dialog-item.htm"><code>dialog-item</code></a>.)  When used to
+move and/or resize groups of widgets instead, there may be additional
+space between the groups of widgets, with the <a href="split-bar.htm"><code>split-bar</code></a> placed midway in between.
+</p>
+<p id="5">
+A <a href="split-bar.htm"><code>split-bar</code></a> can extend
+across its parent window either horizontally or vertically by setting
+its orientation property to :horizontal or :vertical.
+</p>
+<p id="6">
+The simple bar that's drawn for the control can be either visible or
+invisible while idle, while under the mouse, or while being dragged,
+according to the properties <a href="../../operators/cg/c/color-when-idle.htm"><b>color-when-idle</b></a>, <a href="../../operators/cg/c/color-under-mouse.htm"><b>color-under-mouse</b></a>, and <a href="../../operators/cg/c/color-when-dragging.htm"><b>color-when-dragging</b></a>. (A <a href="split-bar.htm"><code>split-bar</code></a> that's on a form window will always be
+visible to facilitate laying out the form, so you would need to run
+the form to check the invisibility.)
+</p>
+<p id="7">
+The control will display a special mouse cursor when the mouse is over
+the bar to indicate that a drag can be done when clicking at that
+location. This allows the user to find a <a href="split-bar.htm"><code>split-bar</code></a> even when the widget itself is
+invisible.
+</p>
+<p id="8">
+You can specify what happens when the user drags
+a <a href="split-bar.htm"><code>split-bar</code></a> by setting up
+simple lists of the widgets or panes that should be resized or moved
+as the bar is dragged, if that is sufficient. See
+the <a href="../../operators/cg/w/widgets-to-move.htm"><b>widgets-to-move</b></a> and
+<a href="../../operators/cg/w/widgets-to-resize.htm"><b>widgets-to-resize</b></a> properties.
+Otherwise an <a href="../../operators/cg/o/on-change.htm"><b>on-change</b></a>
+function can be used for customized behavior. A <a href="split-bar.htm"><code>split-bar</code></a> can resize panes or widgets
+continuously during the drag, or only once at the end, according to
+its <a href="../../operators/cg/d/delayed.htm"><b>delayed</b></a> property.
+</p>
+<p id="9">
+The <a href="split-bar.htm"><code>split-bar</code></a>'s current
+position can be controlled programmatically by setting
+the <a href="../../operators/cg/v/value.htm"><b>value</b></a> property.
+The widget's value should be a non-negative integer that indicates the
+distance of a horizontal split-bar from the top edge of the parent
+window's interior, or the distance of a vertical split-bar from the
+left edge of the parent window's interior.
+</p>
+<p id="10">
+When creating a <a href="split-bar.htm"><code>split-bar</code></a>
+programmatically and passing the <i>orientation</i>
+argument as <code>:vertical</code>, you will probably want to
+also pass the <i>cursor-name</i> argument as
+<code>:vertical-splitbar-cursor</code> (or the name of a custom
+cursor), since it will otherwise default to
+<code>:horizontal-splitbar-cursor</code>. (This is not an issue
+when creating a split-bar interactively on a form window.)
+</p>
+<p id="11">
+The <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator
+Dialog</a> includes a split-bar example called <b>Two
+Window-Panes with a Draggable Split-Bar Widget</b>.
+</p>
+<p id="12">
+Here are the properties of the split-bar:
+</p>
+<ul>
+<li id="13">
+<a href="../../operators/cg/b/bar-thickness.htm"><b>bar-thickness</b></a>
+</li>
+<li id="14">
+<a href="../../operators/cg/d/dragging-thickness.htm"><b>dragging-thickness</b></a>
+</li>
+<li id="15">
+<a href="../../operators/cg/d/draw-at-dragging-thickness.htm"><b>draw-at-dragging-thickness</b></a>
+</li>
+<li id="16">
+<a href="../../operators/cg/c/color-under-mouse.htm"><b>color-under-mouse</b></a>
+</li>
+<li id="17">
+<a href="../../operators/cg/c/color-when-dragging.htm"><b>color-when-dragging</b></a>
+</li>
+<li id="18">
+<a href="../../operators/cg/c/color-when-idle.htm"><b>color-when-idle</b></a>
+</li>
+<li id="19">
+<a href="../../operators/cg/d/delayed.htm"><b>delayed</b></a>
+</li>
+<li id="20">
+<a href="../../operators/cg/e/end1-position.htm"><b>end1-position</b></a>
+</li>
+<li id="21">
+<a href="../../operators/cg/e/end2-position.htm"><b>end2-position</b></a>
+</li>
+<li id="22">
+<a href="../../operators/cg/m/min-space-after.htm"><b>min-space-after</b></a>
+</li>
+<li id="23">
+<a href="../../operators/cg/m/min-space-before.htm"><b>min-space-before</b></a>
+</li>
+<li id="24">
+<a href="../../operators/cg/n/now-dragging.htm"><b>now-dragging</b></a>
+</li>
+<li id="25">
+<a href="../../operators/cg/n/now-under-mouse.htm"><b>now-under-mouse</b></a>
+</li>
+<li id="26">
+<a href="../../operators/cg/o/on-drag.htm"><b>on-drag</b></a>
+</li>
+<li id="27">
+<a href="../../operators/cg/o/on-redisplay.htm"><b>on-redisplay</b></a>
+</li>
+<li id="28">
+<a href="../../operators/cg/o/orientation.htm"><b>orientation</b></a>
+</li>
+<li id="29">
+<a href="../../operators/cg/w/widgets-to-move.htm"><b>widgets-to-move</b></a>
+</li>
+<li id="30">
+<a href="../../operators/cg/w/widgets-to-resize.htm"><b>widgets-to-resize</b></a>
+</li>
+<li id="31">
+<a href="../../operators/cg/v/value.htm"><b>value</b></a>
+</li>
+</ul>
+
+<p id="32">
+The class of <a href="widget-window.htm"><code>widget-window</code></a>
+that is displayed for a split-bar is <a href="split-bar-pane.htm"><code>split-bar-pane</code></a>. Typically an application needs
+to deal only with the dialog-item class, though if you supply an
+on-redisplay function to draw a <a href="split-bar.htm"><code>split-bar</code></a> in a custom way, then you draw on
+the <a href="split-bar-pane.htm"><code>split-bar-pane</code></a>.
+</p>
+
+<hr><p id="33"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/split-bar.htm">9.0 version</a></td></tr></table></body></html>

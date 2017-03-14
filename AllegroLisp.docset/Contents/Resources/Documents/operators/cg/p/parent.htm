@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>parent</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/parent.htm">9.0 version</a></td></tr></table><h2 id="2">parent</h2>
+
+<p id="3"><b>Arguments: </b><i>
+standard-object
+</i></p>
+
+<p id="4">
+Returns the parent of the argument. See also <a href="../o/owner.htm"><b>owner</b></a>. And see 
+<a href="../../../cgide.htm#child-parent-overlapped-etc-1">About child, parent, and owner windows</a> in <a href="../../../cgide.htm">cgide.htm</a>.
+</p>
+<p id="5">
+For windows, <b>(setf parent)</b> may be called to change the parent
+of an existing window to another window or the screen (to change to
+the screen, setf the value to <code>(screen *system*)</code> --
+see <a href="../s/screen.htm"><b>screen</b></a> and
+<a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>). The new parent will also
+be the owner of the window, even when the new parent is the
+screen. (Currently there is no way to change the owner of an owned
+top-level window.)
+</p>
+<p id="6">
+In releases prior to 6.0, this function returned the owner when the
+window was a pop-up window (see <a href="../p/pop-up.htm"><b>pop-up</b></a>. The real parent of a pop-up
+window is always the screen regardless of what :parent initarg is
+passed to <a href="../m/make-window.htm"><b>make-window</b></a>. It may still have an
+owner window, however, which is the window with which the window
+shrinks and closes. If your code calls <a href="../p/parent.htm"><b>parent</b></a> to return the owner of a
+pop-up window, then you will need to change it to call <a href="../o/owner.htm"><b>owner</b></a> instead.
+</p>
+
+<h3 id="7">
+GTK Note
+</h3>
+
+<p id="8">
+You cannot change the parent of a window from a window to the screen
+or vice versa.  Attempting to do so will simply invoke the <a href="../../../variables/cg/s_gtk-compatibility-warning-action_s.htm"><code>*gtk-compatibility-warning-action*</code></a>.  You may
+only change the parent from one window to another window.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/parent.htm">9.0 version</a></td></tr></table></body></html>

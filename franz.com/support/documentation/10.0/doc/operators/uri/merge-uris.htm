@@ -1,0 +1,79 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>merge-uris</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.uri</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/uri/merge-uris.htm">9.0 version</a></td></tr></table><h2 id="2">merge-uris</h2>
+
+<p id="3"><b>Arguments: </b><i>
+uri base-uri </i> &amp;optional <i>place</i><i>
+</i></p>
+
+<p id="4">
+Return an absolute URI, based on <i>uri</i>, which can
+be relative, and <i>base-uri</i> which must be
+absolute. <i>place</i> can be used as storage for the
+result.
+</p>
+<p id="5">
+<strong>Note</strong>: bad things will happen if you use an interned 
+URI as the result for merging. The result is not interned. 
+</p>
+
+<p id="6">
+The rules for merging URIs are not the same as for merging
+pathnames. A simplified version of the merge rules from RFC2396 are
+(applied in order):
+</p>
+
+<ul>
+<li id="7">
+If <i>uri</i> has no scheme, authority or path, then the
+query and fragment from <i>uri</i> are used, and all
+other slots are inherited from the <i>base-uri</i>.
+</li>
+<li id="8">
+If <i>uri</i> has a scheme, then
+<i>uri</i> is returned. If it does not have a scheme,
+then it inherits one from the <i>base-uri</i>.
+</li>
+<li id="9">
+If <i>uri</i> has a host, the unmodified
+<i>uri</i> is returned.
+</li>
+<li id="10">
+If the path of <i>uri</i> is absolute (starts with a /),
+then the unmodified <i>uri</i> is returned.
+</li>
+<li id="11">
+Otherwise, the path of <i>base-uri</i> and
+<i>uri</i> are concatenated into a uri path, and the new
+uri is returned.
+</li>
+</ul>
+
+<p id="12">
+One comment about error checking of URIs as a result of merging:
+RFC2396 says that an implementation may handle too many ..'s in a
+merge result "by retaining these components in the resolved path,
+by removing them from the resolved path, or by avoiding traversal of
+the reference." The examples in appendix C of RFC2396 imply that
+an implementation should retain these invalid elements, so that is
+what we do. For example,
+</p>
+
+<pre id="13">
+(merge-uris (parse-uri "../../../../g") 
+            (parse-uri "http://a/b/c/d;p?q")) 
+</pre>
+
+<p id="14">
+should return <code>#&lt;uri &quot;http://a/../../g&quot;&gt;</code>,
+which is clearly a nonsense result, but this is what our 
+implementation returns, instead of signaling an error. 
+</p>
+
+<p id="15">
+See also <a href="../../uri.htm">uri.htm</a> for general
+information on Universal Resource Indicator support in Allegro
+CL.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/uri/merge-uris.htm">9.0 version</a></td></tr></table></body></html>

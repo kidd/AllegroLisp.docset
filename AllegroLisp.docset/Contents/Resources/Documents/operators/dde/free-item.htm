@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>free-item</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dde</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dde/free-item.htm">9.0 version</a></td></tr></table><h2 id="2">free-item</h2>
+
+<p id="3"><b>Arguments: </b><i>
+dde-topic-or-item-name
+</i></p>
+
+<p id="4">
+Frees an OS dde string handle resource used by a
+dde-topic-or-item-name. The argument can be either a symbol or a
+string, just as you would pass it as a dde topic or item name to other
+dde functions.
+</p>
+<p id="5">
+When passing symbols or strings that serve as dde topic and item
+names, internally a special handle is created for each name, and the
+name is passed quickly to and/or from DDE by simply passing the
+handle. There is a limit in the OS to the number of such strings that
+may be created.  Usually this is not a problem, since Allegro knows to
+always re-use the same dde string handle for a given topic or item
+name. So if you call (send-request spreadsheet-port
+:current-row-number) thousands of times, only one dde string handle
+will be created for the item name "current-row-number". These string
+handles are freed automatically either when close-dde is called or
+when lisp exits.
+</p>
+<p id="6">
+But if, on the other hand, the item names are not a handful of
+constants but are instead some sort of variable that is being passed
+as many different values (for example, passing "RxCy" as an item name
+to a spreadsheet to ask for the value of cell x, y, with lots of
+different values of x and y being passed), then many dde string
+handles may be getting created and may even exceed the maximum that
+may be created.  If this is a possibility, then you may want to
+explicitly call free-item on such dde item names after passing them to
+dde functions. This will free each handle shortly after it is created,
+to leave maximum capacity for further string handles. If the same
+item-name is used again later after it has been freed, then the dde
+string handle for it will be recreated internally automatically, so
+you don't have to make sure that you are no longer using a particular
+topic or item name before you call free-item on it.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dde/free-item.htm">9.0 version</a></td></tr></table></body></html>

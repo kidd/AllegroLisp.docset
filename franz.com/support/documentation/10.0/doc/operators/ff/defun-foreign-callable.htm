@@ -1,0 +1,174 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>defun-foreign-callable</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/defun-foreign-callable.htm">9.0 version</a></td></tr></table><h2 id="2">defun-foreign-callable</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name arglist </i> &amp;rest <i> body</i><i>
+</i></p>
+
+<p id="4">
+This macro creates a function that can be called from non-lisp
+code. It is intended that such a function be callable from lisp as
+well, but such functionality has not yet been provided. (This macro
+replaces the obsolete <a href="defun-c-callable.htm"><b>defun-c-callable</b></a>.)
+</p>
+
+<p id="5">
+<i>name</i> must be a symbol representing the name of
+the new function to install.
+</p>
+
+<p id="6">
+<i>arglist</i> is an argument list
+specification. Each argument is either a symbol representing the name
+of an argument of type <code>:long</code>, or it is a list of two
+elements containing the argument name and foreign-type,
+respectively.
+</p>
+
+<h3 id="7">The body argument and its declaration</h3>
+
+
+
+<p id="8">
+The first form in the <i>body</i> can be a declaration
+form, whose valid options are <code>:convention</code>,
+<code>:unwind</code>, and <code>:returning</code>;
+somthing like:
+</p>
+
+<pre id="9">
+(defun-foreign-callable my-callback ()
+    (declare (:convention :c))
+  ...)
+</pre>
+
+<p id="10">
+The possible values of the options are:
+</p>
+<ul>
+<li id="11">
+<code>:convention</code>: the convention provides for the
+specialization of calling conventions due to language or
+operating-system distinctions. The default convention is
+<code>:c</code>, and is adequate for most
+situations. <code>:fastcall</code> is also accepted. Other
+values are distinguished by MS Windows-based systems including
+<code>:stdcall</code>, <code>:method</code>, and
+<code>:fastcall</code>, but <code>:fastcall</code> is not
+supported and should not be specified. See <a name="def-foreign-call.htm#note-2-possible-values">Note 2: Possible
+Values for Convention</a> on the page for <a href="def-foreign-call.htm"><b>def-foreign-call</b></a>.
+</li>
+<li id="12">
+<code>:unwind</code>: on MS Windows based systems, defaults to
+0, and to <code>nil</code> on all other systems. May be
+<code>nil</code> or an integer.
+
+</li>
+<li id="13">
+
+<code>:returning</code>: this specifies the type of what is
+returned by the called function. It is ignored except when the
+declared value includes a foreign struct type (either a
+<code>:struct</code>, a <code>:union</code>, or a
+<code>:class</code>); when this occurs a hidden argument is
+provided and the structure is arranged to be copied back to the
+caller, according to the calling convention of the architecture. The
+general form is
+
+<pre id="14">
+
+(ff:defun-foreign-callable foo (...)
+   (declare (:returning &lt;type&gt;)) 
+   ...)
+
+</pre>
+
+<p id="15">
+where <code>&lt;type&gt;</code> is a foreign type or its name
+specifying a structure. This declaration is intended to eventually
+replace the <i>convert-to-c-types</i> argument in
+<a href="register-foreign-callable.htm"><b>register-foreign-callable</b></a>, and
+cannot be used with it. 
+</p>
+
+</li>
+</ul>
+<p id="16">
+New C++ and other language based systems tend to establish exception
+handlers, and set up their own equivalent of unwind-protects in their
+own langage. Lisp knows nothing about such exception handlers, and
+thus tends to trash the handler chains that have been built up
+whenever lisp code throws over non-lisp code to a catch form in lisp
+code deeper in the stack. The non-lisp code had been expecting either
+its own exception handling system to remove the exception from the
+chain on the stack, or else normal functional returns to unwind the
+stack in a normal fashion.
+</p>
+<p id="17">
+When the <code>:unwind</code> value is <code>nil</code>, then no special unwinding takes place.  When the
+argument is non-<code>nil</code> (e.g. 0), then a special
+"throw-by-returning-to-c" style of unwinding occurs; a throw occurs,
+not by removing the stack (including the foreign code which might have
+established handlers), but instead by returning the unwind-value to
+that code, which should then remove its own handler and return. When
+the foreign code returns, the lisp throw is again resumed until it is
+completed, or until the next lisp-to-nonlisp transition is
+encountered.
+</p>
+
+<h3 id="18">Using a function defined by defun-foreign-callable</h3>
+<p id="19">
+In order to use a function defined by <a href="defun-foreign-callable.htm"><b>defun-foreign-callable</b></a>, the
+function must first be registered using <a href="register-foreign-callable.htm"><b>register-foreign-callable</b></a>.
+</p>
+
+<p id="20">
+What the foreign-callable function returns as a foreign value is
+controlled by the call to <a href="register-foreign-callable.htm"><b>register-foreign-callable</b></a> (which
+actually enables the foreign callable function). If the third
+(optional) argument to <a href="register-foreign-callable.htm"><b>register-foreign-callable</b></a> is
+<code>nil</code>, an unconverted Lisp value is returned in
+the foreign return register. Programmers must use the specifications
+in <b>[Allegro
+directory]/misc/lisp.h</b> to interpret this value. If the
+third argument is <code>t</code>, then the Lisp value of
+the function is converted to a foreign value according to the default
+conversion rules, and the resulting value is returned as the foreign
+value returned by the Lisp function.</p>
+
+<p id="21">
+The body of the foreign callable Lisp function must be carefully
+coded to return a Lisp value that will trigger an appropriate
+conversion so that the desired foreign value will actually appear at
+the interface.
+</p>
+
+<h3 id="22">
+Strings passed as arguments
+</h3>
+
+<p id="23">
+Consider this call to <a href="defun-foreign-callable.htm"><b>defun-foreign-callable</b></a>:
+</p>
+<pre id="24">
+(defun-foreign-callable gdbm-error-handler ((string (* :char)))
+  (error "gdbm error: ~a." (native-to-string string)))
+</pre>
+<p id="25">
+The call <a href="../excl/native-to-string.htm"><b>native-to-string</b></a> is
+necessary because the <i>string</i> argument in the
+callback to Lisp is done with no string conversion at callback
+time. The value of the <i>string</i> argument as passed
+will be an integer representing a C address. <a href="../excl/native-to-string.htm"><b>native-to-string</b></a> does the necessary
+conversion.
+</p>
+
+<p id="26">
+See <a href="../../ftype.htm">ftype.htm</a> for
+information on foreign types in Allegro CL and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL.
+</p>
+
+<hr><p id="27"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/defun-foreign-callable.htm">9.0 version</a></td></tr></table></body></html>

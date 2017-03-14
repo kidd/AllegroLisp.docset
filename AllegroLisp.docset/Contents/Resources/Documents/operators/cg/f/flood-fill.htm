@@ -1,0 +1,90 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>flood-fill</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/flood-fill.htm">9.0 version</a></td></tr></table><h2 id="2">flood-fill</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream position </i>&amp;key <i>border-color</i><i>
+</i></p>
+
+<p id="4">
+Changes an arbitrary contiguous set of pixels of
+<i>stream</i> to the current <a href="../f/foreground-color.htm"><b>foreground-color</b></a> of
+<i>stream</i>, by starting at the pixel specified by
+<i>position</i> and changing the color of that pixel and
+its immediately neighboring pixels (vertical and horizontal only) when
+their current colors meet certain criteria.  Whenever a pixel is
+changed, additional branches of the search consider that pixel's
+immediate neighbors as well.  The activity stops only when every
+branch of the search either has encountered a pixel that should not
+change color or has already been considered, or has gone off the edge
+of the stream or its current <a href="../c/clipping-box.htm"><b>clipping-box</b></a>.
+</p>
+<p id="5">
+If <i>border-color</i> is <code>nil</code>
+(which is the default), then only pixels that are the same color as
+the pixel at <i>position</i> are changed.  Intuitively,
+the area that is currently a single color and includes the pixel at
+<i>position</i> is changed to the current <a href="../f/foreground-color.htm"><b>foreground-color</b></a> of the
+stream.  If the pixel at <i>position</i> is already the
+current foreground, then nothing is done.
+</p>
+<p id="6">
+If <i>border-color</i> is instead an RGB color object
+(see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>),
+then all pixels except those that are the specified border color are
+changed. Intuitively, this fills an area that is completely
+surrounded by the border color and contains the pixel at 
+<i>position</i>, if
+there is such a boundary, and otherwise changes all of the stream's
+pixels except those that are of the border color (or in areas bounded
+by the border color) to the foreground color.
+</p>
+<p id="7">
+Use <a href="../w/with-foreground-color.htm"><b>with-foreground-color</b></a> around a call
+to <a href="../f/flood-fill.htm"><b>flood-fill</b></a> to
+change the pixels to some arbitrary color.
+</p>
+<p id="8">
+<i>position</i> should be a position (see <a href="../m/make-position.htm"><b>make-position</b></a>).
+<i>stream</i>
+should be a <a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+For <i>stream</i>s other than <a href="../../../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>s, nothing will be done
+if the initial position is not currently visible or is otherwise
+outside of the stream's current <a href="../c/clipping-box.htm"><b>clipping-box</b></a>, and filling will
+never proceed through an area that is clipped to continue on another
+visible area of the window. This is not an issue when filling a
+<a href="../../../classes/cg/bitmap-pane.htm"><code>bitmap-pane</code></a>,
+<a href="../../../classes/cg/bitmap-stream.htm"><code>bitmap-stream</code></a>,
+<a href="../../../classes/cg/printer.htm"><code>printer</code></a>, or
+the screen unless an explicit <a href="../c/clipping-box.htm"><b>clipping-box</b></a> has been set.
+(Drawing on the screen requires a <a href="../w/with-device-context.htm"><b>with-device-context</b></a> wrapper.)
+</p>
+<p id="9">
+Note that this Common Graphics function directly calls a function
+supplied by the operating system, and Common Graphics has no control
+over the subtle choices in the implementation of this algorithm. In
+Windows, this function is <code>ExtFloodFill</code>. The
+documentation for this function implies that there may be cases where
+the operation will not complete, which are possibly due to the stack
+being depleted by a huge fill. Also, one small difference with the
+Common Graphics function is that when no boundary color is specified,
+<a href="../f/flood-fill.htm"><b>flood-fill</b></a> always
+uses the current color of the pixel at <i>position</i>
+as the color to change, rather than requiring that the application
+specify this color and then doing nothing if a different color is
+specified.
+</p>
+
+<h3 id="10">
+GTK Note
+</h3>
+<p id="11">
+This function is not implemented on the GTK platform.  It is probably
+not feasible to implement it in Common Graphics without a GTK hook
+into the display adapter's functionality for doing the drawing with
+adequate speed.  Calling the function on GTK will simply invoke
+the <a href="../../../variables/cg/s_gtk-compatibility-warning-action_s.htm"><code>*gtk-compatibility-warning-action*</code></a>.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/flood-fill.htm">9.0 version</a></td></tr></table></body></html>

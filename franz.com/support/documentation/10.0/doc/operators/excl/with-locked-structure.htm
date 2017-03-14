@@ -1,0 +1,80 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-locked-structure</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-locked-structure.htm">9.0 version</a></td></tr></table><h2 id="2">with-locked-structure</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(struct </i>&amp;key <i>block non-smp typecheck</i><i>)
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+
+
+<p id="4">
+This macro expands into code that waits until the executing process
+acquires control of the structure object, then evaluates the forms in
+the body as an implicit <a href="../../../ansicl/dictentr/progn.htm"><b>progn</b></a>. It then releases control of the object
+and returns whatever values the last form in
+the <i>body</i> returned.
+</p>
+<p id="5">
+The arguments are:
+</p>
+<ul>
+<li id="6">
+<b><i>struct</i></b>: a form that is evaluated once to
+get the object to be locked. The object must be an instance of
+<a href="../../classes/excl/synchronizing-structure.htm"><code>synchronizing-structure</code></a>
+or of a subtype of <a href="../../classes/excl/synchronizing-structure.htm"><code>synchronizing-structure</code></a>.
+</li>
+<li id="7">
+<b><i>block</i></b>: used for special internal
+functions. Users should not specify this.
+</li>
+<li id="8">
+<b><i>non-smp</i></b>: what code to generate in a
+non-smp lisp. Legal values are:
+<ul>
+<li id="9">
+:without-scheduling to get the
+equivalent of (mp:without-scheduling . body)
+</li>
+<li id="10">
+:without-interrupts to
+get the equivalent of (excl:without-interrupts . body)
+</li>
+<li id="11">
+:atomically to
+get the equivalent of (excl:atomically . body)
+</li>
+<li id="12">
+(omitted) to get
+object-locking code like smp.  This may be inefficient or even
+problematic in a non-smp lisp.
+</li>
+</ul>
+</li>
+<li id="13">
+typecheck: if specified as nil, the generated code does not include
+an explicit typecheck of the structure object. Otherwise,
+(whether omitted or specified non-nil) the generated code
+checks that struct is a synchronizing structure before trying to
+lock it.
+</li>
+</ul>
+<p id="14">
+It is not an error for a process that already owns an object to try to
+lock it again. When this happens, the object is not released at the end
+of the body code.
+</p>
+<p id="15">
+The release of the object is performed in an <a href="../../../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a> cleanup form, so non-local
+exits from body are allowed.
+</p>
+
+<p id="16">
+See <a href="../../smp.htm">smp.htm</a>
+and <a href="../../multiprocessing.htm">multiprocessing.htm</a> for more information on
+this macro and on multiprocessing.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/with-locked-structure.htm">9.0 version</a></td></tr></table></body></html>

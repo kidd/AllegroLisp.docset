@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>sharable-lock-unlock</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/sharable-lock-unlock.htm">9.0 version</a></td></tr></table><h2 id="2">sharable-lock-unlock</h2>
+
+<p id="3"><b>Arguments: </b><i>
+sharable-lock mode
+</i></p>
+
+
+<p id="4">
+Release a <a href="../../classes/mp/sharable-lock.htm"><code>sharable-lock</code></a> in
+the specified mode.
+</p>
+<p id="5">
+The value returned is <code>nil</code> or one of the
+keywords <code>:unlocked</code>
+or <code>:recursive</code>.
+</p>
+<p id="6">
+The <b><i>mode</i></b> argument must be one of the
+keywords <code>:shared</code> or <code>:exclusive</code>.
+</p>
+<p id="7">
+If the lock is locked in the specifed mode, the locker count is
+decremented.  If the count is still not zero, the
+keyword <code>:recursive</code> is returned.  If the count is
+zero, the keyword <code>:unlocked</code> is returned.
+</p>
+<p id="8">
+If the lock is not locked, and <i>safe-p</i> (when the
+lock was created with <a href="make-sharable-lock.htm"><b>make-sharable-lock</b></a>)
+is <code>nil</code>,
+<code>nil</code> is returned.
+</p>
+<p id="9">
+Note that a call to <a href="sharable-lock-unlock.htm"><b>sharable-lock-unlock</b></a> can only release a lock
+acquired with a call to <a href="sharable-lock-lock.htm"><b>sharable-lock-lock</b></a>.  The locks established with
+the <a href="with-shared-lock.htm"><b>with-shared-lock</b></a>
+and <a href="with-exclusive-lock.htm"><b>with-exclusive-lock</b></a>
+macros can only be released by exiting the dynamic context of the
+macro calls.
+</p>
+<p id="10">
+See <a href="../../smp.htm#sharable-locks-2">Sharable
+locks</a> in <a href="../../smp.htm">smp.htm</a>.
+</p>
+<p id="11">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/sharable-lock-unlock.htm">9.0 version</a></td></tr></table></body></html>

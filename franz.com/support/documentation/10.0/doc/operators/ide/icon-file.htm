@@ -1,0 +1,91 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>icon-file</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/icon-file.htm">9.0 version</a></td></tr></table><h2 id="2">icon-file</h2>
+
+<p id="3"><b>Arguments: </b><i>
+project
+</i></p>
+
+<p id="4">
+Returns the file (as a pathname or path namestring) containing the
+application icon for a project.
+</p>
+<p id="5">
+When a standalone application is generated from the project with the
+<a href="../../ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> or <a href="../../ide-menus-and-dialogs/file-menu.htm#build-project-exe">File | Build Project
+Exe</a> command, the icon from the file will be displayed in
+various places when the standalone application is run (but not when
+the project is run in the IDE). These places include:
+</p>
+<ul>
+<li id="6">
+The title-bar of each frame-window in the application, by default.
+This default icon may be overridden for individual windows by calling
+<a href="../cg/i/icon.htm"><b>(setf
+icon)</b></a> for each window.
+</li>
+<li id="7">
+The "alt-tab" window for switching between various Windows
+applications.
+</li>
+<li id="8">
+The Windows taskbar.
+</li>
+<li id="9">
+The Windows File Explorer, when displaying a directory containing
+the executable (.exe) file for the application.
+</li>
+</ul>
+<p id="10">
+The value may also be <code>nil</code>, in which case the
+Franz bust icon (as seen in the IDE) will be used.  Otherwise, the
+value should be the pathname or path namestring of a .ico icon file.
+</p>
+<p id="11">
+An icon file on Windows may contain multiple images, which typically
+are the same logical image at different sizes. Generally it is best
+if the file contains at least one 32 by 32 image for use in places
+like the alt-tab window, and at least one 16 by 16 image for use in
+places like window title bars, the taskbar, and the file manager. If
+the file contains only a large icon, then a smaller icon is derived
+from it automatically, but it typically does not look as nice as a
+separately designed small icon.
+</p>
+<p id="12">
+You may find that some icon files but not others will work as
+application icons, depending on the version of the underlying
+operating system.  In particular, most icons that have a depth of 4
+(that is, using 4 bits per pixel) that worked on Windows XP appear not
+to work on Windows Vista; you may need to use an icon with a depth of
+8 instead.
+</p>
+<p id="13">
+Allegro CL does not provide any tools for creating icon files.
+</p>
+<p id="14">
+The <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of this function may
+be used to specify a new icon file for a project programmatically,
+though this is typically done interactively on the <a href="../../ide-menus-and-dialogs/project-manager-dialog-build.htm">Build</a>
+tab of the <a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog instead.
+</p>
+
+<p id="15">
+See <a href="../../cg/cg-icons.htm">cg-icons.htm</a>.
+</p>
+
+
+
+
+<h3 id="16">
+GTK Note
+</h3>
+
+<p id="17">
+<a href="icon-file.htm"><b>icon-file</b></a> is not implemented
+on the GTK platform at this time.  Specifying this property currently
+will have no effect.
+</p>
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/icon-file.htm">9.0 version</a></td></tr></table></body></html>

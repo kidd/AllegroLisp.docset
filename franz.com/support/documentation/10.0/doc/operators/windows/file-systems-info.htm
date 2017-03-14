@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>file-systems-info</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: windows</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/file-systems-info.htm">9.0 version</a></td></tr></table><h2 id="2">file-systems-info</h2>
+
+<p id="3"><b>Arguments: </b><i>
+nil
+</i></p>
+
+<p id="4">
+This function combines the information returned by the functions
+<a href="file-systems.htm"><b>file-systems</b></a>,
+<a href="file-system-type.htm"><b>file-system-type</b></a>,
+and <a href="file-system-info.htm"><b>file-system-info</b></a> into a single
+list. 
+</p>
+<p id="5">
+Each member of the returned list is itself a list that describes
+one file system. This sublist is a plist where the first key/value
+pair is :name with the the name of the file-system (as returned by
+<a href="file-systems.htm"><b>file-systems</b></a>),
+followed by :type with the value returned by <a href="file-system-type.htm"><b>file-system-type</b></a>, followed by the
+plist values returned by <a href="file-system-info.htm"><b>file-system-info</b></a>.  The <a href="../../ide-menus-and-dialogs/tools-menu.htm#inspect-system-data">Tools | Inspect System Data</a> |
+Online File Systems command inspects the list returned by this
+function.
+</p>
+<p id="6">
+Note that a drive for which <a href="file-system-info.htm"><b>file-system-info</b></a> returns <code>nil</code> has an entry in the list returned by <a href="file-systems-info.htm"><b>file-systems-info</b></a> even
+though they are not ready for use. Thus, if G is the CD drive, and
+there is no CD inserted, <a href="file-system-info.htm"><b>file-system-info</b></a> returns <code>nil</code> but <code>(:NAME "G:" :TYPE :CDROM)</code>
+is in the list returned by <a href="file-systems-info.htm"><b>file-systems-info</b></a>. Similarly, if A
+is the floppy drive and no floppy is inserted, <a href="file-system-info.htm"><b>file-system-info</b></a> returns <code>nil</code> and <code>(:NAME "A:" :TYPE
+:REMOVABLE)</code> is in the list returned by <a href="file-systems-info.htm"><b>file-systems-info</b></a>. Therefore, if
+you are interested in whether a drive is ready, you may want to apply
+<a href="file-system-info.htm"><b>file-system-info</b></a>
+to its name after discovering its name from <a href="file-systems-info.htm"><b>file-systems-info</b></a>. (In fact,
+analysis of the whole list returned by <a href="file-systems-info.htm"><b>file-systems-info</b></a> can tell you
+whether the drive is ready -- ready drives typically have volume names
+and other attributes not appearing in the list of an unready drive.)
+</p>
+<p id="7">
+MSDN (MicroSoft Developer Network) information suggests that it is
+possible that a call to <a href="file-systems-info.htm"><b>file-systems-info</b></a> will not complete
+if a CD drive or a floppy drive (or such) is not ready, as the system
+will display a modal dialog saying the drive is not ready when it
+tries to get information about the drive. In practice, this does not
+seem to happen (it has never been reported), but wrapping the call to
+<a href="file-systems-info.htm"><b>file-systems-info</b></a>
+as follows will guarantee that it will not happen.
+</p>
+<pre id="8">
+(let* (former-error-mode)
+  (unwind-protect
+      (progn
+        (setq former-error-mode (win:SetErrorMode 1))
+        (cg:file-systems-info))
+    (when former-error-mode
+	(win:SetErrorMode former-error-mode))))
+</pre>
+
+<p id="9">
+This function is defined in the <code>:winapi</code> module. If
+that module is not loaded, evaluate <code>(require
+:winapi)</code>. This function is available on Windows machines
+only.  In releases prior to 7.0, the symbol naming this function was
+exported from the <code>common-graphics</code> package. Starting
+in release 7.0, it is exported only from the
+<code>windows</code> package.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/windows/file-systems-info.htm">9.0 version</a></td></tr></table></body></html>

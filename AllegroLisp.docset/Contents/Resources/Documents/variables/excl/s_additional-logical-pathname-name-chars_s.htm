@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*additional-logical-pathname-name-chars*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_additional-logical-pathname-name-chars_s.htm">9.0 version</a></td></tr></table><h2 id="2">*additional-logical-pathname-name-chars*</h2>
+
+<p id="3">
+The value of this variable should be a (possibly empty) list of
+character objects. Any character on this list will be allowed in a
+word of a logical pathname even if the ANSI spec does not permit such
+characters to be used. (As specified by the ANSI spec, words in
+logical pathnames must consist of alphabetic characters, decimal
+digits, and the minus sign. Not allowed are characters such as
+underscore (#\_).)
+</p>
+<p id="4">
+For example, consider the namestring "expert:;engine;steam_power.lisp".
+Because it contains an underscore, it cannot (per the ANSI spec) be
+parsed as a logical pathname. Instead, it is parsed as a physical
+pathname (with a very odd but not, on UNIX, illegal name):
+</p>
+<pre id="5">
+cl-user(102): *additional-logical-pathname-name-chars*
+nil
+cl-user(103): (describe (pathname "expert:;engine;steam_power.lisp"))
+#p"expert:;engine;steam_power.lisp" is a structure of type pathname.  It has
+these slots:
+ host               nil
+ device             :unspecific
+ directory          nil
+ name               "expert:;engine;steam_power"
+[...]
+</pre>
+<p id="6">
+But if #\_ is added to the list bound to <a href="s_additional-logical-pathname-name-chars_s.htm"><code>*additional-logical-pathname-name-chars*</code></a>,
+"expert:;engine;steam_power" does parse as a logical pathname:
+</p>
+<pre id="7">
+cl-user(104): (push #\_ *additional-logical-pathname-name-chars*)
+(#\_)
+cl-user(105): (describe (pathname "expert:;engine;steam_power.lisp"))
+#p"expert:;engine;steam_power.lisp" is a structure of type logical-pathname.
+It has these slots:
+ host               "expert"
+ device             nil
+ directory          (:relative "engine")
+ name               "steam_power"
+[...]
+</pre>
+
+<p id="8">
+The initial value of this variable is <code>nil</code>,
+which is the value necessary for ANSI compliance. Note that logical
+pathname operations will not be portable if the value of this variable
+is non-<code>nil</code>.
+</p>
+<p id="9">
+See <a href="../../pathnames.htm#logical-pathnames-implementation-2">Logical pathnames: general
+implementation details</a> in <a href="../../pathnames.htm">pathnames.htm</a>
+for more information on this aspect of logical pathnames in Allegro
+CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_additional-logical-pathname-name-chars_s.htm">9.0 version</a></td></tr></table></body></html>

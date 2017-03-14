@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>gc-before-c-hooks</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/gc-before-c-hooks.htm">9.0 version</a></td></tr></table><h2 id="2">gc-before-c-hooks</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">Returns a list whose entries each represent a C (or C-compatible)
+function to call before garbage collections of any kind. The typical
+declaration of the C function can be</p>
+
+<pre id="5">
+int mybeforehook(int gctype);
+</pre>
+
+
+<p id="6">
+where <i>gctype</i> is passed in as 0 if the current gc is a scavenge
+and 1 if a global-gc.
+</p>
+
+<p id="7">
+The list entry itself is typically an (unsigned-byte 32) array, for
+32-bit Lisps, or (unsigned-byte 64) or (signed-byte 64) array, for
+64-bit Lisps. The array must have at least 1 entry, and its first
+entry must be the address of the C function. (signed-byte 32) will
+also work on 32-bit Lisps if the address is small enough or wrapped,
+if in the upper half of memory. There is no restriction on using a
+(signed-byte 64) array on a 64-bit Lisp.
+</p>
+
+<p id="8"><a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> can be used to
+store into the list.</p>
+
+<p id="9">A typical usage of this feature is</p>
+
+<pre id="10">
+;;  This example is for 32-bit Lisps as it uses (unsigned-byte 32)
+;;  arrays. For 64-bit Lisps, you can use (unsigned-byte 64) arrays
+(let ((myaddr (ff:get-entry-point "mybeforehook")))
+ (push (make-array 1 :element-type '(unsigned-byte 32)
+
+:initial-element myaddr)
+ (excl:gc-before-c-hooks)))
+</pre>
+
+<p id="11">No gc hooks are saved across dumplisps. All applications are
+responsible for re-establishing their own
+<a href="gc-before-c-hooks.htm"><b>gc-before-c-hooks</b></a>.</p>
+
+<p id="12">
+See also <a href="../../gc.htm">gc.htm</a> for general information on
+garbage collection in Allegro CL.
+</p>
+
+<p id="13"><b>Warning</b>: No before hook should ever call back into lisp. The
+fact that during the hook call a gc is about to begin means that most
+likely there is no space in lisp heap.  Also, it should never be
+assumed that the callback will not require lisp heap, even if the lisp
+function itself does not cons. A program whose before-hook calls into
+lisp may not fail the majority of the time, but it is likely to fail
+at some inopportune time with disastrous results.</p>
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/gc-before-c-hooks.htm">9.0 version</a></td></tr></table></body></html>

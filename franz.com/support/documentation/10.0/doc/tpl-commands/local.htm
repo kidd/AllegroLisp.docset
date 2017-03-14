@@ -1,0 +1,169 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>:local</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Top-level Command</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/local.htm">9.0 version</a></td></tr></table><h2 id="2">:local</h2>
+
+<p id="3"><b>Arguments: </b><i>
+[:i] [:c] [:x] [:r] [name|index]
+</i></p>
+
+<p id="4">
+If not in ldb mode (<code>ldb</code> does not appear in the
+prompt), this command prints information on local variables in the
+current frame, as we now describe. See below for behavior in ldb mode.
+</p>
+
+<p id="5">
+This command causes the values of local variables for the current
+stack frame (see <a href="zoom.htm"><b>:zoom</b></a>) to be
+printed. See <a href="../debugging.htm">debugging.htm</a> for information on the
+handling of local variables by the debugger.
+</p>
+
+<p id="6">
+Note that the compiler may not save the names of local variables in
+compiled code. In that case variables will be listed identified by an
+index, which is a number from 0 to n-1, where n is the number of
+compiled local variables. The compiler will save names of compiled
+local variables if the compiler switch <a href="../variables/compiler/save-local-names-switch.htm"><code>compiler:save-local-names-switch</code></a> is bound
+to a function which returns <code>t</code>. Further, local
+name information is only loaded from compiled file is the variable
+<a href="../variables/excl/s_load-local-names-info_s.htm"><code>*load-local-names-info*</code></a> is non-<code>nil</code> when the compiled (fasl) file is loaded. (There
+is an example on the <a href="../variables/excl/s_load-local-names-info_s.htm"><code>*load-local-names-info*</code></a> page showing <a href="local.htm"><b>:local</b></a> output when local names are and are
+not loaded.)
+</p>
+
+<p id="7">
+When local names are saved (as described in the paragraph above),
+closure variables are also printed out. 
+</p>
+
+<p id="8">
+If the <i>name/index</i> option is specified, the value
+of the local variable identified by the name or index will be
+printed. With no other options, all instances of
+<i>name</i> are looked for. If the option
+<code>:i</code> (<code>:c</code>) is specified, just interpreted
+(compiled) code is searched for name. <i>index</i>
+always refers to compiled local variables. The variable
+<code>cl:*</code> is set only if you specify a
+<i>name</i> or <i>index</i> argument to
+<a href="local.htm"><b>:local</b></a>. The commands <a href="local.htm"><b>:local</b></a>, <strong>:local :i</strong> and
+<strong>:local :c</strong> do not set <a href="../../ansicl/dictentr/unnamed2.htm"><code>*</code></a>.
+</p>
+<p id="9">
+The <b><i>:x</i></b> argument, if specified, causes any
+numeric values to be printed in hexadecimal. (The
+related <a href="set-local.htm"><b>:set-local</b></a> does not
+support the <i>:x</i> argument.)
+</p>
+
+<h4 id="10">
+The :r option
+</h4>
+<p id="11">
+The <b><i>:r</i></b> argument, if specified, displays
+locals in raw layout. That means they are not interpreted as required,
+optional, local, etc., just all as
+raw-local.
+</p>
+<p id="12">
+If <i>:r</i> is specified,
+the <i>name/index</i> argument should
+be <code>index</code>. Names in raw mode are always
+:unknown. The purpose of this option is to access the stack in a way
+similar to the way the garbage collector and heap-walkers access it.
+Both the gc and heapwalkers use the same stack frame walker to look at
+various slots in the stack.  This includes all argument and local
+slots, but it also includes slots not normally visible by the
+debugger; for example, slots within a stack-allocated object are not
+normally shown normally, but are shown with
+the <i>:r</i> option.
+</p>
+<p id="13">
+When :r is specified, the result differs from when it is not in the
+following ways:
+</p>
+<ul>
+<li id="14">
+The ordering tends to be opposite: ascending locals under normal
+display appear as descending under the :r option.
+</li>
+<li id="15">
+The arguments to the function are not interpreted in :r mode.
+Usually the :r mode shows locations in the stack which constitute the
+next newer frame's arguments, so one would have to move to the next
+older frame before being able to see the arguments seen under normal
+mode.  No atempt to reconstruct a calling expression for this frame is
+made, so some arguments which reside as not-given keywords are not
+interpreted as such.  If &rest arguments are rearranged, no attempt to
+expand them are made.
+</li>
+<li id="16">
+If there are stack-allocated objects, the header words in each will
+appear as non-lisp-objects, and likely any filler words or empty space
+in the objects will also be either non-lisp objects, or else objects
+that have survived from previous function invocations. Sometimes stack
+space is allocated for stack-objects, but the objects or parts of the
+objects are not initialized during a particular function invocation,
+so the previous objets refernced from the stack are still seen.  It is
+these references that are potential memory leaks.
+</li>
+</ul>
+
+<h4 id="17">
+Further notes
+</h4>
+<p id="18">
+The minimal abbreviation for 
+<a href="local.htm"><b>:local</b></a> is <strong>:loc</strong>.
+</p>
+
+<p id="19">See also <a href="set-local.htm"><b>:set-local</b></a>.</p>
+
+<p id="20">
+This command operates on the focused process when multiprocessing is
+active. See <a href="focus.htm"><b>:focus</b></a>.
+</p>
+
+<p id="21"><strong>:local in ldb mode</strong></p>
+
+
+
+
+
+<p id="22">
+The behavior of the :local command was changed in release 10.0. It no longer prints
+registers, unless the current frame is itself a "context-saving"
+frame. The <a href="register.htm"><b>:register</b></a> command will print registers.
+</p>
+
+<p id="23">
+When in ldb-step mode, the <a href="local.htm"><b>:local</b></a>
+command works as follows:
+</p>
+
+<p id="24">
+When a breakpoint is hit and the frame is a "context-saving" frame,
+saved registers are simply considered local variable names and values
+and they are printed when
+the <a href="local.htm"><b>:local</b></a> command is given with
+no arguments. Otherwise register values are not
+printed. The <a href="register.htm"><b>:register</b></a> command
+will print registers.  entered).
+</p>
+
+<p id="25">
+The <code>:x</code> modifier can be used to ask for any numeric output
+in hexadecimal.  Typical register names start with :% and are named
+according to hardware convention, eg.  :%r10, :%ebx (on x86), :%i3 (on
+sparc).
+</p>
+
+
+<p id="26">
+See <a href="../top-level.htm">top-level.htm</a> for more information on top-level
+commands. See <a href="../debugging.htm">debugging.htm</a> for information on the
+debugger.
+</p>
+
+<hr><p id="27"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/local.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rpc-invoke</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-invoke.htm">9.0 version</a></td></tr></table><h2 id="2">rpc-invoke</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(port rpc-port) op arglist </i>&amp;key <i>mode</i> (<i>result</i> :copy-maybe)<i> destination</i> (<i>wait</i> t) (<i>error-p</i> t)<i> timeout</i><i>
+</i></p>
+
+<p id="4">
+This generic function provides a more controlled way of making a
+remote call than <a href="rcall.htm"><b>rcall</b></a>. If <i>wait</i> is
+non-<code>nil</code>, the returned value is the value or
+values returned from the remote call, when these finally arrive. If
+<i>wait</i> is <code>nil</code>, a value is
+returned immediately. The value is a message instance that serves as a
+handle for the call. This handle may be used with the methods <a href="rpc-query.htm"><b>rpc-query</b></a>, <a href="rpc-wait.htm"><b>rpc-wait</b></a>, and <a href="rpc-get.htm"><b>rpc-get</b></a> to monitor the progress of the
+call.
+</p>
+<p id="5">
+The <i>op</i> is a function reference that may be a
+string, a symbol, or a remote reference to a string, symbol or
+function (see <a href="../../rpc.htm#operator-conversion-2">Operator Conversion</a> in
+<a href="../../rpc.htm">rpc.htm</a>).
+</p>
+<p id="6">
+Except for datagram ports, the <i>mode</i> argument may
+be :nest, :parallel, or :block to override the default call mode in
+the port definition. The <i>destination</i> argument may
+be :new to specify that the remote call should be handled in a new
+process regardless of the mode settings.
+</p>
+<p id="7">
+For datagram ports, the timeout argument overrides the default value
+in the message-timeout slot of the port.  A timeout is signaled as an
+error.
+</p>
+
+<p id="8">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-invoke.htm">9.0 version</a></td></tr></table></body></html>

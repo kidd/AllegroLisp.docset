@@ -1,0 +1,54 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>about-to-show-menu</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/about-to-show-menu.htm">9.0 version</a></td></tr></table><h2 id="2">about-to-show-menu</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window menu
+</i></p>
+
+<p id="4">
+Called whenever a menu is about to be made
+visible. <i>window</i> is the owning
+window. <i>menu</i> is the menu about to be displayed.
+</p>
+<p id="5">
+The default method calls <a href="../a/about-to-show-menu.htm"><b>about-to-show-menu</b></a> recursively on
+the selected child of window. An application may add methods to this
+generic function in order to modify a menu that is about to be shown,
+making it suitable for the current context. This is most useful for
+pull-down menus, since they are not invoked by application code that
+could otherwise modify the menu before invoking it. You might, for
+example, want to make certain menu-items unavailable when the menu is
+displayed because the items are not meaningful in the current
+environment. The menu command Cut should typically be unavailable when
+nothing is selected, for example.
+</p>
+<p id="6">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics. See also the <a href="../../../cg/ide-ug/ide_user_guide_7.htm">menu
+chapter</a> in the <a href="../../../cg/ide-ug/ide_user_guide_1.htm">IDE User
+Guide</a>, which has examples using this function.
+</p>
+
+<h3 id="7">
+Ubuntu note:
+</h3>
+<p id="8">
+If you run on the Ubuntu version of Linux, you will probably notice
+that about-to-show-menu does not get called for pull-down menus. The
+reason is that GTK on Ubuntu is not sending the usual GTK message that
+notifies CG that a menu is being shown, and so CG has no way of
+calling <a href="../a/about-to-show-menu.htm"><b>about-to-show-menu</b></a> at
+that time.  This is likely related to GTK modifications that Ubuntu
+appears to have made to shift menu bars onto title bars, though the
+problem persists if you select the Ubuntu option to show menus "in the
+window's toolbar" (actually in its title bar) rather than the default
+option to show them "in the menu bar" (actually in the main window's
+title bar).  In any case, to support the Ubuntu platform you would
+need to move any code that you might otherwise have
+in <a href="../a/about-to-show-menu.htm"><b>about-to-show-menu</b></a>
+methods to other places where code might be changing something that
+affects what should later be shown in pull-down menus.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/about-to-show-menu.htm">9.0 version</a></td></tr></table></body></html>

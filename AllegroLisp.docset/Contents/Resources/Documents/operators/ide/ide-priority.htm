@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ide-priority</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/ide-priority.htm">9.0 version</a></td></tr></table><h2 id="2">ide-priority</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+This IDE configuration property determines the <a href="../mp/process-priority.htm"><b>mp:process-priority</b></a> of the IDE GUI process.
+This is the process that handles user gestures in IDE tool windows.
+The default value 8 so that it is higher than other processes that
+default to a priority of zero. This makes the IDE responsive to user
+gestures while user code is actively running in an IDE Listener
+process.
+</p>
+<p id="5">
+A higher priority for the IDE GUI process can make other applications
+less responsive in some cases. For example, music playback may not
+work smoothly during a dragging operation in the IDE on Windows, such
+as when dragging widgets on forms. If this is a problem, and you
+don't need to use IDE tool windows during long-running evaluations of
+user code, then you could set this value to zero.
+</p>
+<p id="6">
+The menu command <a href="../../ide-menus-and-dialogs/run-menu.htm#prioritize-ide-response">Run | Prioritize IDE Response</a>
+toggles this value between 8 and 0, where the priority is 8 when the
+menu item is checked. You can also change the value programmatically
+with a form such as this one (see <a href="../cg/c/configuration.htm"><b>configuration</b></a> and <a href="../../variables/ide/s_ide-system_s.htm"><code>*ide-system*</code></a>):
+</p>
+
+<pre id="7">
+(setf (ide:ide-priority (configuration ide:*ide-system*)) 0)
+</pre>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/ide-priority.htm">9.0 version</a></td></tr></table></body></html>

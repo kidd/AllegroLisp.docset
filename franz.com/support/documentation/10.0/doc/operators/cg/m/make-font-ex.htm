@@ -1,0 +1,207 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-font-ex</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/make-font-ex.htm">9.0 version</a></td></tr></table><h2 id="2">make-font-ex</h2>
+
+<p id="3"><b>Arguments: </b><i>
+family face size </i> &amp;optional <i>style size-is-cell-height-p angle</i><i>
+</i></p>
+
+<p id="4">
+Both <a href="../m/make-font.htm"><b>make-font</b></a>
+and <a href="../m/make-font-ex.htm"><b>make-font-ex</b></a>
+return a font object with the given
+components. <i>family</i> and <i>face</i>
+specify the family and face of the font. The two functions differ only
+in the interpretation of the <i>size</i> of a font. See
+below under the heading <b>Font sizes</b> for information on size and the
+<i>size-is-cell-height-p</i> argument to 
+<a href="../m/make-font-ex.htm"><b>make-font-ex</b></a>.
+</p>
+<p id="5">
+Other than size, fonts are canonicalized so that those with the same
+components are <a href="../../../../ansicl/dictentr/eq.htm"><b>eq</b></a>.
+</p>
+<p id="6">
+The <b><i>family</i></b> argument is a general
+specification for the style of the font, and is used only if the
+requested <i>face</i> is not installed in the operating
+system. (On GTK, the family is never used.) It may be one of the symbols
+</p>
+<ul>
+<li id="7">
+<code>:swiss</code>: variable-width fonts without serifs
+</li>
+<li id="8">
+<code>:roman</code>: variable-width fonts with serifs
+</li>
+<li id="9">
+<code>:modern</code>: fixed-width fonts, with or without serifs
+</li>
+<li id="10">
+<code>:script</code>: fonts designed to look like cursive handwriting
+</li>
+<li id="11">
+<code>:decorative</code>: novelty fonts, such as Old English
+</li>
+</ul>
+<p id="12">
+or else <code>nil</code> if there is no preference. 
+</p>
+<p id="13">
+The <b><i>face</i></b> argument specifies the unique
+name of an individual typeface that may be installed in the operating
+system. The name may be a string or symbol, though a string is now
+preferred and the symbol option is provided mainly for backward
+compatibility. The string is not case sensitive. If the requested face
+is not installed, then a default face for the requested family is
+used.
+</p>
+<p id="14">
+A list of all currently installed font face names is returned by the
+form (see <a href="../f/font-faces.htm"><b>font-faces</b></a>, <a href="../s/screen.htm"><b>screen</b></a>, and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>):
+</p>
+<pre id="15">
+(font-faces (screen *system*))
+</pre>
+<p id="16">
+If the exact font that was requested is not available, the operating
+system substitutes an approximate font. Once the returned font has
+been assigned to a stream by calling <a href="../f/font.htm"><b>(setf font)</b></a>, <a href="../e/exact-font.htm"><b>exact-font</b></a> may be called
+on the font to return a font object whose family, face, size, and
+other attributes reflect the actual font being used.
+</p>
+<p id="17">
+<b>Platform note</b>: Font face names are different on different
+platforms.  If the following common Microsoft Windows font face names
+are specified on the GTK platform, an attempt will be made to map to a
+comparable GTK font automatically: Arial, Arial Black, Times New
+Roman, MS Serif, MS Sans Serif, Courier New, System, and Fixedsys.
+(No similar attempt is made on Windows to map common GTK font faces to
+Windows font faces.)  If you need to hardcode other font names, you
+may need to conditionalize the code with #+mswindows and #+gtk.
+</p>
+<p id="18">
+The <b><i>size</i></b> should be a positive real number
+that indicates the height of the font in pixels.  On Windows the value
+is typically an integer, though non-integer real numbers work as well.
+On GTK, fonts seem to look better when the point size is an integer,
+though this argument is measured in pixels rather than points.  So on
+GTK it may be a good idea to pass a desired integer point size to the
+function <a href="../p/points-to-pixels.htm"><b>points-to-pixels</b></a> and then pass the
+returned real pixel size to <a href="../m/make-font-ex.htm"><b>make-font-ex</b></a>/<a href="../m/make-font.htm"><b>make-font</b></a>. See the information
+under the heading <b>Font Sizes</b> below for more information.
+</p>
+<p id="19">
+The <b><i>style</i></b> may be either a list of any of
+the style keywords shown below, or a single number derived by adding
+the associated weights, or <code>nil</code> to indicate
+none of the optional styles. The keywords and their integer
+equivalents are:
+</p>
+
+<ul>
+<li id="20">
+<code>:bold</code> style has weight 1.
+</li>
+<li id="21">
+<code>:italic</code> style has weight 2.
+</li>
+<li id="22">
+<code>:underline</code> style has weight 4.
+</li>
+<li id="23">
+<code>:condensed</code> style has weight 32.
+</li>
+</ul>
+<p id="24">
+The <i>angle</i> argument specifies the angle at which
+to draw all strings that are drawn in this font. If <code>nil</code> or unspecified, then text is drawn at the usual
+horizontal angle. Otherwise angle should be an integer indicating
+degrees counterclockwise to rotate text from the usual horizontal
+angle. (So 90 for vertical, first letter lowest, 180 for upside down,
+and 270 for vertical, first letter highest. These are examples; angles
+which are not multiples of 90 are also supported.) The text will be
+rotated about the upper-left corner of the string. <a href="../d/draw-string-in-box.htm"><b>draw-string-in-box</b></a> is therefore not suitable for
+drawing text at non-zero angles, and Common Lisp stream output
+functions such as <a href="../../../../ansicl/dictentr/format.htm"><b>format</b></a> and
+<a href="../../../../ansicl/dictentr/writepri.htm"><b>princ</b></a> should be used instead;
+these functions which will draw from the <a href="../c/current-position.htm"><b>current-position</b></a> of the stream at the angle of
+the font. <a href="../f/font-angle.htm"><b>font-angle</b></a> applied
+to a font returns the angle.
+</p>
+
+<p id="25">
+See also <a href="../a/ask-user-for-font.htm"><b>ask-user-for-font</b></a> and <a href="../v/vary-font.htm"><b>vary-font</b></a>.
+</p>
+<h3 id="26">
+Font sizes
+</h3>
+
+<p id="27">
+You may notice that the size specified to a Common Font dialog
+is different from the size specified to <a href="../m/make-font.htm"><b>make-font</b></a> to get the same
+result. For example, if you call <a href="../a/ask-user-for-font.htm"><b>ask-user-for-font</b></a> (which displays a
+Common Font dialog), and ask for Times regular, size 11, you get the
+same font as returned by <code>(make-font :roman :times
+17)</code>.
+</p>
+<p id="28">
+Why the difference? There are two causes: first, Allegro CL measures
+font sizes in pixels while the Common Dialog measures in
+points, (see <a href="../p/pixels-to-points.htm"><b>pixels-to-points</b></a> and <a href="../p/points-to-pixels.htm"><b>points-to-pixels</b></a>); and second, the size
+shown in the Common Dialog indicates the "character height" (the
+height of the pixels that are actually drawn for a character) while
+the size used by <a href="../m/make-font.htm"><b>make-font</b></a> indicated the "cell
+height" (the character height plus an unpredictable number of blank
+pixel rows of "leading").
+</p>
+<p id="29">
+The function <a href="../m/make-font-ex.htm"><b>make-font-ex</b></a> harmonizes Allegro CL
+with the Windows Common Font dialog. It uses character height rather
+than cell height (unless the
+<i>size-is-cell-height-p</i> optional argument is
+specified true, which forces the older cell-height interpretation and
+makes <a href="../m/make-font-ex.htm"><b>make-font-ex</b></a> equivalent to 
+<a href="../m/make-font.htm"><b>make-font</b></a>). The units are still
+pixels, though, rather than points.
+</p>
+<h3 id="30">
+How a font object is printed
+</h3>
+<p id="31">
+Font objects are printed <code>#.([make-font-form])</code>
+or <code>#.([make-font-ex-form])</code>. Every font
+created by <a href="../m/make-font.htm"><b>make-font</b></a> prints as
+<code>#.([make-font-form])</code>.
+</p>
+<p id="32">
+Fonts made by <a href="../m/make-font-ex.htm"><b>make-font-ex</b></a> print as
+<code>#.([make-font-ex-form])</code> or
+<code>#.([make-font-form])</code> depending on which
+definition of size is used (controlled by the
+<i>size-is-cell-height-p</i> optional argument).
+</p>
+<p id="33">
+A font returned by a Common Font dialog prints as a 
+<a href="../m/make-font-ex.htm"><b>make-font-ex</b></a>
+form. Fonts made or created from other existing fonts will use the
+format of the starting font.
+</p>
+
+
+<p id="34">
+See also <a href="../../../cg/cg-drawing.htm#text-and-fonts-2">Text and Fonts</a> in <a href="../../../cg/cg-drawing.htm">cg-drawing.htm</a>.
+</p>
+
+<h3 id="35">
+GTK Note
+</h3>
+
+<p id="36">
+On X platforms, using many different fonts (including
+different sizes and styles of the same face) may slow down redisplay
+greatly if the fonts do not all fit simultaneously into the X server's
+cache for font data.
+</p>
+
+<hr><p id="37"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/make-font-ex.htm">9.0 version</a></td></tr></table></body></html>

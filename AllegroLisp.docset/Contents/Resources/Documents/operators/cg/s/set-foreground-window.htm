@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>set-foreground-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/set-foreground-window.htm">9.0 version</a></td></tr></table><h2 id="2">set-foreground-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window
+</i></p>
+
+<p id="4">
+This function makes the thread that created the specified window be
+the foreground thread, and selects the specified window. (The
+foreground thread is a Microsoft term and refers to the thread
+(typically an application) whose windows are currently in front, and
+one of which will have the keyboard focus.)
+</p>
+<p id="5">
+This function may be needed by multi-threaded Common Graphics applications because
+<a href="../s/select-window.htm"><b>select-window</b></a> or
+<a href="../b/bring-window-to-front.htm"><b>bring-window-to-front</b></a> will not
+reliably move a window in front of windows that were created by other
+threads. We say "reliably" because these functions may do this in
+certain versions of Windows or in certain situations, but cannot be
+counted upon to do so.
+</p>
+<p id="6">
+Some versions of Windows allow only the current
+foreground thread or a thread created by the current foreground thread
+to set the foreground thread. In other cases, the taskbar icon
+corresponding to the specified window will be made to flash to notify
+the user that the window is asking to be brought to the foreground.
+</p>
+<p id="7">
+The function <a href="../f/foreground-window.htm"><b>foreground-window</b></a> returns the
+selected top-level window in Lisp only if Lisp is the
+currently-selected application.
+</p>
+
+<p id="8">
+See <a href="../../../cgide.htm#cg-multithreading-1">About using
+multiple threads in the IDE</a> in <a href="../../../cgide.htm">cgide.htm</a>.
+</p>
+
+<h3 id="9">
+GTK Note
+</h3>
+
+<p id="10">
+<a href="../s/set-foreground-window.htm"><b>set-foreground-window</b></a> simply
+calls <a href="../s/select-window.htm"><b>select-window</b></a>, because
+there is no special provision for bringing a different thread to the
+front.  In fact, most window managers will probably not allow you to
+programmatically move the focus from another application to yours.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/set-foreground-window.htm">9.0 version</a></td></tr></table></body></html>
