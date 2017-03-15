@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>stream-origin</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/stream-origin.htm">9.0 version</a></td></tr></table><h2 id="2">stream-origin</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+
+<p id="4">
+Creates and returns a position object indicating the current origin of
+<i>stream</i>. The origin is the position on the
+scrollable page (canvas) of the stream to which the position 0,0 in
+stream (user) coordinates will map. The origin is specified relative
+to the upper-left corner of the page. <i>stream</i>
+should be a <a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+</p>
+<p id="5">
+<a href="../s/stream-origin.htm"><b>(setf
+stream-origin)</b></a> may be called to set the origin to a new
+position relative to the upper-left corner of the page.
+</p>
+<p id="6">
+A stream's origin is initially 0,0, meaning that something drawn on
+the stream at 0,0 will be placed at the top-left of the stream's
+scrollable page (or simply at the stream's upper-left corner if it is
+not scrollable).
+</p>
+<p id="7">
+As an example,
+</p>
+<pre id="8">
+(setf (stream-origin my-stream) (make-position 30 80))
+</pre>
+<p id="9">
+would move the origin so that drawing something on the stream at 0, 0
+will place it 30 pixels rightward and 80 pixels downward from the
+upper-left corner of the stream's page. The leftmost and topmost
+position that may be drawn to would then be the position -30, -80.
+</p>
+<p id="10">
+It is typically most straightforward to leave the origin of a stream
+at its initial 0, 0 position, and draw everything at positive
+coordinates relative to that.  One handy use of the origin, however,
+is to draw a polygon (with <a href="../d/draw-polygon.htm"><b>draw-polygon</b></a>) at different
+locations on the page by setting the stream's origin differently for
+each location, rather than changing all of the vertices of the
+polygon.
+</p>
+<p id="11">
+For a <a href="../../../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a>, the stream-origin
+position is still measured in pixels (device units) rather than in
+arbitrarily-scaled stream units as other user-level coordinates are.
+</p>
+<p id="12">
+See also <a href="../n/nstream-origin.htm"><b>nstream-origin</b></a>, <a href="../m/move-stream-origin.htm"><b>move-stream-origin</b></a>, and <a href="../../../cg/cg-coordinates.htm">cg-coordinates.htm</a> (especially the section <a href="../../../cg/cg-coordinates.htm#cs-location-of-origin-1">Coordinate System Location of
+Origin</a>).
+</p>
+
+
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/stream-origin.htm">9.0 version</a></td></tr></table></body></html>

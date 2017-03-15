@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>increment</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/i/increment.htm">9.0 version</a></td></tr></table><h2 id="2">increment</h2>
+
+<p id="3"><b>Arguments: </b><i>
+scroll-bar-mixin
+</i></p>
+
+<p id="4">
+Returns the value of the increment property of its argument. This
+property is a numeric (fixnum) value relating to the range of the
+object. For instance, if the range is (0 100) and the increment is 1,
+then pressing an arrow key will advance the control's slider bar 1/100
+of the way across the dialog in that arrow's direction.
+</p>
+<p id="5">
+<a href="../i/increment.htm"><b>increment</b></a> is a
+property of the <a href="../../../classes/cg/up-down-control.htm"><code>up-down-control</code></a>, <a href="../../../classes/cg/trackbar.htm"><code>trackbar</code></a>, <a href="../../../classes/cg/horizontal-scroll-bar.htm"><code>horizontal-scroll-bar</code></a>,
+and <a href="../../../classes/cg/vertical-scroll-bar.htm"><code>vertical-scroll-bar</code></a> classes.
+</p>
+<h4 id="6">
+Alternate value for up-down-controls
+</h4>
+<p id="7">
+For an <a href="../../../classes/cg/up-down-control.htm"><code>up-down-control</code></a>, alternate values
+are allowed to determine how the control continues to increment as the
+user holds down the mouse button after clicking on an arrow.  In
+particular, if the value is an association list of non-negative
+integers of the form <code>((elapsed-seconds increment)
+(elapsed-seconds increment) ...)</code>, then the increment will
+change at various points in time.  For example, a value of
+<code>((1 1)(1 3)(2 10)(4 100))</code> indicates that the
+up-down-control should increment (or decrement) by 1 for the first
+second, by 3 for the next second, by 10 for the next 2 seconds, and
+then by 100 thereafter until either the mouse button is released or
+the maximum or minimum value of the control's range is reached.  If
+the value is instead a single integer, then the control will continue
+to increment by that single amount.  The default value is <code>nil</code>, which means to use the default increment
+pattern.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/i/increment.htm">9.0 version</a></td></tr></table></body></html>

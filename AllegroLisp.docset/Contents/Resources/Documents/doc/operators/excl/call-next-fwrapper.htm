@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>call-next-fwrapper</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/call-next-fwrapper.htm">9.0 version</a></td></tr></table><h2 id="2">call-next-fwrapper</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i></p>
+
+<p id="4">
+Wherever placed in an fwrapper, this form results in a call made
+to the next more inner fwrapper on the primary-function being
+wrapped.  If this fwrapper is the innermost fwrapper, then the
+primary function is called instead.
+</p>
+<p id="5">
+The arguments passed to the next more inner fwrapper (or primary
+function) are the current arguments as the function was originally
+called, modified by any storing forms in fwrappers which have already
+executed. Storing forms might be a <b>setq</b> of a required,
+optional, or keyword argument, or it may be a <code>(setf
+nth)</code> on any element of the &rest list.  The presence or
+absence of Keyword arguments cannot be changed.
+</p>
+<p id="6">
+The form returns the value(s) returned by the next more inner
+fwrapper (or by the primary function, if this is the innermost
+fwrapper).  It is the responsibility of each fwrapper to propagate
+return values as expected, or to substitute new return values
+to be returned.  A standard construct for returning values
+untouched from within an fwrapper is
+</p>
+
+<pre id="7">
+ (multiple-value-prog1
+   (call-next-fwrapper)
+  ;; Do some more stuff here
+  ...
+ )
+</pre>
+
+<p id="8">
+See <a href="../../fwrappers-and-advice.htm">fwrappers-and-advice.htm</a> for information
+of fwrapping functions (and on the older, deprecated advice facility).
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/call-next-fwrapper.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,543 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>multi-picture-button</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/multi-picture-button.htm">9.0 version</a></td></tr></table><h2 id="2">multi-picture-button</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of the multi-picture-button control.
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+An instance of the <a href="multi-picture-button.htm"><code>multi-picture-button</code></a> class. This
+control fills the need for toolbars and other instances of controls
+where many icons may need to appear on a form at once. Graphic lines
+and gaps separate the control icons into three main groupings in the
+initial version of the control. This control is capable of a
+non-momentary pressed-in state.
+</p>
+<p id="7">
+Using the <a href="multi-picture-button.htm"><code>multi-picture-button</code></a> instead of
+many individual bitmaps can reduce application overhead. Controls are
+window-like objects; they can get focus and be affected by
+events. They are costly in terms of system resources. It is a better
+design strategy to use a multi-picture-button instead of a bank of
+individual picture-button controls and save the overhead for another
+part of the application where you might really want it.
+</p>
+<p id="8">
+Not every cell in the multi-picture button has to be clickable, some
+can be purely for display.
+</p>
+<h3 id="9">Various properties of multi-picture-button controls</h3>
+<p id="10">
+Among the properties of this control are:
+</p>
+<ul>
+<li id="11">
+<a href="../../operators/cg/b/button-3d-border.htm"><b>button-3d-border</b></a>:
+determines whether each button on the multi-picture-button control has
+the thick white-and-gray 3D border.
+</li>
+<li id="12">
+<a href="../../operators/cg/b/button-black-border.htm"><b>button-black-border</b></a>: determines
+whether each button on the multi-picture-button control has a thin
+black border.
+</li>
+<li id="13">
+<a href="../../operators/cg/d/draw-focus.htm"><b>draw-focus</b></a>:
+determines whether a focus rectangle is drawn.
+</li>
+<li id="14">
+<a href="../../operators/cg/f/fill-order.htm"><b>fill-order</b></a>:
+determines whether the control is filled length first or breadth first.
+</li>
+<li id="15">
+<a href="../../operators/cg/p/padding.htm"><b>padding</b></a>:
+specifies the button padding, which is the space around the image in a
+button and the button's border. <a href="../../operators/cg/p/padding.htm"><b>padding</b></a> applies to all sides, left,
+right, top and bottom. (See also <a href="../../operators/cg/s/spacing.htm"><b>spacing</b></a>, which specifies the
+distance between buttons.)
+</li>
+<li id="16">
+<a href="../../operators/cg/p/pressed-color-mapper.htm"><b>pressed-color-mapper</b></a>: 
+specifies the colors used in a pressed button.
+</li>
+<li id="17">
+<a href="../../operators/cg/r/recessed.htm"><b>recessed</b></a>:
+determines whether buttons appear recessed or appear to protrude.
+</li>
+<li id="18">
+<a href="../../operators/cg/r/retain-scroll-arrows-always.htm"><b>retain-scroll-arrows-always</b></a>:
+determines whether a multi-picture-button control will have scroll
+arrows drawn even when all of the buttons fit into the control's
+region.
+</li>
+<li id="19">
+<a href="../../operators/cg/s/spacing.htm"><b>spacing</b></a>:
+determines the spacing between buttons. See also <a href="../../operators/cg/p/padding.htm"><b>padding</b></a> which specifies the
+distance between a button's image and the button's border.
+</li>
+
+<li id="20">
+<a href="../../operators/cg/h/hidden-buttons.htm"><b>hidden-buttons</b></a>: a list of
+hidden buttons.
+</li>
+
+<li id="21">
+<a href="../../operators/cg/u/unavailable-buttons.htm"><b>unavailable-buttons</b></a>: a list of
+unavailable buttons.
+</li>
+<li id="22">
+<a href="../../operators/cg/u/unavailable-color-mapper.htm"><b>unavailable-color-mapper</b></a>: determines
+colors used for unavailable buttons.
+</li>
+<li id="23">
+<a href="../../operators/cg/u/use-default-tooltips.htm"><b>use-default-tooltips</b></a>: controls whether the tooltip string should be taken from
+the button-info name.
+</li>
+<li id="24">
+
+<a href="../../operators/cg/m/multiple-selections.htm"><b>multiple-selections</b></a> controls
+whether more than one button can be pressed down at the same time.
+When <code>nil</code>, this will automatically unpress any
+other buttons when a new button is pressed.
+
+</li>
+<li id="25">
+<a href="../../operators/cg/u/unpress-automatically.htm"><b>unpress-automatically</b></a>: <a href="../../operators/cg/u/unpress-automatically.htm"><b>unpress-automatically</b></a>
+will cause any button that was pressed interactively to be unpressed
+just after the widget's <a href="../../operators/cg/o/on-change.htm"><b>on-change</b></a> function (if any) has
+run.
+</li>
+</ul>
+<p id="26">
+See also <a href="../../operators/cg/m/multi-picture-button-scroll.htm"><b>multi-picture-button-scroll</b></a>,
+<a href="../../operators/cg/m/multi-picture-button-scroll-interval.htm"><b>multi-picture-button-scroll-interval</b></a>,
+and <a href="../../operators/cg/u/update-multi-picture-button.htm"><b>update-multi-picture-button</b></a>.
+</p>
+<h3 id="27">
+Defining individual buttons on the control
+</h3>
+<p id="28">
+The <a href="../../operators/cg/r/range.htm"><b>range</b></a> of a
+multi-picture-button control is a list of <a href="button-info.htm"><code>button-info</code></a> objects and optionally
+the keyword <code>:gap</code>. Each <a href="button-info.htm"><code>button-info</code></a> is a CLOS object that
+describes one of the individual buttons of the multi-picture-button
+control. Setting the <a href="../../operators/cg/r/range.htm"><b>range</b></a> (with <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>) to a different list of button-infos will
+update the set of displayed buttons. The symbol
+<code>:gap</code> may also appear in the range list. That value
+inserts a gap (of size <a href="../../operators/cg/g/gap-size.htm"><b>gap-size</b></a>) between the buttons
+defined by the <a href="button-info.htm"><code>button-info</code></a> instances on either
+side of <code>:gap</code>. When <a href="../../operators/cg/b/button-3d-border.htm"><b>button-3d-border</b></a> is
+<code>:when-pressed</code> in the multi-picture-button control,
+the gap is further indicated by a vertical line.
+</p>
+<p id="29">
+The <a href="../../operators/cg/v/value.htm"><b>value</b></a> of a
+multi-picture-button is a list of the names of the buttons that are
+currently pressed. Setting the value to a different list of button
+names will cause those buttons to be pressed in and all other buttons
+released.
+</p>
+<h3 id="30">
+What happens when a button is clicked?
+</h3>
+<p id="31">
+When a button is clicked by the user, the 
+<a href="../../operators/cg/o/on-change.htm"><b>on-change</b></a> event handler will be invoked. 
+</p>
+<p id="32">
+The new-value argument is a list of all buttons that are pressed after
+the click. If it is a longer list than the old-value argument, then a
+button was pressed (rather than released) and it is guaranteed that
+the clicked button is the first one in the list. The new-value
+argument will be <code>nil</code> if a single button had
+been pressed and was clicked to release it.
+</p>
+<p id="33">
+See also <a href="../../operators/cg/u/unpress-automatically.htm"><b>unpress-automatically</b></a>, which causes
+the button to be unpressed after the <a href="../../operators/cg/o/on-change.htm"><b>on-change</b></a> function is run.
+</p>
+<h3 id="34">
+Creating an instance of a multi-picture-button control
+</h3>
+<p id="35">
+This call to <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>
+returns an instance of a multi-picture-button. Properties can be
+initialization keyword arguments (the keyword has the same name as the
+property, with a prepended colon, e.g. :top for <a href="../../operators/cg/t/top.htm"><b>top</b></a>). Additional arguments could be
+provided. Their absence indicates the default value will be used. Note
+that the value of the range argument (the last one) is a long list of
+<a href="button-info.htm"><code>button-info</code></a>
+instances.
+</p>
+<pre id="36">
+(make-instance 'multi-picture-button
+                   :font
+                   (make-font-ex nil "MS Sans Serif" 11 nil)
+                   :left 430
+                   :name :multi-picture-button-1
+                   :top 84
+                   :unavailable-color-mapper
+                    (list (cons black gray) (cons dark-gray gray)
+                         (cons dark-blue gray) (cons dark-green gray)
+                         (cons dark-red gray) (cons dark-cyan gray)
+                         (cons dark-yellow gray)
+                         (cons dark-magenta gray) (cons red dark-red)
+                         (cons green dark-green) (cons blue dark-blue)
+                         (cons yellow dark-yellow)
+                         (cons cyan dark-cyan)
+                         (cons magenta dark-magenta))
+                   :range (list (make-instance 'button-info
+                           :name :new
+                           :pixmap-name :new
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Open a blank editor window")
+                         (make-instance 'button-info
+                           :name :open
+                           :pixmap-name :open
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Edit a file")
+                         (make-instance 'button-info
+                           :name :save
+                           :pixmap-name :save
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Save the selected window")
+                         (make-instance 'button-info
+                           :name :load
+                           :pixmap-name :load
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Load a lisp file")
+                         :gap
+                         (make-instance 'button-info
+                           :name :red
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color red
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Use red")
+                         (make-instance 'button-info
+                           :name :green
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color green
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Use green")
+                         (make-instance 'button-info
+                           :name :blue
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color blue
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Use blue")
+                         (make-instance 'button-info
+                           :name :yellow
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color yellow
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Use yellow")
+                         (make-instance 'button-info
+                           :name :cyan
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color cyan
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Use cyan")
+                         (make-instance 'button-info
+                           :name :magenta
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color magenta
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string "Use magenta")
+                         (make-instance 'button-info
+                           :name :one
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title "One"
+                           :width 26
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :two
+                           :pixmap-name nil
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title "Two"
+                           :width 26
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :incremental-evaluation
+                           :pixmap-name :incremental-evaluation
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :incremental-compile
+                           :pixmap-name :incremental-compile
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :evaluate-clipboard
+                           :pixmap-name :evaluate-clipboard
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :inspect
+                           :pixmap-name :inspect
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :find-in-file
+                           :pixmap-name :find-in-file
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :find-definition
+                           :pixmap-name :find-definition
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         :gap
+                         (make-instance 'button-info
+                           :name :trace
+                           :pixmap-name :trace
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :breakpoint
+                           :pixmap-name :breakpoint
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :profile
+                           :pixmap-name :profile
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :create
+                           :pixmap-name :basic-pane
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :edit-file
+                           :pixmap-name :edit-file
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :apropos
+                           :pixmap-name :apropos
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil)
+                         (make-instance 'button-info
+                           :name :print
+                           :pixmap-name :print
+                           :pixmap-source nil
+                           :pixmap-icon nil
+                           :background-color nil
+                           :foreground-color nil
+                           :title nil
+                           :width nil
+                           :height nil
+                           :stretching t
+                           :tooltip nil
+                           :help-string nil))
+                 )
+</pre>
+<p id="37">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code. The example above
+came from placing a <a href="multi-picture-button.htm"><code>multi-picture-button</code></a> on a form and
+looking at the resulting .bil file.
+</p>
+
+
+
+
+
+
+<p id="38">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="39"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/multi-picture-button.htm">9.0 version</a></td></tr></table></body></html>

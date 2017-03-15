@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>cell-horizontal-border-color</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/cell-horizontal-border-color.htm">9.0 version</a></td></tr></table><h2 id="2">cell-horizontal-border-color</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-row grid-column
+</i></p>
+
+<p id="4">
+The line that is drawn as a border between two <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a>s of a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> is typically drawn in a
+single color from the left side of the whole grid to the right side.
+If it is desirable instead to draw the line in different colors where
+it crosses particular <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>s, then an application
+can supply <a href="../c/cell-horizontal-border-color.htm"><b>cell-horizontal-border-color</b></a>
+methods to specify these colors.  An application could also call this
+function, though there is probably no need to do so.
+</p>
+<p id="5">
+This generic function is called internally when drawing the cell at
+the intersection of <i>grid-row</i> and
+<i>grid-column</i>, to see if the border along the
+bottom of the cell should be drawn in a different color than the
+general color of that border (which is returned by <a href="../e/effective-border-color.htm"><b>effective-border-color</b></a>).  The
+method may return either an RGB color object in order to use that
+color (see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>), or <code>nil</code> to default to the border's general color, or
+<code>t</code> to use the cell's <a href="../e/effective-background-color.htm"><b>effective-background-color</b></a>.  The
+default method returns <code>nil</code>.
+</p>
+<p id="6">
+The special value of <code>t</code> (to draw the border
+with the cell's background color) will effectively remove the border
+from the bottom of the cell.  This may be useful for making two
+contiguous cells appear as a single cell (though they will still
+behave as separate cells when moving the keyboard focus, for example).
+If it is desired to draw a single picture in the interior of the
+combined cells, then any graphic that lies across the border between
+the cells should be drawn in the <a href="../d/draw-cell.htm"><b>draw-cell</b></a> method for each of the
+cells; this will ensure that the graphic is drawn whenever needed.
+The employee grid example on the Examples tab of the <a href="../../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog
+contains a fancy example of this, to cover a few tricky small aspects
+of this advanced technique.
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/cell-horizontal-border-color.htm">9.0 version</a></td></tr></table></body></html>

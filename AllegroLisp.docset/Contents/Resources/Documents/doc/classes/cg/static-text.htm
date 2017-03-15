@@ -1,0 +1,106 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>static-text</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/static-text.htm">9.0 version</a></td></tr></table><h2 id="2">static-text</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of a static-text control.
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+This control is displayed as a block of text that cannot be
+edited. For scrollable non-editable text, use a <a href="scrolling-static-text.htm"><code>scrolling-static-text</code></a> instead.
+</p>
+<p id="7">
+The text to be displayed should be stored as a simple string in the
+value field of the dialog item. See the description of the <a href="../../operators/cg/w/wrapping.htm"><b>wrapping</b></a> property for
+information on what happens when the text is longer than the control
+is wide.
+</p>
+<h3 id="8">
+Adding a static-text control to your form
+</h3>
+<p id="9">
+Click the static-text tool on the Component toolbar. Move the mouse
+cursor to the part of the form where you want to place the control,
+and click again. The control will appear with colored resizing
+handles.
+</p>
+<h3 id="10">
+Resizing and moving the control
+</h3>
+<p id="11">
+Controls can only be resized and moved on forms during the design
+stage; the size and location of everything is fixed on a running form.
+</p>
+<p id="12">
+Resize the control by clicking the mouse cursor and dragging one of
+the handles to the new size-point. Release the mouse key when you are
+satisfied with the new size. Note: resizing the static-text control
+changes the size of the bounding-box, but not the size of the actual
+text inside. Change the <a href="../../operators/cg/f/font.htm"><b>font</b></a> property if you want to change
+the size of the actual characters displayed.
+</p>
+<p id="13">
+Move the control by clicking anywhere on it except a resizing handle
+and dragging it to a new location on the form. Release the mouse key
+when you are ready to place the control.
+</p>
+<h3 id="14">
+Using a Static-Text as a Keyboard Shortcut to Jump to a Control
+</h3>
+<p id="15">
+A static-text control can provide a keyboard shortcut for moving the
+keyboard focus to the control that immediately follows the static-text
+in the tab order of the parent window. To effect this, place a tilde
+character (~) in the control's label just before the character that is
+to serve as a shortcut. (The label is the string in the <a href="../../operators/cg/v/value.htm"><b>value</b></a> property of the
+static-text.) The tilde will not appear in the label, and the
+following character will be underlined to indicate the shortcut. Then
+whenever the end user holds down the ALT key and presses the shortcut
+character, the keyboard focus will move to the control after the
+static-text in the tab order, assuming that no other control on the
+same parent window uses the same shortcut character.
+</p>
+<p id="16">
+Note that this works only when the parent window is an instance of the
+<a href="dialog-mixin.htm"><code>dialog-mixin</code></a>
+class (or some subclass of it). This behavior, along with the ability
+to move the keyboard focus from one control to another by pressing the
+tab key (or shift-tab for the reverse direction) is what distinguishes
+<a href="dialog-mixin.htm"><code>dialog-mixin</code></a>
+instances from other windows.
+</p>
+<p id="17">
+The tab order is the order of the controls in the <a href="../../operators/cg/d/dialog-items.htm"><b>dialog-items</b></a> property of a window,
+and is always the same as the occlusion order (that is, which controls
+are in front of which when they overlap). This order may be specified
+programmatically by the order of the list of controls passed as the
+:widgets initarg to <a href="../../operators/cg/m/make-window.htm"><b>make-window</b></a> (or passed to <a href="../../operators/cg/u/update-dialog.htm"><b>update-dialog</b></a>). Interactively, the
+tab order of controls on a form may be edited with the <a href="../../ide-menus-and-dialogs/form-menu.htm#set-tab-order">Form | Set
+Tab Order</a> menu command or with the 
+<a href="../../operators/cg/t/tab-position.htm"><b>tab-position</b></a>
+property on the individual controls.
+</p>
+<p id="18">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="19">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/static-text.htm">9.0 version</a></td></tr></table></body></html>

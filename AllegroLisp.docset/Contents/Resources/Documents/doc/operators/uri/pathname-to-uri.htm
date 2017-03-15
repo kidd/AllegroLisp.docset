@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pathname-to-uri</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.uri</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/uri/pathname-to-uri.htm">9.0 version</a></td></tr></table><h2 id="2">pathname-to-uri</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pathname
+</i></p>
+
+<p id="4">
+Converts an absolute pathname to <code>file</code> scheme
+URI. This function and the related <a href="uri-to-pathname.htm"><b>uri-to-pathname</b></a> are designed to handle
+URIs with a scheme of <code>file</code> and no host.  It is an
+error for <i>pathname</i> to name a relative pathname.
+</p>
+
+<h3 id="5">Examples</h3>
+
+<pre id="6">
+;;  On UNIX:
+
+cl-user(1): (net.uri:uri-to-pathname (parse-uri &quot;file:///foo/bar.cl&quot;))
+#p&quot;/foo/bar.cl&quot;
+cl-user(2): (net.uri:pathname-to-uri *)
+#&lt;uri file:///foo/bar.cl&gt;
+
+;; On Windows:
+
+cl-user(1): (net.uri:uri-to-pathname (parse-uri &quot;file:///d:/foo/bar.cl&quot;))
+#p&quot;d:\\foo\\bar.cl&quot;
+cl-user(2): (net.uri:pathname-to-uri *)
+#&lt;uri file:///d:/foo/bar.cl&gt;
+</pre>
+
+<p id="7">
+See also <a href="../../uri.htm">uri.htm</a> for general
+information on Universal Resource Indicator support in Allegro
+CL.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/uri/pathname-to-uri.htm">9.0 version</a></td></tr></table></body></html>

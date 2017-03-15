@@ -1,0 +1,95 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>drawable</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/drawable.htm">9.0 version</a></td></tr></table><h2 id="2">drawable</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+A vanilla control for drawing arbitrary custom drawings. The drawing
+can either be performed at will or by an <a href="../../operators/cg/o/on-redisplay.htm"><b>on-redisplay</b></a> handler
+function whenever a redisplay is needed. A bitmap-stream may
+optionally be used by the control, either to remember what currently
+should be drawn on the control or to draw updates with less flashing.
+</p>
+<p id="5">
+A drawable control allows a drawing field in a dialog. Other ways to
+combine drawing with controls is to use a window with one pane a
+<a href="bitmap-pane.htm"><code>bitmap-pane</code></a>
+and another a <a href="dialog.htm"><code>dialog</code></a>, or to use a
+<a href="bitmap-window.htm"><code>bitmap-window</code></a>
+with a toolbar (on which controls can be placed). It is also possible
+to place controls directly on a <a href="bitmap-pane.htm"><code>bitmap-pane</code></a>, though in that case
+certain features are lost, such as using the TAB key to move focus
+from one control to another. (However, if that feature is less
+important, putting controls directly on a bitmap-pane does allow for
+faster redisplay.)
+</p>
+<p id="6">
+This widget has <a href="../../operators/cg/p/page-width.htm"><b>page-width</b></a>, <a href="../../operators/cg/p/page-height.htm"><b>page-height</b></a>, and <a href="../../operators/cg/s/scrollbars.htm"><b>scrollbars</b></a> properties, which are usually
+properties of windows rather than widgets.  For a drawable widget,
+these properties work just as they do with windows.
+</p>
+<p id="7">
+There are two issues with images on a drawable control: displaying
+them in the first place and refreshing them when necessary (when, for
+example, the control is covered and uncovered, or iconified and
+expanded).
+</p>
+<p id="8">
+If <a href="../../operators/cg/u/use-bitmap-stream.htm"><b>use-bitmap-stream</b></a> is nil, drawing
+is done by the <a href="../../operators/cg/o/on-redisplay.htm"><b>on-redisplay</b></a> function. This
+function (an example is given on the <a href="../../operators/cg/o/on-redisplay.htm"><b>on-redisplay</b></a> page) should do all
+drawing necessary. Whenever redisplay is necessary, this function will
+be called. Redisplay is forced by a call to <a href="../../operators/cg/u/update-drawable.htm"><b>update-drawable</b></a>. It
+is also forced when a drawable is covered and uncovered or when it is
+iconified and expanded.
+</p>
+<p id="9">
+Whenever a drawable control needs to be redrawn, such as when it is
+uncovered, <a href="../../operators/cg/r/redisplay-event.htm"><b>redisplay-event</b></a> is called on
+it. The default redisplay-event method essentially just calls the
+<a href="../../operators/cg/o/on-redisplay.htm"><b>on-redisplay</b></a> handler of
+the drawable if it has one, and the on-redisplay handler is the more
+typical place to place custom drawing code.
+</p>
+<p id="10">
+If <a href="../../operators/cg/u/use-bitmap-stream.htm"><b>use-bitmap-stream</b></a> is true, there
+will be a <a href="bitmap-stream.htm"><code>bitmap-stream</code></a> associated with the
+drawable control, returned by the function <a href="../../operators/cg/b/bitmap-stream.htm"><b>bitmap-stream</b></a> applied to the
+drawable. Drawing should be done to this bitmap-stream, and then the
+drawable should be refreshed with a call to <a href="../../operators/cg/u/update-drawable.htm"><b>update-drawable</b></a>. The
+drawable will also be updated when it is covered and uncovered, or
+iconified and expanded. (Note that drawing is not done directly on the
+drawable. The bitmap-stream is not visible. It must be copied to the
+drawable. Note that this copying can become expensive if the image is
+large and redisplays are frequent.)
+</p>
+<p id="11">
+The function <a href="../../operators/cg/d/drawable-stream.htm"><b>drawable-stream</b></a>
+returns the bitmap-stream of a drawable if there is one and the window
+of the drawable otherwise.
+</p>
+<p id="12">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+<p id="13">
+The <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator
+Dialog</a> has an example (on the Examples tab) of the drawable
+widget called "An Animated 'Drawable' Control".  It illustrates smooth
+animation using the <a href="../../operators/cg/u/use-bitmap-stream.htm"><b>use-bitmap-stream</b></a> option of the widget and a
+timer to control the speed of the animation. Display the Navigator
+dialog with the <a href="../../ide-menus-and-dialogs/help-menu.htm#navigator">Help | Navigator</a> menu command.
+</p>
+
+
+
+<p id="14">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/drawable.htm">9.0 version</a></td></tr></table></body></html>

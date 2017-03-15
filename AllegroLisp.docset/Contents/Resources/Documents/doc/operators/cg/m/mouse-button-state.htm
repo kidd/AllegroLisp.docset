@@ -1,0 +1,92 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>mouse-button-state</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mouse-button-state.htm">9.0 version</a></td></tr></table><h2 id="2">mouse-button-state</h2>
+
+<p id="3"><b>Arguments: </b><i>
+nil
+</i></p>
+
+<p id="4">
+Returns an integer whose bits reflect the state of the mouse buttons
+and keyboard shift keys at the time that the event currently being
+handled occurred. A one bit indicates that the button or key was
+down, and a zero bit that it was not. For example, the expression
+</p>
+<pre id="5">
+(logtest left-mouse-button (mouse-button-state))
+</pre>
+<p id="6">
+will return true if and only if the left-mouse-button was down when
+the event currently being handled occurred. To determine whether a
+mouse button is down now, use <a href="../k/key-is-down-p.htm"><b>key-is-down-p</b></a> instead, passing one of the "key"
+constants <a href="../../../variables/cg/vk-lbutton.htm"><code>vk-lbutton</code></a>, <a href="../../../variables/cg/vk-mbutton.htm"><code>vk-mbutton</code></a>, or <a href="../../../variables/cg/vk-rbutton.htm"><code>vk-rbutton</code></a> (though that works on
+Windows only).
+</p>
+<p id="7">
+This function operates per-thread. Specifically, a mouse click that is
+done on a window that was created in a particular thread will not be
+included in the value returned by a call to <a href="../m/mouse-button-state.htm"><b>mouse-button-state</b></a> in any other
+thread. (An exception is that if there is a single window hierarchy
+that contains windows from both threads, then the operating system
+appears to combine the event queues of the two threads, and <a href="../m/mouse-button-state.htm"><b>mouse-button-state</b></a> will
+still include mouse clicks and shift key presses that were done in a
+window of the other thread.)
+</p>
+<p id="8">
+The following list shows the correspondence of buttons and keys to
+constants defined in Allegro CL for Windows.
+</p>
+
+<ul>
+<li id="9">
+<b>Left button</b>: the associated constant is
+<a href="../../../variables/cg/left-mouse-button.htm"><code>left-mouse-button</code></a>
+</li>
+<li id="10">
+<b>Middle button</b>: the associated constant is
+<a href="../../../variables/cg/middle-mouse-button.htm"><code>middle-mouse-button</code></a>
+</li>
+<li id="11">
+<b>Right button</b>: the associated constant is
+<a href="../../../variables/cg/right-mouse-button.htm"><code>right-mouse-button</code></a>
+</li>
+<li id="12">
+<b>First X button</b>: <a href="../../../variables/cg/first-x-button.htm"><code>first-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>)
+</li>
+<li id="13">
+<b>Second X button</b>: <a href="../../../variables/cg/second-x-button.htm"><code>second-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>),
+</li>
+<li id="14">
+<b>Shift key</b>: the associated constant is
+<a href="../../../variables/cg/shift-key.htm"><code>shift-key</code></a>
+</li>
+<li id="15">
+<b>Control key</b>: the associated constant is
+<a href="../../../variables/cg/control-key.htm"><code>control-key</code></a>
+</li>
+<li id="16">
+<b>Alt key</b>: the associated constant is
+<a href="../../../variables/cg/alt-key.htm"><code>alt-key</code></a>
+</li>
+</ul>
+<p id="17">
+Note: while an event is being handled, the returned value reflects the
+state at the time that that event occurred. For example, if you call
+<a href="../m/mouse-button-state.htm"><b>mouse-button-state</b></a> in an event
+method for a button-down event, then the returned value will indicate
+the mouse buttons and shift keys that were pressed when this event
+occurred, even if the user has released the buttons and keys at the
+time that the call to <a href="../m/mouse-button-state.htm"><b>mouse-button-state</b></a> is made.
+</p>
+
+<p id="18">
+See also <a href="../d/down-keys.htm"><b>down-keys</b></a>, <a href="../d/down-key-names.htm"><b>down-key-names</b></a>, <a href="../k/key-is-down-p.htm"><b>key-is-down-p</b></a>, and <a href="../k/key-was-down-p.htm"><b>key-was-down-p</b></a>.
+</p>
+
+
+
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mouse-button-state.htm">9.0 version</a></td></tr></table></body></html>

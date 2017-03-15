@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>box-intersect</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/box-intersect.htm">9.0 version</a></td></tr></table><h2 id="2">box-intersect</h2>
+
+<p id="3"><b>Arguments: </b><i>
+box1 box2 </i> &amp;optional <i>box-to-return</i><i>
+</i></p>
+
+<p id="4">
+Returns the box which is the intersection of the arguments, or <code>nil</code> if they do not intersect. If
+<i>box-to-return</i> is specified and non-<code>nil</code>, it must be a box object (see <a href="../m/make-box.htm"><b>make-box</b></a>). If that case,
+<i>box-to-return</i> will be modified to be the
+intersection, if <a href="../b/box-intersect.htm"><b>box-intersect</b></a> returns non-<code>nil</code>. (This will save space by avoiding the creation
+of a new box object.) If <i>box-to-return</i> is
+unspecified or specified <code>nil</code>, a new box is
+created if the arguments intersect.
+</p>
+<p id="5">
+Boxes which touch just
+on their edges or at the vertices are not considered to
+intersect. Thus,
+</p>
+<pre id="6">
+(make-box 10 10 20 20)
+</pre>
+<p id="7">
+does not intersect 
+</p>
+<pre id="8">
+(make-box 20 20 30 30)
+</pre>
+<p id="9">
+but does intersect
+</p>
+<pre id="10">
+(make-box 19 19 30 30)
+</pre>
+<p id="11">
+See the description of the <a href="../../../classes/cg/box.htm"><code>box</code></a> class for general information on boxes.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/box-intersect.htm">9.0 version</a></td></tr></table></body></html>

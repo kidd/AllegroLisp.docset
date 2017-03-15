@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>merge-date-times</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: util.date-time</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/merge-date-times.htm">9.0 version</a></td></tr></table><h2 id="2">merge-date-times</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+date-time defaults
+</i>&amp;key <i>copy</i><i>
+</i></p>
+
+<p id="4">
+This function returns a date-time object constructed by filling in any
+unsupplied components in <a href="../../classes/date-time/date-time.htm"><code>date-time</code></a> with the corresponding
+values from <i>defaults</i>. Both date-time and defaults
+must be <a href="../../classes/date-time/date-time.htm"><code>date-time</code></a> objects.
+</p>
+<p id="5">
+When <i>copy</i> is true a new <a href="../../classes/date-time/date-time.htm"><code>date-time</code></a> instance is created.  When
+<i>copy</i> is false (the default), the
+<i>date-time</i> argument is overwritten with the return
+value.
+</p>
+
+<h3 id="6">
+Examples
+</h3>
+
+<pre id="7">
+cl-user(5) (require :datetime)
+t
+cl-user(6) (use-package :util.date-time)
+t
+;; DATE-TIME does not have a century specified, and DEFAULTS has
+;; only a century. The result has complete date info but no time info:
+cl-user(7): (merge-date-times (date-time &quot;06-04-12&quot;) (date-time &quot;2000&quot;))
+#&lt;date-time &quot;2006-04-12&quot; @ #x4aefc12&gt;
+;;  Here DATE-TIME and DEFAULTS both have seconds specified (including
+;;  fractional seconds in the case of DATE-TIME. The result uses the
+;;  DATE-TIME seconds and fractional seconds values, but takes other
+;;  values unspecified in DATE-TIME from DEFAULTS:
+cl-user(8): (merge-date-times (date-time &quot;T--50,5&quot;)
+                   (date-time &quot;2006-05-13T22:30:51,14+02:00&quot;))
+#&lt;date-time &quot;2006-05-13T22:30:50,5+02:00&quot; @ #x4af9382&gt;
+cl-user(9): 
+</pre>
+
+<p id="8">
+See <a href="../../date-time.htm">date-time.htm</a> for information on support in
+Allegro CL for parsing and generating time expressions using the ISO
+8601 standard.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/date-time/merge-date-times.htm">9.0 version</a></td></tr></table></body></html>

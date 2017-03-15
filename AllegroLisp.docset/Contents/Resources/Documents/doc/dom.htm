@@ -1,0 +1,2659 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Document Object Model (DOM) in Allegro Common Lisp</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/dom.htm">9.0 version</a></td></tr></table><h1 id="2">Document Object Model (DOM) in Allegro Common Lisp</h1><p id="3">This document contains the following sections:</p><a href="#dom-intro-1">1.0 DOM introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#dom-conform-2">1.1 Status and conformance</a><br><a href="#dom-naming-1">2.0 Naming conventions</a><br><a href="#dom-structure-model-1">3.0 DOM Ref: 1.1.1. The DOM Structure Model</a><br><a href="#dom-standard-stuff-1">4.0 Standard classes, methods, values</a><br>&nbsp;&nbsp;&nbsp;<a href="#dom-standard-classes-2">4.1 Standard classes</a><br>&nbsp;&nbsp;&nbsp;<a href="#dom-standard-meth-funs-2">4.2 Standard methods and functions</a><br>&nbsp;&nbsp;&nbsp;<a href="#dom-standard-values-2">4.3 Standard values</a><br>&nbsp;&nbsp;&nbsp;<a href="#dom-standard-conditions-2">4.4 Standard conditions</a><br>&nbsp;&nbsp;&nbsp;<a href="#dom-additional-2">4.5 Additional classes, methods, functions, and variables</a><br><a href="#examples-1">5.0 Examples using the DOM</a><br><a href="#index-1">6.0 Index for DOM</a><br><hr><hr><h2 id="4"><a name="dom-intro-1">1.0 DOM introduction</a></h2>
+
+<p id="5">
+This module implements the full Document Object Model (DOM) Level 1
+Core API. It is based on the <i>Document Object Model (DOM) Level 1
+Specification</i> (Second Edition), Version 1.0, W3C Working Draft 29
+September, 2000 (see <a href="http://www.w3.org/TR/2000/WD-DOM-Level-1-20000929/">www.w3.org/TR/2000/WD-DOM-Level-1-20000929/</a>).
+</p>
+<p id="6">
+The API in this module supports a standard tree-oriented view of an 
+XML document. The object representation consumes more memory than 
+the more Lisp-like LXML representation, but the accessors are more
+specific and allow a programming style very similar to that in other 
+languages that implement the DOM API. 
+</p>
+
+<p id="7">
+The symbols naming objects in this module are in the
+<b>:net.xml.dom</b> package. The DOM module is part of the SAX module,
+so it is loaded when the SAX module is loaded.  You can load the SAX
+module (and therefore the DOM module) into Lisp by evaluating the
+following form:
+</p>
+<pre id="8">
+(require :sax)
+</pre>
+
+<h3 id="9">
+Examples
+</h3>
+
+<p id="10">
+There are examples of using DOM in
+<i>examples/xml/dom-code.cl</i> (that file is downloaded
+with the DOM patch). See <a href="#examples-1">Section 5.0 Examples using the DOM</a>.
+</p>
+
+<pre id="11">
+;;
+;; copyright (c) 2004 Franz Inc, Oakland, CA
+
+(in-package :user)
+
+(eval-when (compile load eval) (require :sax))
+
+(defpackage :user (:use :net.xml.dom))
+
+;;;
+;;; Some programming examples using the DOM Level 1 API
+;;;
+
+
+(defparameter *dom-ex1-data*
+
+  ;; Sample file noDTDXMLfile.xml from domtest-ecmascript-120499.zip 
+  ;; at http://www.w3.org/DOM/Test/
+
+&quot;&lt;?xml version='1.0'?&gt;
+&lt;staff&gt;
+ &lt;employee&gt;
+  &lt;employeeId&gt;EMP0001&lt;/employeeId&gt;
+  &lt;name&gt;Margaret Martin&lt;/name&gt;
+  &lt;position&gt;Accountant&lt;/position&gt;           
+  &lt;salary&gt;56,000&lt;/salary&gt;
+  &lt;gender&gt;Female&lt;/gender&gt;
+  &lt;address domestic='Yes'&gt;1230 North Ave. Dallas, Texas 98551&lt;/address&gt;
+ &lt;/employee&gt;
+ &lt;/staff&gt;
+
+&quot;
+)
+
+(defun dom-ex1 ()
+  
+  ;; Parse an XML document and walk the resulting DOM tree
+
+  (let* ((doc (parse-to-dom *dom-ex1-data*))
+	 (root (dom-document-element doc))
+	)
+    (format t &quot;~%The root element is ~A~%&quot; (dom-tag-name root))
+
+    (dolist (c (dom-child-node-list root))
+      (format t &quot;~&amp;  Child node: ~S~%&quot; c))
+
+    (let* ((addr (dom-list-elements-by-tag-name root &quot;address&quot;))
+	   (attrs (dom-attributes (first addr))))
+      (format t &quot;~&amp;  The address element has ~S attributes~%&quot; 
+              (dom-length attrs)))
+      
+    doc))
+
+(defun dom-ex2 (&amp;optional (file t))
+
+  ;; Build a DOM tree from parts and print the result
+
+  (let ((doc (dom-create-document))
+	staff emp)
+    (dom-append-child doc (setf staff (dom-create-element doc &quot;staff&quot;)))
+    (dom-append-child staff (setf emp (dom-create-element doc &quot;employee&quot;)))
+
+    (flet ((add (parent doc name text &amp;aux child)
+		(dom-append-child parent (setf child 
+                                               (dom-create-element doc name)))
+		(dom-append-child child (dom-create-text-node doc text))
+		child))
+      (add emp doc &quot;employeeId&quot; &quot;EMP00002&quot;)
+      (add emp doc &quot;name&quot; &quot;Alter Ego&quot;)
+      (add emp doc &quot;position&quot; &quot;Auditor&quot;)
+      (add emp doc &quot;salary&quot; &quot;65,000&quot;)
+      (add emp doc &quot;gender&quot; &quot;Male&quot;)
+      (dom-set-attribute 
+       (add emp doc &quot;address&quot; &quot;Port Ludlow, WA&quot;)
+       &quot;domestic&quot; &quot;Yes&quot;)
+      )
+
+    (dom-print doc file)
+
+    doc))
+
+;;  Here we run the functions:
+
+cl-user(18): (dom-ex1)
+
+The root element is staff
+  Child node: #&lt;dom1-text -2- @ #x10ca93fa&gt;
+  Child node: #&lt;dom1-element employee(13) @ #x10ca95ca&gt;
+  Child node: #&lt;dom1-text -2- @ #x10caa4da&gt;
+  The address element has 1 attributes
+#&lt;dom1-document (1) @ #x10ca46c2&gt;
+cl-user(19): (dom-ex2)
+&lt;staff&gt;
+  &lt;employee&gt;
+    &lt;employeeId&gt;EMP00002&lt;/employeeId&gt;
+    &lt;name&gt;Alter Ego&lt;/name&gt;
+    &lt;position&gt;Auditor&lt;/position&gt;
+    &lt;salary&gt;65,000&lt;/salary&gt;
+    &lt;gender&gt;Male&lt;/gender&gt;
+    &lt;address domestic='Yes'&gt;Port Ludlow, WA
+    &lt;/address&gt;
+  &lt;/employee&gt;
+&lt;/staff&gt;
+#&lt;dom1-document (1) @ #x11148e42&gt;
+cl-user(20): 
+</pre>
+
+
+
+<hr><h2 id="12"><a name="dom-conform-2">1.1 Status and conformance</a></h2>
+
+<p id="13">
+This DOM Level 1 implementation passes 155 key tests from the W3.org
+DOM conformance test suite. The tests were translated manually from
+the javascript source. More tests will be translated in the future.
+</p>
+<p id="14">
+The SAX parser implementation in Allegro CL (see
+<a href="sax.htm">sax.htm</a>) expands all entity
+references. Consequently, a DOM tree created from a parse will never
+contain any dom-entity-reference nodes.
+</p>
+
+
+
+<hr><hr><h2 id="15"><a name="dom-naming-1">2.0 Naming conventions</a></h2>
+
+<p id="16">
+We have followed the usual case-shift-to-hyphen translation of names
+in the DOM spec and added the prefix <b>dom-</b>. For Example:
+</p>
+<blockquote>
+<p id="17">
+The name <code>getElementsByTagName</code> becomes the Lisp
+symbol <code>dom-get-elements-by-tag-name</code>.
+</p>
+</blockquote>
+
+<p id="18">
+In addition, all the object classes have sub-classes named with a "dom1-"
+prefix.  Most of the methods in the API are specialized on the more abstract
+"dom-" classes but the actual object instances will be instances of
+the "dom1-" classes.
+</p>
+
+<hr><hr><h2 id="19"><a name="dom-structure-model-1">3.0 DOM Ref: 1.1.1. The DOM Structure Model</a></h2>
+
+<p id="20">
+Objects in the DOM are 'live'.
+</p>
+<p id="21">
+This implementation supports fully the "live" property of Node
+objects.
+</p>
+<p id="22">
+This implementation supports the "live" property of NodeList and
+NamedNodeMap objects that are immediate properties of Node objects.
+</p>
+<p id="23">
+The NodeList object returned by getElementsByTagName is not live in
+the sense that if a child that meets the criteria of the search is
+added to or deleted from the DOM tree, the NodeList object will not be
+updated. It is not clear to us whether this behavior conforms to, or
+violates the DOM spec.
+</p>
+
+<hr><hr><h2 id="24"><a name="dom-standard-stuff-1">4.0 Standard classes, methods, values</a></h2>
+
+<p id="25">
+For standard classes, methods and values, refer to the DOM spec (see
+<a href="#dom-intro-1">Section 1.0 DOM introduction</a> for a link) for a detailed
+description of the behavior. In this document we only describe any
+variant or additional behavior.
+</p>
+<p id="26">
+For accessors described as read-only properties, the Lisp name is
+only a reader method. For accessors described as properties, the 
+Lisp name is a reader method and a setf method.
+</p>
+
+<hr><h2 id="27"><a name="dom-standard-classes-2">4.1 Standard classes</a></h2>
+
+<table border="1">
+<tr>
+<td>
+<b>Class name</b>
+</td>
+<td>
+<b>Type</b>
+</td>
+<td>
+<b>Notes</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-attr</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Attr
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-cdata-section</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: CDATASection
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-character-data</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: CharacterData
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-comment</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Comment
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-document</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Document
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-document-fragment</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: DocumentFragment
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-document-type</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: DocumentType
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-element</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Element
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-entity</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Entity
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-entity-reference</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: EntityReference
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-node</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Node
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-notation</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Notation
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-processing-instruction</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: ProcessingInstruction
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-text</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Object: Text
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-attr</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Attr
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-cdata-section</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: CDATASection
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-character-data</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: CharacterData
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-comment</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Comment
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-document</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Document
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-document-fragment</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: DocumentFragment
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-document-type</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: DocumentType
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-element</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Element
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-entity</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Entity
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-entity-reference</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: EntityReference
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-node</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Node
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-notation</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Notation
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-processing-instruction</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: ProcessingInstruction
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-text</code>
+</td>
+<td>
+Dom Node Class    
+</td>
+<td>
+DOM Level 1 Core Object: Text
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-implementation</code>
+</td>
+<td>
+Class  Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Document: 
+implementation is a DOMImplementation object
+<p id="28">
+DOM Object: DOMImplementation
+</p>
+</td>
+</tr> 
+<tr>
+<td>
+<code>dom-named-node-map</code>
+</td>
+<td>
+Dom Object Class    
+</td>
+<td>
+DOM Object: NamedNodeMap
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-node-list</code>
+</td>
+<td>
+Dom Object Class    
+</td>
+<td>
+DOM Object: NodeList
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-implementation</code>
+</td>
+<td>
+Class    
+</td>
+<td>
+DOM Level 1 Core Object: DOMImplementation
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-named-node-map</code>
+</td>
+<td>
+Dom Object Class    
+</td>
+<td>
+DOM Level 1 Core Object: NamedNodeMap
+</td>
+</tr>
+<tr>
+<td>
+<code>dom1-node-list</code>
+</td>
+<td>
+Dom Object Class    
+</td>
+<td>
+DOM Level 1 Core Object: NodeList
+</td>
+</tr>
+</table>
+
+
+
+<hr><h2 id="29"><a name="dom-standard-meth-funs-2">4.2 Standard methods and functions</a></h2>
+
+<table border="1">
+<tr>
+<td>
+<b>Name</b>
+</td>
+<td>
+<b>Type</b>
+</td>
+<td>
+<b>Notes</b>
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-append-child</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Node: appendChild(newChild)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-append-data</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of CharacterData: appendData(arg) has no return value.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-attributes</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: attributes is a NamedNodeMap object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-child-nodes</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: childNodes is a NodeList object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-clone-node</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Node: cloneNode(deep)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-attribute</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document: createAttribute(name) implemented
+as Generic Function: dom-create-attribute doc-or-node name
+<p id="30">
+The DOM spec uses the factory object model for the various create methods. 
+We implement a more Lisp-like view where the create methods may be specialized
+on any dom-node instance.
+</p>
+<p id="31">
+The ownerDocument property of the new Node instance is copied from the 
+doc-or-node argument.  If the  doc-or-node argument is not supplied, a 
+node with a null ownerDocument property is created.  Such a node can only
+be inserted in other nodes with a null ownerDocument property.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-cdata-section</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document: createCDATASection(data)
+implemented as Generic Function: dom-create-cdata-section doc-or-node data
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-comment</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document: createComment(data) implemented
+as Generic Function: dom-create-comment doc-or-node data
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-document-fragment</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document: createDocumentFragment()
+implemented as Generic Function: dom-create-document-fragment doc-or-node
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-element</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document: createElement(tagname)
+implemented as Generic Function: dom-create-element doc-or-node tag
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-entity-reference</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document: createEntityReference(name)
+implemented as Generic Function: dom-create-entity-reference doc-or-node name
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-processing-instruction</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document:
+createProcessingInstruction(target, data) implemented as Generic Function:
+dom-create-processing-instruction doc-or-node target data
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-create-text-node</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Document: createTextNode(data) implemented
+as Generic Function: dom-create-text-node doc-or-node data
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-data</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core property of CharacterData: data is of type String.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-delete-data</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of CharacterData: deleteData(offset, count)
+has no return value.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-doctype</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Document: doctype is a
+DocumentType object
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-document-element</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Document: documentElement is an
+Element object
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-entities</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of DocumentType: entities is a
+NamedNodeMap object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-first-child</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: firstChild
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-get-attribute</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: getAttribute(name) returns a String.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-get-attribute-node</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: getAttributeNode(name)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-get-elements-by-tag-name</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: getElementsByTagName(tagname)
+returns a NodeList object. <b>This LIST IS NOT LIVE</b>.
+<p id="32">
+DOM Level 1 Core method of Document: getElementsByTagName(tagname)
+returns a NodeList object. <b>This LIST IS NOT LIVE</b>.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-get-named-item</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of NamedNodeMap: getNamedItem(name) returns a Node object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-has-child-nodes</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Node: hasChildNodes()
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-has-feature</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of DOMImplementation: hasFeature(feature, version)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-implementation</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Document: 
+      implementation is a DOMImplementation object
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-insert-before</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Node: insertBefore(newChild, refChild)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-insert-data</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of CharacterData: 
+      insertData(offset, arg) has no return value.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-item</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of NamedNodeMap: item(index) returns a Node object.
+  - DOM Level 1 Core method of NodeList: item(index) returns a Node object
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-last-child</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: lastChild
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-length</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of CharacterData: length is of type Number.
+  - DOM Level 1 Core read-only property of NamedNodeMap: length
+  - DOM Level 1 Core read-only property of NodeList: length
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-name</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of DocumentType: name is of type String.
+  - DOM Level 1 Core read-only property of Attr: name is of type String.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-next-sibling</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: nextSibling
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-node-name</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: nodeName
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-node-type</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: nodeType
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-node-value</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core property of Node: nodeValue
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-normalize</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: normalize()
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-notation-name</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Entity: notationName
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-notations</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of DocumentType: 
+      notations is a NamedNodeMap object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-owner-document</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: ownerDocument
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-parent-node</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: parentNode
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-previous-sibling</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Node: previousSibling
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-public-id</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Notation: publicId
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-remove-attribute</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: removeAttribute(name)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-remove-attribute-node</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: removeAttributeNode(oldAttr)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-remove-child</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Node: removeChild(oldChild)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-remove-named-item</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of NamedNodeMap: removeNamedItem(name) returns
+a Node object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-replace-child</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Node: replaceChild(newChild, oldChild)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-replace-data</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of CharacterData: 
+      replaceData(offset, count, arg) has no return value.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-set-attribute</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: setAttribute(name, value)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-set-attribute-node</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of Element: setAttributeNode(newAttr)
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-set-named-item</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of NamedNodeMap: setNamedItem(arg) 
+      The arg parameter is a Node object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-specified</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Attr: specified is of type Boolean.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-split-text</b>
+</td>
+<td>
+Generic Function                        
+</td>
+<td>
+DOM Level 1 Core method of Text: splitText(offset) returns a Text object.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-substring-data</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core method of CharacterData: 
+      substringData(offset, count) returns a String.
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-system-id</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Notation: systemId
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-tag-name</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core read-only property of Element: tagName
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-target</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 property of ProcessingInstruction: data is of type String.
+<p id="33">
+DOM Level 1 read-only property of ProcessingInstruction: target is of
+type String.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<b>dom-value</b>
+</td>
+<td>
+Generic Function  
+</td>
+<td>
+DOM Level 1 Core property of Attr: value is of type String.
+</td>
+</tr>
+</table>
+
+
+
+<hr><h2 id="34"><a name="dom-standard-values-2">4.3 Standard values</a></h2>
+
+<table border="1">
+<tr>
+<td>
+<b>Name</b>
+</td>
+<td>
+<b>Type</b>
+</td>
+<td>
+<b>Notes</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-attribute-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: ATTRIBUTE_NODE is value 2.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-cdata-section-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: CDATA_SECTION_NODE is value 4.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-comment-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: COMMENT_NODE is value 8.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-document-fragment-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: DOCUMENT_FRAGMENT_NODE is value 11.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-document-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: DOCUMENT_NODE is value 9.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-document-type-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: DOCUMENT_TYPE_NODE is value 10.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-element-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: ELEMENT_NODE is value 1.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-entity-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: ENTITY_NODE is value 6.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-entity-reference-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: ENTITY_REFERENCE_NODE is value 5.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-notation-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: NOTATION_NODE is value 12.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-processing-instruction-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: PROCESSING_INSTRUCTION_NODE is value 7.
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-text-node</code>
+</td>
+<td>
+Lisp Constant
+</td>
+<td>
+DOM Level 1 Core constant of Node: TEXT_NODE is value 3.
+</td>
+</tr>
+</table>
+
+
+
+<hr><h2 id="35"><a name="dom-standard-conditions-2">4.4 Standard conditions</a></h2>
+
+<table border="1">
+<tr>
+<td>
+<b>Name</b>
+</td>
+<td>
+<b>Type</b>
+</td>
+<td>
+<b>Notes</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-domstring-size-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code DOMSTRING_SIZE_ERR: 
+the specified range of text does not fit into a DOMString
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-hierarchy-request-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code HIERARCHY_REQUEST_ERR: 
+If any node is inserted somewhere it doesn't belong
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-index-size-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code INDEX_SIZE_ERR: 
+index or size is negative, or greater than the allowed value
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-inuse-attribute-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code INUSE_ATTRIBUTE_ERR: 
+an attempt is made to add an attribute that is already in use elsewhere
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-invalid-character-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code INVALID_CHARACTER_ERR: 
+an invalid or illegal character is specified, such as in a name
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-no-data-allowed-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code NO_DATA_ALLOWED_ERR: 
+data is specified for a node which does not support data
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-no-modification-allowed-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code NO_MODIFICATION_ALLOWED_ERR: 
+an attempt is made to modify an object where modifications are not allowed
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-not-found-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code NOT_FOUND_ERR: 
+an attempt is made to reference a node in a context where it does not exist
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-not-supported-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code NOT_SUPPORTED_ERR: 
+the implementation does not support the type of object requested
+</td>
+</tr>
+<tr>
+<td>
+<code>dom-wrong-document-err</code>
+</td>
+<td>
+DOM Condition    
+</td>
+<td>
+DOM Level 1 Core condition code WRONG_DOCUMENT_ERR: If a node is used
+in a different document than the one that created it (that doesn't
+support it)
+</td>
+</tr>
+</table>
+
+
+
+<hr><h2 id="36"><a name="dom-additional-2">4.5 Additional classes, methods, functions, and variables</a></h2>
+
+<p id="37">
+The following extensions are added to the interface specified in
+the DOM Level 1 document.
+</p>
+
+<hr><h3 id="38"><a name="dom-parser-class-bookmarkxx"></a>dom-parser</h3><h3 id="39">Class</h3><h4 id="40">Package: net.xml.dom</h4>
+
+<p id="41">
+This DOM Object Class is the abstract class of all DOM parsers.
+</p>
+
+<hr>
+
+<hr><h3 id="42"><a name="dom1-parser-class-bookmarkxx"></a>dom1-parser</h3><h3 id="43">Class</h3><h4 id="44">Package: net.xml.dom</h4>
+
+<p id="45">
+This DOM Object Class is the class of the DOM Level 1 parser.
+</p>
+
+<hr>
+
+<hr><h3 id="46"><a name="dom-child-node-list-op-bookmarkxx"></a>dom-child-node-list</h3><h3 id="47">Generic Function</h3><h4 id="48">Package: net.xml.dom</h4>
+
+<p id="49"><b>Arguments: </b><i>
+</i></p>
+
+<p id="50">
+This generic function, an extended property of Node, retrieves the child nodes
+of a dom-node instance as a simple Lisp list of nodes. This value
+avoids the creation of the dom-node-list instance.
+</p>
+<p id="51">
+This value does not fully support the "live" nature of DOM tree
+components: the nodes in the list, and the list itself, may be updated
+and the changes take place in the DOM tree.  But the list cannot be
+updated to become empty, and an empty list cannot be augmented.
+</p>
+
+<hr>
+
+<hr><h3 id="52"><a name="dom-create-document-op-bookmarkxx"></a>dom-create-document</h3><h3 id="53">Function</h3><h4 id="54">Package: net.xml.dom</h4>
+
+<p id="55"><b>Arguments: </b><i>
+</i>&amp;key <i>parser implementation</i><i>
+</i></p>
+
+<p id="56">
+This generic function creates an instance of <code>dom-document</code>.
+</p>
+<p id="57">
+Normally such an instance is the result of parsing an XML document.
+</p>
+<p id="58">
+The <i>implementation</i> argument specifies the
+implementation class of the of the DOM document instance. If the
+implementation class is not specified, it is derived from the parser
+instance.
+</p>
+<p id="59">
+The parser argument specifies the class of the parser that could have
+been used to create the document. The default is <a href="dom.htm#dom1-parser-class-bookmarkxx"><code>dom1-parser</code></a>.
+</p>
+
+<hr>
+
+<hr><h3 id="60"><a name="dom-document-parser-op-bookmarkxx"></a>dom-document-parser</h3><h3 id="61">Generic Function</h3><h4 id="62">Package: net.xml.dom</h4>
+
+<p id="63"><b>Arguments: </b><i>
+</i></p>
+
+<p id="64">
+This generic function, an extended property of Document, returns the parser
+object that parsed the document.
+</p>
+
+<hr>
+
+<hr><h3 id="65"><a name="dom-dump-op-bookmarkxx"></a>dom-dump</h3><h3 id="66">Generic Function</h3><h4 id="67">Package: net.xml.dom</h4>
+
+<p id="68"><b>Arguments: </b><i>
+node stream
+</i>&amp;key <i>depth</i><i>
+</i></p>
+
+<p id="69">
+This generic function prints a detailed description of a DOM sub-tree on the
+stream.  If the depth argument is an integer, descend only to that
+depth.  This generic function is useful in debugging complex DOM trees.
+</p>
+
+<hr>
+
+<hr><h3 id="70"><a name="dom-equal-op-bookmarkxx"></a>dom-equal</h3><h3 id="71">Generic Function</h3><h4 id="72">Package: net.xml.dom</h4>
+
+<p id="73"><b>Arguments: </b><i>
+node1 node2
+</i>&amp;key <i>error-p ignore-whitespace</i><i>
+</i></p>
+
+<p id="74">
+This generic function tests whether two nodes are equal. To be equal, element
+names, values and attributes must be equal. Sub-elements must appear
+in the same order, but attributes may be in any order.
+</p>
+<p id="75">
+When the <i>error-p</i> argument is non-<code>nil</code>, an error will be signaled at the point where the
+inequality is detected.  This may be a useful debugging feature when
+large DOM trees must be compared.
+</p>
+<p id="76">
+When the <i>ignore-whitespace</i> argument is
+non-<code>nil</code>, nodes consisting entirely of
+whitespace are skipped, and text nodes that differ only by whitespace
+characters are considered equal.
+</p>
+<p id="77">
+If the <i>ignore-whitespace</i> argument is a sequence
+of characters, then only the mentioned characters are considered to be
+whitespace.  Otherwise the XML definition of whitespace (#\Space #\Tab
+#\Newline #\Return) is used.
+</p>
+
+<hr>
+
+<hr><h3 id="78"><a name="dom-item-name-op-bookmarkxx"></a>dom-item-name</h3><h3 id="79">Generic Function</h3><h4 id="80">Package: net.xml.dom</h4>
+
+<p id="81"><b>Arguments: </b><i>
+dom-named-node-map index
+</i></p>
+
+
+<p id="82">
+This generic function, an extended method of NamedNodeMap, returns the name of
+the specified item in the <i>dom-named-node-map</i>
+argument, and avoids the creation of a dom-node instance.
+</p>
+
+<hr>
+
+<hr><h3 id="83"><a name="dom-item-value-op-bookmarkxx"></a>dom-item-value</h3><h3 id="84">Generic Function</h3><h4 id="85">Package: net.xml.dom</h4>
+
+<p id="86"><b>Arguments: </b><i>
+dom-named-node-map index-or-name
+</i></p>
+
+<p id="87">
+This generic function, an extended method of NamedNodeMap, returns the value
+associated with a name or index in a
+<i>dom-named-node-map</i> instance, and avoids the
+creation of a dom-node instance.
+</p>
+
+<hr>
+
+<hr><h3 id="88"><a name="dom-list-elements-by-tag-name-op-bookmarkxx"></a>dom-list-elements-by-tag-name</h3><h3 id="89">Generic Function</h3><h4 id="90">Package: net.xml.dom</h4>
+
+<p id="91"><b>Arguments: </b><i>
+dom-element-or-dom-document tag-name
+</i></p>
+
+<p id="92">
+This extended method on <b>Element</b> and <b>Document</b> works on
+<code>dom-element</code>s and
+<code>dom-document</code>s. It is like
+<b>dom-get-elements-by-tag-name</b>, but returns a Lisp list of
+nodes. This <b>LIST IS NOT LIVE</b>.
+</p>
+
+<hr>
+
+<hr><h3 id="93"><a name="dom-node-list-nodes-op-bookmarkxx"></a>dom-node-list-nodes</h3><h3 id="94">Generic Function</h3><h4 id="95">Package: net.xml.dom</h4>
+
+<p id="96"><b>Arguments: </b><i>
+</i></p>
+
+<p id="97">
+This Extended method of <b>NodeList</b> returns a Lisp list of
+<code>dom-node</code> instances and thus allows typical Lisp
+list operations without going through <code>dom-node-list</code>
+accessors.
+</p>
+<p id="98">
+This list is not entirely "live", as described earlier.
+</p>
+
+<hr>
+
+<hr><h3 id="99"><a name="dom-node-type-p-op-bookmarkxx"></a>dom-node-type-p</h3><h3 id="100">Generic Function</h3><h4 id="101">Package: net.xml.dom</h4>
+
+<p id="102"><b>Arguments: </b><i>
+dom-node type-name-or-number
+</i></p>
+
+<p id="103">
+This Lisp predicate tests the DOM type of a dom-node instance. The
+type-name-or-number argument may be an integer, a dom-type constant,
+or one of the keywords:
+</p>
+<table>
+<tr>
+<td>
+:dom-element-node
+</td>
+<td>
+:dom-attribute-node
+</td>
+<td>
+:dom-text-node
+</td>
+</tr>
+<tr>
+<td>
+:dom-cdata-section-node
+</td>
+<td>
+:dom-entity-reference-node
+</td>
+<td>
+:dom-entity-node
+</td>
+</tr>
+<tr>
+<td>
+:dom-processing-instruction-node
+</td>
+<td>
+:dom-comment-node
+</td>
+<td>
+:dom-document-node
+</td>
+</tr>
+<tr>
+<td>
+:dom-document-type-node
+</td>
+<td>
+:dom-document-fragment-node
+</td>
+<td>
+:dom-notation-node
+</td>
+</tr>
+</table>
+
+<hr>
+
+<hr><h3 id="104"><a name="dom-print-op-bookmarkxx"></a>dom-print</h3><h3 id="105">Generic Function</h3><h4 id="106">Package: net.xml.dom</h4>
+
+<p id="107"><b>Arguments: </b><i>
+node stream
+</i>&amp;key <i>indent attrs if-exists</i><i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="108">
+This generic function pretty prints a node to a stream. The
+<i>node</i> argument is returned.
+</p>
+<p id="109">
+The allowable values for the <i>stream</i> argument are
+as follows:
+</p>
+<ul>
+<li id="110">
+a stream: then the output is to the stream and the stream is left
+open.
+</li>
+<li id="111">
+a string or pathname: the output is to the file specified by the
+pathname or string. The stream to the file is closed after the node is
+printed. The <i>if-exists</i> keyword argument applies
+to the open of the file; the default is <code>:supersede</code>.
+</li>
+<li id="112">
+<code>t</code>: output is to <a href="../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>.
+</li>
+<li id="113">
+<code>nil</code>: two values are returned: the node
+argument, and a string containing the output.
+</li>
+</ul>
+
+<p id="114">
+The keyword arguments indent and attrs rebind the values of <a href="dom.htm#s_dom-print-indent_s-var-bookmarkxx"><code>*dom-print-indent*</code></a> and <a href="dom.htm#s_dom-print-attrs_s-var-bookmarkxx"><code>*dom-print-attrs*</code></a> during the call to
+<a href="dom.htm#dom-print-op-bookmarkxx"><b>dom-print</b></a>.
+</p>
+<p id="115">
+<b>NOTE</b>: If the DOM tree was parsed from a file with whitespace
+and newlines between the elements, there will be what looks like
+excess newlines and whitespace in the output of <a href="dom.htm#dom-print-op-bookmarkxx"><b>dom-print</b></a>. This is
+because <a href="dom.htm#dom-print-op-bookmarkxx"><b>dom-print</b></a> begins elements on new lines
+with a consistent indentation.
+</p>
+<p id="116">
+If the <i>indent</i> argument is specified as <code>nil</code> in the call, then dom-print will not attempt to
+insert indentation or newlines and the output will be very similar to
+the original parsed file.
+</p>
+
+<hr>
+
+<hr><h3 id="117"><a name="parse-to-dom-op-bookmarkxx"></a>parse-to-dom</h3><h3 id="118">Generic Function</h3><h4 id="119">Package: net.xml.dom</h4>
+
+<p id="120"><b>Arguments: </b><i>
+string-or-stream
+</i>&amp;key <i>validate skip-ignorable class warn</i><i>
+</i></p>
+
+<p id="121">
+This generic function returns two values: a dom-document instance, and a
+parser instance.
+</p>
+<p id="122">
+The keyword arguments are passed through to the SAX parser (see
+<a href="sax.htm">sax.htm</a>). The default for
+<i>class</i> is <code>dom1-parser</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="123"><a name="file-to-dom-op-bookmarkxx"></a>file-to-dom</h3><h3 id="124">Generic Function</h3><h4 id="125">Package: net.xml.dom</h4>
+
+<p id="126"><b>Arguments: </b><i>
+path
+</i>&amp;key <i>validate skip-ignorable class warn</i><i>
+</i></p>
+
+<p id="127">
+This generic function returns two values: a dom-document instance, and a
+parser instance.
+</p>
+<p id="128">
+The keyword arguments are passed through to the SAX parser (see
+<a href="sax.htm">sax.htm</a>). The default for
+<i>class</i> is <code>dom1-parser</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="129"><a name="with-serial-lock-op-bookmarkxx"></a>with-serial-lock</h3><h3 id="130">Macro</h3><h4 id="131">Package: net.xml.dom</h4>
+
+<p id="132"><b>Arguments: </b><i>
+(object) 
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="133">
+The behavior depends on the setting of the global variable <a href="dom.htm#s_dom-enforce-locks_s-var-bookmarkxx"><code>*dom-enforce-locks*</code></a>.
+</p>
+<p id="134">
+If the value of <a href="dom.htm#s_dom-enforce-locks_s-var-bookmarkxx"><code>*dom-enforce-locks*</code></a> is <code>nil</code>, no locking takes place while
+<i>body</i> is evaluated. If the value of <a href="dom.htm#s_dom-enforce-locks_s-var-bookmarkxx"><code>*dom-enforce-locks*</code></a> is an instance of
+<a href="classes/mp/process-lock.htm"><code>mp:process-lock</code></a>, then the global
+lock is used.
+</p>
+<p id="135">
+Otherwise, the value of <i>object</i> is examined:
+</p>
+<ul>
+<li id="136">
+If the <i>object</i> argument evaluates to a
+<code>dom-object</code> instance, then the lock associated with
+the object is used while <i>body</i> is evaluated. A new
+lock is created the first time the lock slot of the object is
+referenced.
+</li>
+<li id="137">
+If the <i>object</i> argument evaluates to any other
+value, then no locking takes place.
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="138"><a name="s_dom-enforce-locks_s-var-bookmarkxx"></a>*dom-enforce-locks*</h3><h3 id="139">Variable</h3><h4 id="140">Package: net.xml.dom</h4>
+
+<p id="141">
+When this variable is set to true, serial access to nodes is enforced.
+</p>
+<p id="142">
+If the value of this variable is <code>nil</code> (the
+initial value), then no locking is done and multiple threads accessing
+one DOM tree may see inconsistent states. This value is safe and
+efficient if only one thread is known to access the DOM tree.
+</p>
+<p id="143">
+If the value of this variable is an instance of mp:process-lock, then
+this one lock is used to serialize all access operations.
+</p>
+<p id="144">
+If the value of this variable is any other non-nil value, then a
+separate lock is created for each DOM object instance.  This allows
+finer-grained access but uses more memory and increases the
+oportunities for deadlocks.
+</p>
+<p id="145">
+This variable may be bound dynanmically to control the locking
+strategy.
+</p>
+
+<hr>
+
+<hr><h3 id="146"><a name="s_dom-print-attrs_s-var-bookmarkxx"></a>*dom-print-attrs*</h3><h3 id="147">Variable</h3><h4 id="148">Package: net.xml.dom</h4>
+
+<p id="149">
+This variable specifies the maximum number of attributes on one
+line. The initial value is 3.
+</p>
+
+<hr>
+
+<hr><h3 id="150"><a name="s_dom-print-indent_s-var-bookmarkxx"></a>*dom-print-indent*</h3><h3 id="151">Variable</h3><h4 id="152">Package: net.xml.dom</h4>
+
+<p id="153">
+This variable specifies the indentation for each level. Ths initial
+value is 2.
+</p>
+
+<hr>
+
+<hr><h3 id="154"><a name="dom-condition-class-bookmarkxx"></a>dom-condition</h3><h3 id="155">Class</h3><h4 id="156">Package: net.xml.dom</h4>
+
+<p id="157">
+This class/DOM condition is the superclass of all DOM conditions.
+</p>
+
+<hr>
+
+<hr><h3 id="158"><a name="dom-condition-code-op-bookmarkxx"></a>dom-condition-code</h3><h3 id="159">Generic Function</h3><h4 id="160">Package: net.xml.dom</h4>
+
+<p id="161"><b>Arguments: </b><i>
+dom-condition
+</i></p>
+
+<p id="162">
+This is the slot reader for the data slot. It returns the numeric
+condition code defined in the DOM Level 1 spec.
+</p>
+
+<hr>
+
+<hr><h3 id="163"><a name="dom-condition-name-op-bookmarkxx"></a>dom-condition-name</h3><h3 id="164">Generic Function</h3><h4 id="165">Package: net.xml.dom</h4>
+
+<p id="166"><b>Arguments: </b><i>
+dom-condition
+</i></p>
+
+<p id="167">
+This is the slot reader for the data slot. It returns a Lisp keyword
+that names the condition.
+</p>
+<hr>
+
+<hr><h3 id="168"><a name="dom-condition-string-op-bookmarkxx"></a>dom-condition-string</h3><h3 id="169">Generic Function</h3><h4 id="170">Package: net.xml.dom</h4>
+
+<p id="171"><b>Arguments: </b><i>
+dom-condition
+</i></p>
+
+<p id="172">
+This is the slot reader for the data slot. It returns a string or a
+list of strings that describe the condition in more detail.
+</p>
+
+<hr>
+
+<hr><h3 id="173"><a name="dom-condition-note-op-bookmarkxx"></a>dom-condition-note</h3><h3 id="174">Generic Function</h3><h4 id="175">Package: net.xml.dom</h4>
+
+<p id="176"><b>Arguments: </b><i>
+dom-condition
+</i></p>
+
+<p id="177">
+This is the slot reader for the data slot. It returns a format string
+that describes the specific occurrence of the condition in more
+detail. The data for the string is returned by <a href="dom.htm#dom-condition-data-op-bookmarkxx"><b>dom-condition-data</b></a>.
+</p>
+
+<hr>
+
+<hr><h3 id="178"><a name="dom-condition-data-op-bookmarkxx"></a>dom-condition-data</h3><h3 id="179">Generic Function</h3><h4 id="180">Package: net.xml.dom</h4>
+
+<p id="181"><b>Arguments: </b><i>
+dom-condition
+</i></p>
+
+<p id="182">
+This is the slot reader for the data slot. It returns the list of
+format arguments for the format string in <a href="dom.htm#dom-condition-note-op-bookmarkxx"><b>dom-condition-note</b></a>.
+</p>
+
+<hr>
+
+
+
+
+<hr><hr><h2 id="183"><a name="examples-1">5.0 Examples using the DOM</a></h2>
+
+<p id="184">
+Here are the examples of using DOM in
+<i>examples/xml/dom-code.cl</i> (that file is downloaded
+with the DOM patch).
+</p>
+
+<pre id="185">
+;;
+;; copyright (c) 2004 Franz Inc, Oakland, CA
+
+(in-package :user)
+
+;;  The DOM module is part of the SAX module
+(eval-when (compile load eval) (require :sax))
+
+(defpackage :user (:use :net.xml.dom))
+
+;;;
+;;; Some programming examples using the DOM Level 1 API
+;;;
+
+
+(defparameter *dom-ex1-data*
+
+  ;; Sample file noDTDXMLfile.xml from domtest-ecmascript-120499.zip 
+  ;; at http://www.w3.org/DOM/Test/
+
+&quot;&lt;?xml version='1.0'?&gt;
+&lt;staff&gt;
+ &lt;employee&gt;
+  &lt;employeeId&gt;EMP0001&lt;/employeeId&gt;
+  &lt;name&gt;Margaret Martin&lt;/name&gt;
+  &lt;position&gt;Accountant&lt;/position&gt;           
+  &lt;salary&gt;56,000&lt;/salary&gt;
+  &lt;gender&gt;Female&lt;/gender&gt;
+  &lt;address domestic='Yes'&gt;1230 North Ave. Dallas, Texas 98551&lt;/address&gt;
+ &lt;/employee&gt;
+ &lt;/staff&gt;
+
+&quot;
+)
+
+(defun dom-ex1 ()
+  
+  ;; Parse an XML document and walk the resulting DOM tree
+
+  (let* ((doc (parse-to-dom *dom-ex1-data*))
+	 (root (dom-document-element doc))
+	)
+    (format t &quot;~%The root element is ~A~%&quot; (dom-tag-name root))
+
+    (dolist (c (dom-child-node-list root))
+      (format t &quot;~&amp;  Child node: ~S~%&quot; c))
+
+    (let* ((addr (dom-list-elements-by-tag-name root &quot;address&quot;))
+	   (attrs (dom-attributes (first addr))))
+      (format t &quot;~&amp;  The address element has ~S attributes~%&quot; 
+              (dom-length attrs)))
+      
+    doc))
+
+(defun dom-ex2 (&amp;optional (file t))
+
+  ;; Build a DOM tree from parts and print the result
+
+  (let ((doc (dom-create-document))
+	staff emp)
+    (dom-append-child doc (setf staff (dom-create-element doc &quot;staff&quot;)))
+    (dom-append-child staff (setf emp (dom-create-element doc &quot;employee&quot;)))
+
+    (flet ((add (parent doc name text &amp;aux child)
+		(dom-append-child parent (setf child 
+                                               (dom-create-element doc name)))
+		(dom-append-child child (dom-create-text-node doc text))
+		child))
+      (add emp doc &quot;employeeId&quot; &quot;EMP00002&quot;)
+      (add emp doc &quot;name&quot; &quot;Alter Ego&quot;)
+      (add emp doc &quot;position&quot; &quot;Auditor&quot;)
+      (add emp doc &quot;salary&quot; &quot;65,000&quot;)
+      (add emp doc &quot;gender&quot; &quot;Male&quot;)
+      (dom-set-attribute 
+       (add emp doc &quot;address&quot; &quot;Port Ludlow, WA&quot;)
+       &quot;domestic&quot; &quot;Yes&quot;)
+      )
+
+    (dom-print doc file)
+
+    doc))
+
+;;  Here we run the functions:
+
+cl-user(18): (dom-ex1)
+
+The root element is staff
+  Child node: #&lt;dom1-text -2- @ #x10ca93fa&gt;
+  Child node: #&lt;dom1-element employee(13) @ #x10ca95ca&gt;
+  Child node: #&lt;dom1-text -2- @ #x10caa4da&gt;
+  The address element has 1 attributes
+#&lt;dom1-document (1) @ #x10ca46c2&gt;
+cl-user(19): (dom-ex2)
+&lt;staff&gt;
+  &lt;employee&gt;
+    &lt;employeeId&gt;EMP00002&lt;/employeeId&gt;
+    &lt;name&gt;Alter Ego&lt;/name&gt;
+    &lt;position&gt;Auditor&lt;/position&gt;
+    &lt;salary&gt;65,000&lt;/salary&gt;
+    &lt;gender&gt;Male&lt;/gender&gt;
+    &lt;address domestic='Yes'&gt;Port Ludlow, WA
+    &lt;/address&gt;
+  &lt;/employee&gt;
+&lt;/staff&gt;
+#&lt;dom1-document (1) @ #x11148e42&gt;
+cl-user(20): 
+</pre>
+
+<hr><hr><h2 id="186"><a name="index-1">6.0 Index for DOM</a></h2>
+
+<ul>
+<li id="187">
+dom-append-child: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="188">
+dom-append-data: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="189">
+dom-attr: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="190">
+dom-attribute-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="191">
+dom-attributes: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="192">
+dom-cdata-section-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="193">
+dom-cdata-section: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="194">
+dom-character-data: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="195">
+<a href="dom.htm#dom-child-node-list-op-bookmarkxx"><b>dom-child-node-list</b></a>: Generic Function
+</li>
+<li id="196">
+dom-child-nodes: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="197">
+dom-clone-node: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="198">
+dom-comment-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="199">
+dom-comment: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="200">
+<a href="dom.htm#dom-condition-class-bookmarkxx"><code>dom-condition</code></a>: class
+</li>
+<li id="201">
+<a href="dom.htm#dom-condition-code-op-bookmarkxx"><b>dom-condition-code</b></a>: generic function
+</li>
+<li id="202">
+<a href="dom.htm#dom-condition-data-op-bookmarkxx"><b>dom-condition-data</b></a>: generic function
+</li>
+<li id="203">
+<a href="dom.htm#dom-condition-name-op-bookmarkxx"><b>dom-condition-name</b></a>: generic function
+</li>
+<li id="204">
+<a href="dom.htm#dom-condition-note-op-bookmarkxx"><b>dom-condition-note</b></a>: generic function
+</li>
+<li id="205">
+<a href="dom.htm#dom-condition-string-op-bookmarkxx"><b>dom-condition-string</b></a>: generic function
+</li>
+<li id="206">
+dom-create-attribute: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="207">
+dom-create-cdata-section: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="208">
+dom-create-comment: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="209">
+<a href="dom.htm#dom-create-document-op-bookmarkxx"><b>dom-create-document</b></a>:  Function
+</li>
+<li id="210">
+dom-create-document-fragment: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="211">
+dom-create-element: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="212">
+dom-create-entity-reference: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="213">
+dom-create-processing-instruction: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="214">
+dom-create-text-node: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="215">
+dom-data: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="216">
+dom-delete-data: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="217">
+dom-doctype: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="218">
+dom-document-element: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="219">
+dom-document-fragment-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="220">
+dom-document-fragment: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="221">
+dom-document-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="222">
+<a href="dom.htm#dom-document-parser-op-bookmarkxx"><b>dom-document-parser</b></a>: Generic Function
+</li>
+<li id="223">
+dom-document-type-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="224">
+dom-document-type: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="225">
+dom-document: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="226">
+dom-domstring-size-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="227">
+<a href="dom.htm#dom-dump-op-bookmarkxx"><b>dom-dump</b></a>: Generic Function
+</li>
+<li id="228">
+dom-element-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="229">
+dom-element: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="230">
+<a href="dom.htm#s_dom-enforce-locks_s-var-bookmarkxx"><code>*dom-enforce-locks*</code></a>: variable
+</li>
+<li id="231">
+dom-entities: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="232">
+dom-entity-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="233">
+dom-entity-reference-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="234">
+dom-entity-reference: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="235">
+dom-entity: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="236">
+<a href="dom.htm#dom-equal-op-bookmarkxx"><b>dom-equal</b></a>: Generic Function
+</li>
+<li id="237">
+dom-first-child: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="238">
+dom-get-attribute-node: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="239">
+dom-get-attribute: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="240">
+dom-get-elements-by-tag-name: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="241">
+dom-get-named-item: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="242">
+dom-has-child-nodes: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="243">
+dom-has-feature: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="244">
+dom-hierarchy-request-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="245">
+dom-implementation: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="246">
+dom-implementation: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="247">
+dom-index-size-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="248">
+dom-insert-before: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="249">
+dom-insert-data: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="250">
+dom-inuse-attribute-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="251">
+dom-invalid-character-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="252">
+<a href="dom.htm#dom-item-name-op-bookmarkxx"><b>dom-item-name</b></a>: Generic Function
+</li>
+<li id="253">
+<a href="dom.htm#dom-item-value-op-bookmarkxx"><b>dom-item-value</b></a>: Generic Function
+</li>
+<li id="254">
+dom-item: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="255">
+dom-last-child: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="256">
+dom-length: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="257">
+<a href="dom.htm#dom-list-elements-by-tag-name-op-bookmarkxx"><b>dom-list-elements-by-tag-name</b></a>: Generic
+Function
+</li>
+<li id="258">
+dom-name: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="259">
+dom-named-node-map: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="260">
+dom-next-sibling: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="261">
+dom-no-data-allowed-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="262">
+dom-no-modification-allowed-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="263">
+<a href="dom.htm#dom-node-list-nodes-op-bookmarkxx"><b>dom-node-list-nodes</b></a>: Generic Function
+</li>
+<li id="264">
+dom-node-list: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="265">
+dom-node-name: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="266">
+<a href="dom.htm#dom-node-type-p-op-bookmarkxx"><b>dom-node-type-p</b></a>: Generic Function
+</li>
+<li id="267">
+dom-node-type: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="268">
+dom-node-value: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="269">
+dom-node: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="270">
+dom-normalize: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="271">
+dom-not-found-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="272">
+dom-not-supported-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="273">
+dom-notation-name: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="274">
+dom-notation-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="275">
+dom-notation: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="276">
+dom-notations: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="277">
+dom-owner-document: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="278">
+dom-parent-node: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="279">
+<a href="dom.htm#dom-parser-class-bookmarkxx"><code>dom-parser</code></a>: class
+</li>
+<li id="280">
+dom-previous-sibling: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="281">
+<a href="dom.htm#dom-print-op-bookmarkxx"><b>dom-print</b></a>: Generic Function
+</li>
+<li id="282">
+<a href="dom.htm#s_dom-print-attrs_s-var-bookmarkxx"><code>*dom-print-attrs*</code></a>: variable
+</li>
+<li id="283">
+<a href="dom.htm#s_dom-print-indent_s-var-bookmarkxx"><code>*dom-print-indent*</code></a>: variable
+</li>
+<li id="284">
+dom-processing-instruction-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="285">
+dom-processing-instruction: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="286">
+dom-public-id: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="287">
+dom-remove-attribute-node: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="288">
+dom-remove-attribute: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="289">
+dom-remove-child: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="290">
+dom-remove-named-item: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="291">
+dom-replace-child: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="292">
+dom-replace-data: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="293">
+dom-set-attribute-node: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="294">
+dom-set-attribute: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="295">
+dom-set-named-item: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="296">
+dom-specified: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="297">
+dom-split-text: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="298">
+dom-substring-data: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="299">
+dom-system-id: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="300">
+dom-tag-name: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="301">
+dom-target: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="302">
+dom-text-node: <a href="#dom-standard-values-2">Standard value</a>
+</li>
+<li id="303">
+dom-text: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="304">
+dom-value: <a href="#dom-standard-meth-funs-2">Standard function</a>
+</li>
+<li id="305">
+dom-wrong-document-err: <a href="#dom-standard-conditions-2">Standard condition</a>
+</li>
+<li id="306">
+dom1-attr: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="307">
+dom1-cdata-section: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="308">
+dom1-character-data: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="309">
+dom1-comment: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="310">
+dom1-document-fragment: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="311">
+dom1-document-type: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="312">
+dom1-document: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="313">
+dom1-element: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="314">
+dom1-entity-reference: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="315">
+dom1-entity: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="316">
+dom1-implementation: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="317">
+dom1-named-node-map: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="318">
+dom1-node-list: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="319">
+dom1-node: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="320">
+dom1-notation: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="321">
+<a href="dom.htm#dom1-parser-class-bookmarkxx"><code>dom1-parser</code></a>: class
+</li>
+<li id="322">
+dom1-processing-instruction: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="323">
+dom1-text: <a href="#dom-standard-classes-2">Standard class</a>
+</li>
+<li id="324">
+<a href="dom.htm#file-to-dom-op-bookmarkxx"><b>file-to-dom</b></a>: Generic Function
+</li>
+<li id="325">
+<a href="dom.htm#parse-to-dom-op-bookmarkxx"><b>parse-to-dom</b></a>: Generic Function
+</li>
+<li id="326">
+<a href="dom.htm#with-serial-lock-op-bookmarkxx"><b>with-serial-lock</b></a>: Macro
+</li>
+</ul>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/dom.htm">9.0 version</a></td></tr></table></html>

@@ -1,0 +1,192 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-mime-part</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.post-office</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/make-mime-part.htm">9.0 version</a></td></tr></table><h2 id="2">make-mime-part</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>content-type encoding external-format headers attachmentp name text start end file subparts id description parameters charset</i><i>
+</i></p>
+
+
+
+
+<p id="4">
+This function returns a <a href="../../classes/post-office/mime-part-constructed.htm"><code>mime-part-constructed</code></a> object with
+properties as specified by the arguments. There are many examples
+using this function in <a href="../../imap.htm#mime-1">MIME
+support</a> in <a href="../../imap.htm">imap.htm</a>.
+</p>
+<p id="5">
+Like many Lisp constructor functions, make-mime-part offers a lot of
+options and looks complicated but typically only a few of the many
+keyword arguments are actually necessary. <a href="make-mime-part.htm"><b>make-mime-part</b></a> supplies many
+defaults that are sufficient for the most common scenarios.
+</p>
+<p id="6">
+MIME parts have contents. The contents can be supplied in one of three
+ways: with the <b><i>text</i></b> argument, with the
+<b><i>file</i></b> argument, or with the
+<b><i>subparts</i></b> argument:
+</p>
+<ol>
+<li id="7">
+<b>Using the <i>text</i> keyword argument</b>: the text
+keyword argument specifies a string that will be used as the body of
+the new part. If one or both of the <i>start</i> and
+<i>end</i> keyword arguments are supplied, then the
+desired subsequence of the string will be used. The default
+<i>content-type</i> is "text/plain" when text is a
+string. See also the description of the
+<i>external-format</i> keyword argument.
+<p id="8">
+The text keyword argument can also be an (unsigned-byte 8) array.
+The subsequence of the array bounded by the start and end keyword
+arguments (specified) will be used.  The default content-type is
+"application/octet-stream" when text is an (unsigned-byte 8) array.  
+</p>
+</li>
+<li id="9">
+<b>Using the <i>file</i> keyword argument</b>: the
+<i>file</i> keyword argument specifies a filename or an
+input stream that will be used to populate the body of new part.  Note
+that the file/stream is not read until the part is rendered.  If the
+argument is an input stream, it must be a stream that is capable of
+being read in an octet-oriented manner (e.g., it cannot be a
+string-input-stream). The default <i>content-type</i>
+will be deduced based on the specified filename or the filename
+associated with the input stream (if possible). If no specific
+<i>content-type</i> can be deduced,
+"application/octet-stream" will be used as the default. See also the
+description of the <i>external-format</i> keyword
+argument.
+</li>
+<li id="10">
+<b>Using the <i>subparts</i> keyword argument</b>: this
+only applies to multipart parts. The contents of a multipart part are
+simply other parts. The <i>subparts</i> argument should
+be a list of parts (as constructed by <a href="make-mime-part.htm"><b>make-mime-part</b></a>). The default
+<i>content-type</i> when subparts is specified is
+"multipart/mixed".
+</li>
+</ol>
+<p id="11">
+The <b><i>start</i></b> and
+<b><i>end</i></b> keyword arguments can be used to
+specify a subsequence of a text string to use. See the description of
+the <i>text</i> argument just above.
+</p>
+<p id="12">
+The remaining keyword arguments allow you to augment and override
+default settings for the new part:
+</p>
+<ul>
+<li id="13">
+<b><i>content-type</i></b> is a string specifying the
+MIME content type of the part.  Examples: "text/plain", "text/html",
+"multipart/mixed", "multipart/alternative", etc. If no
+<i>content-type</i> is supplied, a default is chosen
+based on the other arguments to the function. The descriptions of
+<i>text</i>/<i>file</i>/<i>subparts</i>
+above say how defaults are selected. If the
+<i>content-type</i> is text, make sure you supply the
+proper charset if necessary.
+</li>
+<li id="14">
+The <b><i>external-format</i></b> keyword argument is
+only used if the content-type is a text type (i.e., a content type
+of the form text/&lt;something&gt; or message/rfc822. The default value is
+<code>:utf-8</code>. If the text of the part is being supplied
+from a file, make sure the <i>external-format</i>
+keyword argument corresponds to the external format of the file.
+</li>
+<li id="15">
+
+<b><i>encoding</i></b> is a string specifying how the
+part contents should be encoded (after any external format
+processing). Valid choices are "7bit", "8bit", "base64" and
+"quoted-printable". The default encoding is selected according to the
+following rules:
+
+<ul>
+<li id="16">
+If the :text keyword argument is supplied and is a string, then
+the string is converted to a usb8 array (using the external-format
+specified in the :external-format keyword argument, which defaults
+to :utf-8). The usb8 array is then scanned to see if there are any
+bytes with the high bit set. If there are, "base64" is selected as
+the encoding. Otherwise "7bit" is selected.
+</li>
+<li id="17">
+Otherwise, "base64" is selected.
+</li>
+</ul>
+</li>
+<li id="18"> 
+The <b><i>attachmentp</i></b> keyword argument
+controls the attachment disposition of the mime part.  Generally,
+parts marked as "inline" are displayed (if possible) in the recipient's
+email client at their respective position within the messages.  Parts
+marked as "attachment" are typically displayed as a link or button
+that the user must click on or otherwise manipulate in order to open,
+save, or view.  Keep in mind that the attachment/inline
+disposition is only a suggestion and the behavior of email clients may
+vary with respect to the disposition.  For content provided by file,
+the default disposition is "attachment".  Otherwise, the default for
+non-text parts is "inline".  The <i>attachmentp</i>
+keyword argument can be used to override the default.  Note that text
+parts will never be marked "inline".
+</li>
+<li id="19">
+<b><i>name</i></b> is a string specifying the name of an
+attachment.  For attachments provided using the
+<i>file</i> keyword argument, the name defaults to the
+basename of the pathname associated with the file. To override the
+default, or to provide information when it cannot be automatically
+deduced, use this keyword argument.
+</li>
+<li id="20">
+<b><i>headers</i></b> is an alist specifying additional
+headers that should be included with the part. This is most useful for
+specifying the standard email headers in the top level part (but see
+also <a href="send-letter.htm"><b>send-letter</b></a>
+for a simpler way to do this).  The <b>car</b> of each entry should be
+a string naming the header.  The <b>cdr</b> should be a string
+containing the contents of the header.  For example:
+<code>'(("Subject" .  "This is a MIME-compliant message") ("Date"
+. "Mon, 9 Jan 2006 13:58:22 -0800"))</code>.
+</li>
+<li id="21">
+<b><i>id</i></b> is a string specifying the id for this
+part. This data will be used to construct the Content-Id header of the
+part.
+</li>
+<li id="22">
+<b><i>description</i></b> is a string specifying the
+description for this part.  This data will be used to construct the
+Content-Description header of the part.
+</li>
+<li id="23">
+
+The <b><i>charset</i></b> keyword argument is only used if the
+content-type is a text type (i.e., a content type of the form
+text/&lt;something&gt; or message/rfc822).  The default charset is
+determined by the external-format keyword argument (which itself
+defaults to :utf-8), so in most cases, it should not be necessary to
+use this keyword argument. If specified, charset should be a string
+specifying a valid MIME charset.
+</li>
+<li id="24">
+<b><i>parameters</i></b> is an alist specifying
+additional parameters that should be included in the Content-Type
+header for the part.  The car of each entry should be a string naming
+the header.  The cdr should be a string containing the contents of the
+header.  For example: <code>'(("format" . "flowed"))</code>.
+</li>
+</ul>
+
+<p id="25">
+See <a href="../../imap.htm#mime-1">MIME support</a> in
+<a href="../../imap.htm">imap.htm</a> for more information. That section
+contains examples.
+</p>
+
+<hr><p id="26"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/make-mime-part.htm">9.0 version</a></td></tr></table></body></html>

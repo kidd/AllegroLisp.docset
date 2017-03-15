@@ -1,0 +1,117 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>startup-dialog</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/startup-dialog.htm">9.0 version</a></td></tr></table><h2 id="2">Startup Action</h2>
+
+
+
+<p id="3">
+<p id="4"><img src="../pictures/startup-action.jpg"></p>
+</p><p id="5">
+This dialog will appear at IDE startup when there are recent projects
+to reopen. If there are no recent projects, this dialog does not
+appear. (It also does not appear in the Allegro CL Express
+Edition). The dialog asks whether to open one of the recent projects,
+and also has other choices, such as whether to create a new
+project. The choices are presented as radio-buttons:
+</p>
+
+
+<ul>
+
+
+<li id="6">
+<b>Open a Recent Project (selected below)</b>: This is the initially
+selected choice.  (A list of recent projects is saved in the
+allegro-ide-options.cl file by the <a href="tools-menu.htm#save-options-now">Tools
+| Save Options Now</a> command or the <a href="tools-menu.htm#save-options-on-exit">Tools | Save Options On Exit</a>
+command.)  The list of recently-used projects are listed further below
+on the dialog, with the most recently used project selected at the top
+of the list.  To open the most recently used project for further
+development, simply click OK or press the Enter key.  To open another
+recently-used project, select it and press OK, or double-click it.
+(This can also be done later by using the <a href="recent-menu.htm#open-project">Recent |
+Open Project</a> command.)
+</li>
+
+<li id="7">
+<b>Open Any Project (with the File Dialog)</b>: This option may be used
+to find and open an existing project that is not included in the list
+of recently used projects.  (This can also be done later by using the
+<a href="file-menu.htm#open-project">File | Open Project</a> command.)
+</li>
+
+
+<li id="8">
+
+<b>Create a New Project</b>: This option creates a new empty project
+for developing a new application.(Creating a new project can also be
+done later by using the <a href="file-menu.htm#new-project">File | New Project</a>
+command.)
+
+</li>
+
+<li id="9">
+
+<b>Proceed Without Using a Project</b>: This option runs the IDE with no
+current project.  This is also done if you simply cancel the startup
+dialog by pressing the Escape key or clicking the Cancel button.  When
+there is no current project, warning dialogs may appear if you try to
+use certain project functionality such as showing the Project Manager
+dialog, creating a new form, or clicking the Components toolbar.  And
+a few things may behave differently; for example, when saving an
+editor buffer for the first time, you will not be prompted about
+whether to add the new file to the current project, since there is no
+current project.
+</li>
+<li id="10">
+<b>Run the Interactive IDE Introduction</b> This option starts up a
+high-level introduction to the variety of development tools that are
+available in the IDE.  (No project is created or opened.)  The
+introduction may also be run with the <a href="help-menu.htm#interactive-ide-intro">Help | Interactive IDE
+Intro</a> menu command at any time.
+</li>
+</ul>
+
+<p id="11">
+This dialog may be disabled for future lisp sessions by unchecking the
+check-box labeled <b>Show this dialog at IDE startup time</b> near the
+bottom of the dialog.  The dialog may also be enabled or disabled on
+the <a href="options-dialog-ide-1-2.htm">IDE1</a> tab of the <a href="options-dialog.htm">Options</a> dialog
+(displayed with <a href="tools-menu.htm#options">Tools | Options</a>) by using the check-box labeled
+<b>Ask for Action at IDE Startup</b>, or by calling <a href="../operators/ide/ask-for-action-at-ide-startup.htm"><b>(setf
+ask-for-action-at-ide-startup)</b></a>.  When this dialog is
+disabled, the IDE never opens or creates a project at startup time,
+though you can open or create a project any time later.
+</p>
+<p id="12">
+This dialog is never shown if the IDE is started up with a
+<code>-project</code> command line option for an initial project
+to open.  Instead, that project is always opened, regardless of the
+value of <a href="../operators/ide/ask-for-action-at-ide-startup.htm"><b>ask-for-action-at-ide-startup</b></a>.  (This happens
+when you double-click a <i>.lpr</i> project definition
+file in the operating system's file manager.)
+</p>
+<p id="13">
+Various IDE windows may or may not appear when creating or opening a
+project. For more information, see these IDE configuration options:
+</p>
+<ul>
+<li id="14">
+<a href="../operators/ide/new-project-show-project-manager.htm"><b>new-project-show-project-manager</b></a>
+</li>
+<li id="15">
+<a href="../operators/ide/new-project-show-editor.htm"><b>new-project-show-editor</b></a>
+</li>
+<li id="16">
+<a href="../operators/ide/new-project-create-form.htm"><b>new-project-create-form</b></a>
+</li>
+<li id="17">
+<a href="../operators/ide/open-project-show-project-manager.htm"><b>open-project-show-project-manager</b></a>
+</li>
+<li id="18">
+<a href="../operators/ide/open-project-show-files-in-editor.htm"><b>open-project-show-files-in-editor</b></a>
+</li>
+</ul>
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/startup-dialog.htm">9.0 version</a></td></tr></table></body></html>

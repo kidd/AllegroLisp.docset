@@ -1,0 +1,128 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>decode-extended-time</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table><h2 id="2">decode-extended-time</h2>
+
+<p id="3"><b>Arguments: </b><i>
+time </i> &amp;optional <i>time-zone</i><i>
+</i></p>
+
+<p id="4">
+Like the related <a href="../../../ansicl/dictentr/decode-u.htm"><b>decode-universal-time</b></a>, this function returns
+nine values representing the clock time, day, month, and year, whether
+daylight saving time is in effect, and the time zone. Specifically,
+this function returns the following as multiple values:
+</p>
+<ol>
+<li id="5">
+<b>The clock second</b>: from 0 to 59.
+</li>
+<li id="6">
+<b>The clock minute</b>: for 0 to 59.
+</li>
+<li id="7">
+<b>The clock hour</b>: in 24-hour time, midnight being 0.
+</li>
+<li id="8">
+<b>The day of the month</b>: a value from 1 to 31.
+</li>
+<li id="9">
+<b>The month</b>: January is 1 and December is 12.
+</li>
+<li id="10">
+<b>The year</b>
+</li>
+<li id="11">
+<b>The weekday</b>: an integer from 0 to 6 indicating the day of the
+week, Monday being 0 and Sunday being 6.
+</li>
+<li id="12">
+<b>Daylight saving time</b>: a boolean indicating whether DST is or is
+not in effect.
+</li>
+<li id="13">
+<b>The time zone</b>: the current time zone will be used if the
+<b><i>time-zone</i></b> optional argument is not
+specified. Otherwise <b><i>time-zone</i></b> will be
+used.
+</li>
+</ol>
+<p id="14">
+<b><i>time</i></b> should be an
+integer. If <b><i>time</i></b> is non-negative, this
+function is the same as <a href="../../../ansicl/dictentr/decode-u.htm"><b>decode-universal-time</b></a>. If <b><i>time</i></b>
+is negative, this function assume the value is a number of seconds
+prior to midnight, January 1, 1900 GMT and returns the time, date and
+year. Even negative years (those prior to 1 CE) are returned for
+sufficiently large negative <i>time</i>s.
+</p>
+<p id="15">
+Note that for year prior to 1 CE, there is a year 0 even though the
+standard calendar does not have a year 0, so any non-positive year
+must be dimished by 1 to get the BCE equivalent. Further, this
+function assumes that the Gregorian Calendar (introduced in 1582 CE
+and not adopted more or less worldwide until the twentieth century) is
+in effect everywhere and for all time. That means that dates and times
+from inscriptions and historic documents, when entered, will not be to
+the second the instant a historic event likely happened (see the
+examples).
+</p>
+<pre id="16">
+;; For positive time arguments, this function and
+;; DECODE-UNIVERSAL-TIME are the same:
+cg-user(22): (get-universal-time)
+3638637699
+cg-user(23): (decode-universal-time 3638637699)
+39
+41
+13
+21
+4
+2015
+1
+t
+8
+cg-user(24): (decode-extended-time 3638637699)
+39
+41
+13
+21
+4
+2015
+1
+t
+8
+cg-user(25): 
+
+;; For negative times, DECODE-UNIVERSAL-TIME will signal an error
+;; but DECODE-EXTENDED-TIME works:
+;;
+cg-user(14): (encode-extended-time 0 0 10 15 3 -43 -1)
+-61308802800
+cg-user(15): (decode-extended-time * -1)
+0
+0
+10
+15
+3
+-43
+4
+nil
+-1
+;; That is 10:00 AM, March 15, 44 BCE (remember, subtract 1 from
+;; non-positive years to get the BCE year) in timezone -1 (Rome, Italy).
+;; The Ides of March 44 BCE, when Julius Caesar was assassinated in the
+;; Theater of Pompey in Rome (according to many historical accounts).
+;; Assuming 10:00 AM is correct, did that happen 61308802800 seconds
+;; before midnight, January 1, 1900 GMT? Likely not, even if the descriptions
+;; from history books are accurate about the day and time, because
+;; calendar changes from that time to now means that dates that far back 
+;; are likely some number of days off. But the answer is quite close.
+</pre>
+
+<p id="17">
+See also <a href="encode-extended-time.htm"><b>encode-extended-time</b></a>, <a href="string-to-universal-time.htm"><b>string-to-universal-time</b></a>, and
+<a href="universal-time-to-string.htm"><b>universal-time-to-string</b></a>.
+</p>
+
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> New since the initial 10.0 release.</a></small></td></tr></table></body></html>

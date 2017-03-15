@@ -9,3 +9,6 @@ import:
 
 commit:
 	git commit -am "Allegro from ${today}"
+
+install:
+	cp -r AllegroLisp.docset ~/.docsets

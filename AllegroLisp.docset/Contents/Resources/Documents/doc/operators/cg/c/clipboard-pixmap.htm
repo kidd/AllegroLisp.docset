@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>clipboard-pixmap</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/clipboard-pixmap.htm">9.0 version</a></td></tr></table><h2 id="2">clipboard-pixmap</h2>
+
+<p id="3"><b>Arguments: </b><i>
+nil
+</i></p>
+
+<p id="4">
+This function is deprecated. Use <a href="../c/clipboard-object.htm"><b>clipboard-object</b></a> instead.
+</p>
+<p id="5">
+<a href="../c/clipboard-pixmap.htm"><b>clipboard-pixmap</b></a>
+creates a Common Graphics pixmap object from the device-independent
+bitmap (DIB) that is currently on the Windows clipboard, and returns
+it. (If there is no DIB currently on the clipboard, then <code>nil</code> is returned instead.)  This allows a Common
+Graphics application to retrieve and use a pixmap that was placed
+("copied") onto the clipboard by another application.
+</p>
+<p id="6">
+The setf function, <b>(setf clipboard-pixmap)</b> places a Common
+Graphics pixmap onto the Windows clipboard as the current
+device-independent bitmap (DIB), ready for other applications to
+"paste" it or otherwise retrieve it.
+</p>
+<p id="7">
+<i>pixmap</i> is the pixmap to "copy" to the Windows
+clipboard.
+</p>
+<p id="8">
+Example:
+</p>
+<pre id="9">
+(setf (clipboard-pixmap) my-pixmap)
+</pre>
+
+
+<p id="10">
+See <a href="../../../cg/cg-clipboard.htm">cg-clipboard.htm</a>.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/clipboard-pixmap.htm">9.0 version</a></td></tr></table></body></html>

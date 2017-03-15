@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-ef-switch-to-runtime</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-ef-switch-to-runtime.htm">9.0 version</a></td></tr></table><h2 id="2">def-ef-switch-to-runtime</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name function
+</i></p>
+
+<p id="4">
+<i>name</i> should be a symbol naming an external format
+or external-format object (as returned by <a href="def-external-format.htm"><b>def-external-format</b></a>). <i>function</i> 
+should be a function object (not a symbol).
+</p>
+<p id="5">
+Associates a function object with an external-format. The function
+object is funcalled when <a href="switch-ef-to-runtime.htm"><b>switch-ef-to-runtime</b></a> is called for the
+external-format named by <i>name</i>.
+</p>
+<p id="6">
+Examples:
+</p>
+<pre id="7">
+(def-external-format :jis-base)
+
+;; As part of the char-to-octets and octets-to-char macros, global data
+;; may be used which is not needed once the macros are eliminated for the
+;; external-format's runtime mode.  Supposing the global data can be
+;; eliminated by calling (delete-trie ...), here's how to have that call
+;; be made when the external-format is being switched to runtime mode.
+;;
+(def-ef-switch-to-runtime :jis-base
+  #'(lambda ()
+      (delete-trie :unicode-to-jis)
+      (delete-trie :jis-to-unicode)))
+</pre>
+
+<p id="8">
+See <a href="../../iacl.htm">iacl.htm</a> for more information on international
+character support in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-ef-switch-to-runtime.htm">9.0 version</a></td></tr></table></body></html>

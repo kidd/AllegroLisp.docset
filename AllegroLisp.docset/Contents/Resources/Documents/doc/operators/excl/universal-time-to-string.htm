@@ -1,0 +1,362 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>universal-time-to-string</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Significantly revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/universal-time-to-string.htm">9.0 version</a></td></tr></table><h2 id="2">universal-time-to-string</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ut </i>&amp;key <i>relative format time-zone</i> (<i>show-date</i> t) (<i>show-time</i> t) (<i>show-time-zone</i> t) (<i>locale</i> *locale*)<i> stream</i><i>
+</i></p>
+
+<p id="4">
+This function is in the <code>:anydate</code> module, which is
+autoloaded, if necessary, when this function is called. 
+</p>
+<p id="5">
+This function takes a universal time (perhaps an extended universal time which
+includes fractional seconds and dates and times prior to universal
+time 0) and creates a string which represents the time in a
+specified format. That string is printed to
+<b><i>stream</i></b>,
+if <b><i>stream</i></b> is
+non-<code>nil</code>, and returned
+if <i>stream</i>
+is <code>nil</code>. <code>:stream t</code> causes
+the output to be printed to <a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>. If <i>stream</i>
+is <code>t</code> or a stream, <code>nil</code>
+is returned. If <i>steam</i>
+is <code>nil</code> or unspecified, the output string is
+returned.
+</p>
+<p id="6">
+This function is a rough
+inverse of <a href="string-to-universal-time.htm"><b>string-to-universal-time</b></a> (an exact inverse
+when the value of the <i>format</i> argument to each
+function is the same and non-<code>nil</code> and the
+universal time value/string are valid values).
+</p>
+<p id="7">
+The output is controlled by the <b><i>relative</i></b>
+keyword argument. If <code>nil</code> (the default) a
+string representing the time in standard format (modified as necessary
+by other keyword arguments) is
+created. If <i>relative</i> is
+non-<code>nil</code>, it should be another universal time
+value and the output will describe the duration from the value
+of
+<i>relative</i> to the value
+of <i>ut</i>. We describe the behavior
+when <i>relative</i> is
+<code>nil</code> and then the behavior
+when <i>relative</i> is a universal time. Note that the
+allowable values for the <i>format</i> argument are
+different in the two cases.
+</p>
+<h3 id="8">
+<i>relative</i> is nil
+</h3>
+<p id="9">
+<b><i>format</i></b> should be one of the following
+keywords: <code>:rfc2822</code>, <code>:w3cdtf</code> (the
+default),
+<code>:iso8601</code>, <code>:asctime</code>,
+or <code>:mssql</code> (see <a href="string-to-universal-time.htm"><b>string-to-universal-time</b></a> for information on
+how the various keywords display dates and times); or a string
+containing field descriptor definitions (and other charaters as
+desired) defined in the description of <a href="locale-format-time.htm"><b>locale-format-time</b></a>. When <i>format</i>
+is a string, the <b><i>locale</i></b> keyword argument
+can be used to change the locale used for the rendering the printed
+representation of <i>ut</i> (see <a href="../../variables/excl/s_locale_s.htm"><code>*locale*</code></a>). <i>format</i> can
+also be unspecified or <code>nil</code>, either of which
+are the same as <code>:w3cdtf</code>.
+</p>
+<p id="10">
+The <b><i>show-date</i></b>, 
+<b><i>show-time</i></b>,
+and <b><i>show-time-zone</i></b> keyword arguments are
+used only when <i>format</i>
+is <code>:iso8601</code> or <code>:w3cdtf</code>. When
+<i>format</i> is one of those values, displaying the
+date, time and/or time zone can be suppressed by
+specifying <code>nil</code> as the value of the relevant
+argument (all default to <code>t</code>). It is an error
+to specify <code>nil</code> as the value of all three
+arguments.
+</p>
+<p id="11">
+The <b><i>time-zone</i></b> can be used to reinterpret
+<i>ut</i> in a specific time zone.  If not specified,
+the current, default time zone will be used.  Note: you may get
+different results when specifying the current time zone and letting
+the default behavior happen, because daylight savings time is not
+applied when the <i>time-zone</i> is supplied.  See
+<a href="../../../ansicl/dictentr/encode-u.htm"><b>encode-universal-time</b></a> for
+more information.
+</p>
+<p id="12">
+Fractional seconds are allowed for certain formats.  See
+<a href="string-to-universal-time.htm"><b>string-to-universal-time</b></a> for
+details.
+</p>
+<h3 id="13">
+<i>relative</i> is a universal time
+</h3>
+<p id="14">
+When <b><i>relative</i></b> is a universal-time, the
+output string will describe the duration between the value
+of <i>relative</i> and the value
+of <i>ut</i>. The duration is the time between ut and
+relative, regardless of which is later (so the absolute value of the
+difference between the two is used):
+</p>
+
+<pre id="15">
+;; When :RELATIVE is a universal time, the duration is the same
+;; whether :RELATIVE is bigger or smaller that the UT (required) 
+;; argument:
+
+cl-user(5): (universal-time-to-string 100 :relative 101)
+"00:00:01"
+cl-user(6): (universal-time-to-string 101 :relative 100)
+"00:00:01"
+cl-user(7): 
+</pre>
+
+<p id="16">
+The content of the string depends on the
+<i>format</i> argument, which may have any of the
+following values:
+</p>
+<ul>
+<li id="17">
+A function which
+accepts five arguments:
+<i>stream</i> (a stream, <code>t</code> or
+<code>nil</code>),
+<i>seconds</i> (an integer or a ratio), 
+<i>minutes</i> (an integer),
+<i>hours</i> (an integer), 
+and <i>days</i>
+(an integer).
+</li>
+<li id="18">
+A string suitable as the first argument to <a href="ut-to-string-formatter.htm"><b>ut-to-string-formatter</b></a>.
+</li>
+</ul>
+<p id="19">
+The function <a href="ut-to-string-formatter.htm"><b>ut-to-string-formatter</b></a> returns a function
+suitable to be used as the value
+of <i>format</i>. When <i>format</i> is a
+string, that string is passed to <a href="ut-to-string-formatter.htm"><b>ut-to-string-formatter</b></a>.
+</p>
+<p id="20">
+A function returned by <a href="ut-to-string-formatter.htm"><b>ut-to-string-formatter</b></a> constructs a string
+using the supplied formatter string (the string argument to format or
+the first argument passed to <a href="ut-to-string-formatter.htm"><b>ut-to-string-formatter</b></a>) and
+the <i>seconds</i>, <i>minutes</i>, <i>hours</i>,
+and <i>days</i> values and, like
+<a href="universal-time-to-string.htm"><b>universal-time-to-string</b></a>
+itself, writes it to the stream if <i>stream</i> is a
+stream (and also returns <code>nil</code>); writes it to
+<a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a> if
+<i>stream</i> is <code>t</code> (and also
+returns <code>nil</code>); and returns it
+if <i>stream</i> is <code>nil</code>.
+</p>
+<p id="21">
+When <i>relative</i> is a universal time,
+the <i>stream</i> argument to <a href="universal-time-to-string.htm"><b>universal-time-to-string</b></a> is passed as the
+<i>stream</i> argument to the function which is the
+value of <i>format</i> (or constructed from the string
+which is the value
+of <i>format</i>). <i>time-zone</i> is
+ignored (both <i>ut</i>
+and <i>relative</i> are taken to be in the same time
+zone, and a duration is not affected by time zone), as
+are <i>show-date</i>,
+<i>show-time</i>, <i>show-time-zone</i>,
+and <i>locale</i>.
+</p>
+<p id="22">
+See <a href="ut-to-string-formatter.htm"><b>ut-to-string-formatter</b></a>, <a href="string-to-universal-time.htm"><b>string-to-universal-time</b></a>, and
+the <a href="../../date-time.htm#ut-parser-1">General date to
+universal time parsers</a> section
+of <a href="../../date-time.htm">date-time.htm</a> for more
+information. The <a href="../../date-time.htm">date-time.htm</a> document also
+describes the date-time module which provides additional ISO-8601
+support.
+</p>
+<h3 id="23">
+Examples
+</h3>
+<pre id="24">
+(string-to-universal-time &quot;Thu, 01 Jan 04 19:48:21 GMT&quot; :format :rfc2822)
+  =&gt; 3281975301 :rfc2822 0
+(universal-time-to-string 3281975301 :format :rfc2822)
+  =&gt; &quot;Thu, 01 Jan 2004 11:48:21 -0800&quot;
+(string-to-universal-time &quot;Thu, 01 Jan 04 19:48:21 GMT&quot;)
+  =&gt; 3281975301 :rfc2822 0
+(universal-time-to-string 3281975301)
+  =&gt; &quot;2004-01-01T11:48:21&quot;
+
+(string-to-universal-time &quot;Thu, 01 Jan 2004 19:48:21 GMT&quot; :format :rfc2822)
+  =&gt; 3281975301 :rfc2822 0
+(universal-time-to-string 3281975301 :format :rfc2822)
+  =&gt; &quot;Thu, 01 Jan 2004 11:48:21 -0800&quot;
+(string-to-universal-time &quot;Thu, 01 Jan 2004 19:48:21 GMT&quot;)
+  =&gt; 3281975301 :rfc2822 0
+(universal-time-to-string 3281975301)
+  =&gt; &quot;2004-01-01T11:48:21&quot;
+
+(string-to-universal-time &quot;2003-12-31T10:14:55-08:00&quot; :format :w3cdtf)
+  =&gt; 3281883295 :w3cdtf 28800
+(universal-time-to-string 3281883295 :format :w3cdtf)
+  =&gt; &quot;2003-12-31T10:14:55&quot;
+(string-to-universal-time &quot;2003-12-31T10:14:55-08:00&quot;)
+  =&gt; 3281883295 :w3cdtf 28800
+(universal-time-to-string 3281883295)
+  =&gt; &quot;2003-12-31T10:14:55&quot;
+
+(string-to-universal-time &quot;2003-12-31T10:14:55Z&quot; :format :w3cdtf)
+  =&gt; 3281854495 :w3cdtf 0
+(universal-time-to-string 3281854495 :format :w3cdtf)
+  =&gt; &quot;2003-12-31T02:14:55&quot;
+(string-to-universal-time &quot;2003-12-31T10:14:55Z&quot;)
+  =&gt; 3281854495 :w3cdtf 0
+(universal-time-to-string 3281854495)
+  =&gt; &quot;2003-12-31T02:14:55&quot;
+
+(string-to-universal-time &quot;2003&quot; :format :w3cdtf)
+  =&gt; 3250396800 :w3cdtf :time-zone-not-specified
+(universal-time-to-string 3250396800 :format :w3cdtf)
+  =&gt; &quot;2003-01-01T00:00:00&quot;
+(string-to-universal-time &quot;2003&quot;)
+  =&gt; 3250396800 :w3cdtf :time-zone-not-specified
+(universal-time-to-string 3250396800)
+  =&gt; &quot;2003-01-01T00:00:00&quot;
+
+(string-to-universal-time &quot;2003-12&quot; :format :w3cdtf)
+  =&gt; 3279254400 :w3cdtf :time-zone-not-specified
+(universal-time-to-string 3279254400 :format :w3cdtf)
+  =&gt; &quot;2003-12-01T00:00:00&quot;
+(string-to-universal-time &quot;2003-12&quot;)
+  =&gt; 3279254400 :w3cdtf :time-zone-not-specified
+(universal-time-to-string 3279254400)
+  =&gt; &quot;2003-12-01T00:00:00&quot;
+
+(string-to-universal-time &quot;2003-12-31&quot; :format :w3cdtf)
+  =&gt; 3281846400 :w3cdtf :time-zone-not-specified
+(universal-time-to-string 3281846400 :format :w3cdtf)
+  =&gt; &quot;2003-12-31T00:00:00&quot;
+(string-to-universal-time &quot;2003-12-31&quot;)
+  =&gt; 3281846400 :w3cdtf :time-zone-not-specified
+(universal-time-to-string 3281846400)
+  =&gt; &quot;2003-12-31T00:00:00&quot;
+
+(string-to-universal-time &quot;20031231&quot; :format :iso8601)
+  =&gt; 3281846400 :iso8601 :time-zone-not-specified
+(universal-time-to-string 3281846400 :format :iso8601)
+  =&gt; &quot;2003-12-31T00:00:00&quot;
+(string-to-universal-time &quot;20031231&quot;)
+  =&gt; 3281846400 :iso8601 :time-zone-not-specified
+(universal-time-to-string 3281846400)
+  =&gt; &quot;2003-12-31T00:00:00&quot;
+(string-to-universal-time &quot;20031231&quot; :format :iso8601 :native t)
+  =&gt; #&lt;util.date-time:date-time &quot;2003-12-31&quot; @ #x1000117b1f2&gt; nil nil
+
+(string-to-universal-time &quot;Sun Jan  4 16:29:06 2004&quot; :format :asctime)
+  =&gt; 3282251346 :asctime :time-zone-not-specified
+(universal-time-to-string 3282251346 :format :asctime)
+  =&gt; &quot;Sun Jan  4 16:29:06 2004&quot;
+(string-to-universal-time &quot;Sun Jan  4 16:29:06 2004&quot;)
+  =&gt; 3282251346 :asctime :time-zone-not-specified
+(universal-time-to-string 3282251346)
+  =&gt; &quot;2004-01-04T16:29:06&quot;
+
+(string-to-universal-time &quot;2004-07-08 23:56:58&quot; :format :mssql)
+  =&gt; 3298345018 :mssql :time-zone-not-specified
+(universal-time-to-string 3298345018 :format :mssql)
+  =&gt; &quot;2004-07-08 23:56:58&quot;
+(string-to-universal-time &quot;2004-07-08 23:56:58&quot;)
+  =&gt; 3298345018 :iso8601 :time-zone-not-specified
+(universal-time-to-string 3298345018)
+  =&gt; &quot;2004-07-08T23:56:58&quot;
+
+(string-to-universal-time &quot;2004-07-08 23:56:58.1&quot; :format :mssql)
+  =&gt; 32983450181/10 :mssql :time-zone-not-specified
+(universal-time-to-string 32983450181/10 :format :mssql)
+  =&gt; &quot;2004-07-08 23:56:58.1&quot;
+(string-to-universal-time &quot;2004-07-08 23:56:58.1&quot;)
+  =&gt; 32983450181/10 :iso8601 :time-zone-not-specified
+(universal-time-to-string 32983450181/10)
+  =&gt; &quot;2004-07-08T23:56:58.1&quot;
+
+;; This example uses *locale*:
+(excl::universal-time-to-string (get-universal-time) :format &quot;%H:%M:%S&quot;)
+  =&gt; &quot;11:01:44&quot;
+
+;; When RELATIVE is a universal time, FORMAT can be unspecified and
+;; a suitable formatting function will be used:
+(setq ut 3603660634)
+(universal-time-to-string ut :relative (+ ut 1 (* 10 3600)))
+  =&gt; &quot;10:00:01&quot;
+
+;; Compiling the function returned by UT-TO-STRING-FORMATTER improves 
+;; efficiency but is not required.
+(setq f (compile nil (ut-to-string-formatter &quot;%Dd%2Hh%2Mm%2Ss&quot;)))
+(universal-time-to-string ut :relative (+ ut (* 40 3666)) :format f)
+  =&gt; &quot;1d16h44m00&quot;
+
+;; The string argument to UT-TO-STRING-FORMATTER can be passed as the
+;; format argument to UNIVERSAL-TIME-TO-STRING with the same result:
+(universal-time-to-string ut :relative (+ ut (* 40 3666)) 
+                          :format &quot;%Dd%2Hh%2Mm%2Ss&quot;)
+  =&gt; &quot;1d16h44m00&quot;
+
+
+(setq f (compile nil (ut-to-string-formatter
+      		      &quot;%D day%p, %H hour%p, %M minute%p and %S second%p&quot;)))
+(universal-time-to-string 3603660634
+			  :relative (+ 3603660634 (* 41 3666))
+			  :format f)
+  =&gt; &quot;1 day, 17 hours, 45 minutes and 6 seconds&quot;
+</pre>
+
+
+<h3 id="25">
+Negative universal times
+</h3>
+<p id="26">
+This function accepts negative values for
+the <b><i>ut</i></b> argument. This produces results
+prior to midnight, January 1, 1900 GMT (universal time
+0). The <b><i>format</i></b> must
+be <code>:w3cdtf</code> (which is the default
+when <i>ut</i> is negative). That is also the required
+format for dates and times outside the universal time range passed
+to <a href="universal-time-to-string.htm"><b>universal-time-to-string</b></a>. See also
+<a href="encode-extended-time.htm"><b>encode-extended-time</b></a>
+and <a href="decode-extended-time.htm"><b>decode-extended-time</b></a>.
+</p>
+<pre id="27">
+cg-user(52): (string-to-universal-time "2003-12-02T02:14:55" :format :w3cdtf)
+3279348895
+:w3cdtf
+:time-zone-not-specified
+cg-user(53): (universal-time-to-string 3279348895 :format :w3cdtf)
+"2003-12-02T02:14:55"
+cg-user(54): (string-to-universal-time "-0043-03-15T10:00:00" :format :w3cdtf)
+-61308770400
+:w3cdtf
+:time-zone-not-specified
+cg-user(55): (universal-time-to-string -61308770400)
+"-43-03-15T10:00:00"
+cg-user(56): (string-to-universal-time "1492-12-02T02:14:55" :format :w3cdtf)
+-12846174305
+:w3cdtf
+:time-zone-not-specified
+cg-user(57): (universal-time-to-string -12846174305)
+"1492-12-02T02:14:55"
+cg-user(58): 
+</pre>
+
+
+<hr><p id="28"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had significant revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Significantly revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/universal-time-to-string.htm">9.0 version</a></td></tr></table></body></html>

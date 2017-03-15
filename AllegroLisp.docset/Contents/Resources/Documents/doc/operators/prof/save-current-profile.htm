@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>save-current-profile</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: prof</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/save-current-profile.htm">9.0 version</a></td></tr></table><h2 id="2">save-current-profile</h2>
+
+<p id="3"><b>Arguments: </b><i>
+variable
+</i></p>
+
+
+<p id="4">
+This macro saves the contents of the current runtime analysis into the
+named <i>variable</i> (which is not evaluated). A runtime analysis
+must be in the <code>:analyzed</code> state (as returned by
+<a href="profiler-status.htm"><b>profiler-status</b></a>) to be
+saved.
+</p>
+<p id="5">
+<a href="profiler-status.htm"><b>profiler-status</b></a> returns
+<code>:analyzed</code> after <a href="show-call-graph.htm"><b>show-call-graph</b></a> or <a href="show-flat-profile.htm"><b>show-flat-profile</b></a> have been run at least
+once on collected data. The following results in data being saved and
+made the value of the symbol foo:
+</p>
+<pre id="6">
+(prof:with-profiling (:type :time) &lt;forms&gt;)
+(prof:show-flat-profile)
+(prof:save-current-profile foo)
+</pre>
+<p id="7">
+Saving a runtime analysis with <b>save-current-profile</b> allows
+you to analyze the data at your leisure, running other analyses in the
+meantime. The keyword argument <i>current-profile</i> to
+<a href="show-call-graph.htm"><b>show-call-graph</b></a> and
+<a href="show-flat-profile.htm"><b>show-flat-profile</b></a> can
+take a saved analysis instead of the default (which is the currently
+running or last run analysis) and display results using that
+profile.</p>
+
+<p id="8">
+See <a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a> for general information on
+the runtime analyzer. 
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/save-current-profile.htm">9.0 version</a></td></tr></table></body></html>

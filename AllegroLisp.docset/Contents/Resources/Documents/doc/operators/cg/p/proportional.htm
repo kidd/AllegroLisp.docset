@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>proportional</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/proportional.htm">9.0 version</a></td></tr></table><h2 id="2">proportional</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-section-any
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../p/proportional.htm"><b>proportional</b></a> property of its
+argument. The default value is <code>t</code> for a <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a> or <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a>, and <code>nil</code> for a <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a> or <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>.
+</p>
+<p id="5">
+This property determines whether space will be distributed
+among a grid-section and its siblings. When a <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a> or <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a> is
+resized, any grid-rows or grid-columns in that section that have their
+proportional property turned on are also resized proportionally to
+each other as needed in order to keep the section exactly filled by
+its set of subsections (when possible). For example, if a
+grid-column-section has six columns, and the two columns that are
+proportional have sizes (widths) of 100 and 200, and the user
+stretches that grid section by 30 pixels, then the two proportional
+columns will also stretch to become 110 and 220 pixels wide.
+</p>
+<p id="6">
+Similarly, when the whole <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> is resized, any <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a>s
+or <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a>s within it that
+have their proportional property turned on are also resized as needed
+in order to keep the grid exactly filled by its sections (and any of
+their proportional subsections are resized in turn).
+</p>
+<p id="7">
+It is advisable to make at least one grid-row-section and at least one
+grid-column-section of any grid-widget be proportional, so that the
+sections always fill the grid.
+</p>
+<p id="8">
+Typically, if a grid-section contains only one subsection, it is
+desirable to make that subsection be proportional so that it always
+fills its section.
+</p>
+<p id="9">
+Grid-sections that have no proportional subsections will be scrollable
+when the fixed sizes of the subsections exceeds the whole section
+size, as long as the section's scrollbars property is turned on. (It
+will also scroll even if it contains proportional subsections if the
+size of the non-proportional subsections exceeds the section size.)
+</p>
+<p id="10">
+<a href="../p/proportional.htm"><b>proportional</b></a> is a
+property of the <a href="../../../classes/cg/grid-subsection.htm"><code>grid-subsection</code></a>, <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>, <a href="../../../classes/cg/row-header-column.htm"><code>row-header-column</code></a>,
+<a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a>,
+<a href="../../../classes/cg/column-header-row.htm"><code>column-header-row</code></a>, <a href="../../../classes/cg/grid-section.htm"><code>grid-section</code></a>, <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a>,
+and <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a> classes.
+</p>
+
+
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/proportional.htm">9.0 version</a></td></tr></table></body></html>

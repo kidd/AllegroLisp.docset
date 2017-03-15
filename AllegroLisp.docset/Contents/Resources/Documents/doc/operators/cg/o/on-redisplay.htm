@@ -1,0 +1,103 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>on-redisplay</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-redisplay.htm">9.0 version</a></td></tr></table><h2 id="2">on-redisplay</h2>
+
+<p id="3"><b>Arguments: </b><i>
+drawable-or-split-bar
+</i></p>
+
+<h3 id="4">
+For a drawable
+</h3>
+
+<p id="5">
+Returns (or sets with <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>)
+the value of the <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> event property of the
+argument. The value should be a function object or a function name (a
+symbol naming a function). This function will be called by the default
+<a href="../r/redisplay-event.htm"><b>redisplay-event</b></a>
+method whenever a <a href="../../../classes/cg/drawable.htm"><code>drawable</code></a> needs to be redrawn, such
+as when it is uncovered. Note that if the default <a href="../r/redisplay-event.htm"><b>redisplay-event</b></a> method is
+overridden, then the <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> will not be called by
+it. If the value of the <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> property is <code>nil</code>, then no function is called.
+</p>
+<p id="6">
+The <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a>
+function should take two arguments, (1) the drawable control and (2)
+the stream to draw on. If the <a href="../u/use-bitmap-stream.htm"><b>use-bitmap-stream</b></a> property of the
+control is true, then the stream argument will be the bitmap-stream of
+the control; otherwise it will be the visible window of the
+control. The <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> function should draw
+whatever it draws on the stream object; if this is a bitmap-stream,
+then the drawable will automatically quickly copy what was drawn there
+to the visible window.
+</p>
+<p id="7">
+Here is the sample <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> function that is used
+initially by a drawable control when it is interactively instantiated
+onto a form in the IDE. This should of course be replaced by some
+other function more appropriate to the application. Note that it draws
+its drawing to fit the current page size of the drawable.
+</p>
+<pre id="8">
+(defun on-redisplay-example (drawable stream)
+   (declare (ignore drawable))
+   (let* ((width (page-width stream))
+          (height (page-height stream))
+          (mid (floor width 2))
+          (num-lines 24)
+          (factor (float (/ width (1- num-lines))))
+          )
+      (dotimes (j num-lines)
+         (draw-line stream
+           (nmake-position #.(make-position 0 0) mid height)
+           (nmake-position #.(make-position 0 0)
+             (round (* j factor)) 0)))))
+</pre>
+<p id="9">
+<a href="../o/on-redisplay.htm"><b>on-redisplay</b></a> is a
+property of the <a href="../../../classes/cg/drawable.htm"><code>drawable</code></a> class.
+</p>
+
+<h3 id="10">
+For a split-bar
+</h3>
+
+<p id="11">
+Returns the <a href="../o/on-redisplay.htm"><b>on-redisplay</b></a>
+property of a <a href="../../../classes/cg/split-bar.htm"><code>split-bar</code></a>
+widget. The value may be set at creation time by passing the
+<code>:on-redisplay</code> initarg to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or any time later by
+call <a href="../o/on-redisplay.htm"><b>(setf
+on-redisplay)</b></a>.
+</p>
+<p id="12">
+The value of this property should be the name of a function that will
+be called when needed to draw the <a href="../../../classes/cg/split-bar.htm"><code>split-bar</code></a>, or else <code>nil</code>
+to draw the split-bar in the default way. The default value
+is <code>nil</code>. You may use <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> to set the value of this property.
+</p>
+<p id="13">
+When <code>nil</code>, the <a href="../../../classes/cg/split-bar.htm"><code>split-bar</code></a> is drawn as a simple colored line
+according to the <a href="../c/color-when-idle.htm"><b>color-when-idle</b></a>, <a href="../c/color-under-mouse.htm"><b>color-under-mouse</b></a>, or <a href="../c/color-when-dragging.htm"><b>color-when-dragging</b></a> property.
+</p>
+<p id="14">
+When a function, the function should accept two arguments, which will
+be the split-bar dialog-item itself and the
+associated <a href="../../../classes/cg/split-bar-pane.htm"><code>split-bar-pane</code></a>
+widget-window. Drawing functions should be called on the
+<a href="../../../classes/cg/split-bar-pane.htm"><code>split-bar-pane</code></a> to draw the
+widget. The function would typically draw somewhat differently
+depending on whether the <a href="../n/now-dragging.htm"><b>now-dragging</b></a> and <a href="../n/now-under-mouse.htm"><b>now-under-mouse</b></a> properties of the split-bar are
+true.
+</p>
+
+
+
+<p id="15">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics.
+</p>
+
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/on-redisplay.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,56 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>get-focus</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/get-focus.htm">9.0 version</a></td></tr></table><h2 id="2">get-focus</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;optional <i>ignored</i><i>
+</i></p>
+
+<p id="4">
+Returns the window that currently has the global keyboard focus, if
+any, or else <code>nil</code>. The window that has the
+keyboard focus at any moment is the one that will receive all keyboard
+events. The focus is usually indicated visually in some way, such as
+by a dashed bounding rectangle or inverted text. The focus may be
+moved to another window by calling <a href="../s/set-focus.htm"><b>set-focus</b></a>. It is possible for no
+window to have the focus.
+</p>
+<p id="5">
+The keyboard focus is normally in a window that has no child windows,
+since parent windows tend to move the focus to one of their child
+windows. When a dialog is selected, for example, the dialog's toolbar
+will be highlighted to indicate that it is the selected-window, but
+the keyboard focus will be in the window of one of the widgets on the
+dialog.
+</p>
+<p id="6">
+<a href="../g/get-focus.htm"><b>get-focus</b></a> is
+thread-specific.  If the focus is currently in a window that was
+created by the thread that is calling <a href="../g/get-focus.htm"><b>get-focus</b></a>, or if there is a window
+hierarchy that contains windows from both the calling thread and
+window's creation thread, then that window is returned. Otherwise
+<code>nil</code> is returned. (<a href="../s/set-focus.htm"><b>set-focus</b></a>, on the other hand, will
+move the focus to a window in any thread of that lisp environment.)
+Note that mixing windows from multiple threads in a single window
+hierarchy is not recommended, since this is prone to messaging
+deadlocks.
+</p>
+<p id="7">
+<b>Compatibility note</b>: The optional argument is called
+<i>ignored</i> because it is ignored.  In releases
+through version 6.0 it was documented as optionally specifying a
+parent stream but in fact it was always ignored since the keyboard
+focus is global. The argument is accepted for backward compatibility
+and since the argument was always in fact ignored, no behavior is
+changed if you specify any value or do not specify a value.
+</p>
+
+<p id="8">
+See also <a href="../s/selected-window.htm"><b>selected-window</b></a>.
+</p>
+
+
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/g/get-focus.htm">9.0 version</a></td></tr></table></body></html>

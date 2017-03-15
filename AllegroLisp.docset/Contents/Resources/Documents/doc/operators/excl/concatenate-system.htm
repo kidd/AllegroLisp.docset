@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>concatenate-system</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/concatenate-system.htm">9.0 version</a></td></tr></table><h2 id="2">concatenate-system</h2>
+
+<p id="3"><b>Arguments: </b><i>system destination </i>&amp;key <i>keyword arguments for system use only</i></p>
+
+<p id="4">
+This generic function concatenates the <i>fasl</i> files of the
+modules in <i>system</i> into
+<i>destination</i>. This is useful for creating one
+<i>fasl</i> from which the entire
+system can be loaded. Such a file can then be placed in a library or
+distributed.
+</p>
+
+<p id="5">
+Note that <i>fasl</i> files can be concatenated with
+Operating System tools such as the UNIX <strong>cat</strong>
+command. (Indeed, <a href="concatenate-system.htm"><b>concatenate-system</b></a> works as if it
+used <strong>cat</strong>, performing a byte-for-byte copying of the
+files with no pre/postpended or intervening headers or noise.
+</p>
+<p id="6">
+When concatenated fasl files are loaded, the four variables bound by
+<a href="../../../ansicl/dictentr/load.htm"><b>load</b></a> (<a href="../../../ansicl/dictentr/package.htm"><code>*package*</code></a>, <a href="../../../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a>, <a href="../../../ansicl/dictentr/load-pat.htm"><code>*load-pathname*</code></a>, and
+<a href="../../../ansicl/dictentr/load-pat.htm"><code>*load-truename*</code></a>) are bound only once
+around the entire operation, not around each component file.
+</p>
+<p id="7">
+Concatenation of <i>fasl</i> files has no effect
+whatever on the source file information recorded for definitions in
+the <i>fasl</i> files since source-file information is
+entirely determined at <a href="../../../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> time. (See <a href="../../variables/excl/s_source-pathname_s.htm"><code>*source-pathname*</code></a>.)
+</p>
+<p id="8">
+Although the home package of the symbol naming this operator is the
+<code>excl</code> package, it is also exported from the
+<code>defsystem</code> package.
+</p>
+<p id="9">
+See also <a href="../../defsystem.htm">defsystem.htm</a> for general
+information on the defsystem facility in Allegro
+CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/concatenate-system.htm">9.0 version</a></td></tr></table></body></html>

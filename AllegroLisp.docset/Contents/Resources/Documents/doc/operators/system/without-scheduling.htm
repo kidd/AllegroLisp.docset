@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>without-scheduling</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/without-scheduling.htm">9.0 version</a></td></tr></table><h2 id="2">without-scheduling</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+
+
+<p id="4">
+Use of this macro and the related <a href="../excl/without-interrupts.htm"><b>without-interrupts</b></a> is deprecated and a
+warning will be signaled if they are used.
+See <a href="../../smp.htm">smp.htm</a> for full details, but in
+brief, <a href="../excl/without-interrupts.htm"><b>without-interrupts</b></a>
+and <a href="without-scheduling.htm"><b>sys:without-scheduling</b></a>
+effectively provided object locking -- because they prevented process
+switches, and only one Lisp process could ever run at a time, no
+object could be modified by another process while code wrapped in the
+macros was being run. In an SMP Lisp, that is no longer true because
+processes can run on separate processors simultaneously. Therefore,
+object locking must be achieved in some other
+fashion. See <a href="../../smp.htm">smp.htm</a> for links to object locking
+functionality.
+</p>
+<p id="5">
+Uses of <a href="../excl/without-interrupts.htm"><b>without-interrupts</b></a>
+and <a href="without-scheduling.htm"><b>sys:without-scheduling</b></a>
+will signal a warning. That warning can be muffled by
+evaluating <code>(setq excl::*warn-smp-usage* nil)</code>.
+</p>
+<p id="6">
+Even though its use is deprecated, <a href="without-scheduling.htm"><b>sys:without-scheduling</b></a> and <a href="../excl/without-interrupts.htm"><b>without-interrupts</b></a> will continue to exist and
+work in non-SMP images as they have in earlier releases and
+currently. Users who do not wish to use SMP can use non-SMP images,
+which will be available on platforms which support SMP along with SMP
+images and need not modify their code at all because of the
+introduction of SMP (beyond suppressing the compiler warning as
+described above).
+</p>
+
+
+
+<p id="7">
+This macro inhibits the system from suspending a process involuntarily
+(asynchronously) during the execution of
+<i>body</i>. However, the system will run another
+process if the current process blocks, waits, or executes a <a href="../mp/process-allow-schedule.htm"><b>process-allow-schedule</b></a>. Note that
+<a href="without-scheduling.htm"><b>without-scheduling</b></a> returns a
+single value, not multiple values. <a href="without-scheduling.htm"><b>without-scheduling</b></a> is intended to be used around
+short critical sections of code, and perhaps to be called frequently,
+so possible overhead of allocating multiple returns is avoided by
+returning a single value.
+</p>
+
+<p id="8">
+See also <a href="../excl/without-interrupts.htm"><b>without-interrupts</b></a>
+and <a href="../../multiprocessing.htm">multiprocessing.htm</a> for general information on
+multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/without-scheduling.htm">9.0 version</a></td></tr></table></body></html>

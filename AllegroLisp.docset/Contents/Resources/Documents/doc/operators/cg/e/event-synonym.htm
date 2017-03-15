@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>event-synonym</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/event-synonym.htm">9.0 version</a></td></tr></table><h2 id="2">event-synonym</h2>
+
+<p id="3"><b>Arguments: </b><i>
+menu-item
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../e/event-synonym.htm"><b>event-synonym</b></a> property of the
+argument <a href="../../../classes/cg/menu-item.htm"><code>menu-item</code></a>. 
+</p>
+<p id="5">
+The value of this
+property, if true, should be the key-chord that
+will invoke this menu-item's command, assuming that the keyboard focus
+is inside the window whose menu-bar contains this menu-item.  An
+event-synonym always contains a single main non-shift key, plus an
+optional set of one or more shift keys. If no shift keys are used,
+then the event-synonym consists entirely of a character name like #\A
+or a key name like vk-comma or vk-f3. If shift keys are used, then the
+event-synonym is a list whose members are the names of the shift keys
+(in any order) and the main non-shift key as the last member. The
+available shift key names are <a href="../../../variables/cg/control-key.htm"><code>control-key</code></a>, <a href="../../../variables/cg/alt-key.htm"><code>alt-key</code></a>, and
+<a href="../../../variables/cg/shift-key.htm"><code>shift-key</code></a>,
+and they may be used in any combination. 
+</p>
+<p id="6">
+Note that typable characters are normally used only with either
+control-key or alt-key (or both), since otherwise the characters would
+not be typable as text (since typing them would activate the menu item
+rather than entering the character). This is why the first two
+examples, though legal, are not recommended.
+</p>
+<p id="7">
+
+Here are some example event synonyms:
+</p>
+<ul>
+<li id="8">
+#\A (not recommended since A cannot now be entered as a letter)
+</li>
+<li id="9">
+vk-period (not recommended since . cannot now be entered as a letter)
+</li>
+<li id="10">
+vk-f3
+</li>
+<li id="11">
+(control-key #\A)
+</li>
+<li id="12">
+(control-key vk-period)
+</li>
+<li id="13">
+(alt-key shift-key #\A)
+</li>
+<li id="14">
+(control-key alt-key shift-key vk-f7)
+</li>
+</ul>
+<p id="15">
+<a href="../e/event-synonym.htm"><b>event-synonym</b></a> is
+a property of the <a href="../../../classes/cg/menu-item.htm"><code>menu-item</code></a> class.
+</p>
+
+<p id="16">
+See <a href="../p/proxy-menu-bar-window.htm"><b>proxy-menu-bar-window</b></a>, which can be
+used to redirect keyboard shortcuts to the menu-bar of another
+window. See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics.
+</p>
+
+
+<h3 id="17">
+GTK Note
+</h3>
+
+<p id="18">
+Most of the keystrokes that combine a function key with the alt key
+(plus perhaps other shift keys) are grabbed either by Linux or by
+Gnome's default shortcuts, and Common Graphics cannot intercept them.
+For compatibility with existing Common Graphics code, Common Graphics
+will automatically map these keystrokes to other ones whenever they
+are specified as menu-item keyboard shortcuts.  The general rule is
+that if a menu-item event-synonym includes both a function key and the
+alt key, then the corresponding numeral key is used on GTK instead of
+the function key.  So alt-F1 will be converted automatically to alt-1,
+for example.  As special cases, F10 maps to the zero key, F11 to the
+minus key, and F12 to the equals key.  See also <a href="../h/handle-f10.htm"><b>handle-f10</b></a>.
+</p>
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/event-synonym.htm">9.0 version</a></td></tr></table></body></html>

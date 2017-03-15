@@ -1,0 +1,129 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>expand-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/expand-window.htm">9.0 version</a></td></tr></table><h2 id="2">expand-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window
+</i></p>
+
+<p id="4">
+Expands <i>window</i> (if it is shrunken) to fill its
+previous box. Does nothing if <i>window</i> is already
+expanded.  
+</p>
+<p id="5">
+The return value of this function is undefined and no meaning should
+be attributed to the value actually returned. Information about the
+success or failure of the expansion is not available.
+</p>
+<p id="6">
+When <a href="../e/expand-window.htm"><b>expand-window</b></a> is called on a window
+whose <a href="../s/state.htm"><b>state</b></a> is
+:shrunk or :icon, the window is returned to either :normal or
+:maximized state, depending on which of these two states the window
+most recently had. If it has not yet had either of these states, then
+it is put into :normal state. For iconized windows, this emulates
+clicking on the restore button of the icon.
+</p>
+<p id="7">
+This operator is
+now a non-generic function. It calls <a href="../s/state.htm"><b>(setf state)</b></a>, which is
+a generic function to effect the change in its argument's
+state. Methods can be added to <a href="../s/state.htm"><b>(setf state)</b></a> to affect
+the behavior of this function, as is done in the example below.
+</p>
+<h3 id="8">Example of a method on (setf state) affecting window expansion</h3>
+<p id="9">
+When <a href="../e/expand-window.htm"><b>expand-window</b></a> is called on a window
+whose state is :shrunk or :icon, the window is returned to either
+:normal or :maximized state, depending on which of these two states
+the window most recently had. If it has not yet had either of these
+states, then it is put into :normal state. For iconized windows, this
+emulates clicking on the restore button of the icon. Alternately, the
+<i>new-state</i> argument to <a href="../s/state.htm"><b>(setf state)</b></a> can be
+passed as :expanded to achieve the same result; expand-window itself
+calls (setf state) in this way. (:expanded is not a true state, so the
+resulting state of the window will be either :normal or :maximized.)
+</p>
+<p id="10">
+A <a href="../s/state.htm"><b>(setf
+state)</b></a> :around method prevents any other non-:around (setf
+state) methods from being called if the state would not actually be
+changed by the call. Therefore any methods added by an application do
+not need to handle this efficiency consideration. This around method
+also coerces the special :expanded state to either :normal or
+:maximized and passes that value to the other 
+<a href="../s/state.htm"><b>(setf state)</b></a> methods
+that it calls, so any primary, :before, or :after 
+<a href="../s/state.htm"><b>(setf state)</b></a> methods
+added by an application will not receive the :expanded state.
+</p>
+
+<p id="11">
+The generic function <a href="../s/state.htm"><b>state</b></a> returns a new second value
+for the "expanded state" of the window. This value is always either
+:normal or :maximized. If the current state of the window is :shrunk
+or :icon, then the value is the state into which the window will be
+placed if expand-window is called on it or if 
+<a href="../s/state.htm"><b>(setf state)</b></a> is called
+on it with the :expanded state. This is also the most recent expanded
+state that the window was in, or :normal if it has never been
+expanded. If the current state of the window is :normal or
+:maximized, the value is the state to which the window was most
+recently expanded from :shrunk or :icon state.
+</p>
+<p id="12">
+Here is an example of an added <a href="../s/state.htm"><b>(setf state)</b></a> :around
+method that looks at both the old and new states of any frame-window
+whose state may be changing, and reports any change. Typically several
+custom methods on <a href="../s/shrink-window.htm"><b>shrink-window</b></a>, <a href="../e/expand-window.htm"><b>expand-window</b></a>, and so on
+could be collapsed into such a single <a href="../s/state.htm"><b>(setf state)</b></a> method.
+A simpler :after method could be used instead if the old state is not
+of interest.
+</p>
+<p id="13">
+The <a href="../../excl/without-package-locks.htm"><b>without-package-locks</b></a> is
+needed here in a source code file that's not in the
+<code>cg</code> package only because it specializes a Common
+Graphics method on a built-in Common Graphics class; normally an
+application would specialize on its own subclass instead.
+</p>
+<p id="14">
+The requested-state argument is ignored because it may be :expanded,
+and we are interested here in the resulting :normal or :maximized
+state instead.  Similarly, some other <a href="../s/state.htm"><b>(setf state)</b></a> method
+could coerce the requested state to something else.
+</p>
+<p id="15">
+<a href="../../ide/eval-in-listener-thread.htm"><b>eval-in-listener-thread</b></a> is used to
+make sure that the printed output always goes to the selected IDE
+listener pane (and so this method is suitable only for the IDE and not
+for a generated application).  Otherwise, the message will go to the
+<a href="../../../../ansicl/dictentr/terminal.htm"><code>*terminal-io*</code></a> of whatever
+thread changed the window state; for example, clicking the minimize
+button of an IDE window would iconize the window in the IDE GUI
+thread, for which <a href="../../../../ansicl/dictentr/terminal.htm"><code>*terminal-io*</code></a> is bound to the console, and so
+the output would appear there.
+</p>
+<p id="16">
+The prog1 is used to ensure that this 
+<a href="../s/state.htm"><b>(setf state)</b></a>
+method returns
+whatever the next called method returns, though that would normally be
+the requested-state.
+</p>
+<pre id="17">
+(without-package-locks
+ (defmethod (setf state) :around (requested-state (window frame-window))
+   (declare (ignore requested-state))
+   (let* ((old-state (state window))
+          new-state)
+     (prog1 (call-next-method)
+       (setq new-state (state window))
+       (unless (eq old-state new-state)
+         (ide:eval-in-listener-thread
+          `(format t "~&State of ~s changed from ~s to ~s.~%"
+             (name ,window) ,old-state ,new-state)))))))
+</pre>
+
+<hr><p id="18"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/expand-window.htm">9.0 version</a></td></tr></table></body></html>

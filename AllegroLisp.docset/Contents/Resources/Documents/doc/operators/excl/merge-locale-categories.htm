@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>merge-locale-categories</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/merge-locale-categories.htm">9.0 version</a></td></tr></table><h2 id="2">merge-locale-categories</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;rest <i>args</i><i>
+</i>&amp;key  (<i>locale</i> *locale*) (<i>external-format</i> (locale-external-format default-locale))<i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="4">
+This function enables users to create a locale object which combines
+categories from other existing locales. Such a locale is unnamed
+(i.e., its name slot is nil), and is never returned by <a href="find-locale.htm"><b>find-locale</b></a>. After specifying the
+indicated keyword arguments (if you do), then category/locale pairs,
+specified as strings, indicate what should be merged.
+</p>
+<p id="5">
+For example,
+</p>
+<pre id="6">
+(merge-locale-categories :locale (find-locale "af_ZA")
+                         "LC_NUMERIC" "fr_FR"
+                         "LC_MONETARY" "de_DE"
+                         "LC_TIME" "ja_JP")
+</pre>
+<p id="7">
+creates a new unnamed locale object with the categories from locales
+as specified in the call and all other categories from the af_ZA
+locale. If :locale is not specified, then the current locale (value
+of <a href="../../variables/excl/s_locale_s.htm"><code>*locale*</code></a>) is
+used.
+</p>
+<p id="8">
+See <a href="../../iacl.htm#localization-1">Localization support
+in Allegro CL</a> in <a href="../../iacl.htm">iacl.htm</a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/merge-locale-categories.htm">9.0 version</a></td></tr></table></body></html>

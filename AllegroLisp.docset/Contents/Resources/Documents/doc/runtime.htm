@@ -1,0 +1,441 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Allegro CL Runtime</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/runtime.htm">9.0 version</a></td></tr></table><h1 id="2">Allegro CL Runtime</h1><p id="3">This document contains the following sections:</p><a href="#runtime-intro-1">1.0 Allegro Runtime introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#standard-2">1.1 Standard Runtime</a><br>&nbsp;&nbsp;&nbsp;<a href="#dynamic-2">1.2 Dynamic Runtime</a><br>&nbsp;&nbsp;&nbsp;<a href="#partners-2">1.3 Partner's Runtime</a><br><a href="#creating-runtime-apps-1">2.0 Creating runtime applications</a><br><a href="#runtime-conditions-1">3.0 Conditions on distributing Allegro Runtime created applications</a><br><hr><hr><h2 id="4"><a name="runtime-intro-1">1.0 Allegro Runtime introduction</a></h2>
+
+<p id="5">
+<em>Runtime</em> is a way to license the distribution of applications
+written in Allegro CL. It is designed to offer VARs using Allegro CL
+for product development a way to deliver or deploy their products without
+requiring their users to have fully-paid licenses for Allegro CL. VARs
+(Value Added Resellers) are users of Allegro CL who develop
+applications intended for delivery to their customers.
+</p>
+<p id="6">
+Allegro CL will build, using (on Unix and Windows) the <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> function (called with argument <i>image-only</i> nil) or (on
+Windows only) the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command or the <a href="operators/ide/build-project.htm"><b>build-project</b></a> function (called with
+<i>exe-only</i> specified <code>nil</code>),
+an application directory containing everything necessary to distribute
+or deploy to customers. 
+</p>
+<p id="7">
+A <i>runtime application</i> is defined to be such a directory. One of
+the files in that directory is a license file (extension
+<i>.lic</i>). That license file will permit the
+application to start up. If that license file is removed, the
+application will not work.
+</p>
+
+<p id="8">
+As with all Allegro CL features and add-ons, the Allegro CL
+installed on your machine includes everything needed to create
+runtime applications, but in order to do so, you must have a proper
+license in your license file (<i>devel.lic</i> in the
+Allegro Directory). If you are not licensed to create runtime
+applications, attempts to do so will fail.
+</p>
+<p id="9">
+There are three aspects of runtime applications which will be
+discussed in this document:
+</p>
+<ul>
+<li id="10">
+What Runtime is, discussed just below and in the subsections
+immediately following.
+</li>
+<li id="11">
+How a runtime application is created, which is touched on above and
+considered in more detail in
+<a href="#creating-runtime-apps-1">Section 2.0 Creating runtime applications</a>.
+</li>
+<li id="12">
+What you can do with a runtime application once you have created one,
+discussed in <a href="#runtime-conditions-1">Section 3.0 Conditions on distributing Allegro Runtime created applications</a>.
+</li>
+</ul>
+
+<p id="13">
+There are three flavors of <em>Runtime</em>: 
+</p>
+
+<ul>
+  <li id="14">Allegro CL Standard Runtime (described in 
+      <a href="#standard-2">Section 1.1 Standard Runtime</a> below) </li>
+  <li id="15">Allegro CL Dynamic Runtime (described in 
+      <a href="#dynamic-2">Section 1.2 Dynamic Runtime</a> below)</li>
+  <li id="16">Allegro CL Partner's Runtime (described in 
+      <a href="#partners-2">Section 1.3 Partner's Runtime</a> below)</li>
+</ul>
+
+
+
+<hr><h2 id="17"><a name="standard-2">1.1 Standard Runtime</a></h2>
+
+
+
+<p id="18">
+Allegro CL Standard Runtime applications differ from the Allegro CL
+Development image in that they necessarily lack certain features and
+capabilities (other capabilities may be optionally left out):
+</p>
+
+<ul>
+<li id="19">
+No cross referencer (see <a href="cross-reference.htm">cross-reference.htm</a>).
+</li>
+<li id="20">
+No runtime analyzer (see <a href="runtime-analyzer.htm">runtime-analyzer.htm</a>) .
+</li>
+<li id="21">
+No stepper (see <a href="debugging.htm#stepper-1">The stepper</a>).
+</li>
+
+<li id="22">
+No compiler (so <a href="../ansicl/dictentr/compile.htm"><b>compile</b></a> and
+<a href="../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> are unavailable;
+<a href="operators/excl/fasl-read.htm"><b>fasl-read</b></a> and <a href="operators/excl/fasl-write.htm"><b>fasl-write</b></a> also do not work as they
+require the compiler).
+</li>
+<li id="23">
+No <a href="tpl-commands/help.htm"><b>:help</b></a>, <a href="tpl-commands/history.htm"><b>:history</b></a>, and <em>redo</em> (see <a href="top-level.htm#command-history-2">Command and expression
+history</a> in <a href="top-level.htm">top-level.htm</a>) top-level
+commands.
+</li>
+
+
+
+</ul>
+
+
+<p id="24">
+The disassembler
+(the <a href="../ansicl/dictentr/disassem.htm"><b>disassemble</b></a> function) is
+available in runtime.
+</p>
+
+
+<p id="25">
+Allegro Enterprise and Enterprise Platinum licenses include a license
+to make standard runtime applications. The Allegro Professional
+license does not include a license to make any runtime application.
+<a href="introduction.htm#contacting-fi-1">Contact your
+Account Manager</a> for information on purchasing runtime
+licenses and upgrading your version of Allegro CL.
+</p>
+
+<p id="26">
+Please read <a href="#runtime-conditions-1">Section 3.0 Conditions on distributing Allegro Runtime created applications</a> for
+information on who you may distribute runtime applications to and how
+you may deploy them.
+</p>
+
+
+
+<hr><h2 id="27"><a name="dynamic-2">1.2 Dynamic Runtime</a></h2>
+
+
+
+<p id="28">
+Allegro CL Dynamic Runtime applications differ from the Allegro CL
+Development image in that they necessarily lack certain features and
+capabilities (other capabilities may be optionally left out):
+</p>
+
+<ul>
+<li id="29">
+No cross referencer (see <a href="cross-reference.htm">cross-reference.htm</a>).
+</li>
+<li id="30">
+No runtime analyzer (see <a href="runtime-analyzer.htm">runtime-analyzer.htm</a>) .
+</li>
+<li id="31">
+No stepper (see <a href="debugging.htm#stepper-1">The stepper</a>).
+</li>
+</ul>
+
+<p id="32">
+Dynamic runtime applications, however, can include the compiler, so
+<a href="../ansicl/dictentr/compile.htm"><b>compile</b></a> and <a href="../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> can be available. (We say <i>can
+be</i> because you can choose to leave the compiler out.) They also
+allow use of the <a href="tpl-commands/help.htm"><b>:help</b></a>, <a href="tpl-commands/history.htm"><b>:history</b></a>, and <em>redo</em> (see <a href="top-level.htm#command-history-2">Command and expression
+history</a> in <a href="top-level.htm">top-level.htm</a>) top-level
+commands. (These additional features differentiate dynamic runtime
+from <a href="#standard-2">standard runtime</a>.)
+</p>
+
+<p id="33">
+No Allegro CL license includes (by default) a license to make dynamic
+runtime applications. A license to create such applications must
+be purchased (<a href="introduction.htm#contacting-fi-1">contact your Account Manager</a> for
+information).
+</p>
+
+<p id="34">
+Please read <a href="#runtime-conditions-1">Section 3.0 Conditions on distributing Allegro Runtime created applications</a> for
+information on who you may distribute runtime applications to and how
+you may deploy them.
+</p>
+
+
+
+<hr><h2 id="35"><a name="partners-2">1.3 Partner's Runtime</a></h2>
+
+<p id="36">
+Allegro CL Partner's Runtime is a superset of <a href="#dynamic-2">Dynamic Runtime</a>, designed for VARs who
+want to give their customers the ability to program in Lisp. That is,
+users of a Partner's application will be able to use Allegro CL
+including the development environment.
+</p>
+<p id="37">
+Basically, your runtime customers have complete Allegro CL development
+images, just like you do. Note, however, that support must go through
+you (your customers should not contact Franz Inc. directly for
+support).
+</p>
+<p id="38">
+No Allegro CL license includes (by default) a license to make partner's
+runtime applications. A license to create such applications must
+be purchased (<a href="introduction.htm#contacting-fi-1">contact your Account Manager</a> for
+information).
+</p>
+<p id="39">
+Please read <a href="#runtime-conditions-1">Section 3.0 Conditions on distributing Allegro Runtime created applications</a> for
+information on who you may distribute runtime applications to and how
+you may deploy them.
+</p>
+
+
+
+
+
+
+
+<hr><hr><h2 id="40"><a name="creating-runtime-apps-1">2.0 Creating runtime applications</a></h2>
+
+
+
+<p id="41">
+Creating runtime applications for distribution or deployment under
+your license agreement is done with (on Unix and Windows) <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> (called with <i>image-only</i> nil) or (on Windows
+only) the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command or the <a href="operators/ide/build-project.htm"><b>build-project</b></a> function (called with
+<i>exe-only</i> specified <code>nil</code>).
+</p>
+
+<p id="42">
+To use <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+with <i>image-only</i> nil,
+you must supply a value for the <i>runtime</i> keyword
+argument, and this value must be one of the keywords
+<code>:standard</code>, <code>:dynamic</code>, or
+<code>:partners</code>. If a different value 
+(including nil) is
+specified, the call to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> will fail.
+</p>
+<p id="43">
+The <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> builds an application
+from the current project. <a href="operators/ide/build-project.htm"><b>build-project</b></a> builds an application
+from any loaded project. On the <a href="ide-menus-and-dialogs/project-manager-dialog-build.htm">Project Manager dialog Build
+tab</a>, a control specifies the type of runtime. You should
+specify the type desired (the initial value is
+<code>:standard</code>).
+</p>
+<p id="44">
+You must be licensed to build a runtime application of the specified
+type. If you are not licensed (or if your
+<i>devel.lic</i> license file does not include the
+correct license), <a href="introduction.htm#contacting-fi-1">contact your Account Manager</a> for
+assistance (you will have to get a new license file).
+</p>
+<p id="45">
+If you are licensed to create the specified type of runtime
+application (and assuming there are no other problems, a directory
+containing all files necessary to distribute or deploy your
+application will be created. This directory comprises the runtime
+application. You must not (it violates your license to do so) copy
+files from elsewhere in the Allegro CL directory into the application
+directory. Note that it is possible to tell the system to use an
+existing directory. The purpose of doing so is to avoid having to
+delete directories as attempts to build the application fail. Do not
+use a directory that contains files from elsewhere in the Allegro CL
+directory.
+</p>
+<p id="46">
+Creation of applications using <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is described in
+<a href="delivery.htm">delivery.htm</a>. Creation using <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> or <a href="operators/ide/build-project.htm"><b>build-project</b></a> is described in the
+Common Graphics/IDE documentation, which is described in <a href="cgide.htm#cg-docs-1">About Common Graphics and IDE
+documentation</a>. Look at the <a href="cg/ide-ug/ide_user_guide_1.htm">The IDE User
+Guide</a>, particularly <a href="cg/ide-ug/ide_user_guide_4.htm">Chapter 4</a>,
+which discusses projects.
+</p>
+<p id="47">
+The following table indicates what values certain keyword arguments
+to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+should have. 
+</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="33%"><strong>Arguments:</strong></td>
+    <td width="33%"><strong>Specify this value:</strong></td>
+    <td width="34%"><strong>Notes:</strong></td>
+  </tr>
+  <tr>
+    <td width="33%"><code>:include-devel-env</code></td>
+    <td width="33%"><code>nil</code> in 
+    <code>:standard</code>
+    and <code>:dynamic</code>. Any value in
+    <code>:partners</code>.</td>
+    <td width="34%">When <code>:include-devel-env</code> is 
+    true, the file <em>develenv.cl</em>
+    is loaded into the image being built. That file loads 
+    many modules using <b>cl:require</b>, including some that
+    are not permitted in a standard or dynamic runtime image. 
+    For those modes, you can copy that 
+    file and edit to remove the
+    <b>require</b> forms for things not allowed in runtime, specifying the 
+    edited file as one to be loaded
+    (with the <em>input-files</em>
+    argument to 
+    <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>).
+    Alternatively, you can specify the <code>:runtime-bundle</code>
+    argument true. (See <a href="delivery.htm">delivery.htm</a> for a full
+    discussion of these arguments.)</td>
+  </tr>
+  <tr>
+    <td width="33%"><p id="48"><code>:include-compiler</code></p>
+    <p id="49"><code>:discard-compiler</code></p></td>
+    <td width="33%"><p id="50">In <code>:standard</code> runtime, 
+    <em>both</em> must be <code>nil</code>
+    or <em>both</em> must be <code>t</code>. </p>
+    <p id="51">In <code>:dynamic</code> and <code>:partners</code> 
+    runtime (where the
+    compiler is allowed) all (consistent) values are allowed. </p></td>
+    <td width="34%"><p id="52">If both have value <code>t</code>, the compiler 
+    is available while the
+    image is being built and discarded at the end of the 
+    build process.</p></td>
+  </tr>
+  <tr>
+    <td width="33%"><code>:load-xref-info</code><code><br></code><code>
+    :record-xref-info</code><code><br></code><code>
+    :discard-xref-info</code></td>
+    <td width="33%">
+    <code>nil</code> in 
+    <code>:standard</code>
+    and <code>:dynamic</code>. Any value in
+    <code>:partners</code>.</td>
+    <td width="34%">The cross reference facility cannot be part of 
+    standard or dynamic runtime. 
+    Specifying <code>:discard-xref-info</code>
+    to be <code>nil</code> for those modes seems 
+    counter-intuitive but since no xref info is loaded, none
+    needs to be discarded. Specifying <code>:discard-xref-info</code> 
+    true causes the xref
+    module to be loaded, and that is not allowed in a 
+    standard or dynamic runtime image.</td>
+  </tr>
+</table>
+
+<p id="53">
+A standard Allegro Runtime image will have
+<code>:runtime-standard</code> on the <a href="../ansicl/dictentr/features.htm"><code>*features*</code></a> list. A dynamic Allegro Runtime image
+will have <code>:runtime-dynamic</code>.
+A partner's Allegro Runtime image
+will have <code>:runtime-partners</code>.
+</p>
+
+<hr><hr><h2 id="54"><a name="runtime-conditions-1">3.0 Conditions on distributing Allegro Runtime created applications</a></h2>
+
+<p id="55">
+The license agreement governing the use of Allegro CL restricts your
+ability to distribute files associated with Allegro CL and to
+distribute or deploy applications created with Allegro CL. The license
+agreement is included with the Allegro CL distribution. If you have
+any question about what you are licensed to distribute or deploy,
+please <a href="introduction.htm#contacting-fi-1">contact
+your Account Manager</a> for assistance. The license agreement
+is the governing document, and if there is any conflict between what
+is said in the Allegro CL documentation and the license agreement, you
+are bound by the terms in the license agreement.
+</p>
+<p id="56">
+Here are some general principles about distributing files and
+distributing or deploying applications (but again, please refer to
+your license agreement for specific details):
+</p>
+
+<ul>
+<li id="57">
+Allegro CL will require a devel.lic license file with a Support date
+that exceeds the then current date or the Runtime functionality noted
+in this section will fail (that is, you will not be able to create a
+runtime image).  <a href="introduction.htm#contacting-fi-1">contact your Account Manager</a> with
+questions about license keys and support requirements for runtime
+creation.
+</li>
+<li id="58">
+You may distribute source files you wrote yourself and compiled
+versions of such files without restriction. You may include in your
+source files any code in the <i>examples/</i> directory
+of the Allegro CL directory (but you must copy that code into your own
+files) and any sample code found in the Allegro CL documentation.
+</li>
+<li id="59">
+You may not distribute Allegro-CL-supplied files other than those
+placed in the runtime application directory by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command, or <a href="operators/ide/build-project.htm"><b>build-project</b></a>.
+</li>
+<li id="60">
+Runtime applications (created with <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, or the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command, or <a href="operators/ide/build-project.htm"><b>build-project</b></a>) may be distributed
+or deployed only under the terms of the Allegro CL License Agreement
+(entitled `FRANZ SOFTWARE LICENSE AGREEMENT') and any additions or
+supplements to it. <b>Note that being licensed to create a runtime
+application does not mean you are licensed to sell or deploy or even
+distribute or deploy for free that application without
+restriction</b>. Your rights to distribute and deploy applications and
+the conditions you must impose on recipients are controlled by the
+Allegro CL License Agreement.
+<p id="61">
+If you are licensed to distribute or deploy a runtime application, you
+may only distribute the contents of the directory created by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, or the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command, or <a href="operators/ide/build-project.htm"><b>build-project</b></a> (called with
+<i>exe-only</i> specified <code>nil</code>). No other files (except those you wrote yourself
+and compiled versions of such files) can be included.
+</p>
+</li>
+</ul>
+
+<h3 id="62">Distributing applications to other licensed Allegro CL users</h3>
+
+<p id="63">
+Note that because your source files and compiled versions of those
+files can be distributed without restriction, the way to distribute an
+application to another licensed Allegro CL customer without worrying
+about license agreement restrictions is to distribute your source
+files (and/or compiled versions of your source files), along with a
+file which creates the application (perhaps with a call to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, or the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command, or <a href="operators/ide/build-project.htm"><b>build-project</b></a>, or perhaps in some
+other fashion).
+</p>
+<p id="64">
+The other licensed Allegro CL user can then use your files to create
+the application. This ensures that the recipient is in fact licensed
+to use the application (that the necessary add-on products are
+available, for example). Just because you believe another user is
+properly licensed, you may not distribute a runtime application
+(the contents of the directory created by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, or the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command, or <a href="operators/ide/build-project.htm"><b>build-project</b></a>) except under the
+terms of your (not the recipient's) license agreement.
+</p>
+<p id="65">
+Again, if you have any questions about licensing, <a href="introduction.htm#contacting-fi-1">contact your Account
+Manager</a> for assistance.
+</p>
+    
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/runtime.htm">9.0 version</a></td></tr></table></html>

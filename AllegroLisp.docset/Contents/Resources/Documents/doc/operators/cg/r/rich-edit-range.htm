@@ -1,0 +1,80 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rich-edit-range</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/rich-edit-range.htm">9.0 version</a></td></tr></table><h2 id="2">rich-edit-range</h2>
+
+<p id="3"><b>Arguments: </b><i>
+text-edit-pane </i>&amp;key  (<i>format</i> :rich-text) (<i>start</i> 0) (<i>end</i> most-positive-fixnum) (<i>return-crlf</i> t)<i>
+</i></p>
+
+<p id="4">
+This function returns a string for window (identified by
+<b><i>text-edit-pane</i></b>) from character position
+<b><i>start</i></b> to
+<b><i>end</i></b>. If <i>start</i> and
+<i>end</i> are not supplied, the entire contents are
+returned. If <b><i>format</i></b> is
+<code>:rich-text</code> (the default), then a rich-text string
+is returned. If it is <code>:text</code>, then a plain-text
+string is returned.
+</p>
+<p id="5">
+If <i>end</i> is not greater than
+<i>start</i>, then an empty string is returned. If
+<i>format</i> is <code>:rich-text</code>, this
+empty string is a special two-character string consisting of an open
+curly brace followed by a close curly brace. Otherwise it is the usual
+zero-length null string. The special empty string for rich text is the
+value of <a href="../../../variables/cg/s_empty-rtf-string_s.htm"><code>*empty-rtf-string*</code></a>, and is used
+because it works as a valid rich text string with the
+rich-edit-control, while the standard lisp null string does not.
+</p>
+
+
+<p id="6">
+The <b><i>return-crlf</i></b> argument no longer has any
+effect, and is kept for backward compatibility only. It was used on
+the Windows platform by an earlier version of the RichEdit control.
+</p>
+
+<p id="7">
+The setf function sets the text in window from start to end to be
+string. If start and end are not specified, the entire contents of
+window are replaced. If format is :rich-text (the default), then
+string should be a rich-text string, which will be inserted using its
+own formatting. If it is :text, then string should be a plain-text
+string, which will be inserted using the formatting at the current
+position of the text-edit-pane.
+</p>
+<p id="8">
+When format is :rich-text, string may be the value of <a href="../../../variables/cg/s_empty-rtf-string_s.htm"><code>*empty-rtf-string*</code></a>
+to indicate a rich text string with no contents.
+</p>
+<p id="9">
+See also <a href="../r/rich-edit-selected-range.htm"><b>rich-edit-selected-range</b></a> and its setf.
+</p>
+<p id="10">
+See <a href="../../../cg/cg-rich-text.htm">cg-rich-text.htm</a> for information about
+rich text editing in Common Graphics.
+</p>
+
+
+
+<h3 id="11">
+GTK note
+</h3>
+
+<p id="12">
+Formated editable text is not yet implemented on the GTK platform. It
+appears feasible to implement functions such as <a href="../s/set-character-format.htm"><b>set-character-format</b></a> and <a href="../s/set-paragraph-format.htm"><b>set-paragraph-format</b></a> that modify the text
+formatting of an edit control, but not to implement functions such as
+<a href="../r/rich-text.htm"><b>rich-text</b></a> and <a href="../r/rich-edit-range.htm"><b>rich-edit-range</b></a> that handle actual
+rich text strings.
+</p>
+<p id="13">
+Attempting to create a <a href="../../../classes/cg/rich-edit.htm"><code>rich-edit</code></a> widget or a <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a> window currently will error on
+GTK.
+</p>
+
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/rich-edit-range.htm">9.0 version</a></td></tr></table></body></html>

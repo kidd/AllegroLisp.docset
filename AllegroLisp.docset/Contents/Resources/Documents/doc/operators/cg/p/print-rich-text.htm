@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>print-rich-text</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/print-rich-text.htm">9.0 version</a></td></tr></table><h2 id="2">print-rich-text</h2>
+
+<p id="3"><b>Arguments: </b><i>
+rich-edit-pane printer-stream </i>&amp;key  (<i>start</i> 0) (<i>end</i> :end) (<i>left</i> (left-margin printer-stream t)) (<i>top</i> (top-margin printer-stream t)) (<i>right</i> (right-margin printer-stream t)) (<i>bottom</i> (bottom-margin printer-stream t))<i>
+</i></p>
+
+<p id="4">
+Prints all or part of the text of rich-edit-pane (which must be an instance of the <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a> class) to printer-stream.  
+</p>
+<p id="5">
+start and end specify the range of characters of the rich-edit-pane to print, and default to the full text of the rich-edit-pane. end is generally an integer like start, but can also be :end (the default) to indicate the end of the text.
+</p>
+<p id="6">
+left, top, right, and bottom indicate the rectangular region of the
+printed page to print the text to, and are measured in pixels. These
+values default to the margins of the printer stream, which are
+established based on what the end user specified in the page setup
+dialog (or to half an inch, if the user has not invoked this
+dialog). When passing in custom values, it is best to pass in values
+that are added to (or subtracted from) these defaults, since the
+margins are internally calculated to be relative to the hard margins
+beyond which the printer cannot print. Also, the function <a href="../s/stream-units-per-inch.htm"><b>stream-units-per-inch</b></a> may
+be called on the printer stream to find the resolution of the
+printer. So to print text with a left margin that is two inches in
+from the page margin requested by the end user, you would pass the
+:left argument like this:
+</p>
+<pre id="7">
+
+   :left (+ (left-margin printer-stream t)
+         (* 2 (stream-units-per-inch printer-stream)))
+</pre>
+<p id="8">
+See <a href="../../../cg/cg-rich-text.htm">cg-rich-text.htm</a> for information about
+rich text editing in Common Graphics.
+</p>
+
+
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/print-rich-text.htm">9.0 version</a></td></tr></table></body></html>

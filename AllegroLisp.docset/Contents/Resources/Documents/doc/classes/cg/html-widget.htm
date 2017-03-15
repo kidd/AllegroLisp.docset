@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>html-widget</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/html-widget.htm">9.0 version</a></td></tr></table><h2 id="2">html-widget</h2>
+
+<p id="3">
+A class of widget that renders HTML and handles clicking on links and
+so on. It can be used as the main pane of a web browser. (In fact,
+there is also an <a href="html-browser.htm"><code>html-browser</code></a> dialog that incorporates an <a href="html-widget.htm"><code>html-widget</code></a> along with other common
+browser widgets.)
+</p>
+<p id="4">
+The <a href="../../operators/cg/v/value.htm"><b>value</b></a> property of this
+widget may be set to either the URL of a web site or to the pathname
+or path namestring of a file.  Alternately you can call <a href="../../operators/cg/d/display-html.htm"><b>display-html</b></a> either on this widget or
+on an <a href="html-browser.htm"><code>html-browser</code></a> dialog
+that it is on.  You can navigate by calling functions such as <a href="../../operators/cg/h/html-widget-go-back.htm"><b>html-widget-go-back</b></a>, <a href="../../operators/cg/h/html-widget-go-forward.htm"><b>html-widget-go-forward</b></a>, <a href="../../operators/cg/h/html-widget-reload.htm"><b>html-widget-reload</b></a>, <a href="../../operators/cg/h/html-widget-command-change.htm"><b>html-widget-command-change</b></a>, and <a href="../../operators/cg/h/html-widget-stop-load.htm"><b>html-widget-stop-load</b></a>. (The buttons on
+an <a href="html-browser.htm"><code>html-browser</code></a> call those
+functions, or you could make your own widgets that call them.)
+</p>
+<p id="5">
+On Windows only, the function <a href="../../operators/cg/h/html-widget-copy.htm"><b>html-widget-copy</b></a> will copy any selected text to
+the clipboard, <a href="../../operators/cg/h/html-widget-save.htm"><b>html-widget-save</b></a> will save the entire page of
+HTML to a file, and <a href="../../operators/cg/h/html-widget-print.htm"><b>html-widget-print</b></a> will print the page. Also,
+<a href="../../operators/cg/o/on-command-change.htm"><b>on-command-change</b></a> specifies
+the function to be called when a command's availability status has
+changed.
+</p>
+<p id="6">
+On Windows, this widget is implemented on the WebBrowser OCX control.
+(See <a href="../../operators/cg/d/def-cg-ocx-control.htm"><b>def-cg-ocx-control</b></a> for
+information on creating other Common Graphics widgets from OCX
+controls.)  On Linux, it is implemented on the Mozilla GTK widget, but
+that implementation has difficulties, as we discuss next.
+</p>
+<p id="7">
+We have been having unsolved problems with the Mozilla GTK widget, so
+the CG <a href="html-widget.htm"><code>html-widget</code></a> is
+really supported only on Windows. It is still available on Linux,
+though, for personal use on any linux installations where it may still
+work. Also, the Mozilla widget must be installed, which generally
+requires installing the <b>mozilla-dev rpm</b> package, and the
+variable <a href="../../variables/excl/s_mozilla-library-path_s.htm"><code>excl:*mozilla-library-path*</code></a> must be set to the
+directory in which it is installed. An alternative is to call
+<a href="../../operators/cg/i/invoke-private-html-browser.htm"><b>invoke-private-html-browser</b></a>,
+though that doesn't allow embedding the third-party browser inside a
+CG window hierarchy.
+</p>
+<p id="8">
+One disadvantage of this widget is that neither of the controls on
+which it is based appears to provide a way to search for a text string
+in the HTML.
+</p>
+
+
+<p id="9">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/html-widget.htm">9.0 version</a></td></tr></table></body></html>

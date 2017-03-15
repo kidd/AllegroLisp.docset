@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>copy-graphics-context</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-graphics-context.htm">9.0 version</a></td></tr></table><h2 id="2">copy-graphics-context</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream 
+</i> &amp;optional  (<i>result-context</i> (make-graphics-context stream))<i>
+</i></p>
+
+<p id="4">
+Returns a graphics-context object that stores the current drawing
+style options of
+<i>stream</i>. <i>stream</i> should be a
+<a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+</p>
+<p id="5">
+The graphics-context can
+later be given to the same or another stream to resume using the saved
+drawing style options. The specific values saved are <a href="../f/foreground-color.htm"><b>foreground-color</b></a>, <a href="../b/background-color.htm"><b>background-color</b></a>, <a href="../f/font.htm"><b>font</b></a>, <a href="../l/line-width.htm"><b>line-width</b></a>, <a href="../l/line-dashing.htm"><b>line-dashing</b></a>, <a href="../l/line-end.htm"><b>line-end</b></a>, <a href="../l/line-join.htm"><b>line-join</b></a>, <a href="../l/line-texture.htm"><b>line-texture</b></a>, <a href="../f/fill-texture.htm"><b>fill-texture</b></a>, <a href="../b/background-texture.htm"><b>background-texture</b></a>, <a href="../c/current-position.htm"><b>current-position</b></a>, and
+<a href="../s/stream-origin.htm"><b>stream-origin</b></a>.
+</p>
+<p id="6">
+If a graphics-context is passed as the result-context argument, then
+this object is filled in and returned. Otherwise a new
+graphics-context is created and returned. (You create a graphics
+context object with <a href="../m/make-graphics-context.htm"><b>make-graphics-context</b></a>. Pass the
+same stream to that function as was passed as the first argument to
+this function.)
+</p>
+<p id="7">
+See also <a href="../s/set-graphics-context.htm"><b>set-graphics-context</b></a>, <a href="../g/graphics-context-p.htm"><b>graphics-context-p</b></a>, and
+<a href="../r/restoring-graphics-context.htm"><b>restoring-graphics-context</b></a>.
+</p>
+
+
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-graphics-context.htm">9.0 version</a></td></tr></table></body></html>

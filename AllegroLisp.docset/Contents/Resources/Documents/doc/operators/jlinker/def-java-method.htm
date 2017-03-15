@@ -1,0 +1,93 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-java-method</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/def-java-method.htm">9.0 version</a></td></tr></table><h2 id="2">def-java-method</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name (lisp-class </i> &amp;rest <i>argtypes</i><i>) </i> &amp;optional <i>retmod</i><i>
+</i></p>
+
+
+<p id="4">
+This macro defines a Lisp method where the first argument is
+specialized on a class defined with <a href="def-java-class.htm"><b>def-java-class</b></a>. The first
+argument determines the name of the Lisp function and of the
+corresponding Java method. 
+</p>
+<p id="5">
+If the argument is a single symbol, it is
+used as the name of the Lisp method and the symbol-name is used as the
+name of the Java method. 
+</p>
+<p id="6">
+If the first argument is a list, the first
+element in the list is a symbol, the name of the Lisp function, and
+the second element is a symbol or a string, the name of the Java
+method. 
+</p>
+<p id="7">
+If symbols are used to name Java methods, the symbol-name is
+used without any case conversion. In modern mode, this is likely to be
+correct and useful, but in ANSI mode it will usually be in the wrong
+case unless escape characters are used as needed.
+</p>
+<p id="8">
+The first item in the second argument is the name of a class
+previously defined with <a href="def-java-class.htm"><b>def-java-class</b></a>.  The remaining
+items in the second argument are strings or symbols that denote Java
+classes.
+</p>
+<p id="9">
+If the third argument is specified, it is a call modifier that is
+appended to every call on the Java method.  If the call has an explicit
+modifier, the modifier in this definition is ignored.
+</p>
+<p id="10">
+The defined Lisp method expects as its first argument an instance of the
+Lisp class. Only the first argument is used to dispatch the method, 
+the remaining arguments are bound to an &rest argument.
+Therefore, if two Java methods with the same name and in the same
+class are defined with
+def-java-method, they must have distinct Lisp names.
+</p>
+
+<h3 id="11">Examples</h3>
+
+<pre id="12">
+(def-java-class (string-buffer "java.lang.StringBuffer")
+    (application-buffer)
+  ()
+  ()
+  ((source :initform "Java")))
+
+(def-java-method 
+    (append-str "append") 
+    (string-buffer "java.lang.String"))
+(def-java-method 
+    (append-chr "append") 
+    (string-buffer "char")) 
+</pre>
+
+<p id="13">
+The above forms define Lisp methods that call the corresponding Java
+methods. Although these are generic functions, they still must have
+distinct names because we only dispatch on the first (instance)
+argument.  If another Java class has similarly named methods, lisp
+methods named <b>append-str</b> and <b>append-chr</b> could be defined
+for that class without causing any conflicts.
+</p>
+<p id="14">
+The Lisp methods are called with forms such as:
+</p>
+
+<pre id="15">
+(setf x (new-string-buffer-int 17))
+(append-str x "abc")
+(append-chr x #\d)
+</pre>
+
+<p id="16">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/def-java-method.htm">9.0 version</a></td></tr></table></body></html>

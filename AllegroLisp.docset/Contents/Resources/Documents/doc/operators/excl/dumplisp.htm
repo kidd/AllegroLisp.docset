@@ -1,0 +1,196 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>dumplisp</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/dumplisp.htm">9.0 version</a></td></tr></table><h2 id="2">dumplisp</h2>
+
+<p id="3"><b>Arguments: </b><i></i>&amp;key <i>name ignore-command-line-arguments suppress-allegro-cl-banner virtual dxl-header</i></p>
+
+<p id="4">
+This function saves an image of the currently executing Common Lisp as
+an image file. This file (which usually has extension .dxl) is not
+executable, but is suitable as the image argument to the executable
+files such as <em>mlisp</em> or <em>mlisp8</em> on Unix machines or
+<em>mlisp.exe</em> or <em>mlisp8.exe</em> on Windows (and
+<em>alisp[.exe]</em> or <em>alisp8[.exe]</em>). You can specify the
+name of the image file created with the <i>name</i>
+keyword argument. The name defaults to <em>savedcl.dxl</em>. Thus,
+calling in Lisp
+</p>
+
+<pre id="5">
+(dumplisp)
+</pre>
+
+<p id="6">
+will produce an image file <em>savedcl.dxl</em>.
+</p>
+<p id="7">
+<a href="dumplisp.htm"><b>dumplisp</b></a> will fail if there
+are too many oldspaces. The limit depends on a complex formula, but is
+around 2000. You can see how many oldspaces there are by
+calling <code>(room t)</code>. You can consolidate oldspaces
+with <a href="../system/resize-areas.htm"><b>sys:resize-areas</b></a>. The
+error message when there are too many is <b>Error: Too many
+regions</b>.  Consolidate oldspace with <a href="../system/resize-areas.htm"><b>sys:resize-areas</b></a> and retry if you get this
+error.
+</p>
+<p id="8">
+This image can be
+started with the command line (use whichever of
+<i>m/alisp</i> or <i>m/alisp8</i> was used
+to start the image that was dumped):
+</p>
+
+<pre id="9">
+UNIX 16-bit: mlisp -I &lt;directory containing savedcl.dxl&gt;/savedcl.dxl
+UNIX 8-bit: mlisp8 -I &lt;directory containing savedcl.dxl&gt;/savedcl.dxl
+</pre>
+
+<pre id="10">
+WINDOWS 16-bit: mlisp.exe -I &lt;directory containing savedcl.dxl&gt;/savedcl.dxl
+WINDOWS 8bit: mlisp8.exe -I &lt;directory containing savedcl.dxl&gt;/savedcl.dxl
+</pre>
+
+<p id="11">
+On Windows, <em>.dxl</em> is usually registered as an Allegro CL image
+file extension, so double-clicking on it in the File Explorer should
+also start Allegro CL with that image. Note too on Windows that if the
+image contains the IDE, then adding <code>-f cg:start-ide</code>
+to the command line will cause the IDE to be started automatically
+when the image starts.
+</p>
+
+<p id="12">
+The following table gives brief descriptions of the arguments. See
+the notes for more information on specific arguments and the warning
+that follow the notes. See <a href="../../dumplisp.htm">dumplisp.htm</a> for more
+information on <a href="dumplisp.htm"><b>dumplisp</b></a>.
+</p>
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="95%">
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><b><p id="13" ALIGN="CENTER">Argument</p></b></td>
+    <td WIDTH="22%" VALIGN="TOP"><b><p id="14" ALIGN="CENTER">Value should be:</p></b></td>
+    <td WIDTH="41%" VALIGN="TOP"><b><p id="15" ALIGN="CENTER">Effect</p></b></td>
+    <td WIDTH="16%" VALIGN="TOP"><b><p id="16" ALIGN="CENTER">See </p></b></td>
+  </tr>
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><i>name</i></td> 
+    <td WIDTH="22%" VALIGN="TOP">A string naming a file (default
+    "savedcl.dxl").  Image files must have an extension. The usual
+    extension is dxl but any non-null extension will do.</td> 
+    <td WIDTH="41%" VALIGN="TOP">The dumped image will have this name. If
+    no directory is specified, the file will be written to the current
+    working directory.</td> 
+    <td WIDTH="16%" VALIGN="TOP">Warning</td>
+  </tr>
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><i>ignore-command-line-arguments</i></td>
+
+    <td WIDTH="22%" VALIGN="TOP"><code>t</code> or <code>nil</code> (default <code>nil</code>)</td>
+    
+<td WIDTH="41%" VALIGN="TOP">If true, command-line-arguments prefaced
+with a <code>-</code> (a dash) are ignored during startup and
+all such arguments are considered application arguments (to <a href="../system/command-line-arguments.htm"><b>command-line-arguments</b></a> and
+friends). Arguments prefaced with a <code>+</code> (which are
+applicable to Windows only) are never ignored. See <a href="../../startup.htm#command-line-args-1">Command line
+arguments</a> in <a href="../../startup.htm">startup.htm</a> for details of
+command-line arguments.
+</td>
+
+    <td WIDTH="16%" VALIGN="TOP">Note 2</td>
+  </tr>
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><i>suppress-allegro-cl-banner</i></td>
+
+    <td WIDTH="22%" VALIGN="TOP"><code>t</code> or 
+    <code>nil</code> (default <code>nil</code>)</td>
+    <td WIDTH="41%" VALIGN="TOP">The Allegro CL copyright banner will 
+    not be printed on
+    startup.</td>
+    <td WIDTH="16%" VALIGN="TOP">Note 3</td>
+  </tr>
+
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><i>virtual</i></td>
+
+    <td WIDTH="22%" VALIGN="TOP"><code>t</code> or 
+    <code>nil</code> (default <code>nil</code>)</td>
+    <td WIDTH="41%" VALIGN="TOP">See <a href="../../dumplisp.htm#pseudo-fork-1">Virtual dumplisp: for very large images and
+    pseudo-forks on Windows</a> for details. This argument is
+    for Windows only. It allows dumping most data to a virtual file
+    for use by additional Lisp processes, thus approximating a
+    fork. </td>
+    <td WIDTH="16%" VALIGN="TOP"> </td>
+  </tr>
+
+
+  <tr>
+    <td WIDTH="21%" VALIGN="TOP"><i>dxl-header</i></td>
+
+    <td WIDTH="22%" VALIGN="TOP"><code>nil</code> 
+    or a file designator (default <code>nil</code>)</td>
+    <td WIDTH="41%" VALIGN="TOP">If non-<code>nil</code>,
+    the value should designate a file which is formatted properly
+    to be a dxl file header. See the notes below for the requirements for such
+    a file. The contents will be placed at the head of the resulting
+    dxl file, and viewable with head or more or other appropriate operating
+    system utilities.</td>
+    <td WIDTH="16%" VALIGN="TOP"> </td>
+  </tr>
+
+</table>
+</div>
+
+<p id="17"><strong>Notes</strong>: </p>
+
+<ol>
+  <li id="18">These arguments from earlier (than 5.0) Unix releases are no
+    longer supported: <i>checkpoint</i> (if <code>t</code>, tried to restart actual computational state,
+    no longer possible); <i>standalone</i> (the separate
+    executable/image model means an image cannot be standalone).</li>
+    <li id="19">See <a href="../../dumplisp.htm#emacs-lisp-interface-and-dumped-images-1">The emacs-lisp interface and
+    dumped images</a> in <a href="../../dumplisp.htm">dumplisp.htm</a> for information on
+    starting the emacs-lisp interface when
+    <i>ignore-command-line-arguments</i> is true (the
+    interface is usually started by a command-line argument).</li>
+    <li id="20">When the<i> suppress-allegro-cl-banner</i>
+    keyword argument is true, then the following
+    warning is issued:
+    </li>
+
+<li id="21">
+<b>Requirements for a dxl header file</b>: the file must be an even
+multiple of 8192 octets long, up to (* 9 8192) octets in all. Each
+octet should be a latin-1 character, and the first character in the
+file must be one of the characters in the range from #\1 to #\9. The
+function <a href="dribble-for-dxl-header.htm"><b>dribble-for-dxl-header</b></a> will format a
+Lisp <a href="../../../ansicl/dictentr/dribble.htm"><b>dribble</b></a> in an
+appropriate manner to be a suitable dxl header file.
+</li>
+
+</ol>
+
+<p id="22">
+<strong>You are allowed to suppress (i.e., not display) the Franz
+Inc. supplied copyright banner in your application, if and only if you
+agree to display Franz Inc. copyright and proprietary notices wherever
+you display your own copyright or other proprietary notices.</strong>
+</p>
+
+
+
+<p id="23"><strong>Warning</strong>: This function depends on the current
+running Lisp image file to be present and readable (i.e. it cannot be
+read-protected) and not stripped.  Therefore you cannot delete that
+file before running <a href="dumplisp.htm"><b>dumplisp</b></a>
+and you cannot specify that file as the value of the
+<i>name</i> argument.</p>
+
+<p id="24">
+See also <a href="../../dumplisp.htm">dumplisp.htm</a>, 
+<a href="../../building-images.htm">building-images.htm</a>, and
+<a href="../../delivery.htm">delivery.htm</a>.
+</p>
+
+<hr><p id="25"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>The object described on this page has been modified in the 10.0 release; see the Release Notes.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/dumplisp.htm">9.0 version</a></td></tr></table></body></html>

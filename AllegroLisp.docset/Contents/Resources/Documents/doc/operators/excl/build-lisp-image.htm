@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>build-lisp-image</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/build-lisp-image.htm">9.0 version</a></td></tr></table><h2 id="2">build-lisp-image</h2>
+
+<p id="3"><b>Arguments: </b><i>image-file </i> &amp;rest <i> rest </i><i></i>&amp;key <i>aclmalloc-heap-size aclmalloc-heap-start additional-arguments additional-forms additional-plus-arguments autoload-warning build-debug build-executable build-input build-output case-mode close-oldspace copy-shared-libraries destination-directory discard-arglists discard-compiler discard-local-name-info discard-source-file-info discard-xref-info dst exit-on-missing-shared-library generate-fonts include-clim include-compiler include-composer include-debugger include-devel-env include-ide include-tpl include-xcw lisp-heap-size lisp-heap-start lisp-files load-local-names-info load-source-file-info load-xref-info newspace oldspace opt-debug opt-safety opt-space opt-compilation-speed opt-speed pll-file pll-from-sys post-load-form pre-dump-form pre-load-form preserve-documentation-strings presto presto-flush-to-code-file presto-lib print-startup-message read-init-files record-source-file-info record-xref-info require-search-list restart-app-function restart-init-function runtime server-name show-window splash-from-file temporary-directory us-government user-shared-libraries verbose</i></p>
+
+<p id="4">
+The complete description of this function can be found in
+<a href="../../building-images.htm">building-images.htm</a>. <em>Please refer to that
+document for descriptions of the arguments and their
+meanings</em>. That allows the description to be in one place
+only. The following are links to particular sections of that document:
+</p>
+<ul>
+<li id="5">
+<a href="../../building-images.htm#build-lisp-image-template-1">The template of a call to
+build-lisp-image</a>
+</li>
+<li id="6">
+<a href="../../building-images.htm#arguments-with-inherited-defaults-1">Arguments to
+build-lisp-image 1: defaults inherited from the running
+image</a>
+</li>
+<li id="7">
+<a href="../../building-images.htm#arguments-without-inherited-defaults-1">Arguments to
+build-lisp-image 2: defaults not inherited from the running
+image</a>
+</li>
+</ul>
+
+<p id="8">
+Please note that <a href="build-lisp-image.htm"><b>build-lisp-image</b></a> does not inherit anything
+from the currently running Lisp process other than the defaults for
+certain arguments (listed <a href="../../building-images.htm#arguments-with-inherited-defaults-1">here</a>). If the
+function <strong>foo</strong> is defined in the currently running
+image, it will not be defined in the newly built image unless you
+force the load of some file which defines <strong>foo</strong>.
+Neither will variables have their values in the running image unless
+that is also the initial value, even if they are defined. Some
+arguments take symbols for values. The symbol will be present
+(assuming the package is present) in the new image but its function
+definition and its value will, in general, not be. You cannot specify
+a function object to an argument calling for a symbol naming a
+function.
+</p>
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/build-lisp-image.htm">9.0 version</a></td></tr></table></body></html>

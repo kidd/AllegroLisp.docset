@@ -1,0 +1,28 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>stream-start-line-p</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/stream-start-line-p.htm">9.0 version</a></td></tr></table><h2 id="2">stream-start-line-p</h2>
+
+<p id="3"><b>Arguments: </b><i>stream</i></p>
+
+<p id="4">This is a predicate which returns <code>t</code> if
+<i>stream</i> is positioned at the beginning of a line,
+else returns <code>nil</code>. It is permissible to always
+return <code>nil</code>. This is used in the
+implementation of <a href="../../../ansicl/dictentr/terprifr.htm"><b>fresh-line</b></a>. Note that while a value of 0 from
+<a href="stream-line-column.htm"><b>stream-line-column</b></a> also
+indicates the beginning of a line, there are cases where <a href="stream-start-line-p.htm"><b>stream-start-line-p</b></a> can be
+meaningfully implemented although <a href="stream-line-column.htm"><b>stream-line-column</b></a> can't be. For example, for
+a window using variable-width characters, the column number isn't very
+meaningful, but the beginning of the line does have a clear
+meaning. The default method for <a href="stream-start-line-p.htm"><b>stream-start-line-p</b></a> on class <a href="../../classes/excl/fundamental-character-output-stream.htm"><code>fundamental-character-output-stream</code></a> uses
+<a href="stream-line-column.htm"><b>stream-line-column</b></a>, so if
+that is defined to return <code>nil</code>, then a method
+should be provided for either <a href="stream-start-line-p.htm"><b>stream-start-line-p</b></a> or <a href="stream-fresh-line.htm"><b>stream-fresh-line</b></a>. </p>
+
+<p id="5">
+See also <a href="../../streams.htm">streams.htm</a> for general
+information on streams in Allegro
+CL.
+</p>
+
+<hr><p id="6"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/stream-start-line-p.htm">9.0 version</a></td></tr></table></body></html>

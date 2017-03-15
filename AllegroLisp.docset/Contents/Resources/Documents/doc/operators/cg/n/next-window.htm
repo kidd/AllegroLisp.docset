@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>next-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/n/next-window.htm">9.0 version</a></td></tr></table><h2 id="2">next-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window </i>&amp;key <i>owned-p states for-focus</i><i>
+</i></p>
+
+<p id="4">
+If <i>owned-p</i> is <code>nil</code> (the
+default), returns the window that comes just after the specified
+window in the front-to-back occlusion order of the child windows of
+the parent window of the specified window, if any, and otherwise
+returns <code>nil</code>.
+</p>
+<p id="5">
+If <i>owned-p</i> is true, returns
+the window that comes just after the specified window in the
+front-to-back occlusion order of the non-child owned windows of the
+owner window of the specified window, if any, and otherwise returns
+nil.
+</p>
+<p id="6">
+If <i>states</i> is non-<code>nil</code>,
+then it should be a list of window state symbols, and windows whose
+<a href="../s/state.htm"><b>state</b></a> is not in
+this list are skipped. If <code>nil</code> (the default),
+then these windows are not skipped.  Valid symbols for this list are
+<code>:normal</code>, <code>:shrunk</code>,
+<code>:icon</code>, and <code>:maximized</code>. See
+<a href="../s/state.htm"><b>state</b></a>.
+</p>
+<p id="7">
+If <i>for-focus</i> is true, then
+windows whose events are currently disabled (see <a href="../e/enable-events.htm"><b>enable-events</b></a>) are skipped, and
+"static" control windows are skipped as well. ("Static" control
+windows include <a href="../../../classes/cg/static-text-pane.htm"><code>static-text-pane</code></a>, <a href="../../../classes/cg/static-picture-pane.htm"><code>static-picture-pane</code></a>,
+and <a href="../../../classes/cg/group-box-pane.htm"><code>group-box-pane</code></a>.)  If <code>nil</code> (the default), then these windows are not
+skipped. Such windows do not handle any keyboard events, so passing
+this argument as true may be useful for finding a window to move the
+keyboard focus to by calling <a href="../s/set-focus.htm"><b>set-focus</b></a>.
+</p>
+
+<p id="8">
+See also <a href="../f/front-window.htm"><b>front-window</b></a> and <a href="../w/windows.htm"><b>windows</b></a>.
+</p>
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/n/next-window.htm">9.0 version</a></td></tr></table></body></html>

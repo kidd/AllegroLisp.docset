@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*default-printer-left-margin*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/s_default-printer-left-margin_s.htm">9.0 version</a></td></tr></table><h2 id="2">*default-printer-left-margin*</h2>
+
+<p id="3">
+The value of this variable is an integer that determines the initial
+<a href="../../operators/cg/l/left-margin.htm"><b>left-margin</b></a>
+property of any printer stream that is opened. Its units are
+one-thousandths of an inch, and so the initial value of 500 indicates
+a default margin of half an inch. (This arbitrary resolution is used
+because the variable is independent of any particular printer that
+would have a particular resolution.)
+</p>
+<p id="4">
+If the Page Setup dialog is invoked by calling <a href="../../operators/cg/p/pop-up-printer-setup-dialog.htm"><b>pop-up-printer-setup-dialog</b></a>, the
+value of this variable is modified afterwards to reflect the left
+margin value that the user specified on this dialog (if they do not
+cancel).  An application may also set this variable directly if it
+knows what printer margins it plans to use.
+</p>
+<p id="5">
+When a printer stream is opened, Common Graphics sets its <a href="../../operators/cg/l/left-margin.htm"><b>left-margin</b></a> property to
+the x coordinate at which an application should draw in order to draw
+at the margin indicated by <a href="s_default-printer-left-margin_s.htm"><code>*default-printer-left-margin*</code></a>.
+This left-margin number is different from *<a href="s_default-printer-left-margin_s.htm"><code>*default-printer-left-margin*</code></a>,
+though, for a couple of reasons.  First, the <a href="../../operators/cg/l/left-margin.htm"><b>left-margin</b></a> property is in the
+stream units of the stream, which an application uses to draw on a
+stream, rather than the arbitrary one-thousandths of an inch of
+<a href="s_default-printer-left-margin_s.htm"><code>*default-printer-left-margin*</code></a>.
+Second, a printer has a "hardware margin" outside of which it cannot
+draw. 
+</p>
+<p id="6">
+For a laser printer, the hardware margin is typically about a quarter
+of an inch. When an application draws at position 0,0 it is actually
+drawing at the top-left hardware margin. An application can find these
+hardware margins by calling <a href="../../operators/cg/p/printer-physical-offset.htm"><b>printer-physical-offset</b></a> and <a href="../../operators/cg/p/printer-physical-size.htm"><b>printer-physical-size</b></a>,
+and can compute its own margins from that, but in most cases it is
+easier to let Common Graphics set up the margins for you, assuming
+that <a href="s_default-printer-left-margin_s.htm"><code>*default-printer-left-margin*</code></a> and
+the other default margin variables are set up as desired. Common
+Graphics computes the initial <a href="../../operators/cg/l/left-margin.htm"><b>left-margin</b></a> for a printer stream by
+scaling <a href="s_default-printer-left-margin_s.htm"><code>*default-printer-left-margin*</code></a> into
+the stream units of the printer stream and then subtracting the
+hardware left margin.  An application then simply needs to check the
+margin properties of the printer stream to find the range of
+coordinates into which it should fit its drawing.
+</p>
+<p id="7">
+See also <a href="../../operators/cg/l/left-margin.htm"><b>left-margin</b></a>, <a href="../../operators/cg/t/top-margin.htm"><b>top-margin</b></a>, <a href="../../operators/cg/r/right-margin.htm"><b>right-margin</b></a>, <a href="../../operators/cg/b/bottom-margin.htm"><b>bottom-margin</b></a>,
+<a href="s_default-printer-top-margin_s.htm"><code>*default-printer-top-margin*</code></a>,
+<a href="s_default-printer-right-margin_s.htm"><code>*default-printer-right-margin*</code></a>,
+and
+<a href="s_default-printer-bottom-margin_s.htm"><code>*default-printer-bottom-margin*</code></a>.
+</p>
+
+
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/s_default-printer-left-margin_s.htm">9.0 version</a></td></tr></table></body></html>

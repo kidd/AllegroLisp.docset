@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>destroy-icon-handle</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/destroy-icon-handle.htm">9.0 version</a></td></tr></table><h2 id="2">destroy-icon-handle</h2>
+
+<p id="3"><b>Arguments: </b><i>handle</i></p>
+
+<p id="4">
+Destroys the icon indicated by the <i>handle</i>
+argument so that the icon can no longer be drawn, freeing the
+associated operating system resources.  It is not normally necessary
+to call this function, since icon resources are always freed when Lisp
+is exited.  But if an application creates many icons, then it is
+possible to run out of icon resources, in which case this function
+should be called on icons that are no longer being used.
+</p>
+<p id="5">
+It is safe to call this function on an icon
+if all of the following are true:
+</p>
+
+<ul>
+<li id="6">
+The icon is no longer the <a href="../i/icon.htm"><b>icon</b></a> property of any window.
+</li>
+<li id="7">
+The icon is no longer the <a href="../p/pixmap-icon.htm"><b>pixmap-icon</b></a> property of any pixmap
+that may still get drawn.
+</li>
+<li id="8">
+The application will no longer draw the icon explicitly by calling
+<a href="../d/draw-icon.htm"><b>draw-icon</b></a>.
+</li>
+</ul>
+
+<p id="9">
+<i>handle</i> should be an integer that was returned by
+a call to either <a href="../e/extract-icon-from-file.htm"><b>extract-icon-from-file</b></a> or <a href="../c/create-icon-handle.htm"><b>create-icon-handle</b></a>.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/destroy-icon-handle.htm">9.0 version</a></td></tr></table></body></html>

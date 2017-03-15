@@ -1,0 +1,48 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>japi-reset</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/japi-reset.htm">9.0 version</a></td></tr></table><h2 id="2">japi-reset</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;optional <i>tag</i><i>
+</i></p>
+
+
+
+<p id="4">
+This function invalidates all the runtime tables and structures
+created by loading a set of generated Java API definitions.  The Lisp
+functions defined by loading generated code are still defined but will
+signal error if called.  The API definitions must be evaluated again
+in order to be effective.
+</p>
+<p id="5">
+If the generated code is loaded more than once or if several
+different generated files are loaded into the same Lisp, the 
+resulting tables and structures are an accumulation of all the
+definitions. This function resets all this data for a fresh start.
+</p>
+<p id="6">
+The <b><i>tag</i></b> argument can be used to
+synchronize the loading of several generated files when they are
+loaded independently or in multiple threads. If several calls with
+non-<code>nil</code> and #'equal tag arguments take place
+in a Lisp image, only the first one will reset the tables; the
+subsequent ones will be ignored and will
+return <code>nil</code>.  Each tag value can only be used
+once.  If it needs to be used again for a full reset, a different tag
+value must be used in between.
+</p>
+<p id="7">
+If dynamically dispatched calls take place while definitions are reset 
+and loaded, the results are unpredictable.
+</p>
+<p id="8">
+This function returns an integer that increases with each call.
+</p>
+
+<p id="9">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/japi-reset.htm">9.0 version</a></td></tr></table></body></html>

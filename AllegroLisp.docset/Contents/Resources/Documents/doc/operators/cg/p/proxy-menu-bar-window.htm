@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>proxy-menu-bar-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/proxy-menu-bar-window.htm">9.0 version</a></td></tr></table><h2 id="2">proxy-menu-bar-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window
+</i></p>
+
+<p id="4">
+Returns the window whose menu-bar will be searched when a keypress
+event occurs in the argument <i>window</i>. If a
+menu-item is found whose <a href="../e/event-synonym.htm"><b>event-synonym</b></a> matches the keypress
+event, then this menu-item is invoked instead of calling <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> as
+usual. Menu accessors such as Alt-F to show the File menu are also
+redirected according to this generic function.
+</p>
+<p id="5">
+Applications should not call this function, but it may be useful to
+add methods to it when the default method does not allow keyboard
+shortcuts to access the desired menu-bar. The default method returns
+the <i>window</i> itself if it has a menu-bar, and
+otherwise its owner if it has a menu-bar, and so on up through the
+top-level owner window; if no menu-bar is found, the top-level owner
+window is returned.
+</p>
+<p id="6">
+If an application has one top-level window that should be able to
+access a second top-level window's menu-bar, and the second window is
+not the owner of the first, then it may be useful to write a <a href="../p/proxy-menu-bar-window.htm"><b>proxy-menu-bar-window</b></a>
+method on the class of the first window that returns the second
+window. This is how the IDE allows its various top-level windows to
+access the single IDE menu-bar via keyboard shortcuts.
+</p>
+<p id="7">
+It is still the responsibility of the menu-bar commands to direct
+their functionality to the appropriate window. This can be done in a
+<a href="../h/handle-menu-selection.htm"><b>handle-menu-selection</b></a> method or
+(more typically) in the <a href="../o/on-click.htm"><b>on-click</b></a> function of particular
+menus.
+</p>
+
+<p id="8">
+<b>GTK note</b>: This feature would work on the GTK platform only if
+the <a href="../o/override-native-shortcuts.htm"><b>override-native-shortcuts</b></a>
+property of each pull-down menu on the menu bar is set to true.
+</p>
+
+
+<p id="9">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics and see <a href="../e/event-synonym.htm"><b>event-synonym</b></a>, <a href="../h/handle-menu-selection.htm"><b>handle-menu-selection</b></a>,
+and <a href="../o/on-click.htm"><b>on-click</b></a>.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/proxy-menu-bar-window.htm">9.0 version</a></td></tr></table></body></html>

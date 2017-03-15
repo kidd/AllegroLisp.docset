@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>function-name-p</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/function-name-p.htm">9.0 version</a></td></tr></table><h2 id="2">function-name-p</h2>
+
+<p id="3"><b>Arguments: </b><i>
+spec
+</i></p>
+
+<p id="4">
+This function returns true if <i>spec</i> is a suitable
+function name (whether or not it actually names an operator) and
+returns <code>nil</code> otherwise. <a href="function-name-p.htm"><b>function-name-p</b></a> thus returns true when
+<i>spec</i> is a symbol and when
+<i>spec</i> is a list of the form <code>(setf
+</code><code><i>symbol</i></code><code>)</code>. According to the ANS, symbols and lists of
+that type are the only valid function names.
+</p>
+<p id="5">
+Allegro CL, however, permits additional lists, defined with <a href="def-function-spec-handler.htm"><b>def-function-spec-handler</b></a>, to name
+functions. If spec is a proper (Allegro CL) function spec, that is one
+whose <a href="fspec-first.htm"><b>fspec-first</b></a> is a
+proper function spec name (one defined by <a href="def-function-spec-handler.htm"><b>def-function-spec-handler</b></a>) and for which a
+<code>:validate</code> call returns true, <a href="function-name-p.htm"><b>function-name-p</b></a> returns true.
+</p>
+<p id="6">
+<a href="function-name-p.htm"><b>function-name-p</b></a> has been
+added because the behavior of the Common Lisp function <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> has been brought into
+conformance (with the exception noted). In earlier releases of Allegro
+CL, <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> would
+return <code>nil</code> when given an argument which was
+not a valid function name. Thus, for example, <code>(fboundp
+2)</code> returned <code>nil</code>. However, the ANS
+requires that <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a>
+signal an error if passed an argument which is not a valid function
+name, and return <code>nil</code> only for valid function
+names which do not, in fact, name an operator. This function allows
+you to modify potentially improper calls to <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> to avoid errors in 7.0 which
+would not have been signaled in earlier releases. A call to <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> can be modified as
+follows:
+</p>
+<pre id="7">
+(if (function-name-p spec) (fboundp spec))
+;; will behave in Allegro CL 7.0 just as
+(fboundp spec)
+;; did in earlier releases.
+</pre>
+<p id="8">
+The ANS seems to forbid function names other than symbols and lists of
+the form <code>(setf </code><code><i>symbol</i></code><code>)</code>. Allegro CL allows
+additional lists, specified by <a href="def-function-spec-handler.htm"><b>def-function-spec-handler</b></a>. <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> does not signal an error when
+passed a valid Allegro CL function spec, even if it is not an ANS
+function spec (and thus <a href="../../../ansicl/dictentr/fboundp.htm"><b>fboundp</b></a> is arguably non-conformant).
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/function-name-p.htm">9.0 version</a></td></tr></table></body></html>

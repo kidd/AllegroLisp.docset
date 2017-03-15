@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>:evalmode</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Top-level Command</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/evalmode.htm">9.0 version</a></td></tr></table><h2 id="2">:evalmode</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>context</i><i>
+</i></p>
+
+<p id="4">
+If called with <i>context</i> specified
+true, evaluation is done, as best as possible
+(see warning just below) with respect to the current frame rather than
+the top level. All known local variables (those printed by the <a href="local.htm"><b>:local</b></a> command) can be referenced by name
+in ordinary Lisp forms, if their names were saved during the
+compilation of the function associated with the frame. See <a href="../variables/compiler/save-local-names-switch.htm"><code>save-local-names-switch</code></a>
+and <a href="../variables/compiler/save-local-scopes-switch.htm"><code>save-local-scopes-switch</code></a> for information
+on when the compiler saves local names.
+</p>
+
+<p id="5">Setting those variables sets the value in the frame. All specials
+will also evaluate to their value in the context of the current
+frame. If <i>context</i> is specified <code>nil</code>, evaluation is done with respect to the top
+level, not the current frame. </p>
+
+<p id="6">
+<b>Warning:</b> The context evaluation mode (i.e. when running in
+<code>:evalmode :context t</code>) is intended only as a
+debugging aid, and is not supported for normal extended operation of
+the lisp system. Its purpose is to emulate a dynamic-binding style
+debugging interface to make interactions with variables within
+compiled-functions easier. The emulation is not and can never be
+perfect, due to the information loss that occurs during compilation in
+a lexically-scoped lisp like Common Lisp. Therefore, extreme care must
+be used when running in context mode, and the normal operating
+environment must be a no-context evaluation mode.
+</p>
+<p id="7">
+In particular, whenever the current read-eval-print-loop changes,
+there is a possibility that the context sensitivity will be
+inconsistent, due to the binding and unbinding of special variables.
+Context evaluation simulates the binding environment of the desired
+context frame, not by unbinding the bindstack to the required point,
+but by binding again those specials to their previously bound values.
+This simulates the desired context adequately for most simple
+evaluations, but because the bindstack actually grows instead of
+shrinking, some binding-orders are lost and the top-level might become
+confused.  Thus, context evaluation may or may not continue after pops
+or resets.
+</p>
+
+<p id="8">
+See <a href="../top-level.htm">top-level.htm</a> for more information on top-level
+commands. See <a href="../debugging.htm">debugging.htm</a> for information on the
+debugger.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/evalmode.htm">9.0 version</a></td></tr></table></body></html>

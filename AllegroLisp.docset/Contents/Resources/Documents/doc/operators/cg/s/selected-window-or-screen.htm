@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>selected-window-or-screen</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/selected-window-or-screen.htm">9.0 version</a></td></tr></table><h2 id="2">selected-window-or-screen</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">
+This simple function is provided as a convenience when invoking the
+various modal utility dialogs that are built into Common Graphics,
+such as <a href="../p/pop-up-message-dialog.htm"><b>pop-up-message-dialog</b></a> or <a href="../a/ask-user-for-choice-from-list.htm"><b>ask-user-for-choice-from-list</b></a>.
+These functions have a <i>stream</i> argument for
+specifying the owner window for the modal dialog. The modal dialog
+will appear on this owner window, and the owner window and its other
+child windows will be disabled while the modal dialog is present.
+</p>
+<p id="5">
+<a href="../s/selected-window-or-screen.htm"><b>selected-window-or-screen</b></a> returns a
+stream that is typically suitable as the value of this
+<i>stream</i> argument. In fact, each of the utility
+dialog functions defaults its <i>stream</i> argument to
+the stream returned by this function. An application may find other
+uses for it as well.
+</p>
+<p id="6">
+Specifically, if there currently are any modal dialogs being invoked
+in the current process, then the one that is being invoked most
+recently is returned.  (You can invoke a modal dialog on top of one
+that is already being invoked.)  Otherwise, the currently selected
+top-level window is returned unless there is no such window, in which
+case the screen is returned.
+</p>
+<p id="7">
+Here is the definition of the function.
+</p>
+
+<pre id="8">
+(defun selected-window-or-screen ()
+  (or (modal-window)
+      (selected-window (screen *system*))
+      (screen *system*)))
+</pre>
+
+<p id="9">
+See also <a href="../m/modal-window.htm"><b>modal-window</b></a>, <a href="../s/selected-window.htm"><b>selected-window</b></a>, <a href="../s/screen.htm"><b>screen</b></a>, <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/selected-window-or-screen.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,117 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>augment-environment</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/augment-environment.htm">9.0 version</a></td></tr></table><h2 id="2">augment-environment</h2>
+
+<p id="3"><b>Arguments: </b><i>
+environment
+</i>&amp;key <i>variable symbol-macro constant function macro declare special-operator block tag compiler-macro flavor-iv reuse locative</i><i>
+</i></p>
+
+<p id="4">
+This function returns a new environment object created by augmenting
+<i>environment</i> with the information provided by the
+keyword aguments. 
+</p>
+<p id="5">
+The keyword argument corresponding to namespaces
+(<i>variable</i>, <i>symbol-macro</i>,
+<i>constant</i>, <i>function</i>,
+<i>macro</i>, <i>special-operator</i>,
+<i>block</i>, <i>tag</i>, and
+<i>flavor-iv</i>), locative information can be supplied
+for each name added. (See <a href="variable-information.htm"><b>variable-information</b></a>, <a href="function-information.htm"><b>function-information</b></a>, <a href="tag-information.htm"><b>tag-information</b></a>, and <a href="block-information.htm"><b>block-information</b></a> for information on
+appropriate locative values for different objects.)  Locative
+information can be provided for each name by having instead of a list
+of names for one of the arguments listed above, an alist with the car
+of each element being the name and the cdr being the locative
+information.
+</p>
+<p id="6">
+The keyword arguments are:
+</p>
+<ul>
+<li id="7">
+<i>variable</i>: the value should be a list of symbols
+that will be visible as bound variables in the new
+environment. Declarations already in the environment or added by the
+<i>declare</i> keyword argument provide information
+about these variables (whether they are lexical, or special, for
+example).
+</li>
+<li id="8">
+<i>symbol-macro</i>: the value should be a list of
+symbol-macro definitions of the form
+<code>(</code><code><i>name</i></code><code>&nbsp;</code><code> </code><code><i>definition</i></code><code>)</code>
+(similar to specifications to <a href="../../../ansicl/dictentr/symbol-m.htm"><b>symbol-macrolet</b></a>). Thus the new environment will
+have a symbol-macro binding for each <i>name</i> and <a href="../../../ansicl/dictentr/macroex0.htm"><b>macroexpand</b></a> will be able to expand them
+correctly. A type declaration for a <i>name</i> added to the
+<i>declare</i> argument wraps a <a href="../../../ansicl/dictentr/the.htm"><b>the</b></a> form mentioning the type about the
+definition.
+</li>
+<li id="9">
+<i>constant</i>: the value should be a list of symbols
+that will be visible as constants in the new environment.
+</li>
+<li id="10">
+<i>function</i>: the value should be a list of function names
+that will be visible as local functions in the new environment.
+</li>
+<li id="11">
+<i>macro</i>: the value should be a list of macro
+definitions of the form <code>(</code><code><i>name</i></code><code>&nbsp;</code><code>
+</code><code><i>definition</i></code><code>)</code> (similar to specifications to <a href="../../../ansicl/dictentr/fletlabe.htm"><b>macrolet</b></a>). Each definition must be a
+function of two arguments (a form and an environment). The new
+environment will have a local macro binding for each name
+corresponding to the macro expander function.
+</li>
+<li id="12">
+<i>declare</i>: the value should be a list of special
+operator names that will be visible in the environment.  The
+environment must be a global-environment; either the null lexical
+environment or a compile-file environment shadowing the global
+environment (in this case the <i>reuse</i> argument
+should be specified as true).
+</li>
+<li id="13">
+<i>special-operator</i>: the value should be a list of
+special operator names that will be visible in the new environment.
+</li>
+<li id="14">
+<i>block</i>: the value should be a list of
+block names that will be visible in the new environment.
+</li>
+<li id="15">
+<i>tag</i>: the value should be a list of
+tag names that will be visible in the new environment.
+</li>
+<li id="16">
+<i>compiler-macro</i>: the value should be a list of
+compiler-macro names that will be visible in the environment.  The
+environment must be a global-environment; either the null lexical
+environment or a compile-file environment shadowing the global
+environment (in this case the <i>reuse</i> argument
+should be specified as true).
+</li>
+<li id="17">
+<i>flavor-iv</i>: the value should be a list of flavor
+instance variable names that will be visible in the new environment.
+</li>
+<li id="18">
+<i>reuse</i>: when <i>reuse</i> is <code>nil</code> (the default) a new environment object is consed,
+i.e. the environment object returned is not eq to the one given. When
+<i>reuse</i> is non-<code>nil</code>, then
+the old environment object is returned, and any additions to the
+environment are added at the same level, as if they had been all added
+in the same call to <a href="augment-environment.htm"><b>augment-environment</b></a> which created this
+environment object.
+</li>
+<li id="19">
+<i>locative</i>: if only one name is being added by this
+call to augment-environment, then the locative information for that
+single name can be provided as the value of this argument, thereby
+saving the consing necessary to place the locative with the name
+itself.
+</li>
+</ul>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/augment-environment.htm">9.0 version</a></td></tr></table></body></html>

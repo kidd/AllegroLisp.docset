@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-trace-color</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/with-trace-color.htm">9.0 version</a></td></tr></table><h2 id="2">with-trace-color</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(rgb-color) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+Causes all traced calls that occur within the dynamic scope of
+<i>body</i> (in the current process) to appear in the
+<a href="../../ide-menus-and-dialogs/trace-dialog.htm">Trace Dialog</a>
+with the background color specified by <i>rgb-color</i>,
+which must be an RGB color object (see <a href="../cg/m/make-rgb.htm"><b>make-rgb</b></a>). Returns the values
+returned by the last form in <i>body</i>.
+</p>
+
+<p id="5">
+It may be useful to add calls to <a href="with-trace-color.htm"><b>with-trace-color</b></a> in tester code to
+distinguish calls made within a tester form from extraneous calls that
+happen to be made otherwise, or even to distinguish multiple tested
+options or multiple test runs from each other.  Calls to <a href="with-trace-color.htm"><b>with-trace-color</b></a> may even
+be inserted into application code and left there when generating a
+standalone application to distribute, because in a standalone app the
+calls turn into simple <a href="../../../ansicl/dictentr/progn.htm"><b>progn</b></a> forms.
+</p>
+<p id="6">
+For example, evaluating the following forms (after showing the Trace
+Dialog with the <a href="../../ide-menus-and-dialogs/run-menu.htm#trace-dialog">Run | Trace dialog</a> command) will trace a
+few functions and then collect pale green trace output for the calls
+to those functions that occur during a particular call to <a href="../cg/m/make-window.htm"><b>make-window</b></a>. Lots of
+additional calls to <b>device-open</b> will appear as well in the
+Trace Dialog as arbitrary strings are created, and so the green
+highlighting helps to quickly find the block of calls that occurred
+within the tester form.
+</p>
+<pre id="7">
+(trace make-window device-open initialize-instance)
+
+(ide:with-trace-color ((make-rgb :red 224 :green 255 :blue 224))
+  (make-window :foo :class 'frame-window))
+</pre>
+
+<p id="8">
+See <a href="process-trace-color.htm"><b>process-trace-color</b></a>.
+</p>
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/with-trace-color.htm">9.0 version</a></td></tr></table></body></html>

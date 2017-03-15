@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>compiler-free-reference-warning</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">compiler-free-reference-warning</h2>
+
+<p id="3">
+This style warning is signaled when the compiler sees a variable it
+does not recognize (and thus treats as a special variable). This
+case has always been warned about, but in releases prior to 10.0, it
+was a simple warning.
+</p>
+
+<pre id="4">
+cl-user(12): (setq *break-on-signals* t)
+t
+cl-user(13): (defun foo () (+ x 10))
+foo
+cl-user(14): (compile 'foo)
+; While compiling #'foo at top level:
+Break: Free reference to undeclared variable x assumed special.
+break entered because of *break-on-signals*.
+
+Restart actions (select using :continue):
+ 0: return from break.
+ 1: skip warning.
+ 2: continue processing.
+ 3: Return to Top Level (an &quot;abort&quot; restart).
+ 4: Abort entirely from this (lisp) process.
+[1c] cl-user(15): :zo
+Evaluation stack:
+
+   (break &quot;~a~%break entered because of *break-on-signals*.&quot;
+          #&lt;compiler-free-reference-warning @ #x20d52a52&gt;)
+ -&gt;(signal #&lt;compiler-free-reference-warning @ #x20d52a52&gt;)
+   (warn compiler-free-reference-warning :format-control ...)
+</pre>
+
+
+<hr><p id="5"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

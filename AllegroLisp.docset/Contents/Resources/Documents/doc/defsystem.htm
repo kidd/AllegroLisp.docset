@@ -1,0 +1,1229 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Defsystem</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/defsystem.htm">9.0 version</a></td></tr></table><h1 id="2">Defsystem</h1><p id="3">This document contains the following sections:</p><a href="#defsystem-intro-1">1.0 Defsystem introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#terminology-2">1.1 Defsystem terminology</a><br><a href="#using-defsystem-1">2.0 Using Defsystem</a><br><a href="#module-specification-1">3.0 Module-specifications</a><br>&nbsp;&nbsp;&nbsp;<a href="#short-form-spec-2">3.1 Short form module-specifications</a><br>&nbsp;&nbsp;&nbsp;<a href="#long-form-module-2">3.2 Long form module-specifications</a><br><a href="#system-redefinition-1">4.0 Redefinition of systems</a><br><a href="#predefined-operations-1">5.0 Predefined operations on systems and defsystem variables</a><br><a href="#extending-defsystem-1">6.0 Extending Defsystem</a><br>&nbsp;&nbsp;&nbsp;<a href="#class-hierarchy-2">6.1 Class hierarchy</a><br>&nbsp;&nbsp;&nbsp;<a href="#defining-new-classes-2">6.2 Defining new classes</a><br><a href="#extending-using-shared-initialize-1">7.0 Extending defsystem syntax through shared-initialize methods</a><br>&nbsp;&nbsp;&nbsp;<a href="#methods-specialized-2">7.1 Defsystem methods that can be specialized</a><br><a href="#extension-examples-1">8.0 Defsystem extension examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#new-system-example-2">8.1 Example of defining a new system class</a><br>&nbsp;&nbsp;&nbsp;<a href="#defining-new-operations-example-2">8.2 Example of defining new system operations</a><br>&nbsp;&nbsp;&nbsp;<a href="#directories-example-2">8.3 Example of master and development directories</a><br>&nbsp;&nbsp;&nbsp;<a href="#one-system-referencing-another-example-2">8.4 Example of one system definition referencing another</a><br><p id="4">
+Note that there are many classes defined as part of the defsystem
+facility and named by exported symbols in the defsystem package.  The
+facility is in the <code>defsys</code> module (and associated
+modules). Defsystem code is normally included automatically in
+development images, but if you need to load it, evaluate
+<code>(require :defsys)</code> (it is not an error to evaluate
+that form when the module is already loaded).
+</p><hr><hr><h2 id="5"><a name="defsystem-intro-1">1.0 Defsystem introduction</a></h2>
+
+<p id="6">
+Defsystem is a tool designed to help developers deal with large
+programs contained in multiple files. The defsystem facility improves
+the development environment by providing quick and easy ways to
+perform complicated tasks on a set of files.
+</p>
+
+<p id="7">
+For example, let's say a developer has a program with 20 different
+files and has just edited 3 of the files. Those 3 files will need to
+be recompiled. There may also be other files that will need to be
+recompiled because the code in them depends in some way on the code in
+the files that were just edited. Without defsystem, the developer
+would have to separately issue commands to compile and load each of
+the files in the correct order. With defsystem, the developer can set
+up a system by indicating which files should be included in the system
+and in what order they need to be compiled. Then after editing some of
+the files, the developer can just issue one function call and the
+defsystem will figure out which files need to be recompiled and will
+do the compilation in the correct order.
+</p>
+
+<p id="8">
+The defsystem facility is strongly based on CLOS, which means that the
+defsystem can be easily extended and customized to meet individual
+needs. The second part of this chapter describes the ways in which the
+defsystem facility can be extended and customized.
+</p>
+
+<p id="9">
+Many symbols associated with the defsystem facility are in the
+<code>defsystem</code> package. It has nicknames
+<code>defsys</code> and <code>ds</code>. However, most
+operators (functions, macros, etc.) are named by symbols in the excl
+package.
+</p>
+
+<hr><h2 id="10"><a name="terminology-2">1.1 Defsystem terminology</a></h2>
+
+<p id="11">This chapter uses a hierarchy of terms. We define those terms below: </p>
+
+<ul>
+  <li id="12"><i>source file</i>: a file which can be compiled to produce a product file. In Allegro CL,
+    a source file name usually ends in <i>.cl</i> (i.e. <i>foo.cl</i>). </li>
+  <li id="13"><i>product file</i>: the result of compiling a source file. In Allegro CL, a product file
+    name usually ends in <i>.fasl</i> (i.e. <i>foo.fasl</i>).</li>
+  <li id="14"><i>module</i>: a module represents one source and product file pair. Modules contain data
+    concerning dependencies between it and other modules and attributes of the file. The
+    filename without the extension names the module. Module names are strings. For example, if
+    <i>foo.cl</i> is the source file and <i>foo.fasl</i> is the product file, "foo"
+    is the module name.</li>
+  <li id="15"><i>module-specification</i>: a module-specification describes one or more modules and
+    dependencies between modules. There are two types of module-specifications: short form and
+    long form.</li>
+  <li id="16"><i>short form module-specification</i>: A short form module-specification provides a simple
+    syntax to describe one or more modules.</li>
+  <li id="17"><i>long form module-specification</i>: A long form module-specification provides a more
+    complex syntax to describe one or more modules.</li>
+  <li id="18"><i>module-group</i>: a module-group contains one or more module-groups and/or one or more
+    modules. A module group is created from a defsystem module specification.</li>
+  <li id="19"><i>system</i>: a system contains one or more module-groups.</li>
+  <li id="20"><i>system name</i>: A system name is a symbol that refers to a system. We recommend that
+    one use a keyword so the system-name is not in any specific package.</li>
+  <li id="21"><i>system-object</i>: A system-object is a data construct that contains information about a
+    system.</li>
+  <li id="22"><i>system-specifier</i>: A system-specifier is either a system-name or a system-object. </li>
+</ul>
+
+
+
+<hr><hr><h2 id="23"><a name="using-defsystem-1">2.0 Using Defsystem</a></h2>
+
+<p id="24">
+Systems are defined with the <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> macro. There are two parts to a
+system definition: the system options and the
+module-specification. System options specify attributes of the system
+or define default values for attributes of modules in the
+system. Module-specifications describe the module-groups of the system
+and dependencies between modules and module-groups.
+</p>
+
+<p id="25">
+An item in a module-specification can be specified with a file name,
+the name of a named module group defined earlier in the same system,
+or the name of another system.  Supplying the name of another system
+in a module-specification causes the named system to be a component
+system of the system being defined. This means that system operations
+will be performed recursively on the component system (if the
+<code>:include-components</code> keyword to the system operation
+method has the value t).
+</p>
+
+<p id="26">
+The <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> macro is
+defined on its own page. It takes a module name (a symbol) and a
+possible empty list of system-options as required arguments followed
+by a list of module-specifications.
+</p>
+
+<p id="27">
+The allowable <em>system-option</em> keywords are shown in the table
+below. After the table, we describe module specifications.
+</p>
+
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="95%">
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><p id="28" ALIGN="CENTER">Keyword</p></td>
+    <td WIDTH="60" VALIGN="TOP"><p id="29" ALIGN="CENTER">value type</p></td>
+    <td WIDTH="185" VALIGN="TOP"><p id="30" ALIGN="CENTER">default value</p></td>
+    <td WIDTH="193" VALIGN="TOP"><p id="31" ALIGN="CENTER">Notes</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:pretty-name</code></td>
+    <td WIDTH="60" VALIGN="TOP">string</td>
+    <td WIDTH="185" VALIGN="TOP">print-name of system-name symbol</td>
+    <td WIDTH="193" VALIGN="TOP">This name will be used for printing.</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-module-class</code></td>
+    <td WIDTH="60" VALIGN="TOP">symbol identifying a class</td>
+    <td WIDTH="185" VALIGN="TOP"><code>ds:lisp-module</code></td>
+    <td WIDTH="193" VALIGN="TOP">Predefined classes are:<p id="32"><code>ds:lisp-module
+    ds:text-module
+    ds:c-module</code></p>
+    <p id="33">
+    Users may define additional classes, see the paragraphs under 
+    the heading <a href="#defining-new-classes-2">Section 6.2 Defining new classes</a>
+    below.
+    </p></td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-package</code></td>
+    <td WIDTH="60" VALIGN="TOP">package object or string or symbol naming a package</td>
+    <td WIDTH="185" VALIGN="TOP">The value of <a href="../ansicl/dictentr/package.htm"><code>*package*</code></a></td>
+    <td WIDTH="193" VALIGN="TOP">Can be overridden for a module or module-group with the
+    :package option in the long module form. Also can be overridden during an operation with
+    the <code>:package</code> argument.</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-pathname</code></td>
+    <td WIDTH="60" VALIGN="TOP">pathname object or string or symbol naming pathname</td>
+    <td WIDTH="185" VALIGN="TOP"><a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a></td>
+    <td WIDTH="193" VALIGN="TOP">This pathname will be merged with the filenames of the
+    modules of the system in order to find files.</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:default-file-type</code></td>
+    <td WIDTH="60" VALIGN="TOP">string</td>
+    <td WIDTH="185" VALIGN="TOP">depends on value of <code>:default-module-class</code>
+    - see notes at right.</td>
+    <td WIDTH="193" VALIGN="TOP">Specifies file type (extension) for source files for modules
+    in system. If <code>:default-module-class</code> is
+    ds:lisp-module, default is value of 
+   <a href="variables/system/s_source-file-types_s.htm"><code>*source-file-types*</code></a>; if <code>ds:text-module</code>, default is <code>nil</code>; if <code>ds:c-module</code>, default is
+    "c".</td>
+  </tr>
+  <tr>
+    <td WIDTH="210" VALIGN="TOP"><code>:property-list</code></td>
+    <td WIDTH="60" VALIGN="TOP">property list</td>
+    <td WIDTH="185" VALIGN="TOP">nil</td>
+    <td WIDTH="193" VALIGN="TOP">The value is added to the property list of the system.</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" COLSPAN="4" width="708"><p id="34" ALIGN="CENTER">Table 1: system-option
+    keywords and values</p></td>
+  </tr>
+</table>
+</div>
+
+<hr><hr><h2 id="35"><a name="module-specification-1">3.0 Module-specifications</a></h2>
+
+<p id="36">
+More than one module-specification may be specified when defining a
+system. Module-groups can be specified using a short form
+module-specification or a long form module-specification. We describe
+short and long form module-specifications below. Note that we use the
+terms short form specification and short form module-specification
+interchangeably. They mean the same thing. We do the same thing with
+long form specification and long form module-specification.
+</p>
+
+<p id="37">
+<code>(:module ...)</code> and
+<code>(:module-group...)</code> create module groups, as do all
+other defsystem module-specifications.  Module-specifications which
+begin with the keywords <code>:module</code> and
+<code>:module-group</code> provide ways of associating a name
+with a module-group.
+</p>
+
+<p id="38">
+Note that a module-specification which begins with
+<code>:module</code> really creates what we call a module-group.
+</p>
+
+<p id="39">
+The <code>(:module ...)</code> syntax for long-form
+module-specifications is used to maintain syntax compatibility with
+the defsystem facility available on Symbolics machines. Note that our
+term <em>module-group</em> is similar to what is called a
+<em>module</em> in the Symbolics' documentation of their
+defsystem.
+</p>
+
+<hr><h2 id="40"><a name="short-form-spec-2">3.1 Short form module-specifications</a></h2>
+
+<p id="41">
+Short form module-specifications provide a simple syntax for
+describing systems that: 
+</p>
+
+<ul>
+  <li id="42">have only serial and parallel dependencies</li>
+  <li id="43">have only one package (given by the :default-package option to defsystem)</li>
+  <li id="44">have only modules of the default type </li>
+</ul>
+
+<p id="45">More complex needs can be met by using long form module-specifications.</p>
+
+<p id="46">
+A short form module-specification is a list beginning with one of
+<code>:serial</code>, <code>:parallel</code>,
+<code>:definitions</code>, or
+<code>:module-group</code>. The table below gives a description
+of each of the short forms. In the table, <i>module-spec-element</i>
+may: 
+</p>
+
+<ol>
+  <li id="47">name a module</li>
+  <li id="48">specify another module-group using a short form specification</li>
+  <li id="49">name a module-group defined earlier in the system definition</li>
+  <li id="50">name another system to be treated as a component system.</li>
+</ol>
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="693">
+  <tr>
+    <td WIDTH="131" VALIGN="TOP"><p id="51" ALIGN="CENTER">Short form name</p></td>
+    <td WIDTH="176" VALIGN="TOP"><p id="52" ALIGN="CENTER">Arguments</p></td>
+    <td WIDTH="326" VALIGN="TOP"><p id="53" ALIGN="CENTER">Discussion</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="131" VALIGN="TOP"><code>:parallel</code></td>
+    <td WIDTH="176" VALIGN="TOP">{<i>module-spec-element</i>}+</td>
+    <td WIDTH="326" VALIGN="TOP">This module-specification keyword specifies that the elements
+    listed have no dependencies between them. A <code>:parallel</code>
+    module-specification list causes each element to be processed as an individual. This
+    module-specification list does not cause each element to be loaded before the next element
+    is compiled.</td>
+  </tr>
+  <tr>
+    <td WIDTH="131" VALIGN="TOP"><code>:serial </code></td>
+    <td WIDTH="176" VALIGN="TOP">{<i>module-spec-element</i>}+</td>
+    <td WIDTH="326" VALIGN="TOP">This module-specification keyword specifies that each element
+    depends on the element listed before it in the list. Therefore, during compilation, each
+    module-spec-element specified is compiled and loaded before the next.</td>
+  </tr>
+  <tr>
+    <td WIDTH="131" VALIGN="TOP"><code>:definitions</code></td>
+    <td WIDTH="176" VALIGN="TOP"><p id="54"><i>primary-module-spec-element</i> {<i>module-spec-element</i>}+</p></td>
+    <td WIDTH="326" VALIGN="TOP"><p id="55">This module-specification keyword option specifies that <i>element</i>
+    has a serial dependency on <i>primary</i> and also has a compile-dependency on <i>primary</i>
+    such that if <i>primary</i> is compiled, <i>element</i> must be compiled. In other words <i>element</i>
+    uses definitions in <i>primary</i>. If <i>primary</i> is touched, then <i>element</i>
+    should be recompiled or reloaded.</p>
+    <p id="56">This keyword is often used to describe dependencies
+    between files containing macros and files that use macros.</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="131" VALIGN="TOP"><code>:module-group</code></td>
+    <td WIDTH="176" VALIGN="TOP"><p id="57"><i>name short-form</i>
+    </p><p id="58">{<i>long-form-option</i>}*</p></td>
+    <td WIDTH="326" VALIGN="TOP">This module-specification keyword is used to name a
+    short-form. <code>:module-group</code> gives the name <i>name</i>
+    to the short-form system described by <i>short-form</i>. <i>name</i> can then be used to
+    refer to <i>short-form</i> in other specifications. <i>name</i> is a symbol (it is not
+    evaluated). <i>short-form</i> is a list that describes a module-group. <i>long-form-option</i>
+    can be any option which can be used for long form specifications as described below. Zero
+    or more long-form specifications can be specified. </td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" COLSPAN="3" width="673"><p id="59" ALIGN="CENTER">Table 2: Short Form module
+    specifications</p></td>
+  </tr>
+</table>
+</div>
+
+<p id="60">Most simple needs can be met by use of the <code>:parallel</code>
+and <code>:definitions</code> short forms. The following are
+examples of defining short form systems.</p>
+
+<pre id="61">
+(defsystem :foo ()
+    (:parallel "file1" 
+               (:serial "filea" "fileb") 
+               "file2"))
+</pre>
+
+<p id="62">In this example, <i>filea</i> would be compiled before
+<i>fileb</i>, but files <i>filea</i> and <i>fileb</i> are not
+dependent on <i>file1</i> and <i>file2</i>. Files <i>file1</i> and
+<i>file2</i> are not dependent on each other. </p>
+
+<pre id="63">
+(defsystem :my-sys ()
+  (:serial "file1" "file2" 
+           (:parallel "filea"
+                      my-other-system)))
+</pre>
+
+<p id="64">In this example, <i>file2</i> is dependent on <i>file1</i>. Also, <i>filea</i> and the
+system <i>my-other-system</i> are dependent on <i>file2</i>.</p>
+
+<p id="65">The <code>:definitions</code> module-specification keyword
+is different from the <code>:serial</code>
+module-specifications keyword in that <code>:serial</code>
+does not force recompilation of modules farther down the list. As an example, suppose we
+have:</p>
+
+<pre id="66">
+(defsystem :bar ()
+  (:definitions "macro-def-file" "file-that-uses-macros"))
+</pre>
+
+<p id="67">In this example, <i>file-that-uses-macros</i> is dependent on
+<i>macro-def-file</i>. If <i>macro-def-file</i> is compiled, then
+<i>file-that-uses-macros</i> will be compiled too.
+</p>
+
+<pre id="68">
+(defsystem :named-system ()
+  (:module-group my-group (:serial "file1" "file2")))
+</pre>
+
+<p id="69">This example associates the name <i>my-group</i> with <i>file2</i> being dependent on <i>file1</i>.</p>
+
+
+
+<hr><h2 id="70"><a name="long-form-module-2">3.2 Long form module-specifications</a></h2>
+
+<p id="71">
+Long form module-specifications should be used when more control over
+some module-group or module-groups is desired. With the long form it
+is possible to override the system default values for various
+parameters and to specify more complex dependencies.
+</p>
+
+<p id="72">
+There are two types of long form module-specifications, one allows a
+group of modules to be given a name which can be referenced by other
+module-specifications in the system and the other type provides a
+simple way to specify non-default options for just one module.
+</p>
+
+<p id="73">A long form specification is a list of one of the following forms:</p>
+
+<pre id="74">
+(:module name system-or-files {long-form-option}*)
+</pre>
+
+<p id="75">or</p>
+
+<pre id="76">
+("filename" {long-form-option}*)
+</pre>
+
+<p id="77">Here <i>name</i> is a symbol that names the module-group. <i>name</i> can be used by
+other module-groups in the system to refer to the module-group it names. <i>system-or-files</i>
+can be a string or (non-empty) list of strings representing the one or more source files
+of the module-group, or a symbol representing the name of another system.</p>
+
+<p id="78">Note that <code>:module-group</code> is used to name short
+form module-specifications, while <code>:module</code> is used
+to name long form module-specifications. In both cases, the name is associated with the
+resulting module-group.</p>
+
+<pre id="79">
+("filename" {long-form-option}+) 
+</pre>
+
+<p id="80">is functionally equivalent to </p>
+
+<pre id="81">
+(:module foo "filename" {long-form-option}+) 
+</pre>
+
+<p id="82">except </p>
+
+<pre id="83">
+("filename" {long-form-option}+) 
+</pre>
+
+<p id="84">does not have the added name <i>foo</i> associated with it.</p>
+
+<p id="85">Zero or more keyword options can be specified in the
+long-form-option position. The allowable keyword options are given in
+the following table. Note that some options have more than one or a
+variable number of arguments. All have at least one argument. The `+'
+after an argument indicates at least one value must appear but as many
+as you like can appear.</p>
+
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="636">
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><p id="86" ALIGN="CENTER">Keyword option name</p></td>
+    <td WIDTH="21%" VALIGN="TOP"><p id="87" ALIGN="CENTER">Arguments</p></td>
+    <td WIDTH="45%" VALIGN="TOP"><p id="88" ALIGN="CENTER">Discussion</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:package</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>package-name</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Must be a package object or a symbol or string identifying a
+    package. If specified, this will override the default package for the system</td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:module-class</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>module-class-name</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Argument must be a symbol naming a module class. If
+    specified, this overrides the default module class of the system. Pre-defined valid values
+    are <code>ds:lisp-module</code>, <code>ds:text-module</code>, and <code>ds:c-module</code>.
+    Users may define additional classes. See the information under 
+    the heading <a href="#defining-new-classes-2">Section 6.2 Defining new classes</a>
+    below.</td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:in-order-to</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><p id="89"><i>operation requirement</i></p></td>
+    <td WIDTH="45%" VALIGN="TOP"><i>operation</i> can be <code>:compile</code>
+    or <code>:load</code> or the list <code>(:compile :load)</code>. requirement must be a list whose first element is either
+    <code>:compile</code> or <code>:load</code>
+    and whose other elements (there must be at least one) are symbols each denoting a
+    module-group. This option says that before operation can be performed on the module,
+    requirement must first be satisfied.</td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:uses-definitions-from</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>definition-module-group+</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Argument(s) must be symbols naming module-groups. This option
+    says that (1) the module-group must be recompiled if any definition module is recompiled;
+    (2) if the module-group is to be compiled, then all definition-modules must be recompiled
+    first; (3) if the module-group is to be loaded, all definition-modules must be loaded
+    first.</td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:recompile-on</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>needed-module-group+</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Argument(s) must be symbols naming module-groups. Same <code>as :uses-definitions-from</code> except needed-module-groups
+    do not have to be loaded if module-group is loaded.</td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:compile-satisfies-load</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>boolean</i></td>
+    <td WIDTH="45%" VALIGN="TOP">If true, tells system that compiling module-group makes the
+    module up-to-date in the lisp image as if it had been both compiled and loaded.</td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:load-before-compile</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>module-groups-or-systems</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Argument may be a symbol naming a module-group or system or a
+    list of module-group and/or system names. The module-groups and systems specified must be
+    loaded before module is compiled.</td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:force-dependent-recompile</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>boolean</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Causes all modules examined, after a module with this option,
+    to be recompiled even if they are up-to-date. The main use of this is to cause
+    recompilation of the rest of a system because critical definitions exist in a particular
+    module that is out-of-date. </td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:concatenate-system-ignore</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>boolean</i></td>
+    <td WIDTH="45%" VALIGN="TOP">A true value causes <a href="operators/excl/concatenate-system.htm"><b>concatenate-system</b></a>
+    to ignore this module. </td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:force-load</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>boolean</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Always load this file during <a href="operators/excl/compile-system.htm"><b>compile-system</b></a>.
+    </td>
+  </tr>
+  <tr>
+    <td WIDTH="34%" VALIGN="TOP"><code>:force-compile</code></td>
+    <td WIDTH="21%" VALIGN="TOP"><i>boolean</i></td>
+    <td WIDTH="45%" VALIGN="TOP">Always compile this file during 
+    <a href="operators/excl/compile-system.htm"><b>compile-system</b></a>.
+    </td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" COLSPAN="3"><p id="90" ALIGN="CENTER">Table 3: Long form module specification
+    options</p></td>
+  </tr>
+</table>
+</div>
+
+
+
+<hr><hr><h2 id="91"><a name="system-redefinition-1">4.0 Redefinition of systems</a></h2>
+
+<p id="92">When a system is redefined the following events occur: </p>
+
+<ul>
+  <li id="93">old system options, if any, are removed</li>
+  <li id="94">new system options, if supplied, take effect</li>
+  <li id="95">modules which represent the same source files in the old and new systems maintain
+    whatever state they had before the redefinition, which means, for example, that a module
+    which has been compiled and loaded will not be recompiled or reloaded after the
+    redefinition.</li>
+</ul>
+
+<hr><hr><h2 id="96"><a name="predefined-operations-1">5.0 Predefined operations on systems and defsystem variables</a></h2>
+
+<p id="97">The full description of each function described in this table is given in the page
+description of the function. <code>:simulate</code> means to
+print the actions that would be taken but do not actually perform them.</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="7" WIDTH="697">
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><strong>Operator</strong></td>
+    <td WIDTH="195" VALIGN="TOP"><strong>Arguments</strong></td>
+    <td WIDTH="247" VALIGN="TOP"><strong>Notes</strong></td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/load-system.htm"><b>load-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system</i></code><code> &key
+    :interpreted :compile :no-warn :reload :silent :simulate :include-components</code></td>
+    <td WIDTH="247" VALIGN="TOP">Loads <i>system</i> into the current environment. See the
+    description for descriptions of the keyword arguments.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/compile-system.htm"><b>compile-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system</i></code><code> &key
+    :recompile :no-warn :reload :silent :simulate :include-components</code></td>
+    <td WIDTH="247" VALIGN="TOP">Compiles (if necessary) each module in <i>system</i>. Returns
+    t if any action was taken to bring <i>system</i> up-to-date and returns nil if no action
+    was necessary. See the description for descriptions of the keyword arguments.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/map-system.htm"><b>map-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system</i></code><code> </code><code><i>function</i></code><code>
+    &key :silent :simulate :include-components</code></td>
+    <td WIDTH="247" VALIGN="TOP">Maps <i>function</i> (which should accept one argument) over
+    each module-group in <i>system</i>. See the description for descriptions of the keyword
+    arguments. See the example below the table.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/clean-system.htm"><b>clean-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system</i></code><code> &key
+    :silent :simulate </code></td>
+    <td WIDTH="247" VALIGN="TOP">Removes the product files of the modules in <i>system</i>.
+    See the description for descriptions of the keyword arguments.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/concatenate-system.htm"><b>concatenate-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system destination-file</i></code><code>
+    &key :silent :simulate</code></td>
+    <td WIDTH="247" VALIGN="TOP">Concatenates the <i>fasl</i> files of the modules in <i>system</i>
+    into <i>destination-file</i>. See the description for descriptions of the keyword
+    arguments.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/touch-system.htm"><b>touch-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system</i></code><code> &key
+    :silent :simulate</code></td>
+    <td WIDTH="247" VALIGN="TOP">Makes the <i>fasl</i> files of the modules in <i>system</i>
+    up-to-date (with the touch command on Unix). See the description for descriptions of the
+    keyword arguments.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/find-system.htm"><b>find-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system-name </i></code><code>&optional</code><code><i>
+    errorp</i></code></td>
+    <td WIDTH="247" VALIGN="TOP">Returns the system named by <i>system-name</i> (returns <code>nil</code> or errors as <i>errorp</i> is nil or true and no
+    system can be found). See the example below.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/show-system.htm"><b>show-system</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system</i></code></td>
+    <td WIDTH="247" VALIGN="TOP">Prints a description of <i>system</i>. See the example below.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="operators/excl/undefsystem.htm"><b>undefsystem</b></a></td>
+    <td WIDTH="195" VALIGN="TOP"><code><i>system-name</i></code></td>
+    <td WIDTH="247" VALIGN="TOP">Removes <i>system-name</i> from the list of defined systems.</td>
+  </tr>
+  <tr>
+    <td WIDTH="205" VALIGN="TOP"><a href="variables/defsys/s_default-file-type_s.htm"><code>*default-file-type*</code></a></td>
+    <td WIDTH="195" VALIGN="TOP">[variable]</td>
+    <td WIDTH="247" VALIGN="TOP">The default file type (extension) used by objects of class
+    default-module. Initially <code>nil</code>.</td>
+  </tr>
+</table>
+
+<p id="98">In this example using <a href="operators/excl/map-system.htm"><b>map-system</b></a>, we pretty print each module in a
+system.</p>
+
+<pre id="99">
+USER(9): (defsystem :my-serial-sys () 
+           (:serial &quot;my1&quot; &quot;my2&quot;))
+:MY-SERIAL-SYS
+USER(10): (map-system :my-serial-sys 
+                      #'(lambda (module) (pprint module)))
+#&lt;DEFSYSTEM:LISP-MODULE &quot;my1&quot; @ #x68c9a6&gt; 
+#&lt;DEFSYSTEM:LISP-MODULE &quot;my2&quot; @ #x69197e&gt; 
+NIL 
+USER(11): 
+</pre>
+
+<p id="100">Example using <a href="operators/excl/find-system.htm"><b>find-system</b></a>:
+</p>
+
+<pre id="101">
+USER(18): (defsystem :my-serial-sys () 
+            (:serial &quot;my1&quot; &quot;my2&quot;))
+MY-SERIAL-SYS 
+USER(19): (find-system :my-serial-sys) 
+#&lt;DEFSYSTEM:DEFAULT-SYSTEM &quot;MY-SERIAL-SYS&quot; @ #x6b5b4e&gt; 
+USER(20): 
+</pre>
+
+<p id="102">Example using <a href="operators/excl/show-system.htm"><b>show-system</b></a>:</p>
+
+<pre id="103">
+USER(20): (defsystem :my-serial-sys () 
+             (:serial &quot;my1&quot; &quot;my2&quot;))
+:MY-SERIAL-SYS
+USER(21): (show-system :my-serial-sys)
+; System: &quot;MY-SERIAL-SYS&quot;
+; default package: #&lt;The COMMON-LISP-USER package&gt;
+; default pathname: #p&quot;./&quot;
+; default module class: DEFSYSTEM:LISP-MODULE
+; the system contains the following modules:
+; Module-group: &quot;&lt;unnamed&gt;&quot;
+; default module class: DEFSYSTEM:LISP-MODULE
+; the module-group contains the following modules:
+; Module: &quot;my1&quot;
+; source file: &quot;my1&quot;
+; Module: &quot;my2&quot;
+; source file: &quot;my2&quot;
+; Dependencies:
+; before COMPILE dependencies:
+; LOAD #&lt;DEFSYSTEM:LISP-MODULE &quot;my1&quot; @ #x6b638e&gt;
+; before LOAD dependencies:
+; LOAD #&lt;DEFSYSTEM:LISP-MODULE &quot;my1&quot; @ #x6b638e&gt;
+NIL
+USER(22):
+</pre>
+
+<p id="104">Example using <a href="operators/excl/undefsystem.htm"><b>undefsystem</b></a>:</p>
+
+<pre id="105">
+USER(42): (defsystem :my-serial-sys () 
+            (:serial "my1" "my2"))
+:MY-SERIAL-SYS 
+USER(43): (undefsystem :my-serial-sys)
+NIL
+</pre>
+
+<hr><hr><h2 id="106"><a name="extending-defsystem-1">6.0 Extending Defsystem</a></h2>
+
+<p id="107">Because defsystem is CLOS-based, it can be easily extended in many
+ways in order to add functionality or meet special needs. It is
+possible to extend existing system operations or to define totally new
+operations. The module actions that implement the operations on the
+modules of a system can also be customized. New classes of system,
+module group and module can be created to have specialized behavior
+and new slots. It is also possible to extend the syntax of the <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> macro that defines
+systems. Each of these extension methods is described below.</p>
+
+<hr><h2 id="108"><a name="class-hierarchy-2">6.1 Class hierarchy</a></h2>
+
+<p id="109">
+The following is a description of the defsystem class hierarchy. Users
+can build new classes based on these classes. The following can be
+used as a guide for choosing which classes to build on. </p>
+
+<blockquote>
+  <blockquote>
+    <p id="110"><code>defsys::defsystem-base-class</code></p>
+    <blockquote>
+      <p id="111">All defsystem classes inherit from this class.</p>
+    </blockquote>
+    <p id="112"><code>defsys:module-container</code></p>
+    <blockquote>
+      <p id="113">This is a class of objects that contain modules. Objects of this class have a list of
+      modules and a default-module-class which indicates the default class to be used when
+      modules are created for this module-container.</p>
+      <p id="114"><code>defsys:default-module-group</code> and <code>defsys:default-system</code> both inherit from <code>defsys:module-container</code>.</p>
+      <p id="115">Exported accessors for <code>defsys:module-container</code>:</p>
+      <blockquote>
+        <p id="116"><a href="operators/defsys/modules.htm"><b>defsys:modules</b></a> returns a list of
+        modules and module-groups contained by this container
+        <a href="operators/defsys/default-module-class.htm"><b>defsys:default-module-class</b></a>
+        returns the default class for modules created under this container.</p>
+      </blockquote>
+    </blockquote>
+    <p id="117"><code>defsys:default-system</code>:</p>
+    <blockquote>
+      <p id="118">Exported accessors for defsys:default-system:</p>
+      <blockquote>
+        <p id="119"><a href="operators/defsys/pretty-name.htm"><b>pretty-name</b></a> returns the
+        pretty name of the system
+        <a href="operators/defsys/system-name.htm"><b>system-name</b></a> returns the name
+        of the system
+        <a href="operators/defsys/default-package.htm"><b>default-package</b></a> returns
+        the default package of the system
+        <a href="operators/defsys/default-pathname.htm"><b>defsys:default-pathname</b></a> returns
+        the default pathname for the files of the system
+        <a href="operators/defsys/property-list.htm"><b>defsys:property-list</b></a> returns the
+        property list of the system 
+        <a href="operators/defsys/parent-object.htm"><b>defsys:parent-object</b></a> returns the
+        object which contains this system, or nil if there is no such object</p>
+      </blockquote>
+    </blockquote>
+    <p id="120"><code>defsys::default-module-group</code></p>
+    <blockquote>
+      <p id="121"><code>defsys::default-module-group</code> has the following
+      exported accessors:</p>
+      <blockquote>
+        <p id="122"><a href="operators/defsys/pretty-name.htm"><b>defsys:pretty-name</b></a> returns the
+        pretty name of the module-group
+        <a href="operators/defsys/default-package.htm"><b>defsys:default-package</b></a> returns
+        the default package of the module-group
+        <a href="operators/defsys/default-pathname.htm"><b>defsys:default-pathname</b></a> returns
+        the default pathname for modules of the module-group
+        <a href="operators/defsys/property-list.htm"><b>defsys:property-list</b></a> returns the
+        property list of the module-group
+        <a href="operators/defsys/parent-object.htm"><b>defsys:parent-object</b></a> returns the
+        object which contains this module-group</p>
+      </blockquote>
+    </blockquote>
+    <p id="123"><code>defsys:default-module</code></p>
+    <blockquote>
+      <p id="124"><code>defsys:default-module</code> has the following
+      exported accessors:</p>
+      <blockquote>
+        <p id="125"><a href="operators/defsys/pretty-name.htm"><b>defsys:pretty-name</b></a> returns the
+        pretty name of the module
+        <a href="operators/defsys/default-package.htm"><b>defsys:default-package</b></a> returns
+        the default package of the module
+        <a href="operators/defsys/default-pathname.htm"><b>defsys:default-pathname</b></a> returns
+        the default pathname for modules of the module
+        <a href="operators/defsys/property-list.htm"><b>defsys:property-list</b></a> returns the
+        property list of the module
+        <a href="operators/defsys/parent-object.htm"><b>defsys:parent-object</b></a> returns the
+        object which contains this module
+        <a href="operators/defsys/module-file.htm"><b>defsys:module-file</b></a> returns a string
+        representing the file name (without file type) associated with this module
+        <code>defsys:lisp-module</code>, <code>defsys:text-module</code>, and <code>defsys:foreign-module</code>
+        inherit from <code>defsys:default-module</code>.</p>
+      </blockquote>
+    </blockquote>
+    <p id="126"><code>defsys:lisp-module</code></p>
+    <blockquote>
+      <p id="127">The following methods are specialized for <code>defsys:lisp-module</code>:</p>
+      <blockquote>
+        <p id="128"><a href="operators/defsys/load-module.htm"><b>defsys:load-module</b></a>
+        <br>
+        <a href="operators/defsys/compile-module.htm"><b>defsys:compile-module</b></a>
+        <br>
+        <a href="operators/defsys/source-pathname.htm"><b>defsys:source-pathname</b></a>
+        <br>
+        <a href="operators/defsys/product-pathname.htm"><b>defsys:product-pathname</b></a></p>
+      </blockquote>
+    </blockquote>
+    <p id="129"><code>defsys:text-module</code></p>
+    <blockquote>
+      <p id="130">The following methods are specialized for <code>defsys:text-module</code>:</p>
+      <blockquote>
+        <p id="131"><a href="operators/defsys/source-pathname.htm"><b>defsys:source-pathname</b></a>
+        <br>
+        <a href="operators/defsys/product-pathname.htm"><b>defsys:product-pathname</b></a></p>
+      </blockquote>
+    </blockquote>
+    <p id="132"><code>defsys:foreign-module</code></p>
+    <blockquote>
+      <p id="133">The following methods are specialized for <code>defsys:foreign-module</code>:</p>
+      <blockquote>
+        <p id="134"><a href="operators/defsys/load-module.htm"><b>defsys:load-module</b></a>
+        <br>
+        <a href="operators/defsys/product-pathname.htm"><b>defsys:product-pathname</b></a></p>
+      </blockquote>
+    </blockquote>
+    <p id="135"><code>defsys:c-module</code></p>
+    <blockquote>
+      <p id="136">inherits from <code>defsys:foreign-module</code> and should
+      be used for C code modules. The following methods are specialized for <code>defsys:c-module</code>:</p>
+      <blockquote>
+        <p id="137"><a href="operators/defsys/compile-module.htm"><b>defsys:compile-module</b></a>
+        <br>
+        <a href="operators/defsys/source-pathname.htm"><b>defsys:source-pathname</b></a></p>
+      </blockquote>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+
+
+<hr><h2 id="138"><a name="defining-new-classes-2">6.2 Defining new classes</a></h2>
+
+<p id="139">By defining new subclasses of existing defsystem classes, it is
+possible to add new slots to defsystem objects and to write
+specialized methods on defsystem generic functions which will affect
+only objects of the new class.</p>
+
+<p id="140">If new classes are defined, defsystem needs to be told when to use
+them for creating defsystem objects. The following variables determine
+which classes the <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> macro will use when creating
+defsystem objects.</p>
+
+<p id="141">
+<a href="variables/defsys/s_default-system-class_s.htm"><code>*default-system-class*</code></a>
+<br>
+<a href="variables/defsys/s_default-module-group-class_s.htm"><code>*default-module-group-class*</code></a>
+<br>
+<a href="variables/defsys/s_default-module-class_s.htm"><code>*default-module-class*</code></a>
+</p>
+
+<p id="142">Another way to alter the module class used by the <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> macro is with <code>the
+:default-module-class</code> option, as described in table 1
+above.</p>
+
+
+
+<hr><hr><h2 id="143"><a name="extending-using-shared-initialize-1">7.0 Extending defsystem syntax through shared-initialize methods</a></h2>
+
+<p id="144">The syntax of the <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> macro can be extended through the
+use of <a href="../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a>
+methods. In order to understand how to extend the defsystem syntax,
+first it is necessary to explain how a defsystem form is processed to
+create the systems, module-groups and modules.
+</p>
+
+<p id="145">
+When <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> is called,
+the system name is looked up in a table of systems to determine if
+this is a new system definition or the system already exists. In the
+former case, a system object of class <a href="variables/defsys/s_default-system-class_s.htm"><code>*default-system-class*</code></a> is created for the
+system and the options list is passed to <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> as a list of initialization
+arguments. In the case of reinstalling an existing system, the
+existing system object is reinitialized with the new options list. In
+either case, <a href="../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a>
+is called to perform initialization of the object. The options are
+handled either by the <a href="../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> method for the system class
+which handles all slots that have initargs or by keyword arguments to
+an after-method of <a href="../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> defined for the system
+class. So new system options can be added in either of two ways: 
+</p>
+
+<ol>
+  <li id="146">by defining a new system class with a new slot where the initarg of the slot will be a
+    valid option.</li>
+  <li id="147">by defining an after-method of shared-initialize for the new system class which has a
+    keyword argument for the new option.</li>
+</ol>
+
+<p id="148">The list of module-specifications in the defsystem form is processed in a similar
+manner by <a href="../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> methods and after-methods handling the
+options for module-groups and modules.</p>
+
+<hr><h2 id="149"><a name="methods-specialized-2">7.1 Defsystem methods that can be specialized</a></h2>
+
+<p id="150">The following defsystem methods can be specialized to obtain
+customized behavior.</p>
+
+<p id="151"><a href="operators/defsys/source-pathname.htm"><b>defsystem:source-pathname</b></a>
+<br>
+<a href="operators/defsys/product-pathname.htm"><b>defsystem:product-pathname</b></a>
+<br>
+<a href="operators/defsys/get-pathname.htm"><b>defsystem:get-pathname</b></a>
+<br>
+<a href="operators/defsys/lookup-module-by-name.htm"><b>defsystem:lookup-module-by-name</b></a>
+<br>
+<a href="operators/defsys/default-file-type.htm"><b>defsystem:default-file-type</b></a>
+<br>
+<a href="operators/defsys/product-newer-than-source.htm"><b>defsystem:product-newer-than-source</b></a>
+<br>
+<a href="operators/defsys/product-newer-than-image.htm"><b>defsystem:product-newer-than-image</b></a>
+<br>
+<a href="operators/defsys/source-newer-than-image.htm"><b>defsystem:source-newer-than-image</b></a>
+<br>
+<a href="operators/defsys/containing-system.htm"><b>defsystem:containing-system</b></a>
+<br>
+<a href="operators/defsys/defsys-getf.htm"><b>defsystem:defsys-getf</b></a></p>
+
+
+
+<hr><hr><h2 id="152"><a name="extension-examples-1">8.0 Defsystem extension examples</a></h2>
+
+<p id="153">
+In this section, we provide a number of examples of extending
+defsystem. The examples are:
+</p>
+
+<blockquote>
+  <p id="154">
+  <a href="#new-system-example-2">Section 8.1 Example of defining a new system class</a>
+  <br>
+  <a href="#defining-new-operations-example-2">Section 8.2 Example of defining new system operations</a>
+  <br>
+  <a href="#directories-example-2">Section 8.3 Example of master and development directories</a>
+  <br>
+  <a href="#one-system-referencing-another-example-2">Section 8.4 Example of one system definition referencing another</a>
+  </p>
+</blockquote>
+
+<hr><h2 id="155"><a name="new-system-example-2">8.1 Example of defining a new system class</a></h2>
+
+<p id="156">As an example of defining and using a new system class, let's say
+we want a form to be evaluated after a system is loaded. We will need
+to create a subclass of <code>defsys:default-system</code> which
+will contain a new slot, <code>eval-after-load</code>. Then we
+will need a way to initialize this slot at system creation time, and a
+way to evaluate the form at system load time. For initialization we
+will want to add a new option to the <a href="operators/excl/defsystem.htm"><b>defsystem</b></a> macro, which can be done through the
+use of a shared-initialize method for our new system class. Evaluation
+of the form can be implemented with an around-method on the <a href="operators/excl/load-system.htm"><b>load-system</b></a> generic function.</p>
+
+<p id="157">First we will need to create the new system class. The following
+code defines a subclass of defsys:default-system with the new
+slot.</p>
+
+<pre id="158">
+(defclass mysystem (defsys:default-system)
+  ((eval-after-load :initform nil 
+                    :initarg :eval-after-load 
+                    :accessor eval-after-load)))
+</pre>
+
+<p id="159">Now to enable initialization of the eval-after-load slot, we will
+need to extend the <a href="operators/excl/defsystem.htm"><b>defsystem</b></a>
+macro syntax for this class by creating a shared-initialize
+after-method that takes an <code>:eval-after-load</code>
+keyword.</p>
+
+<pre id="160">
+(defmethod shared-initialize :after 
+                   ((new-system mysystem)
+                    slot-names 
+                    &key (eval-after-load nil e-a-l-supplied))
+  (declare (ignore slot-names))
+  (when e-a-l-supplied
+    (setf (eval-after-load new-system) eval-after-load)))
+</pre>
+
+<p id="161">Next, we need to define an around-method on <a href="operators/excl/load-system.htm"><b>load-system</b></a> so that the contents of the
+eval-after-load slot can be evaluated at system load time. In this
+method, we will first call the other methods to load the system, then
+check the return value to see if the system was loaded or not. If it
+was, then we evaluate the eval-after-load method.</p>
+
+<pre id="162">
+(defmacro mydefsystem (system-name options &body modules)
+  `(let ((defsys:*default-system-class* 'mysystem))
+     (excl:defsystem ,system-name ,options ,@modules)))
+</pre>
+
+<p id="163">Finally, we can define our system, which has an eval-after-load
+form to set a variable when the system is successfully loaded.</p>
+
+<pre id="164">
+(defvar *foo-system-loaded* nil)
+(mydefsystem :foo-system 
+   (:eval-after-load (setf *foo-system-loaded* t))
+      ("foo"))
+</pre>
+
+
+
+<hr><h2 id="165"><a name="defining-new-operations-example-2">8.2 Example of defining new system operations</a></h2>
+
+<p id="166">The following is a description of how system operations and module
+actions work together.</p>
+
+<p id="167">System operations recursively invoke methods on each of the
+components of the system.  The methods that are invoked are named
+<strong><em>foo</em>-module-action</strong>, where
+<strong><em>foo</em>-system</strong> is the name of the system
+operation. The <strong><em>foo</em>-module-action</strong> method for
+a component system invokes <strong><em>foo</em>-module-action</strong>
+on its components if <code>ds::.include-components.</code> is
+true. The
+<strong><em>foo</em>-module-action</strong> method for a module-group
+invokes <strong><em>foo</em>-module-action</strong> on each of its
+components. The <strong><em>foo</em>-module-action</strong> for a
+module decides if the <strong><em>foo</em>-module</strong> method
+needs to be called and calls it if necessary. The
+<strong><em>foo</em>-module-action</strong> methods also print
+messages about the actions that are being performed. In simulation
+mode, the <strong><em>foo</em>-module</strong> method is not called by
+the <strong><em>foo</em>-module-action</strong> method.</p>
+
+<p id="168">For example, <strong>load-module-action</strong> checks if the
+module has been loaded and if not, calls the
+<strong>load-module</strong> method to perform the actual
+load. <strong>compile-module-action</strong> and
+<strong>load-module-action</strong> are the only actions that do
+checking on the modules. The other module-actions unconditionally
+invoke the method to perform the action unless ds::.simulate-mode. is
+non-nil.</p>
+
+<p id="169">The following example demonstrates how to define a new system
+operation and the <strong>module-action</strong> methods that go along
+with the operation. This example implements a
+<strong>grep-system</strong> operation which searches each source file
+in the system for a given string. Note that this could be implemented
+more easily using <a href="operators/excl/map-system.htm"><b>map-system</b></a>, but this is just an example of
+defining new system operations and module actions.</p>
+
+<pre id="170">
+(defgeneric grep-system (system string &rest keys))
+ 
+(defmethod grep-system ((system-name symbol) string 
+                        &rest keys)
+  (apply #'grep-system (find-system system-name t) string keys))
+ 
+(defmethod grep-system ((system ds:default-system) string 
+                        &rest keys)
+  (dolist (module (ds:modules system))
+     (apply #'grep-module-action module string keys)))
+ 
+(defmethod grep-module-action ((system ds:default-system) string
+                               &rest keys
+                               &key &allow-other-keys)
+  (declare (ignore string keys)) 
+  ;; we want to ignore component systems, so do nothing
+  nil)
+ 
+(defmethod grep-module-action ((module-group ds:default-module-group)
+                               string
+                               &rest keys
+                               &key &allow-other-keys)
+  (dolist (module (ds:modules module-group)) 
+     (apply #'grep-module-action module string keys)))
+ 
+(defmethod grep-module-action ((module ds:default-module)
+                               string &rest keys
+                               &key (silent nil))
+  (declare (ignore keys))
+  (let ((source-namestring (namestring (ds:source-pathname module))))
+    (unless silent
+       (format t "Looking at ~a: ~%" source-namestring))
+    (excl:shell 
+       (concatenate 'string "grep " string "" 
+                    source-namestring))))
+</pre>
+
+
+
+<hr><h2 id="171"><a name="directories-example-2">8.3 Example of master and development directories</a></h2>
+
+<p id="172">This example involves creating new system, module-group and module
+classes and specializing <strong>defsystem</strong> methods for the
+new classes.</p>
+
+<p id="173">If a developer wants to edit a few files of a large file tree, but
+doesn't want to make a complete copy of the tree, he/she can define a
+system that looks for files first in the developer's copy of the tree,
+then in the master tree. If some modification is done that requires
+the recompilation of a source file not yet copied to the developer's
+tree, then <strong>defsystem</strong> will compile using the source in
+the master directory and put the fasl (product) file in the developer
+directory.</p>
+
+<p id="174">The default system and module classes will be subclassed with the
+new slots <code>master-directory</code> and
+<code>developer-directory</code>, that will contain the
+pathnames of the master and developer directories.</p>
+
+<p id="175">The <a href="operators/defsys/source-pathname.htm"><b>source-pathname</b></a>
+method will first look for the source file in the developer directory
+and then in the master directory.</p>
+
+<p id="176">The <a href="operators/defsys/product-pathname.htm"><b>product-pathname</b></a>
+method will always look in the developer directory.</p>
+
+<pre id="177">
+(defclass md-system (defsys:default-system)
+  ((master-directory :initform nil :initarg :master-directory
+                     :accessor master-directory)
+   (developer-directory :initform nil :initarg :developer-directory
+                        :accessor developer-directory)))
+ 
+(defclass md-module-group (defsys:default-module-group)
+  ((master-directory :initform nil :initarg :master-directory
+                     :accessor master-directory)
+   (developer-directory :initform nil :initarg :developer-directory
+                     :accessor developer-directory)))
+ 
+(defclass md-module (defsys:lisp-module)
+  ((master-directory :initform nil :initarg :master-directory
+                     :accessor master-directory)
+   (developer-directory :initform nil :initarg :developer-directory
+                         :accessor developer-directory)))
+ 
+(defmethod get-master-directory ((system md-system))
+  (master-directory system))
+ 
+(defmethod get-master-directory ((module-group md-module-group))
+  (or (master-directory module-group)
+      (get-master-directory (ds:parent-object module-group))))
+ 
+(defmethod get-master-directory ((module md-module))
+  (or (master-directory module)
+      (get-master-directory (ds:parent-object module))))
+ 
+(defmethod get-developer-directory ((system md-system))
+  (developer-directory system))
+ 
+(defmethod get-developer-directory ((module-group md-module-group))
+  (or (developer-directory module-group)
+      (get-developer-directory (ds:parent-object module-group))))
+ 
+(defmethod get-developer-directory ((module md-module))
+  (or (developer-directory module)
+      (get-developer-directory (ds:parent-object module))))
+ 
+(defmethod defsys:source-pathname ((module md-module))
+  ;; if file exists in developer directory then return that,
+  ;; else return the master directory pathname
+  (let* ((developer-directory (get-developer-directory module))
+         (file-name (defsys:module-file module))
+         (file-type (defsys:default-file-type module))
+         (pathname nil))
+    (setf pathname (merge-pathnames developer-directory
+                      (make-pathname :name file-name 
+                        :type file-type)))
+    (if (probe-file pathname)
+        pathname
+        (merge-pathnames (get-master-directory module)
+          (make-pathname :name file-name :type file-type)))))
+ 
+(defmethod defsys:product-pathname ((module md-module))
+  ;; always return pathname in developer directory
+  (merge-pathnames (get-developer-directory module)
+    (make-pathname :name (defsys:module-file module)
+                   :type excl:*fasl-default-type*)))
+ 
+;; This macro binds the class variables to our new classes 
+(defmacro md-defsystem (system-name options &body modules)
+   `(let ((defsys:*default-system-class* 'md-system)
+         
+(defsys:*default-module-group-class* 'md-module-group)
+          (defsys:*default-module-class* 'md-module))
+      (excl:defsystem ,system-name ,options ,@modules)))
+ 
+;; Here is an example of defining a system with our 
+;; new system options.
+(md-defsystem :sys1 (:master-directory #p"master/"
+                     :developer-directory #p"devel/"
+                     :default-file-type "cl")
+  (:parallel "filea" "fileb"))
+</pre>
+
+
+
+<hr><h2 id="178"><a name="one-system-referencing-another-example-2">8.4 Example of one system definition referencing another</a></h2>
+
+<p id="179">Given a system A and a second system B, how can one get system B to
+reference system A?</p>
+
+<pre id="180">
+;; file cross.cl:
+(defsystem :a ()
+  (:parallel "file1"
+             (:serial "filea" "fileb")))
+ 
+(defsystem :b ()
+  (:parallel :a
+             "file2"))
+ 
+user(3): :ld cross.cl
+t
+user(4): (compile-system :b)
+; Compiling system: "b".
+; Compiling system: "a".
+; Compiling module "file1" because the product file does not exist.
+; --- Compiling file /tmp/file1.cl ---
+; Writing fasl file "/tmp/file1.fasl"
+; Fasl write complete
+; Compiling module "filea" because the product file does not exist.
+; --- Compiling file /tmp/filea.cl ---
+; Writing fasl file "/tmp/filea.fasl"
+; Fasl write complete
+; Loading product for module: "filea".
+; Fast loading /tmp/filea.fasl.
+; Compiling module "fileb" because the product file does not exist.
+; --- Compiling file /tmp/fileb.cl ---
+; Writing fasl file "/tmp/fileb.fasl"
+; Fasl write complete
+; Loading product for module: "fileb".
+; Fast loading /tmp/fileb.fasl.
+; Compiling module "file2" because the product file does not exist.
+; --- Compiling file /tmp/file2.cl ---
+; Writing fasl file "/tmp/file2.fasl"
+; Fasl write complete
+t
+user(5): (load-system :b)
+; Loading system: "b".
+; Loading product for module: "file1".
+; Fast loading /tmp/file1.fasl.
+; Loading product for module: "file2".
+; Fast loading /tmp/file2.fasl.
+t
+user(6):
+</pre>
+
+
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/defsystem.htm">9.0 version</a></td></tr></table></html>

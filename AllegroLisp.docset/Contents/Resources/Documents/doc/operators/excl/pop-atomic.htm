@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>pop-atomic</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/pop-atomic.htm">9.0 version</a></td></tr></table><h2 id="2">pop-atomic</h2>
+
+<p id="3"><b>Arguments: </b><i>
+place
+</i></p>
+
+<p id="4">
+<a href="pop-atomic.htm"><b>pop-atomic</b></a> expands into
+code that acts like <a href="../../../ansicl/dictentr/pop.htm"><b>pop</b></a>
+with the same arguments except that the update
+to <i>place</i> is atomic with respect to all other
+processes looking at the same <i>place</i>. That is, any
+number of simultaneous <a href="push-atomic.htm"><b>push-atomic</b></a> and <a href="pop-atomic.htm"><b>pop-atomic</b></a> operations on the same location
+will act as if they occured sequentially in some unspecified order.
+</p>
+<p id="5">
+If you just used <a href="../../../ansicl/dictentr/push.htm"><b>push</b></a> and
+<a href="../../../ansicl/dictentr/pop.htm"><b>pop</b></a>, on say the
+list <code>(1 2 3)</code>, then two simulaneous pop's could both
+return 1 rather than one returning 1 and one returning 2. The list at
+the end of a series of simultaneous <a href="push-atomic.htm"><b>push-atomic</b></a>'s or
+simultaneous <a href="pop-atomic.htm"><b>pop-atomic</b></a>'s
+(but not both) will have the expected length and contents, although
+for a series of
+<a href="push-atomic.htm"><b>push-atomic</b></a>'s the order of
+the elements is not specified. The result of a series of
+combined <a href="push-atomic.htm"><b>push-atomic</b></a>'s
+and <a href="pop-atomic.htm"><b>pop-atomic</b></a>'s may have an
+indeterminant number of elements if all the elements of the list were
+popped before any new element were pushed.
+</p>
+<p id="6">
+<b>Note on the place argument</b>: not all places legal as the first
+argument of <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>
+can be used as the <b><i>place</i></b> argument to this
+macro. The list of allowable places can be found
+in <a href="../../smp.htm#read-write-2">Atomic read-modify-write
+primitives</a> in <a href="../../smp.htm">smp.htm</a>. 
+</p>
+
+
+<p id="7">
+See <a href="../../smp.htm">smp.htm</a>
+and <a href="../../multiprocessing.htm">multiprocessing.htm</a> for more information on
+this macro and on multiprocessing.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/pop-atomic.htm">9.0 version</a></td></tr></table></body></html>

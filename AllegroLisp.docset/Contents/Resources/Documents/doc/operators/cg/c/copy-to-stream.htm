@@ -1,0 +1,103 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>copy-to-stream</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-to-stream.htm">9.0 version</a></td></tr></table><h2 id="2">copy-to-stream</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pixmap-or-cursor stream 
+</i> &amp;optional <i>to-box-or-position from-box-or-nil</i> (<i>mode</i> po-replace)<i>alpha</i><i>
+</i></p>
+
+<p id="4">
+Copies a pixmap object or a cursor object to
+<i>stream</i>.  <i>stream</i> should be a
+<a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>. This function replaces
+the older function <a href="../c/copy-pixels-to-stream.htm"><b>copy-pixels-to-stream</b></a>, which
+required the use of separate texture and texture-info objects.
+</p>
+<p id="5">
+If <i>from-box-or-nil</i> is a box, this function copies
+the <i>from-box-or-nil</i> portion of 
+<i>pixmap-or-cursor</i> to the
+<i>to-box-or-position</i> portion of
+<i>stream</i>, using a particular pixel-combination
+mode. If <i>from-box-or-nil</i> is <code>nil</code>, the whole pixmap or cursor is copied.
+</p>
+<p id="6">
+If <i>to-box-or-position</i> is a box, the 
+<i>pixmap-or-cursor</i> is
+copied to that box and is stretched (if necessary) as with
+<a href="../c/copy-pixels-to-stream.htm"><b>copy-pixels-to-stream</b></a>. If
+<i>to-box-or-position</i> is a position, then the pixmap
+or cursor is copied without stretching so its upper left corner is at the
+position. If <i>to-box-or-position</i> is
+<code>nil</code> (the default), then
+the pixmap or cursor is copied without stretching to position 0,0 of
+<i>stream</i>.
+</p>
+<p id="7">
+If <i>pixmap-or-cursor</i> has a mask texture, then
+<a href="../c/copy-pixels-with-mask-to-stream.htm"><b>copy-pixels-with-mask-to-stream</b></a> is
+called internally in order to use it. Otherwise <a href="../c/copy-pixels-to-stream.htm"><b>copy-pixels-to-stream</b></a> is called
+internally. If <i>pixmap-or-cursor</i> has a <a href="../p/pixmap-handle.htm"><b>pixmap-handle</b></a>, then that
+is used for drawing the pixmap, and otherwise the pixmap's texture is
+used.
+</p>
+<p id="8">
+<i>mode</i> may be any value that is valid as the
+<a href="../p/paint-operation.htm"><b>paint-operation</b></a> of a stream.
+<a href="../c/copy-to-stream.htm"><b>copy-to-stream</b></a> always uses the
+value of this <i>mode</i> argument, rather than using
+the stream's current <a href="../p/paint-operation.htm"><b>paint-operation</b></a> as other drawing functions do.
+The default value is <a href="../../../variables/cg/po-replace.htm"><code>po-replace</code></a>. See <a href="../p/paint-operation.htm"><b>paint-operation</b></a> for more information on the
+various choices.
+</p>
+
+<p id="9">
+The <b><i>alpha</i></b> argument is used only on
+Windows, and only when the variable <a href="../../../variables/cg/s_alpha-blending_s.htm"><code>*alpha-blending*</code></a> is true. It can create
+translucent effects where the existing background partly "shows
+through" the pixmap that is being displayed.  Its value should be
+either nil or an integer between 0 and 255 inclusive.  If
+255, <code>nil</code>, or unspecified, the pixmap will be
+drawn with full opacity. Otherwise the value specifies the amount of
+opacity, where 0 would make the pixmap completely transparent and
+unseen (not useful), and where for example 192 would let the previous
+background show through by one-fourth. See the variable
+<a href="../../../variables/cg/s_alpha-blending_s.htm"><code>*alpha-blending*</code></a> for
+more information.
+</p>
+
+<p id="10">
+Instead of passing a pixmap object, you can alternately pass
+either a cursor object, a pixmap handle, or a symbol that is bound to
+a pixmap, cursor, or pixmap handle.
+<a href="../c/copy-to-stream.htm"><b>copy-to-stream</b></a> will not work on a
+cursor object if calling <a href="../t/texture.htm"><b>texture</b></a> on it returns <code>nil</code>, as is the case with several cursors supplied by
+the operating system, because Common Graphics does not have the pixel
+array to copy.
+</p>
+
+
+<p id="11">
+To fill an area by tiling a pixmap rather than by stretching it, call
+<a href="../r/replicate-pixmap.htm"><b>replicate-pixmap</b></a> instead.
+</p>
+<p id="12">
+For an overview of pixmaps,
+see <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a>.
+</p>
+
+
+<h3 id="13">
+GTK Note
+</h3>
+
+<p id="14">
+If the pixmap has a mask and a call to <a href="../c/copy-to-stream.htm"><b>copy-to-stream</b></a> stretches the pixmap, then the
+masking will not be done correctly.  We don't know whether we will
+find a reasonable way to make this work in the future.
+</p>
+
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>The object described on this page has been modified in the 10.0 release; see the Release Notes.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Object described on page has changed in 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/copy-to-stream.htm">9.0 version</a></td></tr></table></body></html>

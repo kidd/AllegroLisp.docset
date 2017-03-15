@@ -1,0 +1,3346 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Delivering Applications</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/delivery.htm">9.0 version</a></td></tr></table><h1 id="2">Delivering Applications</h1><p id="3">This document contains the following sections:</p><a href="#delivery-intro-1">1.0 Delivery introduction</a><br><a href="#delivery-definitions-1">2.0 Definitions</a><br><a href="#delivery-preparation-1">3.0 Developing the application and preparing for delivery</a><br>&nbsp;&nbsp;&nbsp;<a href="#delivery-summary-2">3.1 A summary of the delivery process</a><br>&nbsp;&nbsp;&nbsp;<a href="#licensing-2">3.2 Legal and licensing issues</a><br>&nbsp;&nbsp;&nbsp;<a href="#necessary-features-2">3.3 Deciding on necessary features</a><br>&nbsp;&nbsp;&nbsp;<a href="#user-interaction-2">3.4 Deciding on top-level (user interaction)</a><br>&nbsp;&nbsp;&nbsp;<a href="#packaging-2">3.5 Packaging the product</a><br>&nbsp;&nbsp;&nbsp;<a href="#including-modules-2">3.6 Including all desired modules</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ssl-module-3">3.6.1 Including the SSL module: issues with OpenSSL libraries</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ssl-lib-version-3">3.6.2 Minimum required version of OpenSSL</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#disasm-module-3">3.6.3 The :disasm module is needed for backtraces</a><br>&nbsp;&nbsp;&nbsp;<a href="#init-functionality-2">3.7 Defining the init functionality</a><br>&nbsp;&nbsp;&nbsp;<a href="#initial-package-2">3.8 Specifying the initial value of *package*</a><br>&nbsp;&nbsp;&nbsp;<a href="#logical-pathnames-2">3.9 Setting up logical pathname translations</a><br>&nbsp;&nbsp;&nbsp;<a href="#shared-libraries-2">3.10 Use of shared libraries (foreign files)</a><br>&nbsp;&nbsp;&nbsp;<a href="#clos-training-2">3.11 CLOS training</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#gfs-3">3.11.1 Generic functions, method combination, and discrimination </a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#effective-methods-3">3.11.2 Effective methods </a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#caches-3">3.11.3 Caches for fast dispatching </a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#constructor-functions-3">3.11.4 Constructor functions </a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#clos-start-up-3">3.11.5 How to do CLOS start up optimizations</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#make-instance-3">3.11.6 make-instance optimization </a><br><a href="#creating-deliverable-1">4.0 Creating the deliverable</a><br>&nbsp;&nbsp;&nbsp;<a href="#resources-2">4.1 Resources</a><br>&nbsp;&nbsp;&nbsp;<a href="#defsystem-2">4.2 Defsystem</a><br>&nbsp;&nbsp;&nbsp;<a href="#tuning-2">4.3 Tuning the application</a><br>&nbsp;&nbsp;&nbsp;<a href="#devel-env-2">4.4 More on the development environment</a><br>&nbsp;&nbsp;&nbsp;<a href="#gc-parameters-2">4.5 GC parameters and switches</a><br>&nbsp;&nbsp;&nbsp;<a href="#gc-cursors-2">4.6 GC cursors</a><br>&nbsp;&nbsp;&nbsp;<a href="#allegro-presto-2">4.7 Allegro Presto</a><br>&nbsp;&nbsp;&nbsp;<a href="#runtime-2">4.8 Allegro Runtime</a><br>&nbsp;&nbsp;&nbsp;<a href="#windows-specific-2">4.9 Windows specific information</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#console-control-3">4.9.1 The console window in applications</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#icon-file-3">4.9.2 Icon files suitable as a value for icon-file</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#console-apps-3">4.9.3 Creating a Console APP on Windows</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#version-info-3">4.9.4 Setting the VERSIONINFO of the application executable on Windows</a><br>&nbsp;&nbsp;&nbsp;<a href="#windows-install-2">4.10 Installation of your application on Windows using the Install Wizard</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#uninstallation-3">4.10.1 Uninstalling an application on Windows</a><br>&nbsp;&nbsp;&nbsp;<a href="#testing-delivery-2">4.11 Testing your application</a><br>&nbsp;&nbsp;&nbsp;<a href="#expiration-warning-2">4.12 Expiration warnings</a><br><a href="#generate-executable-1">5.0 generate-executable: a wrapper for generate-application</a><br><a href="#user-configuration-1">6.0 Users of your app must have necessary software installed (such as X11 and GTK)</a><br><a href="#patching-after-delivery-1">7.0 Updating your application after delivery</a><br>&nbsp;&nbsp;&nbsp;<a href="#patch-naming-2">7.1 The Allegro CL update naming scheme</a><br>&nbsp;&nbsp;&nbsp;<a href="#loading-patches-2">7.2 Loading Allegro CL patches</a><br>&nbsp;&nbsp;&nbsp;<a href="#app-patches-2">7.3 Patches for your application</a><br>&nbsp;&nbsp;&nbsp;<a href="#creating-patches-2">7.4 Creating patch files in general</a><br>&nbsp;&nbsp;&nbsp;<a href="#creating-patch-file-2">7.5 Creating a patch file</a><br>&nbsp;&nbsp;&nbsp;<a href="#placing-patch-files-2">7.6 What to do with patch files</a><br>&nbsp;&nbsp;&nbsp;<a href="#including-patches-2">7.7 Including application patches in an image at build time</a><br>&nbsp;&nbsp;&nbsp;<a href="#superseding-patches-2">7.8 Superseding a patch</a><br>&nbsp;&nbsp;&nbsp;<a href="#withdrawing-patches-2">7.9 Withdrawing a patch</a><br>&nbsp;&nbsp;&nbsp;<a href="#distributing-patches-2">7.10 Distributing patches</a><br>&nbsp;&nbsp;&nbsp;<a href="#loading-patches-2">7.11 Loading patches</a><br><a href="#ntservice-app-1">8.0 Turning your application into a Windows Service</a><br>&nbsp;&nbsp;&nbsp;<a href="#ntservice-functions-2">8.1 ntservice functions</a><br>&nbsp;&nbsp;&nbsp;<a href="#ntservice-tutorial-2">8.2 ntservice tutorial</a><br><hr><hr><h2 id="4"><a name="delivery-intro-1">1.0 Delivery introduction</a></h2>
+
+<p id="5">
+This document describes the application generation utility in
+Allegro CL. The facility differs from the image creation utility (see
+<a href="building-images.htm">building-images.htm</a>) in that the end result is not
+a single image file but a directory of files in theory suitable to be
+delivered to customers after suitable packaging. The main operator for
+creating deliverable application is <a href="operators/excl/generate-application.htm"><b>excl:generate-application</b></a>. It and related
+functionality are named by symbols in the <code>:excl</code>
+package. They are in the <code>:genapp</code> module (which is
+autoloaded if necessary when relevant operators are called)
+</p>
+
+<hr><hr><h2 id="6"><a name="delivery-definitions-1">2.0 Definitions</a></h2>
+
+<ul>
+  <li id="7"><strong>Application</strong>: an application is a set of files, including an executable
+    image or shared library, and perhaps additional files, some or all of which are needed for
+    the application to run successfully.</li>
+  <li id="8"><strong>Executable</strong>: an executable is a file that can be executed by the host
+    operating system. This file is typically quite small and it is the program seen as
+    running when the application is active. The memory usage of the program also depends on
+    the <em>image</em> (see below). The executable is also called an <em>.exe</em> (from
+    the file extension used in Microsoft Windows).</li>
+<li id="9">
+<strong>Shared library</strong>: a shared library is an operating
+system entity that can be loaded and accessed from within
+Lisp. Allegro CL itself is partially implemented in a shared library.
+</li>
+<li id="10">
+<strong>Image</strong>: an image file contains the Lisp heap portion
+of the application and necessary parts of Lisp.  Images are created
+with <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+or <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a>. Those created
+with <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> have
+a <em>parent image</em> (the image running when <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> is called). Characteristics of a
+parent image are inherited by a child image created
+with <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a>. See
+also <em>original image</em>.
+</li>
+  <li id="11"><strong>Original image</strong>: an image which was part of the original Allegro CL
+    installation.  Any files referenced by the original image must be present when any
+    descendent image is run.</li>
+  <li id="12"><strong>Parent image</strong>: if an image is created with <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a>, the image running when <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> is called is the parent
+    image. The child image, that created by <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a>,
+    inherits characteristics of the parent image.</li>
+  <li id="13"><strong>Programmer</strong>: a person who develops the application, perhaps part of a
+    team.  This person is also called a developer.</li>
+  <li id="14"><strong>User</strong>: a person who uses the application developed by the programmer.</li>
+  <li id="15"><strong>VAR</strong>: a value added reseller.  In the context of this document,
+    they are the user of Allegro CL (e.g., a <em>programmer</em> as defined above) who creates
+    the application delivered to a <em>user</em> (also defined above).</li>
+  <li id="16"><strong>Top-level</strong>: the part of the Lisp that receives control when an image is
+    loaded by the Lisp executable.  The program that gets control can either be graphical
+    (a Windows and X Windows program) or console based.  If console based, it
+    interactively receives input from a user and prints information to the user while the
+    application is running.  Command-line arguments and input files read by the
+    application and output files written by the application are not part of the top-level.</li>
+  <li id="17"><strong>Allegro directory</strong>: the directory in which the Lisp executable resides
+    and the location where files needed while Allegro CL is running can be found. The <em>sys</em>
+    logical pathname host translates to this directory. In some contexts, <em>Allegro
+    directory</em> refers to the directory where Allegro CL was installed (since in typical
+    practice they are the same directory). The Allegro directory is also sometimes called the <em>Allegro
+    CL home directory</em> or <em>home location</em> (names used with earlier releases on
+    Unix). In this document, <em>[home location]/foo</em>, <em>[Allegro
+    directory]/foo</em> and <em>sys:foo</em> are the same. The name 
+    <em>home</em> has
+    nothing to do with a user's home directory on Unix.</li>
+</ul>
+
+<hr><hr><h2 id="18"><a name="delivery-preparation-1">3.0 Developing the application and preparing for delivery</a></h2>
+
+<hr><h2 id="19"><a name="delivery-summary-2">3.1 A summary of the delivery process</a></h2>
+
+<p id="20">
+<a href="operators/excl/generate-application.htm"><b>generate-application</b></a> and
+<a href="operators/excl/generate-executable.htm"><b>generate-executable</b></a> are the
+functional entry point for developers to deliver an application.
+(Note that <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> and <a href="operators/excl/generate-executable.htm"><b>generate-executable</b></a> are only available in
+Enterprise versions of Allegro CL.)  
+</p>
+<p id="21">
+On Windows when you use the Integrated Development Environment, much
+of the file handling and such is done using projects.  When you have a
+project defined, you build an application using the IDE menu option
+<a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> (which calls <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> on a project).  In this
+document, we describe <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> rather than the <a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> menu command, but what we say about <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> broadly applies
+to building applications using projects (thus most of the subsections
+of <a href="#creating-deliverable-1">Section 4.0 Creating the deliverable</a> apply). See <a href="cg/ide-ug/ide_user_guide_4.htm">IDE User
+Guide, chapter 4: Projects</a> for discussion of projects.
+</p>
+<p id="22">
+On Unix or on Windows without the IDE, the task of <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is to build and assemble
+the files for the developer's application into a single
+directory. This directory has many purposes. As a developer, you might
+want to:
+</p>
+
+<ol>
+  <li id="23">Test your application under non-development conditions.</li>
+  <li id="24">Test your application on another machine, to shake out 
+      any environmental dependencies in
+    your application.</li>
+  <li id="25">Package your application for delivery to your customers.</li>
+</ol>
+
+<p id="26">For the purposes of this document, it does not matter what the
+motivation of the developer is, <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is used in the same
+way.</p>
+
+<p id="27">There are three distinct delivery types, as: </p>
+
+<ol>
+<li id="28">
+an <em>.exe</em> (Allegro
+CL is in control even though the user might not be able to tell
+this),
+</li>
+<li id="29">
+<strong>[MS Windows only]</strong> an OLE in-proc server (the
+application is started via OLE calls in another application), and
+</li>
+<li id="30">
+a shared library.
+</li>
+</ol>
+
+<p id="31">(1) is the most common case, by far. (3) is what is commonly called
+<em>Lisp as a subroutine</em>. (2) requires registration, either
+implicit or explicit. In the OLE samples there are examples of
+both.</p>
+
+<p id="32">
+It is important to understand that <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> calls <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> and the latter starts a new
+(operating system) process to build the requested image.  Any errors
+that occur during the building of the image will be handled in the
+other process.  The development environment of the originating process
+(the one in which the call to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> was made) cannot be used
+to debug the problem in the image creating process.
+</p>
+
+<p id="33">
+See <a href="building-images.htm#build-debug-1">Debugging an image build problem or failure</a> in
+<a href="building-images.htm">building-images.htm</a> for more information on debugging
+the image creating process.
+</p>
+
+
+
+<hr><h2 id="34"><a name="licensing-2">3.2 Legal and licensing issues</a></h2>
+
+<p id="35">
+If you want to distribute your applications outside your
+organization or inside your organization to users with machines not
+licensed to run Allegro CL, you must be licensed to do so by Franz
+Inc. One type of license that allows distribution is an Allegro
+Runtime license. See <a href="runtime.htm">runtime.htm</a>. Please
+contact your Franz Inc. account manager for information on licensing
+applications.
+</p>
+
+
+
+<hr><h2 id="36"><a name="necessary-features-2">3.3 Deciding on necessary features</a></h2>
+
+<p id="37">You need all the features necessary to run your application
+(whatever they may be). Certain items, like the debugger, the
+inspector, the tracer, will not be present in an image unless
+explicitly used or called for. If you are preparing a runtime
+delivery, be sure to check the Allegro CL runtime license to see what
+modules cannot be included in the image. See 
+<a href="#including-modules-2">Section 3.6 Including all desired modules</a> for
+information on insuring all needed and licensed functionality is
+included in the delivery image.</p>
+
+<p id="38">
+<a href="operators/excl/generate-application.htm"><b>generate-application</b></a> only
+builds runtime images (see <a href="runtime.htm">runtime.htm</a>). The value
+of the <em>runtime</em> keyword argument to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> (actually, it is a
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> argument
+accepted by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>) must be one of
+<code>:standard</code> (the default),
+<code>:dynamic</code> or <code>:partners</code>. If
+<code>:standard</code>, the compiler cannot be in the final
+image. You must either specify <em>include-compiler</em>
+&nbsp;<code>nil</code> or
+<em>include-compiler</em> &nbsp;<code>t</code> and
+<em>discard-compiler</em> &nbsp;<code>t</code>. The
+latter choice allows the compiler to be present during the build,
+which is sometimes useful. The compiler may be included in a Dynamic
+Allegro Runtime image (value of <em>runtime</em>
+&nbsp;<code>:dynamic</code>) and in a Partner's Runtime
+image (value of <em>runtime</em>
+&nbsp;<code>:partners</code>). Partner's Runtime is
+described in <a href="runtime.htm#partners-2">Allegro CL
+Partner's Runtime</a> in <a href="runtime.htm">runtime.htm</a>.
+</p>
+
+<h3 id="39">
+External formats and locale where the application is run
+</h3>
+
+<p id="40">
+Allegro CL supports non-ASCII character sets and allows the
+specification of a locale that specifies the standard character set
+to be used. If the locale where the application being generated by
+<a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is
+different from the locale on the machine where the application is
+generated, then the necessary code for switching external formats must
+be included in the image or available to the application. This is most
+easily done by specifying the <i>runtime-bundle</i>
+keyword argument true. See <a href="iacl.htm#locales-in-apps-2">Locales in applications</a> in
+<a href="iacl.htm">iacl.htm</a>.
+</p>
+
+
+
+<hr><h2 id="41"><a name="user-interaction-2">3.4 Deciding on top-level (user interaction)</a></h2>
+
+<p id="42">Are your users going to interact with your application through the
+Lisp top-level (so they will enter Lisp forms or at least one Lisp
+form), through a custom top-level of your own, or will users interact
+with your application via some graphical user interface? (Of course,
+some applications may have no top-level -- that is, little or no user
+interaction is necessary.) </p>
+
+<p id="43">
+If your application has a custom top-level, you must write its
+functionality and have it initiated when your application image
+starts. You do this by having the function that is the value of
+<a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>
+initiate your top-level. If your application has no top-level, then
+the value of <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a> should be the function
+that starts your application running. 
+</p>
+
+<p id="44">
+If you want to use the standard Lisp top-level, leave the value of
+<a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>
+&nbsp;<code>nil</code>. Any initializations that
+are necessary can be done by the function that is the value of <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a>.</p>
+
+<p id="45">
+<b>Warning for users calling generate-application from the IDE:</b>
+the value of <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> may be a function which
+starts the IDE. That value will be inherited if the
+<i>restart-init-function</i> keyword argument
+to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+(or <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>) is
+unspecified. If the value of
+the <code>:restart-app-function</code>
+is <code>nil</code> (because you want to use the standard
+top level), the value of <code>:restart-init-function</code>
+should either be <code>nil</code> or the bname of a
+function which will do desired initializations.
+</p>
+
+<p id="46">A minimal top-level is provided if you build an image with the
+<em>include-tpl</em> argument to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> (or <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, which accepts <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> arguments). See 
+<a href="building-images.htm#minimal-top-levels-1">Minimal top
+levels</a> in <a href="building-images.htm">building-images.htm</a>
+for more information.</p>
+
+
+
+<hr><h2 id="47"><a name="packaging-2">3.5 Packaging the product</a></h2>
+
+<p id="48">In the past, it was possible to deliver an application as a single
+file (called a <em>standalone application</em>). This is no longer
+possible. We have, however, created a precise method to help you
+easily create and identify all the necessary parts of your application
+for it to be complete. <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is the entry point to
+creating your application. This function creates a directory
+containing all the files making up your application.</p>
+
+
+
+<hr><h2 id="49"><a name="including-modules-2">3.6 Including all desired modules</a></h2>
+
+<p id="50">
+A standard Allegro CL image on startup does not contain all the system
+modules that a program may invoke. Instead, certain modules are left
+out (and contained in the bundle file, typically <em>sys:files.bu</em>
+but the name varies, or in a <em>fasl</em> file in
+<em>sys:;code;</em>, the <i>code/</i> subdirectory of
+the Allegro directory). When a module is called for with <a href="../ansicl/dictentr/provider.htm"><b>require</b></a>, it is looked for according to
+the <a href="variables/system/s_require-search-list_s.htm"><code>*require-search-list*</code></a>, which usually looks
+in <em>sys:;code;</em> and, if it is not there, in the bundle file
+(which is essentially a collection of <em>fasl</em> files). Further,
+when an important function associated with the facility is called
+(e.g. <a href="../ansicl/dictentr/traceunt.htm"><b>trace</b></a> for the trace
+module, <a href="operators/ff/def-foreign-call.htm"><b>def-foreign-call</b></a> for the foreign
+module, etc.), the system detects that the module must be loaded and
+loads it automatically (a process called autoloading, see <a href="implementation.htm#autoloading-1">Autoloading</a> in
+<a href="implementation.htm">implementation.htm</a>).
+</p>
+
+
+<p id="51">
+However, the bundle file supplied with the distribution,
+<em>files.bu</em> or whatever it is named, generally cannot be
+distributed with applications. (It is explicitly forbidden to
+distribute the bundle file, usually <em>files.bu</em> but the name
+varies, with a runtime image. If you have a VAR license, you may or
+may not be allowed to distribute the bundle file, depending on the
+terms of the license. In this document, we assume you are not
+permitted to distribute the bundle file. If you have any questions
+about licensing issues, please contact your Franz Inc. account
+manager. If you have an Allegro Runtime license, see
+<a href="runtime.htm">runtime.htm</a>)
+</p>
+
+<p id="52">
+There is, however, a bundle file specifically for a runtime
+application. Specify <code>:runtime-bundle t</code> in your call
+to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> and
+a <em>files.bu</em> will be created and placed in the application
+directory. This file may be distributed with your application.
+</p>
+<p id="53">
+If you are creating an application on Windows using the IDE project
+system, there is a tool for finding necessary modules. See the
+description of the <b>Find Required CG Modules</b> button on the
+<a href="ide-menus-and-dialogs/project-manager-dialog-include.htm">Project
+Manager Include Tab</a>
+</p>
+
+<p id="54">
+Or you can ensure that all desired modules are loaded into the image.
+The remainder of this section describes how to do that in case you do
+not want to use the runtime bundle option.
+</p>
+<p id="55">
+The file <em>sys:develenv.cl</em> contains a list of <a href="../ansicl/dictentr/provider.htm"><b>require</b></a>'s that load optional
+functionality for the Lisp development environment. Some of the
+<a href="../ansicl/dictentr/provider.htm"><b>require</b></a>'s in this file are
+explicitly forbidden by your Allegro CL Runtime or Allegro CL Dynamic
+Runtime license agreements, and those are identified by comments. Do
+not modify that file but rather copy it or the desired parts of it to
+your own file for use with your own application.
+</p>
+
+<p id="56">
+You should <a href="../ansicl/dictentr/provider.htm"><b>require</b></a> the modules
+you need for your application to work properly. Check the
+<i>autoloads.out</i> file generated when the
+<i>autoload-warning</i> keyword argument to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is specified
+true (the default when <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is called). That will
+tell you what modules might be autoloaded in your application and you
+can decide whether it is necessary to include the module. (Just
+because a module might be autoloaded, that does not mean that it will
+be autoloaded in your application.  Modules are typically autoloaded
+when an important function associated with the module is called. If
+your application does not call a function that triggers an autoload,
+the autoload won't occur.)
+</p>
+<p id="57">
+<i>autoloads.out</i> actually identifies the files that
+will be autoloaded. A module name is the keyword symbol whose name is
+the filename. Thus, the name of the module associated with the file
+<i>acldns.fasl</i> is <code>:acldns</code>. The
+form <code>(require :acldns)</code> causes the file
+<i>acldns.fasl</i> to be loaded.
+</p>
+
+<p id="58">
+Note that the value of the <i>autoload-warning</i>
+argument can be a string naming a file (perhaps including directory
+information). If it is, the information will be written to that file
+rather than <i>autoloads.out</i>
+</p>
+
+<p id="59">If you determine a module which a function might autoload is not
+needed in your application, you should consider <a href="../ansicl/dictentr/fmakunbo.htm"><b>fmakunbound</b></a>'ing the function, so calling it
+generates an undefined function error rather than a file not found
+error (in a runtime application with no bundle file, an error of some
+sort will be signaled when a function that triggers an autoload is
+called).</p>
+
+<hr><h2 id="60"><a name="ssl-module-3">3.6.1 Including the SSL module: issues with OpenSSL libraries</a></h2>
+
+<p id="61">
+A change made to Allegro CL in June, 2016, which affected all
+supported versions, made it link to the latest OpenSSL libraries at
+run time rather than linking to a specific OpenSSL library. The way
+OpenSSL is linked to is described in <a href="socket.htm#ssl-1">The Allegro CL SSL API</a>
+in <a href="socket.htm">socket.htm</a>.
+</p>
+<p id="62">
+The change required some modification to the way delivery images link
+to OpenSSL libraries. When a delivery image is created, the names of
+linked libraries are stored and they are relinked when the image is
+started. Some libraries are identified as system libraries and are
+searched for in standard locations on the machine running the delivery
+image, others are copied into the delivery directory and included with
+the distribution.
+</p>
+<p id="63">
+However, neither of these methods worked with OpenSSL
+libraries. OpenSSL libraries change regularly and newer versions
+usually have different names from earlier versions. Thus copying the
+libraries from the build machine into the delivery directory means
+that the application will not see updated OpenSSL libraries. And the
+names of the libraries on the build machine may be different from the
+names on the delivery machine (or the names of the latest versions of
+the libraries). That is why (as described
+in <a href="socket.htm#ssl-1">The Allegro CL SSL
+API</a> in <a href="socket.htm">socket.htm</a>) when the :ssl module
+is loaded, the system searches for the latest libraries using a
+moderately complex algorithm.
+</p>
+<p id="64">
+This library search method is now done in delivery images. Note (for
+licensing reasons) you cannot load the :ssl module into a delivery
+image: it must be included when the image is built. It will be if :ssl
+is included in the list of files to be loaded (which is the third
+required (<i>input-files</i>) argument
+to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>). Loading it will link to
+the latest libraries on the build machine but those libraries will be
+marked so the system will not look for them when the delivery image
+starts up. Instead, it will use the same algorithm used whe the :ssl
+module is loaded and so will find the latest OpenSSL libraries
+available on the delivery machine.
+</p>
+<p id="65">
+You may have to tweak the value of <a href="variables/excl/s_ssl-library-names_s.htm"><code>*ssl-library-names*</code></a> to make it suitable for
+the delivery image. The Allegro CL library aclissl.[so/dll] or
+aclssl.[so/dll] -- which depends on whether you are creating a 16-bit
+cheracter image or 8-bit character image -- must be copied into the
+delivery directory but that happens automatically if the
+copy-shared-libraries argument to generate-application has its default
+value of t.
+</p>
+<p id="66">
+If you want the delivery image to use specific OpenSSL libraries, make
+sure you copy those libraries into the delivery directory,
+modify <a href="variables/excl/s_ssl-library-names_s.htm"><code>*ssl-library-names*</code></a> to include the library
+names (except on Windows and the Mac, where that variable is ignored)
+and make sure that the delivery directory is firt in
+LD_LIBRARY_PATH. Wanted a specific rather than the latest OpenSSL
+library is very unusual.
+</p>
+
+
+
+<hr><h2 id="67"><a name="ssl-lib-version-3">3.6.2 Minimum required version of OpenSSL</a></h2>
+
+<p id="68">
+Our :ssl module will only work with specific versions of OpenSSL.
+Those versions are given in <a href="release-notes.htm#openssl-version-2">Required versions of OpenSSL needed for the
+:ssl module</a> in the <a href="release-notes.htm">release-notes</a>. If your
+application uses foreign libraries that use OpenSSL, those foreign
+libraries must be compatible with a version of OpenSSL compatible with
+our :ssl module. Otherwise, our :ssl module cannot be used.
+</p>
+
+
+
+
+
+
+<hr><h2 id="69"><a name="disasm-module-3">3.6.3 The :disasm module is needed for backtraces</a></h2>
+
+<p id="70">
+You must include the <b><code>:disasm</code></b> (disassembly)
+module in order to get a backtrace with
+the <a href="tpl-commands/zoom.htm"><b>:zoom</b></a> top-level command (or in
+any other way). However, <code>:disasm</code> may not appear in
+the list of missing modules because backtraces are (usually) not
+triggered during an image build.  Include <code>:disasm</code>
+in the list which is the value of
+the <b><i>input-files</i></b> (third required) argument
+to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> to ensure you can
+get a backtrace is needed.
+</p>
+
+<p id="71">
+In releases prior to 10.0, the runtime license forbade including the
+<code>:disasm</code> module in a delivery image
+(<code>:disasm</code> was not needed for backtraces in earlier
+releases). That is now changed and you are permitted to include
+<code>:disasm</code>. However, you may find text in the code or
+documentation which still incorrectly says a runtime cannot include
+<code>:disasm</code>. Ignore those
+statements. <code>:disasm</code> can be in runtimes and is
+needed for backtraces.
+</p>
+
+
+
+
+
+
+
+
+<hr><h2 id="72"><a name="init-functionality-2">3.7 Defining the init functionality</a></h2>
+
+<p id="73">
+Look at the file <em>sys:;src;aclstart.cl</em> (that is, the file
+<i>aclstart.cl</i> in the <i>src/</i> of
+the Allegro directory). It is the source for the startup routine used
+by Lisp (the function <strong>start-lisp-execution</strong>) along
+with the sources for some ancillary functionality. (Note that the
+low-level initialization, including mapping of <em>.so/.dll</em> files
+built with the image -- systems libraries and others -- has already
+been performed when <strong>start-lisp-execution</strong> is called.
+As with any UNIX or Windows program, failure to find a needed shared
+object or Library file (so/sl/dll) during the low-level startup causes
+immediate program failure usually accompanied by a terse message
+identifying the unfound file. <a href="operators/ff/list-all-foreign-libraries.htm"><b>list-all-foreign-libraries</b></a> can be
+used to identify dependencies on <em>.so</em>, <em>.sl</em> and
+<em>.dll</em> files.)
+</p>
+
+
+
+<p id="74">
+Examining the source for <strong>start-lisp-execution</strong> will
+tell you the exact sequence of operations -- when the command-line
+arguments are processed, when the init files are read, etc., so you
+can know in what order to do things. The startup sequence is also
+given in <a href="startup.htm">startup.htm</a>.
+</p>
+
+<p id="75">
+There are several places where a programmer can intervene in the
+startup process. One relatively early place is the restart-actions
+list (the value of <a href="variables/excl/s_restart-actions_s.htm"><code>*restart-actions*</code></a>). Please note that this list
+may be used by Allegro CL or related functionality (such as
+CLIM). Therefore, you should add to the list but do not remove items
+from it or destroy it. Even earlier, -e command-line arguments are
+processed (assuming command-line arguments are not ignored by the
+image).  Slightly later (but with a different interface), the
+ACL_STARTUP_HOOK environment variable is examined. If it has a value,
+that value is read by <a href="../ansicl/dictentr/read-fro.htm"><b>read-from-string</b></a> and the result is evaluated.
+</p>
+
+<p id="76">
+The final two locations for programmer intervention in startup are the
+functions which are the values of <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> and <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>. As you
+may see from <i>aclstart.cl</i> (found in the
+<i>src/</i> subdirectory of the Allegro directory), if
+<a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> is
+true, it is assumed to name a function with no
+arguments and that function is <a href="../ansicl/dictentr/funcall.htm"><b>funcall</b></a>'ed. The purpose of
+excl:*restart-init-function* is to perform application initializations
+of any sort.
+</p>
+
+<p id="77">
+After <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> completes, either
+<a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>
+is <a href="../ansicl/dictentr/funcall.htm"><b>funcall</b></a>'ed (if it is
+true) or a standard Lisp listener is started (but
+not both). If your application has its own top-level, it should be
+started with <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>. (Or if no top-level is
+needed, <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a> would perform whatever
+your application does.) Note that the function that is the value of
+<a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>
+must not return. The consequences are undefined if it does return.
+</p>
+
+<p id="78">
+It is entirely your choice whether you use your own top-level or use
+the Lisp top-level. Note too that if you are using the normal top
+level, that is the image was built with the include-tpl argument to
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>&nbsp;
+true, you can start a Lisp top-level at any time
+by evaluating the following form:
+</p>
+
+<pre id="79">
+(tpl:start-interactive-top-level
+  *terminal-io* 'tpl:top-level-read-eval-print-loop nil)
+</pre>
+
+
+
+
+
+
+
+<hr><h2 id="80"><a name="initial-package-2">3.8 Specifying the initial value of *package*</a></h2>
+
+<p id="81">Programmers who use a Lisp listener as a top-level often want the
+current package (the value of <a href="../ansicl/dictentr/package.htm"><code>*package*</code></a>) to be something other than the
+<code>common-lisp-user</code> package when the user sees the
+first prompt. Evaluating the following two forms as part of the
+function that is the value of <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> accomplishes this
+(replace <code>:my-package</code> with the desired name, of
+course):</p>
+
+<pre id="82">
+(tpl:setq-default *package* (find-package :my-package))
+(rplacd (assoc 'tpl::*saved-package*
+               tpl:*default-lisp-listener-bindings*)
+    'common-lisp:*package*)
+</pre>
+
+<p id="83">The second form suppresses (on startup) the [changing package from
+...] warning printed by Allegro CL when the value of
+<code>*package*</code> is changed by the system in a Lisp listener
+(usually printed when the debugger is entered).</p>
+
+
+
+<hr><h2 id="84"><a name="logical-pathnames-2">3.9 Setting up logical pathname translations</a></h2>
+
+<p id="85">All logical pathname translations (except the one for <em>sys:</em>
+set up in the low-level startup code) are cleared as one of the first
+actions of <strong>start-lisp-execution</strong> (indeed, the first
+form in the function definition):</p>
+
+<pre id="86">
+(defun start-lisp-execution ()
+  ...
+  (flush-all-logical-pathname-translations)
+  ...)
+</pre>
+
+<p id="87">This is often not what an application developer wants. However, it
+is a conscious choice because the potential for mysterious bugs
+resulting from bogus translations being present in the image
+outweighed the cost of re-establishing the translations when
+needed.</p>
+
+<p id="88">If you want to use logical pathname translations in your
+application, then you will need to arrange for them to be present. You
+can do this in one of two ways: </p>
+
+<ol>
+  <li id="89">Have <em>sys:hosts.cl</em> contain translations for additional hosts as required.
+    Allegro CL, when it sees a logical host for which no translation is defined, will first
+    look in <em>sys:hosts.cl</em> to see if a translation is defined there. This file may have
+    to be configured at the customer site (since the directory structure is usually different
+    in every system).</li>
+  <li id="90">Have another file where the translations are defined. Use <a href="operators/excl/logical-pathname-translations-database-pathnames.htm"><b>logical-pathname-translations-database-pathnames</b></a>
+    prior to creating the image to tell the system about the additional translations file (and
+    the system will look at that file in addition to <em>hosts.cl</em> when it encounters an
+    unknown logical host). This solution is similar to the one just above but does not require
+    modifying <em>hosts.cl</em> which may be inconvenient to modify.</li>
+</ol>
+
+
+
+<hr><h2 id="91"><a name="shared-libraries-2">3.10 Use of shared libraries (foreign files)</a></h2>
+
+<p id="92"><a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+causes all <em>.so</em>/<em>.dll</em>/<em>.sl</em> files loaded during
+image creation to be copied to the directory it creates. It also
+arranges, upon image restart, for these files to be reloaded from this
+directory (which is what will become <em>sys:</em>).</p>
+
+
+<hr><h2 id="93"><a name="clos-training-2">3.11 CLOS training</a></h2>
+
+<p id="94">
+It is possible to significantly speed up the initialization of
+CLOS-based applications by gathering information about CLOS usage in
+the application and including that information in the application
+image. In this section, we discuss what information is useful for this
+purpose, how to collect it, and how to include it in an image.
+</p>
+<p id="95">
+First, let us explain the issue. The initial way to create instances
+and find effective methods is inherantly slow and inefficient, but
+Allegro CL notes what is done and so subsequent similar invocations
+are much faster. Lisp will write specialized functions for certain
+tasks and will store patterns used for others. Therefore, CLOS
+performance speeds up significantly as an application runs. Because it
+is only the first specific invocation that is slow, this slowness does
+not have a significant effect on overall performace.
+</p>
+<p id="96">
+But there is a problem with delivery images without the compiler (and
+delivery images do not contain the compiler unless there are specially
+licensed to do so): the discriminator functions that are written while
+the delivery application is running cannot be compiled and so run
+imterpreted, which means run slowly. Also, it is useful to have any
+CLOS optimization information conveyed from the development image to
+the delivery image in order that the delivery image will run as fast
+as possible from the start.
+</p>
+<p id="97">
+The problem is, however, how to convey this information. The delivery
+image is built in a process spawned by the development imge (which
+calls <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>). Only numbers and
+strings can be passed to the command that initiates the new image but
+the information we want to pass (such as compiled function objects)
+cannot be encoded in numbers or strings. So we need to have the
+development image produce a fasl file which will contain the desired
+information and have the delivery image load this file.
+</p>
+<p id="98">
+<b>CLOS training provides a significant performance enhancement in
+delivery images</b>. If you notice that your delivery image runs
+noticeably slower than your application in the development image, it
+may be because you do not have adequate CLOS training.
+</p>
+
+<p id="99"><strong>Note about the development environment</strong>: Lisp users
+typically run in developer-environment mode. In that mode, the
+debugger, the code that runs the Emacs-Lisp interface, Allegro
+Composer (if ordered) etc. is loaded into Lisp. Often your application
+will not use those facilities and your application images will not
+want to include them.  However, CLOS training will include information
+about those utilities (and then require you to have them available
+when you build your application image) unless you do one of the
+following: </p>
+
+<ul>
+  <li id="100">Train an image without the development environment. </li>
+</ul>
+
+<p id="101">This is the less-desirable solution. You can create an image
+without the development environment by specifying </p>
+
+<pre id="102">
+:include-devel-env nil
+</pre>
+
+<p id="103">in the call to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. You can then train with
+that image.</p>
+
+<ul>
+  <li id="104">Restrict training to specific packages. </li>
+</ul>
+
+<p id="105">This is the better choice. You will see forms like </p>
+
+<pre id="106">
+(excl::preload-constructors ([packages])) 
+</pre>
+
+<p id="107">and </p>
+
+<pre id="108">
+(excl::precache-generic-functions ([packages])) 
+</pre>
+
+<p id="109">below. If no packages are listed, the entire system (including
+development environment features) will be trained. If packages are
+listed, only things in those packages will be trained. Packages are
+named by keywords. Typically, packages should include
+<code>:user</code>, <code>:lisp</code>, and the packages
+of your application. Thus, if your application packages are
+<code>:foo</code> and <code>:bar</code>, the
+preload-constructors form would be </p>
+
+<pre id="110">
+(excl::preload-constructors (:user :lisp :foo :bar)) 
+</pre>
+
+<p id="111">The <strong>preload-generic-functions</strong> form would similarly
+list the packages. </p>
+
+
+<hr><h2 id="112"><a name="gfs-3">3.11.1 Generic functions, method combination, and discrimination </a></h2>
+
+<p id="113">A generic function examines its arguments to determine which method
+or methods are applicable. This is called discrimination. The
+symbol-function of a generic-function is a discriminator
+function. There are various kinds of discriminators and the
+discriminator for a particular generic function may change during the
+execution of a program. </p>
+
+<p id="114">When Lisp determines that a generic function needs a different kind
+of discriminator it checks to see if the one it needs has already been
+built and, if not, creates one. The creation of a discriminator is
+relatively expensive since it involves the Lisp compiler. </p>
+
+<p id="115">When a CLOS application is loaded the generic-functions all have a
+simple discriminator which will select the correct discriminator when
+the generic function is first called.  Therefore when a CLOS
+application starts it will run very slowly unless the discriminators
+it needs are already built. The only way to tell which discriminators
+your program needs is to run your program for a while and then look at
+the list of discriminators that exist.  Allegro CL provides a
+mechanism for dumping out these discriminators and then loading them
+in with your program so that when the program starts all the
+discriminators it will need will already exist. </p>
+
+<p id="116">
+You can dump discriminator functions to a fasl file by compiling a
+source file that contains the following two lines after loading and
+running your application (note that the best optimization is achieved
+if you combine this with the caching optimization described below):
+</p>
+
+<pre id="117">
+(in-package :excl) 
+(<a href="operators/excl/preload-forms.htm"><b>preload-forms</b></a>) 
+</pre>
+
+
+
+<hr><h2 id="118"><a name="effective-methods-3">3.11.2 Effective methods </a></h2>
+
+<p id="119">With method-combination a call to a generic function can result in
+a sequence of methods being called. The code that calls the methods
+and processes the results of each call is called an effective
+method. In order to make effective methods fast, Lisp compiles
+them. In order to cut down on the compilation cost, Lisp actually
+creates effective-method templates which are functions closed over the
+particular methods to be called. </p>
+
+<p id="120">Thus many effective methods can share the same code. Just as in the
+case of discriminators above, it is expensive to start a CLOS
+application running if the effective methods it will need haven't been
+compiled already. And again Allegro CL provides a way of saving the
+effective methods that the application has used so that they can be
+defined before the application starts. </p>
+
+<p id="121">You can dump effective methods to a fasl file by compiling a source
+file that contains the following two lines after loading and running
+your application (this is the same as for discriminator functions):
+</p>
+
+<pre id="122">
+(in-package :excl) 
+(<a href="operators/excl/preload-forms.htm"><b>preload-forms</b></a>) 
+</pre>
+
+
+
+<hr><h2 id="123"><a name="caches-3">3.11.3 Caches for fast dispatching </a></h2>
+
+<p id="124">
+Generic functions use caching to implement fast dispatching. When
+an application starts the caches are empty so initial performance is
+degraded by having to handle cache misses.  Allegro CL provides a way
+to fill the caches when an image starts up. 
+</p>
+
+<p id="125">
+You can dump caches to a fasl file by compiling a source file that
+contains the following two lines after loading and running your
+application (see <a href="#clos-training-2">above</a> under the heading
+<strong>Note about the development environment</strong> for
+information on ([packages]) in the following form): 
+</p>
+
+<pre id="126">
+(in-package :clos) 
+(excl::precache-generic-functions ([packages])) 
+</pre>
+
+
+
+<hr><h2 id="127"><a name="constructor-functions-3">3.11.4 Constructor functions </a></h2>
+
+<p id="128">
+As we describe briefly <a href="#make-instance-3">below</a>, calls to make-instance
+can be replaced with calls to some equivalent (but much faster)
+constructor functions. Allegro CL provides a way to preload compiled
+constructor functions. 
+</p>
+
+<p id="129">
+You can dump constructors to a <i>fasl</i> file by
+compiling a source file that contains the following two lines after
+loading and running your application (see <a href="#clos-training-2">above</a> under the heading
+<strong>Note about the development environment</strong> for
+information on ([packages]) in the following form):
+</p>
+
+<pre id="130">
+(in-package :clos) 
+(excl::preload-constructors ([packages])) 
+</pre>
+
+<p id="131">
+Suppose those two lines are in a file named
+<i>myclosopt.cl</i>. Compile that file with a form like
+<code>(compile-file "myclosopt.cl")</code> to produce
+<i>myclosopt.fasl</i>. (You may use any filename, of
+course. We use a filename here so we can refer to the
+<i>fasl</i> file below.) This file must be loaded into
+an image being built after all the relevant <b>make-instance</b> calls
+are loaded. This can be guaranteed be loading the constructor file
+last.
+</p>
+<p id="132">
+When you are generating an application with <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> and you use this method
+to speed up constructor functions, you must include the module
+<code>:constructor</code> before the <i>fasl</i>
+file that that contains the above call to <b>preload-constructors</b>
+(<i>myclosopt.fasl</i> in our example). These files and
+modules are typically in the list which is the value of the
+<i>input-files</i> argument to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> (the third required
+argument). Again, if the <i>fasl</i> file is named
+<i>myclosopt.fasl</i>, the value of
+<i>input-files</i> should be something like (as the use
+of suspension points indicate, we are loading myclosopt.fasl last, as
+recommended above):
+</p>
+<pre id="133">
+'(... :constructor ... myclosopt.fasl) 
+</pre>
+<p id="134">
+Of course, you may have some other way of specifying files and modules
+(so, for example, the <i>input-files</i> list contains
+one file which contains the loads and requires for your
+application. In that case as well, the :constructor must be required
+before the <i>myclosopt.fasl</i> is loaded.
+</p>
+
+<h3 id="135">
+An example where the constructor file is created as part of the image build
+</h3>
+
+<p id="136">
+In this example, we create the constructor file during the image
+build. Note we load it last, as that ensures it will have maximum
+effect. If it is loaded earlier than a relevant call
+to <b>make-instance</b>, optimization may not occur. We have a call to
+<code>(main)</code> and the defined <b>main</b> function is very
+simple, but in an actual application, it could do much more work if
+necessary.
+</p>
+<pre id="137">
+cl-user(1): (shell "cat closopt-example.cl")
+(in-package :cl-user)
+
+(defclass foo ()
+  ((base :accessor base :initarg :base)
+   (val :accessor val :initarg :val)))
+
+(defun main (&rest args)
+  (do-test)
+   )
+
+(defun do-test ()
+  (loop for i from 0 to 3
+      as data = (make-instance 'foo :base i :val (* i i))
+      sum (val data))
+  (dotimes (i 10)
+    (time
+     (loop for i from 0 to 200000
+	 as data = (make-instance 'foo :base i :val (* i i))
+	 sum (val data)))))
+
+(defun build ()
+  (with-open-file 
+     (st "closopt-example-pre.cl" :direction :output :if-exists :supersede)
+    (format st "(preload-forms)~%")
+    (format st "(excl::preload-constructors (list :cl-user :lisp))~%")
+    (format st "(excl::precache-generic-functions (list :cl-user :lisp))"))
+  (main)
+  (compile-file "closopt-example-pre.cl")
+  (generate-executable "sample" '(:trace :constructor :foreign 
+                        "closopt-example.fasl" "closopt-example-pre.fasl")
+		       :allow-existing-directory t
+		       :include-compiler t :discard-compiler t
+		       ))
+
+0
+cl-user(2): :cl closopt-example
+;;; Compiling file closopt-example.cl
+;;; Writing fasl file closopt-example.fasl
+;;; Fasl write complete
+; Fast loading closopt-example.fasl
+cl-user(3): (build)
+</pre>
+
+
+
+<hr><h2 id="138"><a name="clos-start-up-3">3.11.5 How to do CLOS start up optimizations</a></h2>
+
+<p id="139">The four possible start-up optimizations were just
+described. Conveniently, two (discrimination and effective methods)
+are achieved with the same utility. All depend on information being
+available. Therefore, the following is the first step for all
+optimizations: </p>
+
+<ol>
+  <li id="140">Exercise your application. Load your application into a Lisp
+    image and run it as you expect one of your users will run
+    it. Doing this causes Lisp to gather experience about how CLOS is
+    being used. </li>
+</ol>
+
+
+  <p id="141">Once you have exercised your application sufficiently, you are
+  ready to create the optimizing files. This is a standard fasl file
+  created by compiling a special source file (described below). </p>
+
+
+<ol start="2">
+  <li id="142">Create the clos optimization fasl file. While Lisp is still
+    running, create a Lisp source file (we call it
+    <em>closopt.cl</em>) that contains the following four forms (see
+    <a href="#clos-training-2">above</a> 
+    under the heading
+    <strong>Note about the development environment</strong> for
+    information on ([packages]) in the following forms): </li>
+</ol>
+
+<pre id="143">
+(in-package :excl) 
+(preload-forms) 
+(excl::preload-constructors ([packages])) 
+(excl::precache-generic-functions ([packages])) 
+</pre>
+
+<p id="144">Compile <em>closopt.cl</em> with <a href="../ansicl/dictentr/compile-.htm"><b>compile-file</b></a>. Lisp will put the discriminators,
+the effective methods, the constructors, and the contents of its CLOS
+caches into the resulting fasl file (closopt.fasl). If that file is
+built into the application binary image (it should be specified as one
+of the <code>:lisp-files</code> in a call to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>, as an <em>input-file</em> in
+a call to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, or required by another
+file specified in either location), then an application using CLOS
+will start up significantly faster. </p>
+
+<p id="145">Note that loading this file will not invoke the compiler so this
+can be loaded into a compilerless Lisp. </p>
+
+
+
+<hr><h2 id="146"><a name="make-instance-3">3.11.6 make-instance optimization </a></h2>
+
+<p id="147">
+We have already discussed dumping <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> constructor functions.  Note that
+calls to <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> where
+the value of the <i>class</i> argument is a quoted
+constant and each of the keywords is a constant are transformed by the
+compiler into calls to constructor functions. A constructor function
+is a piece of code that is equivalent to the <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> call except that it is
+significantly (10 to 100 times) faster.
+</p>
+
+<p id="148">
+The optimization is automatic when the call to <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> is formed in a
+particular way.
+</p>
+
+<p id="149">
+In order for an optimized constructor function to be used certain
+restrictions apply:
+</p>
+
+<ol>
+<li id="150">
+The set of keywords must be valid for the call.
+</li>
+<li id="151">
+Only certain methods must be applicable as defined by the following table: 
+</li>
+</ol>
+
+<table border="1" width="74%">
+  <tr>
+    <td width="43%"><strong>Generic Function:</strong></td>
+    <td width="57%"><strong>Condition for optimization:</strong></td>
+  </tr>
+  <tr>
+<td width="43%"><a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a></td>
+<td width="57%">Only system-supplied methods are applicable</td>
+</tr>
+<tr>
+<td width="43%"><a href="../ansicl/dictentr/initiali.htm"><b>initialize-instance</b></a></td>
+<td width="57%">Only system-supplied-standard methods and user-supplied :after methods are
+applicable </td>
+</tr>
+<tr>
+<td width="43%"><a href="../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a></td>
+<td width="57%">Only system-supplied-standard methods and user-supplied :after methods are
+applicable</td>
+</tr>
+</table>
+
+<p id="152">
+<strong>Conditions for creation of constructor functions</strong>: The
+calls to <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> are
+replaced by calls to the constructor regardless of whether an
+optimized constructor can be used. The first time the constructor
+function is called, the system tests whether any of the restrictions
+apply. If none do, an optimized constructor is generated. When the
+restrictions are not obeyed, a non-optimized constructor function is
+created. It calls <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>. Redefining a class or one of its
+superclasses or adding/removing a method to one of the generic
+functions mentioned above causes the constructor function to be
+recomputed.
+</p>
+
+
+
+
+
+<hr><hr><h2 id="153"><a name="creating-deliverable-1">4.0 Creating the deliverable</a></h2>
+
+<p id="154">
+As stated above, <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> assembles the files
+needed to deliver an application. <b>generate-application</b> both
+builds the application's image file and copies any other files needed
+to support this image.
+</p>
+<p id="155">
+Like many powerful Lisp functions, <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> has many options and can
+do many things, but quite a lot can be done with simple calls. For
+example, the following call builds an application from
+<i>foo.fasl</i> into the directory
+<i>myappdir/</i> (relative to the current working
+directory of the running Lisp). You could then execute
+<i>myappdir/myapp</i> after the above form is evaluated.
+</p>
+<pre id="156">
+(generate-application "myapp" "myappdir/" '("foo.fasl")
+	      :include-compiler nil)
+</pre>
+<p id="157">
+<a href="operators/excl/generate-executable.htm"><b>generate-executable</b></a> provides
+a simpler interface for generating applications.
+</p>
+
+<h3 id="158">
+Important details of generate-application
+</h3>
+
+<p id="159">
+<b>generate-application</b> is basically a wrapper around <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. <b>generate-application</b>
+sets things up for producing a directory suitable for delivery and
+then calls <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>,
+which creates the actual deliverable image file. See
+<a href="building-images.htm">building-images.htm</a> for information on <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>.
+</p>
+<p id="160">
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>, and
+therefore <b>generate-application</b>, create a new image by starting
+a new Lisp process and having it load necessary files and then dump a
+final image. It is important to understand that the new Lisp process
+that does the work does not inherit anything from the Lisp process
+that spawns it. The arguments to <b>generate-application</b> and
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> specify
+details of the new image to be created, but outside the arguments,
+nothing is inherited (although some arguments do default to current
+values in the calling image). Thus, for example, if a user-defined
+function or package or variable or class is defined in the calling
+image, it will not be defined in the new image. Every aspect of the
+new image is defined by the arguments to <b>generate-application</b>
+and <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or by
+the files loaded during the build process.
+</p>
+
+<h3 id="161">The testapp example</h3>
+<p id="162">
+There is an example showing how to create an application in
+<i>examples/testapp/</i>. It is more complex than the
+one above, but still relatively simple. See <a href="../examples/testapp/readme.txt">readme.txt</a> in that
+directory for information on the example, which is designed to show
+how to package an application. The code in the
+<i>examples/testapp/</i> directory can be freely used.
+(Note that on Windows, you need the GNU <b>make</b> facility to use
+the example. The GNU <b>make</b> facility is (at the time of writing)
+available for free from <a href="http://sources.redhat.com/cygwin/">http://sources.redhat.com/cygwin/</a>.)
+</p>
+
+<h3 id="163">More on generate-application</h3>
+<p id="164">
+The definition of <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is:</p>
+
+<pre id="165">
+(generate-application <em>application-name
+	      destination-directory
+	      input-files</em>
+	      &key <em>allow-existing-directory
+		   application-administration
+		   application-files</em>
+		   (<em>application-type</em> :exe)
+		   (<em>autoload-warning</em> t)
+		   (<em>copy-shared-libraries</em> t)
+		   (<em>copy-file-function</em> '<a href="operators/system/copy-file.htm"><b>sys:copy-file</b></a>)
+		   <em>debug</em>
+		   <em>icon-file</em>
+		   <em>demo</em>
+		   <em>image-only
+		   pure-files
+		   purify
+		   runtime-bundle</em>
+		   ...<em><a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> keyword args</em>...
+		   <em><a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> keyword argument ignore-command-line-arguments</em>...)
+</pre>
+
+<h3 id="166">
+The required arguments:
+</h3>
+
+<table BORDER="1">
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>application-name</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A string which is the name of the application (e.g.,
+<code>"myapp"</code>). When coerced to a pathname,
+this name should not have a directory or type. It is used to create
+the name of the executable or .dll/.so/.sl file and ancillary files.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>destination-directory</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+The name of a
+non-existent directory (the directory can exist if the
+<code>:allow-existing-directory</code> keyword argument is
+specified true). It is the directory used to create the output
+files. See <i>image-only</i> keyword argument below.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>input-files</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A list specifying files to be loaded into the application. The
+contents can be strings or pathnames naming Lisp
+(<i>.fasl</i> or <i>.cl</i>) files or
+keywords naming modules to be loaded with <a href="../ansicl/dictentr/provider.htm"><b>require</b></a>.  Note: this argument is passed to
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> as the
+value of the <code>:lisp-files</code> keyword argument to that
+function.
+</td>
+</tr>
+</table>
+
+
+<h3 id="167">
+The keyword arguments:
+</h3>
+
+<table BORDER="1">
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:allow-existing-directory</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A boolean. If true, allows the
+<i>destination-directory</i> to exist. If the value of
+this keyword argument is <code>nil</code> (the default)
+and the directory exists, then an error is signaled.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:application-files</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A list of files (strings or pathnames)
+which should merely be copied to the destination directory.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:application-administration</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+This argument allows the specification of various application
+administrative tasks. The form of the value of this keyword argument
+is <b><code>(type-keyword ...)</code></b> or
+<b><code>((type-keyword ...) (type-keyword ...)
+...)</code></b>. 
+<br>
+
+<b><code>(type-keyword ...)</code></b> can be:
+<b><code>(:resource-command-line "arg1" "arg2" "arg3"
+...)</code></b> <br> This creates a <em>lisprc</em> in the
+destination directory which sets the default command line arguments to
+<em>"arg1" "arg2" "arg3" ...</em>.  See the
+<a href="#resources-2">Section 4.1 Resources</a> section below for more
+information. 
+The Wondows version also supports <a href="operators/windows/set-default-command-line-arguments.htm"><b>win:set-default-command-line-arguments</b></a> for
+the same purpose.
+<p id="168">
+On Windows, the value can also be:
+<code>([:shortcut | :batch-file] </code><code><em>filename</em></code><code>
+</code><code><em>...command line arguments...</em></code><code>) [Windows only]</code>
+</p>
+<p id="169">
+This creates either a batch file or a shortcut named
+<em>filename</em> that will <em>initialize</em> the application. For a
+shortcut, the filename must have type "lnk" (the letter L, the letter
+N, the letter K).  <em>command line arguments</em> are the arguments
+to <em>application-name.exe</em>.  The <em>filename</em> argument
+should actually be a format control string given one argument, the
+name of the application. It is used like this: <code>(format nil
+<em>filename</em> &nbsp;<em>application-name</em>)</code>.
+This allows the customization of the generated filename based on
+information <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> has already been
+given.
+</p>
+<p id="170">
+One use of this is for OLE registration.  For
+example:
+</p>
+<pre id="171">
+'(:shortcut "One-time registration of ~a" "-register")
+</pre>
+<p id="172">
+If the given
+<code>application-name</code> was <em>"foo"</em> this
+would create a shortcut named <em>One-time registration of foo</em>
+with the following command line:
+</p>
+<pre id="173">foo.exe -- -register
+</pre>
+<p id="174">
+An error is signaled if
+<em><code>application-type</code></em> is not
+<code>:exe</code> in this case.
+</p>
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:application-type</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A keyword specifying the application type. Valid values:
+<code>:exe</code>, <code>:ole-in-proc-server</code>, or
+<code>:dll</code>.  If <code>:exe</code> is used, then
+<em><code>application-name.exe</code></em> is created.  If
+<code>:ole-in-proc-server</code> or <code>:dll</code> is
+used <code><em>application-name.dll</em></code> is created.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><code>autoload-warning</code></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A boolean whose value can be string naming a file. When
+true, the file <em>autoloads.out</em> is created
+that contains the functions, macros and methods that could possibly be
+autoloaded. Defaults to <code>t</code> in calls to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>. Note that the
+default is <code>nil</code> in direct calls to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>.  The value can be
+a string naming a file (which can include directory information), in
+which case the information will be written to that file rather than
+<em>autoloads.out</em>.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:build-executable</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+This is a <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>
+keyword argument but is also used by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> if a value is
+supplied. The value must name a Lisp executable file (such as "mlisp"
+on Unix or "mlisp.exe" on Windows). It is used by <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> to start the Lisp process
+that builds the image. Unless <em>image-only</em> is true, <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> copies a Lisp
+executable to the application directory. The executable specified as
+the value of this argument is the one copied.
+<p id="175">
+See the description of this argument in 
+<a href="building-images.htm">building-images.htm</a> for information on when it is
+useful: a value is specified either when a custom executable has been
+built (see <a href="main.htm">main.htm</a>) or when you want a character 
+size in the new image that is different from the character size in
+the running image. On this last point, see <a href="building-images.htm#char-size-2">The character size in 
+the resulting image</a> in 
+<a href="building-images.htm">building-images.htm</a>.
+</p>
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:copy-shared-libraries</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A boolean. The value may be a lambda expression. If
+true, then copy shared objects/libraries that
+have been loaded with the Common Lisp function <a href="../ansicl/dictentr/load.htm"><b>load</b></a>, with the
+<i>system-library</i> keyword argument <code>nil</code>, by the time the image is dumped.  (See <a href="loading.htm#using-load-1">Using the load
+function</a> in <a href="loading.htm">loading.htm</a> for details of
+the <i>system-library</i> argument.)
+<p id="176">
+The value of this keyword argument can also be a lambda expression
+(you cannot use the <code>function</code> special form: the
+value must be a list), accepting one argument, that is a predicate
+which determines if the loaded shared objects should be copied.  The
+one argument is the pathname of the shared object file (the original
+pathname given to <a href="../ansicl/dictentr/load.htm"><b>load</b></a>).  The
+predicate should return <code>t</code> if the shared object is
+to be copied, and <code>nil</code> if it is to be ignored
+by shared-library copying process. The predicate can also return a
+relative pathname, which will be used as the name of the copied shared
+library relative to the
+<i>destination-directory</i>. <strong>Note</strong>:
+shared libraries may be specified without a directory path and found
+using Operating System tools (such as LD_LIBRARY_PATH or PATH), as
+described in section <a href="foreign-functions.htm#load-foreign-code-2">Load foreign code with cl:load</a> in
+the <a href="foreign-functions.htm">foreign-functions.htm</a> document.  However, the
+shared library copying functionality will not use Operating System
+tools to find shared libraries. If a shared library is specified
+without a directory path and is not in the current directory, it will
+not be found. The name of the shared
+libraries loaded on startup will be <em>sys:[name]</em>, for each
+<em>[name]</em> copied by <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>.
+</p>
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:copy-file-function</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+If specified, the value should be a function object or a symbol naming
+a function. This function will be used to copy files to the
+destination directory. The default value is <a href="operators/system/copy-file.htm"><b>copy-file</b></a> and that function is likely
+sufficient for most purposes. However, another function can be used if
+that is insufficient. This function will be called by the image that
+calls <b>generate-application</b> (not the image that builds the
+image). If the default is used, all keyword arguments to <a href="operators/system/copy-file.htm"><b>copy-file</b></a> are called with their
+default values.  It is simple to write your own function which calls
+<a href="operators/system/copy-file.htm"><b>copy-file</b></a> with other
+argument values, if desired.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:include-locales</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A boolean, default
+is <code>t</code>.
+If true, the
+<i>copy-file-function</i> is used to copy the
+<i>locales/</i> subdirectory and its contents of the
+Allegro directory to the application directory being created. Note
+that the size of the <i>locales/</i> subdirectory is about 2
+Mbytes. You may wish to save space in your application by specifying a
+<i>copy-file-function</i> that copies only the locales
+that will actually be needed.
+<p id="177">
+You can also avoid copying locales if you know which specific locales
+an application needs. Instead of constructing a copy function for
+<b>generate-application</b>, it is simpler to include those locales in
+the application. Each locale is small, about 10K, so there is hardly
+any space savings in leaving the locales unloaded. Locales are
+inlcuded by having a file loaded by the application which contains
+top-level forms of the type <code>(find-locale
+&lt;locale&gt;)</code> (see <a href="operators/excl/find-locale.htm"><b>find-locale</b></a>). For example, you could have the
+file <i>my-locales.cl</i> as one of the files specified
+as the value of the <i>input-files</i> required
+argument, and this file would have something like the following
+contents:
+</p>
+<pre id="178">
+;;  file to cause specified locales to be loaded into an application
+(in-package :user)
+(find-locale "en_US")        ; English in the USA
+(find-locale "ja_JP")        ; Japanese in Japan
+(find-locale "fr_FR@euro")   ; French in France using Euro currency
+(find-locale "fr_BE@euro")   ; French in Belgium using Euro currency
+
+;;  end of file
+</pre>
+<p id="179">
+When you are unable to anticipate locale usage at runtime, the safest
+thing is simply to copy the entire directory and let the application
+autoload.
+</p>
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:debug</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A boolean. If true, more information
+will be printed about progress as an aid to debugging.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:icon-file</i></b>:
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+[Windows only, ignored on UNIX.] If specified, the value must be a
+valid Windows .ico icon file.  On the NT branch (which includes
+win2000 and XP), any .ico file should work.  See
+<a href="#icon-file-3">Section 4.9.2 Icon files suitable as a value for icon-file</a> for more information on
+suitable icon files. 
+<p id="180">
+If a non-nil value is specified, <a href="operators/windows/set-application-icon.htm"><b>win:set-application-icon</b></a> is called to embed
+the icon in the exe file.
+</p>
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:demo</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+You must be licensed to produce
+demos (demonstration applications) to specify a non-<code>nil</code> value for this argument. If you are licensed,
+there is a maximum number of days that a demo will work specified in
+your license. The value of this argument, if specified and non-<code>nil</code>, should be an integer less than or equal to the
+maximum number of days that a demo is allowed to work.  The
+application license written to the application directory will then be
+valid for that number of days. Contact your Franz Inc. Account Manager
+(send email to <a href="mailto:info@franz.com">info@franz.com</a> if
+you do not know who your Account Manager is) for information on the
+demo license.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:image-only</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A boolean. If true, just build the image, and possibly the
+<em>.pll</em> file.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:pure-files</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+The value should be a list of
+<em>.cvs</em> and <em>.str</em> files to be put into the application's
+<em>.pll</em> file. See <a href="miscellaneous.htm#pll-file-1">Creating and using pll files</a> in
+<a href="miscellaneous.htm">miscellaneous.htm</a>.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:purify</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+A boolean. If true, do automatic purification of Lisp and the
+application.  This means all the strings and code vectors will be put
+into a <em>.pll</em> file. If you choose this option, do not also
+specify a value for <i>:pure-files</i>.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b><i>:runtime-bundle</i></b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+
+A boolean, default is <code>t</code>. If
+specified <code>t</code> a bundle file named
+<em>files.bu</em> will be placed in the application directory. This
+file contains the modules allowable in a runtime image. This means
+that such modules need not be loading into the application image
+during the application build.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<b>build-lisp-image keyword args</b>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+<a href="operators/excl/generate-application.htm"><b>generate-application</b></a> accepts and
+passes through to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> all of
+<code>build-lisp-image</code>'s keyword arguments except
+<code>:lisp-files</code>. The required <em>input-files</em>
+argument is used in place of <code>:lisp-files</code>.  Even if
+a value is specified for <code>:lisp-files</code>, it is
+ignored. See also the description of the <em>build-executable</em>
+argument above, as it is used (differently) by both
+<strong>generate-application</strong> and
+<strong>build-lisp-image</strong>.
+</td>
+</tr>
+<tr>
+<td WIDTH="30%" VALIGN="TOP">
+<em>dumplisp ignore-command-line-arguments keyword arg</em>
+</td>
+<td WIDTH="70%" VALIGN="TOP">
+<a href="operators/excl/generate-application.htm"><b>generate-application</b></a> accepts and
+passes through to <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a>
+the <i>ignore-command-line-arguments</i> keyword
+argument. When true, the resulting image will ignore command-line
+arguments prefixed by a dash (<code>-</code>). Command-line
+arguments prefixed by a <code>+</code> (used on Windows only)
+are never ignored. See <a href="startup.htm#command-line-args-1">Command line arguments</a> in
+<a href="startup.htm">startup.htm</a> for details of command-line arguments.
+</td>
+</tr>
+</table>
+
+
+<hr><h2 id="181"><a name="resources-2">4.1 Resources</a></h2>
+
+<p id="182">
+Resources are a way to specify default information for an application.
+The most common of which is command line arguments.  
+</p>
+
+
+<h4 id="183">UNIX and Windows</h4>
+
+<blockquote>
+  <p id="184">Resources are stored in a plain text file.  This file, <em>sys:lisprc</em>,
+  if it exists can contain resource information for application startup.  Currently,
+  this is just command line arguments. The format of <em>lisprc</em> is:</p>
+  <blockquote>
+    <pre id="185">.command-line: <em>command line args...</em></pre>
+  </blockquote>
+  <p id="186">or</p>
+  <blockquote>
+    <pre id="187"><em>appname</em>.command-line: <em>command line args...</em></pre>
+  </blockquote>
+  <p id="188">where <em>appname</em> is the name of the Lisp executable used to start Lisp and <em>command
+  line args...</em> are a list of valid command line arguments. <em>appname</em> should be
+  used when there are multiple applications sharing the same directory and different command
+  line argument resources are needed for each application.</p>
+  <p id="189">For example, a <em>sys:lisprc</em> of</p>
+  <blockquote>
+    <pre id="190">.command-line: -Q</pre>
+  </blockquote>
+  <p id="191">would cause all applications in the directory this appears to start up quietly.</p>
+  <p id="192">If there are both command line arguments in the resource file and given on the command
+  line that starts the application, then command line arguments seen by the application are
+  the concatenation of the resource command line and the given command line. This allows the
+  given command line to override the resource command line.</p>
+</blockquote>
+
+
+<h4 id="193">Windows</h4>
+
+<p id="194">
+The newly exported function <a href="operators/windows/set-default-command-line-arguments.htm"><b>windows:set-default-command-line-arguments</b></a>
+also  allows specifying the command-line arguments in an
+executable. Allegro CL executables come in two flavors on each
+platform: an 8-bit character version (for example
+<i>alisp8.exe</i> on Windows) and a 16-bit character
+version (for example <i>alisp.exe</i> on Windows). All
+Allegro CL executables (which, following standard Windows practice,
+have type <i>exe</i>) are copies of one or the other of
+<i>alisp8.exe</i> and
+<i>alisp.exe</i>. You can use <a href="operators/windows/set-default-command-line-arguments.htm"><b>windows:set-default-command-line-arguments</b></a>
+to specify the command-line arguments for any such executable.
+</p>
+
+
+<h3 id="195">
+Version info in Lisp executables on Windows
+</h3>
+<p id="196">
+The Version Info of a file on Windows is information stored in the
+file and available to various Windows utilities. It is used for
+displayed information about the file. Allegro CL supports accessing
+and modifying the Version Info, using the functions <a href="operators/windows/file-version-info.htm"><b>win:file-version-info</b></a> and
+<a href="operators/windows/set-file-version-info.htm"><b>win:set-file-version-info</b></a>. An Allegro CL
+executable will work the same as an executable when the Version Info
+is changed, that is it will start Lisp with an appropriate image
+file. <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> supports
+specifying the Version Info for the executable in an application
+directory.
+</p>
+
+
+
+
+<hr><h2 id="197"><a name="defsystem-2">4.2 Defsystem</a></h2>
+
+<p id="198">
+If the application is made up of many source files, then using the
+defsystem utility (described in <a href="defsystem.htm">defsystem.htm</a>) will
+help the management (for compilation and loading) of the
+application. If defsystem is used, then it is easy, for example, to
+create a single <em>.fasl</em> file representing the compiled
+application. See <a href="defsystem.htm">defsystem.htm</a> and the function
+<a href="operators/excl/concatenate-system.htm"><b>concatenate-system</b></a> for more
+information.
+</p>
+
+
+
+<hr><h2 id="199"><a name="tuning-2">4.3 Tuning the application</a></h2>
+
+<p id="200">
+The application should be optimized. Allegro CL contains space and
+time runtime analyzers that should be used to find places in the application
+which can be optimized. See <a href="runtime-analyzer.htm">runtime-analyzer.htm</a>. The
+optimization of Common Lisp source code has two components, aside from
+optimizing algorithms used in the application:
+</p>
+
+<ul>
+<li id="201">
+adding declarations, and
+</li>
+<li id="202">
+setting the compiler optimization qualities speed, safety, space, and
+debug properly.
+</li>
+</ul>
+
+<p id="203">
+Both of the above can be done globally or locally to a particular
+function. Functions which are known to be used frequently should be
+optimized by declaring the types of the values bound to symbols, when
+the types are known and checked. Then, increasing the speed
+compilation quality and decreasing the safety and debug qualities will
+allow the compiler to produce smaller and faster code. These issues
+are discussed in <a href="compiling.htm">compiling.htm</a>. Note particularly
+the <code>:explain</code> declaration discussed in that document, in
+<a href="compiling.htm#decl-help-1">Help with
+declarations: the :explain
+declaration</a>.
+</p>
+
+
+
+<hr><h2 id="204"><a name="devel-env-2">4.4 More on the development environment</a></h2>
+
+<p id="205">If the application will not use the development environment of
+Allegro CL, then certain features of it can be turned off or compiled
+out of the application. For example, you might use the following
+global proclamation:</p>
+
+<pre id="206">
+(proclaim '(optimize (debug 0)))
+</pre>
+
+<p id="207">It will cause the compiler to compile with no consideration for
+easy debugging (presumably your users will not debug your
+application). Currently, this means local names of variables and the
+argument list for functions and macros will not be saved. Although the
+saving is not great, if these features are not to be used, then there
+is no reason to have the compiler annotate the <em>fasl</em> files
+with them.</p>
+
+<p id="208">Another saving can be achieved by evaluating:</p>
+
+<pre id="209">
+(setf (<a href="operators/excl/argument-saving.htm"><b>argument-saving</b></a>) nil)
+</pre>
+
+<p id="210">This will cause the runtime calling sequence to be more efficient
+on some architectures (RS/6000 currently).</p>
+
+
+
+<hr><h2 id="211"><a name="gc-parameters-2">4.5 GC parameters and switches</a></h2>
+
+<p id="212">Setting of GC parameters and switches appropriate to
+application-specific behavior is important for performance. 
+<a href="gc.htm">gc.htm</a> contains a complete discussion of the
+subject, and the only information included here is a check-list of
+items to consider.</p>
+
+<h4 id="213">Switches</h4>
+
+<p id="214"><code>:clip-new</code> (default: <code>nil</code>)</p>
+
+<blockquote>
+  <p id="215">If keeping newspace small so that scavenges are short is
+  important, then this feature should be enabled. One negative aspect
+  of this, however, is that garbage collections will be more frequent
+  and this may cause more short-lived objects to be tenured, resulting
+  in faster growth of the Allegro CL memory image. You should schedule
+  global garbage collections more frequently to keep the image smaller
+  if you set :clip-new to t.</p>
+</blockquote>
+
+<p id="216"><code>:print</code> (default: <code>nil</code>)</p>
+
+<blockquote>
+  <p id="217">The users of many applications will not want to see the gc
+  messages. Keeping this switch <code>nil</code> will
+  prevent them from being printed. On the other hand, the gc message
+  does explain why your application seems to have paused (during a
+  gc). See also the discussion of gc cursors below.</p>
+</blockquote>
+
+<h4 id="218">Parameters</h4>
+
+<p id="219"><code>:generation-spread</code> (default: 4)</p>
+
+<blockquote>
+  <p id="220">Depending on the behavior of the application, changing the
+  generation spread may cause less garbage to be tenured. The default
+  value has been chosen for development but not the runtime
+  environment of applications.</p>
+</blockquote>
+
+<p id="221"><code>:free-bytes-new-other</code> (default: 131072)<br>
+<code>:free-percent-new</code> (default: 25)<br>
+<code>:free-bytes-new-pages</code> (default: 131072)<br>
+<code>:expansion-free-percent-new</code> (default: 35)<br>
+<code>:quantum</code> (default: 32)</p>
+
+<blockquote>
+  <p id="222">These parameters determine the size of newspace after a
+  scavenge. There must be at least :free-bytes-new-pages +
+  :free-bytes-new-other bytes free, in addition to there being at
+  least :free-percent-new percent of newspace free. :quantum specifies
+  the number of pages (8k each) for newly created newspaces. The
+  initial value is 32 for 256kb newspaces.
+  :expansion-free-percent-new specifies the percent free in newly
+  created newspaces.</p>
+</blockquote>
+
+<p id="223"><code>:expansion-free-percent-old</code> (default: 35)</p>
+
+<blockquote>
+  <p id="224">This specifies how much must be free in an oldspace after it is
+  created. A new oldspace is created because there is some amount of
+  data that needs to be tenured and there is no current oldspace that
+  can hold it.</p>
+</blockquote>
+
+<p id="225">See <a href="gc.htm">gc.htm</a> for more information on memory layout.</p>
+
+
+
+<hr><h2 id="226"><a name="gc-cursors-2">4.6 GC cursors</a></h2>
+
+<p id="227">
+A gc cursor facility provides some visual clue to the user that a
+garbage collection is taking place. Application writers find gc
+cursors useful since their users may think the application has hung
+while in fact it is just gc'ing. Unfortunately, implementing a gc
+cursor is difficult. See <a href="gc.htm#gc-cursors-1">Gc
+cursors</a> in <a href="gc.htm">gc.htm</a> for more information.
+</p>
+
+<p id="228">In addition to the above parameters and switches, the variable
+<a href="variables/excl/s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a>
+determines whether or not a global gc is automatically performed when
+a certain number of bytes have been tenured (moved into
+oldspace). <a href="variables/excl/s_tenured-bytes-limit_s.htm"><code>*tenured-bytes-limit*</code></a> specifies this limit. It
+is very important to note that an interactive application would have
+execution suspended for an indeterminate amount of time if a global gc
+is performed--scavenges are normally quite short, in comparison.</p>
+
+<p id="229">
+The initial values for the above parameters are reasonable defaults,
+but there may be better defaults for individual applications. See
+<a href="gc.htm">gc.htm</a> for more information.
+</p>
+
+
+
+<hr><h2 id="230"><a name="allegro-presto-2">4.7 Allegro Presto</a></h2>
+
+<p id="231">
+In 7.0, the Allegro Presto facility has been removed. See
+<a href="loading.htm#presto-1">The Allegro Presto facility
+has been removed</a> in <a href="loading.htm">loading.htm</a> for
+further information.
+</p>
+
+
+
+<hr><h2 id="232"><a name="runtime-2">4.8 Allegro Runtime</a></h2>
+
+<p id="233">
+Allegro Runtime is a Franz Inc. product which licenses distribution of
+applications written in Allegro CL. Please contact your Franz
+Inc. account manager if you want more information on Allegro Runtime
+and its terms. See the document <a href="runtime.htm">runtime.htm</a> for
+technical details of Allegro Runtime, including a list of restrictions
+on runtime images. <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> only produces runtime
+images.  The <i>runtime</i> defaults to
+<code>:standard</code> and must be either
+<code>:standard</code>, <code>:dynamic</code>, or
+<code>:partners</code>. See <a href="runtime.htm">runtime.htm</a> for
+allowable values.
+</p>
+
+
+
+<hr><h2 id="234"><a name="windows-specific-2">4.9 Windows specific information</a></h2>
+
+<p id="235">
+The file <em>msvcrt.dll</em> is needed by all Allegro CL applications
+generated on Windows. If the <em>copy-shared-libraries</em> argument
+is true, <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> copies all needed system
+DLL's to a subdirectory of the <em>destination-directory</em> called
+<em>system-dlls</em>. When your application is installed, these DLL's
+should be copied to the Windows system directory <strong><em>if
+necessary</em></strong> (i.e. if they are not already there with the
+same or a later version). In the <em>system-dlls</em> subdirectory,
+they will not be seen by your application or any other program.
+</p>
+
+<p id="236">
+These system DLL's have presented a problem for Allegro CL
+applications. They are needed if the application is to run
+successfully but having them in more than one location where Windows
+sees them can create difficulties. Therefore, they cannot be put in
+the <em>destination-directory</em>, for that might result in two
+copies being visible (one there and one in the Windows system
+directory). And they cannot be copied blindly to the Windows system
+directory because that might overwrite an existing copy and result in
+a version mismatch (since other programs that depend on the
+copied-over later version may then fail).
+</p>
+
+<p id="237">
+We have tried to mitigate this problem by providing
+an install wizard (described in section
+<a href="#windows-install-2">Section 4.10 Installation of your application on Windows using the Install Wizard</a> below) that does the
+right thing: it finds out if the DLL files in the <em>system-dlls</em>
+subdirectory are in the Windows system directory already. Any that are
+not are copied to the Windows system directory. The versions of the
+ones that are present are compared to the versions of the files in
+<em>system-dlls</em>. Earlier versions are then updated (more
+precisely, are either then updated or things are arranged so they will
+be updated when Windows is restarted, so other running programs will
+not be affected).
+</p>
+
+<p id="238">
+Note that DLL's loaded with <strong>load</strong> with
+<code>:system-library</code> specified as true (see <a href="loading.htm#using-load-1">Using the load
+function</a> in <a href="loading.htm">loading.htm</a>) are not copied
+to <em>destination-directory</em> or the <em>system-dlls</em>
+subdirectory. The only files that are copied to the
+<em>system-dlls</em> subdirectory are <em>mfc42.dll</em> and
+<em>msvcrt.dll</em>. (This may seem counter-intuitive, but we feel
+free to copy <em>mfc42.dll</em> and <em>msvcrt.dll</em> because
+Microsoft explicitly allows it.)<a name="410"></a>
+</p>
+
+<p id="239">
+<b>Autorun options</b>. On a different subject, it is possible to have
+a program autorun (that is, started automatically when, for example, a
+CD containing the software is inserted into the CD drive). See the
+MicroSoft document <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/Shell_basics/Autoplay_cmds.htm">http://msdn.microsoft.com/library/psdk/shellcc/shell/Shell_basics/Autoplay_cmds.htm</a>
+for useful information.
+</p>
+
+<hr><h2 id="240"><a name="console-control-3">4.9.1 The console window in applications</a></h2>
+
+<p id="241">
+If your application is started so the console window is created
+(i.e. the <code>+c</code> command-line argument -- no console --
+was not specified on the command line), the function <a href="operators/excl/console-control.htm"><b>console-control</b></a> provides control over
+whether the tray icon and/or the console window is visible, and
+whether you can exit the application using the tray icon and the close
+button on the console. The method close-console also provides control
+over the actions of the close button on the console (and the Alt-F4
+key combination and the Exit choice on the tray icon menu).
+</p>
+
+
+
+<hr><h2 id="242"><a name="icon-file-3">4.9.2 Icon files suitable as a value for icon-file</a></h2>
+
+<p id="243">
+The value of the <i>icon-file</i> to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, if
+non-<code>nil</code>, must be a valid Windows icon file
+containing the icon that will be used for the application (in place of
+the bust of Franz Liszt icon used by Allegro CL). Such files normally
+have the <i>.ico</i> file type.  A
+<i>.bmp</i> pixmap file or other non-icon image file
+will not work as an application icon.
+</p>
+
+
+
+
+<hr><h2 id="244"><a name="console-apps-3">4.9.3 Creating a Console APP on Windows</a></h2>
+
+<p id="245">
+If you are unfamiliar with console apps, you probably do not want to
+create one.
+</p>
+<p id="246">
+Console apps should not use multiprocessing nor <a href="operators/excl/run-shell-command.htm"><b>excl:run-shell-command</b></a> (in any form, which
+means do not use <a href="operators/excl/shell.htm"><b>excl:shell</b></a>
+or any of the subprocess API in excl.osi --
+<a href="os-interface.htm">os-interface.htm</a>). Doing so can cause the console
+app to hang. The problem has to do with I/O and the Windows console
+API and is a current Allegro CL restriction.
+</p>
+<p id="247">
+With that in mind, create a colsole app as follows:
+</p>
+<ol>
+<li id="248">
+Build your application (with a call to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> in the usual way. Assume
+the name (first argument) is "app" and the directory (second argument)
+is "dist/".
+</li>
+<li id="249">
+Execute the following code (replacing "dist/app.exe" with the actual
+directory and application name):
+<pre id="250">
+(progn
+  (delete-file "dist/app.exe")
+  (sys:copy-file #+ics "sys;buildi.exe" #-ics "sys;build.exe"
+                 "dist/app.exe"))
+</pre>
+</li>
+</ol>
+<p id="251">
+In the application, using <a href="../ansicl/dictentr/format.htm"><b>format</b></a> to <a href="../ansicl/dictentr/terminal.htm"><code>*terminal-io*</code></a> will result in the output going to
+the console command window.
+</p>
+
+
+
+
+
+<hr><h2 id="252"><a name="version-info-3">4.9.4 Setting the VERSIONINFO of the application executable on Windows</a></h2>
+
+<p id="253">
+On Windows, the Lisp executable file is name [<i>something</i>].exe,
+where <i>something</i> is <i>alisp</i>, <i>mlisp</i>, <i>allegro</i>,
+<i>alisp8</i>, or <i>mlisp8</i>. When the application is created, a
+copy of the appropriate executable is made and put in the application
+directory with the name changed to be the application name.
+</p>
+<p id="254">
+Executables on Windows store information about the application in
+VERSIONINFO slots. The function <a href="operators/windows/file-version-info.htm"><b>file-version-info</b></a> returns a list of
+alternating keywords and values:
+</p>
+
+<pre id="255">
+cl-user(5): (pprint (windows:file-version-info "lisp.exe"))
+
+(:comments (128 "") :company-name (138 "Franz Inc.") :file-description
+ (148 "Allegro Common Lisp.") :file-version (136 "8.2.2.21")
+ :internal-name (136 "lisp.exe") :legal-copyright
+ (154 "Copyright 2009, Franz Inc.") :original-filename (136 "lisp.exe")
+ :product-name (147 "Allegro Common Lisp") :product-version
+ (136 "8.2.2.21") :language-id 1033 :language-name
+ "English (United States)" :code-page 1252)
+cl-user(6): 
+</pre>
+
+<p id="256">
+<a href="operators/excl/generate-application.htm"><b>generate-application</b></a> has a
+keyword argument <b><i>file-version-info</i></b>.
+Anything keyword in return value of <a href="operators/windows/file-version-info.htm"><b>file-version-info</b></a> that has a value which is
+a cons is a valid value to be used in the list passed as the value of
+that argument. The VERSIONINFO in the copy of the executable file
+placed in the application directory will have the specified values in
+the fields which are specified. Here is an example:
+</p>
+
+<pre id="257">
+ (generate-application
+  "foo" "foo/" nil
+  :include-compiler nil
+  :file-version-info '(:company-name "Foo Inc"
+                       :product-name "Foo Bar"
+                       :legal-copyright "Copyright (C) 2009 Foo, Inc."
+                       :product-version "1.0.0.0"))
+</pre>
+
+<p id="258">
+The executable will work just like any Allegro CL executable: when
+passed an appropriate image file as an argument, it will execute that
+image file. The VERSIONINFO does not affect the execution of
+executables. It does affect information displayed about the
+executables as discussed in Windows documentation.
+</p>
+
+
+
+
+
+
+
+
+<hr><h2 id="259"><a name="windows-install-2">4.10 Installation of your application on Windows using the Install Wizard</a></h2>
+
+<p id="260">
+The Allegro CL <em>Install Wizard</em> is a tool that application
+programmers writing Allegro CL-based applications can use to help
+deliver applications on the Windows platform. It is designed to deal
+with the problem of ensuring that system DLL's supplied with the
+application distribution are installed if necessary, but are not
+installed if a later version is already present. Note that the Install
+Wizard is a bare bones installer and is not meant to compete in the
+Windows installer market. We recommend the Install Wizard for only the
+simplest of installations. If your needs are anything beyond the bare
+bones, please consider using a commercially available installation
+program. We list some with which we are familiar next:
+</p>
+<ul>
+<li id="261">
+<a href="http://www.installshield.com/">http://www.installshield.com/</a>
+</li>
+<li id="262">
+<a href="http://www.wisesolutions.com/default.htm">http://www.wisesolutions.com/default.htm</a>
+</li>
+<li id="263">
+Installer/GD: <a href="http://www.proggle.com/">http://www.proggle.com/</a>
+</li>
+<li id="264">
+And a site that provides general information on Windows installers: 
+<a href="http://www.installsite.org/">http://www.installsite.org/</a>
+</li>
+</ul>
+
+<p id="265">
+In accordance with your license agreement, you can distribute
+Allegro CL-based applications. The files in the directory described in
+`<strong>1. Create the initial application directory</strong>' below
+are typically suitable for distribution, but again, this is controlled
+by your license. Ask your Franz Inc. account manager for information
+on what your license allows if you are unsure. We assume in the
+remainder of this section those files are licensed for
+distribution. 
+</p>
+
+<p id="266">
+<strong>Reasons for providing the Install Wizard</strong>. You can
+create a delivery directory, either with <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> or the IDE's
+<a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a>
+menu command. On Windows, this directory includes a
+<i>system-dlls/</i> subdirectory. System DLL's needed
+for the application, such as <em>mfc42.dll</em> and
+<em>msvcrt.dll</em>, are placed in that directory.
+</p>
+<p id="267">
+As described in section
+<a href="#windows-specific-2">Section 4.9 Windows specific information</a>, there is a
+problem when you install your application on a customer's machine: you
+must ensure the right thing is done with the system DLL's. They should
+be installed on the customer's machine if necessary but should not be
+installed if not necessary. So, it must be determined whether such
+installation is necessary. Further, when installing on
+Windows, various bookkeeping tasks like updating the registry must be
+performed. A program, usually named <em>setup.exe</em>, is typically
+provided to perform such tasks. The Install Wizard generates an
+appropriate <em>setup.exe</em>. <strong>Note: the user installing the
+application must have administrator privileges on Windows
+NT and Windows 2000</strong>.
+</p>
+
+<p id="268">
+Here are the steps for using the Install Wizard. Note that the
+Install Wizard will ensure that the user doing the installation has
+the administrative privileges necessary to install the application.
+</p>
+
+<h4 id="269">1. Create the initial application directory</h4>
+
+<p id="270">Use either <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> or the IDE's
+<a href="ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> to
+create a directory, which for example purposes we will call
+<em>c:/foo/foo/</em>. This will be a directory of files and
+subdirectories. This directory is named by the
+<em>destination-directory</em> argument to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> and by the
+<em>Distribution directory</em> dialog when using the <strong>Build
+Project Distribution</strong> menu command. </p>
+
+<p id="271">When <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>
+or <strong>Build Project Distribution</strong> complete, you now have
+the initial application directory.</p>
+
+<h4 id="272">2. Run the Install Wizard</h4>
+
+<p id="273">
+Run the Install Wizard via a shortcut on the <strong>Start</strong> |
+<strong>Programs</strong> | <strong>Allegro CL submenu</strong>. This
+will display the Install Build Wizard dialog, which has the following
+fields:
+</p>
+
+<ul>
+  <li id="274"><strong>Company name</strong>: The name of your company (e.g., <em>Foo, Inc.</em>).</li>
+  <li id="275"><strong>Application name</strong>: The name of your application (e.g., <em>WinFoo</em>).</li>
+  <li id="276"><strong>Version number</strong>: The version number of your application (e.g., <em>1.0.20</em>).</li>
+  <li id="277"><strong>Source directory</strong>: The directory containing the output of <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> or <strong>Build
+    Project Distribution</strong> (<em>c:\foo\foo\</em> in our example)</li>
+  <li id="278"><strong>Output directory</strong>: The name of a <em>non-existent</em> directory. </li>
+</ul>
+
+<p id="279">The Install Wizard will create a new directory (called the
+<em>Output directory</em>) and copy the files from the source
+directory to it. Further, it will generate a program named
+<em>setup.exe</em> and put it in the output directory.</p>
+
+<p id="280">The following buttons are on the bottom of the dialog:
+<strong>Build</strong>, <strong>Quit</strong> and
+<strong>Help</strong>. After filling in the fields, click on the
+<strong>Build</strong> button to create the directory specified in
+<em>Output directory</em>. <strong>Quit</strong> will exit without
+building anything. Clicking on <strong>Help</strong> displays this
+section of this document in a browser.</p>
+
+<p id="281">When the Install Wizard completes, the output directory is suitable
+for distributing to application users. We assume it is placed on a
+CD. How the CD is organized is up to you, the application writer. We
+assume the CD contains a single directory <em>distdir/</em> which
+contains the contents of the output directory from above. (At the
+toplevel, it may have a file causing it to autorun when the CD is
+inserted into the drive. In any case, <em>setup.exe</em> must be in
+the same location with respect to all other files as it was in the
+output directory.) Note, this will work equally well if you are
+distributing on floppies or some other media.</p>
+
+<p id="282">Once you have the CD, then you as application developer have
+finished creating the distribution.</p>
+
+<h4 id="283">3. On the application user's machine</h4>
+
+<p id="284">The application user (presumably your customer) receives the
+application CD and puts it into the CD drive. On the application
+user's machine, there is (presumably) no Allegro CL, and the source
+and output directories mentioned in <strong>2</strong> above do not
+exist either. Recall we assume the CD contains a single directory
+<em>distdir/</em> which contains the contents of the output directory
+from <strong>2</strong> above. That directory includes the
+installation program <em>setup.exe</em>. <strong>To run
+<em>setup.exe</em> on Windows NT and 2000, the user must have administrator
+privileges</strong>.</p>
+
+<p id="285">When the application user runs <em>setup.exe</em> (in our example,
+by inserting the CD into the drive and running
+<em>distdir/setup.exe</em>), <em>setup.exe</em> will ask the user for
+an installation directory for the application, which we will call
+<em>appdir</em>.  This directory must not exist. <em>setup.exe</em>
+will create the directory and install the application. Specifically,
+<em>setup.exe</em> will do the following: </p>
+
+<ol>
+<li id="286">
+Create <em>appdir</em> and copy the application specific files to the
+<em>appdir</em> on the user's machine.
+</li>
+<li id="287">
+Determine which of the DLL's in the <em>system-dlls/</em> subdirectory
+need to be installed. It will either immediately copy any that do need
+installation to the Windows `system' directory, or will arrange for
+them to be installed upon the next reboot of Windows.
+</li>
+<li id="288">
+Update the registry. This includes adding or updating to <em>\\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\SharedDLLs</em>.
+</li>
+<li id="289">
+Copy the uninstallation program to <em>[appdir]\uninstall\</em>. (See
+<a href="#uninstallation-3">Section 4.10.1 Uninstalling an application on Windows</a> for important
+information on uninstalling an application.)
+</li>
+<li id="290">
+Adds uninstall entries to the registry key
+<em>\\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\uninstall\</em>. (See
+<a href="#uninstallation-3">Section 4.10.1 Uninstalling an application on Windows</a> for important
+information on uninstalling an application.)
+</li>
+<li id="291">
+On some Windows versions, if shared DLL's were to be installed which
+already existed, then tell the end-user to reboot to complete the
+installation. On other Windows versions, this doesn't happen.
+</li>
+</ol>
+
+<p id="292">
+If at any time the installation program gets an error, it will undo
+any changes made to the disk containing <em>appdir</em> and to the
+Windows registry. That is, if the application does not install, then
+<em>appdir</em> will not exist and no application files will be left
+on the user's machine, and the registry will be left in the
+pre-installation state.
+</p>
+
+
+
+<hr><h2 id="293"><a name="uninstallation-3">4.10.1 Uninstalling an application on Windows</a></h2>
+
+<p id="294">
+Part of the installation process done by the Install Wizard on an
+application user machine is the creation of an uninstallation program
+and the addition of appropriate entries in the registry having to do
+with uninstalling the application. An <i>uninstall/</i>
+subdirectory is placed in the application directory. It contains the
+programs necessary for uninstallation.
+</p>
+<p id="295">
+<b>Uninstallation of the application must be done using the Add/Remove
+Progams control, which can be displayed using the Windows Control
+Panel.</b> User should not directly run the programs in the
+<i>uninstall/</i> directory.
+</p>
+
+
+
+
+
+
+<hr><h2 id="296"><a name="testing-delivery-2">4.11 Testing your application</a></h2>
+
+<p id="297">
+It is best to test an application on a different machine from the one
+it was developed on, as this ensures that machine-specific
+dependencies (presence of system libraries, for example) are better
+controlled for. However, even testing on the same machine can provide
+useful information. Because most necessary files are in the
+application directory, even after installation, the machine dependency
+problem is reduced. (Note that on Windows, Allegro CL DLL's are installed in
+system directories so you must be sure that the application is not
+working just because the ones from the Allegro CL installation are
+present.)
+</p>
+
+
+
+<hr><h2 id="298"><a name="expiration-warning-2">4.12 Expiration warnings</a></h2>
+
+<p id="299">
+Evaluation copies of Allegro CL have a built-in expiration date
+(paid-up licensed copies do not have an expiration date). Applications
+built from evaluation copies will display the following when started:
+</p>
+<pre id="300">
+WARNING: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+WARNING: Application will expire on [date] (XXX days).
+WARNING: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</pre>
+<p id="301">
+where [date] is a specific date in the future and `XXX' is the number
+of days until expiration. If you believe you have a paid-up, licensed
+copy of Allegro CL and you see that warning when your application
+starts, please contact Franz Inc. for advice, since such a warning
+should not appear. (Submit a bug report as described in <a href="introduction.htm#reporting-bugs-1">Reporting
+bugs</a> in <a href="introduction.htm">introduction.htm</a>.)
+</p>
+
+
+
+<hr><hr><h2 id="302"><a name="generate-executable-1">5.0 generate-executable: a wrapper for generate-application</a></h2>
+
+<p id="303">
+The function <a href="operators/excl/generate-executable.htm"><b>generate-executable</b></a> is a wrapper for <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, producing an
+application whose input is the command-line arguments.  It can be used
+either as a quick way to create an application, or as an example of
+using <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>. The source for <a href="operators/excl/generate-executable.htm"><b>generate-executable</b></a> can be found in
+the file <i>[allegro-cl-dir]/src/genexe.cl</i>.
+</p>
+
+<hr><hr><h2 id="304"><a name="user-configuration-1">6.0 Users of your app must have necessary software installed (such as X11 and GTK)</a></h2>
+
+<p id="305">
+Software external to Allegro CL but needed for the operation of your
+application must be properly installed on the computers on which your
+users will run your application. Obviously any external program called
+by your app using <a href="operators/excl/run-shell-command.htm"><b>run-shell-command</b></a> or equivalent must be
+available. Note that the Allegro CL installation tools do not (in
+general) install such external programs. You must arrange for your
+users to install them.
+</p>
+<h3 id="306">
+X11 and GTK on Macs and Linux when delivering a Common Graphics or CLIM app
+</h3>
+<p id="307">
+Macs (starting with OS 10.8) do not have X11 installed and Macs
+generally do not have GTK installed. Both are needed when running an
+app using Commong Graphics or CLIM (CLIM also requires Open
+Motif). See <a href="installation.htm#macosx-x11-2">Installing X11 and GTK on Mac OSX</a>
+in <a href="installation.htm">installation.htm</a> for information needed for the
+Mac (and <a href="installation.htm#macosx-x11-2">Installing GTK and Open Motif on Mac OSX</a>
+in <a href="installation.htm">installation.htm</a> for information you can pass on
+to your users on Macs. Linux machines are typically set up already. 
+</p>
+<p id="308">
+We recommend that you scan <a href="installation.htm">installation.htm</a> for
+other things outside Allegro CL that might be needed by your app.
+</p>
+
+<hr><hr><h2 id="309"><a name="patching-after-delivery-1">7.0 Updating your application after delivery</a></h2>
+
+
+
+<p id="310">
+There may be bugs in the version of Allegro CL used to deliver your
+application and there may be bugs in your application code. Both need
+to be fixed for your users. Allegro CL bugs are typically fixed by
+updates supplied by Franz Inc. You, of course, have to decide how to
+provide fixes for bugs in your application, but you may wish to mimic
+the update system used by Allegro CL. That system and the tools
+associated with it are the subject of this section.
+</p>
+
+<p id="311">The following two features are useful in an update system: </p>
+
+<ul>
+<li id="312">
+The update files should be named following a predetermined convention,
+so users and the system know what is and what is not an update file.
+</li>
+<li id="313">
+The fact that an update is loaded into an image should be recorded in
+the image in some fashion.
+</li>
+</ul>
+
+<p id="314">
+The tools provided support both features. The tools are the <a href="operators/system/defpatch.htm"><b>defpatch</b></a> macro, the <a href="operators/system/load-patches.htm"><b>load-patches</b></a> function, and the
+<a href="operators/excl/featurep.htm"><b>featurep</b></a> predicate
+function.
+</p>
+
+<hr><h2 id="315"><a name="patch-naming-2">7.1 The Allegro CL update naming scheme</a></h2>
+
+<p id="316">
+We first describe the Allegro CL update scheme and then discuss how
+you can adapt it to your application's needs. Allegro CL update files
+are named as follows:
+</p>
+
+<pre id="317">
+p[m][p][n].[v]
+</pre>
+
+<p id="318">So the first letter is <em>p</em>, followed by </p>
+
+<ul>
+<li id="319">
+[m], one character denoting the version of Allegro CL, followed by
+</li>
+<li id="320">
+[p], one character denoting the product, followed by
+</li>
+<li id="321">
+[n], three characters denoting the patch sequence number, followed by
+a period (.), followed by
+</li>
+<li id="322">
+[v], three characters denoting the patch version.
+</li>
+</ul>
+
+<p id="323">
+The version ([m]) changes with each new release. Its value is the
+value of <code>excl::*cl-patch-version-char*</code>. For
+example, pka001.001 is
+the first version of the first patch file on
+version k (Allegro
+CL 10.0) for product
+<em>a</em> (Allegro CL base
+Lisp). pka001.002 is
+the second version of the first patch
+file. pka011.002 is the second
+version of the eleventh patch file.
+</p>
+
+
+
+
+<hr><h2 id="324"><a name="loading-patches-2">7.2 Loading Allegro CL patches</a></h2>
+
+<p id="325">
+All Allegro CL patches are placed in one directory,
+<em>sys:;update</em>, that is the <em>update</em> subdirectory of the
+Allegro directory, where Allegro CL was installed. 
+</p>
+
+<p id="326">
+Patches are loaded by <a href="operators/system/load-patches.htm"><b>load-patches</b></a>.  It takes only keyword
+arguments and the arguments are:
+</p>
+
+<table border="1" width="84%">
+  <tr>
+    <td width="25%"><em>update-directory</em></td>
+    <td width="75%">The directory in which to look for patch files. Defaults to the Allegro CL
+    patch directory, <em>sys:;update</em>.</td>
+  </tr>
+  <tr>
+    <td width="25%"><em>product</em></td>
+    <td width="75%">Value should be <code>nil</code>, meaning load all patch files regardless
+    of the product code (the third letter of the filename, [p] 
+    <a href="#patch-naming-2">above</a>), 
+    or a character or list of
+    characters, meaning load only those files whose product code (third letter) match the
+    single character or is in the list of characters.</td>
+  </tr>
+  <tr>
+    <td width="25%"><em>patch-file-filter</em></td>
+    <td width="75%">A function of three arguments, a product code, a pathname, and a version
+    ([m]  <a href="#patch-naming-2">above</a>). Returns true if
+    the pathname names a valid patch file (based on parsing the name and location only).</td>
+  </tr>
+  <tr>
+    <td width="25%"><em>patch-file-sorter</em></td>
+    <td width="75%">A function of three arguments, a product, 
+    a list of patch files (validated
+    by the patch-file-filter), and a version ([m] 
+    <a href="#patch-naming-2">above</a>). 
+    Sorts the list into the order
+    in which the files should be loaded (from highest version to lowest).</td>
+  </tr>
+  <tr>
+    <td width="25%"><em>version</em></td>
+    <td width="75%">Specifies the version ([m] 
+    <a href="#patch-naming-2">above</a>). 
+    Should be a character object
+    naming a decimal digit (#\0 - #\9) or a lowercase 
+    alphabetic letter (#\a-#\z). This is for use with 
+    application patches only.
+    Defaults to the value of 
+    <code>excl::*cl-patch-version-char*</code>.</td>
+  </tr>
+</table>
+
+<p id="327">
+You should have an <i>update/</i> subdirectory to
+your application directory (or wherever <i>sys:</i>
+translates to in your application). Then you can distribute
+post-loadable Allegro CL patches file to
+customers. <em>post-loadable</em> means that the patch can be loaded
+into an existing image. However, not all Allegro CL patches are
+post-loadable. You must distribute a new image with patches loaded if
+you need to deliver a non-post-loadable Allegro CL patch to your
+customers.
+</p>
+<p id="328">
+Patches are loaded latest version first and earlier
+versions are only loaded if the later version fails for some reason. 
+</p>
+
+
+
+
+<hr><h2 id="329"><a name="app-patches-2">7.3 Patches for your application</a></h2>
+
+<p id="330">
+The easiest way to provide loadable patches to your own application
+is to have a separate directory (say <em>sys:;myapp-update</em>) where
+your patches will go. Then mimic the Allegro CL patch naming scheme
+and call <a href="operators/system/load-patches.htm"><b>load-patches</b></a>,
+specifying <em>update-directory</em> to be the directory you
+chose. <a href="operators/system/load-patches.htm"><b>load-patches</b></a> should
+be called when your application starts up. As long as your patch files
+are created with <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a>, the scheme should work with
+your application. Make sure that the version ([m] parameter) is the
+value of <code>excl::*cl-patch-version-char*</code> for the
+version of Allegro CL you are using.
+</p>
+
+
+<p id="331">
+If you want to use a different naming scheme, you will have to
+supply your own <em>patch-file-filter</em> and
+<em>patch-file-sorter</em> functions. See the description of <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a> for advice on how
+to do that.
+</p>
+
+<p id="332">
+Again, please do not mix your application patch files with Allegro
+CL patch files in the same directory (unless you use your own naming
+scheme that cannot be confused with the Allegro CL naming scheme, and
+even then it is a bad idea). Franz Inc. reserves the right to use any
+product code at any time and so you cannot guarantee the uniqueness of
+filenames simply by using an apparently unused product code.
+</p>
+
+<p id="333">
+The value of the variable <a href="variables/system/s_patches_s.htm"><code>sys:*patches*</code></a> is a list of loaded patches.
+</p>
+
+
+
+<hr><h2 id="334"><a name="creating-patches-2">7.4 Creating patch files in general</a></h2>
+
+<p id="335">The following table describes the three attributes of patch
+files.</p>
+
+<table border="1" width="82%">
+  <tr>
+    <td width="28%"><strong>Attribute</strong></td>
+    <td width="72%"><strong>Meaning</strong></td>
+  </tr>
+  <tr>
+    <td width="28%"><em>post-loadable</em></td>
+    <td width="72%">Can be loaded into a running image (so named because loadable after --
+    post -- the original image build).</td>
+  </tr>
+  <tr>
+    <td width="28%"><em>superseded</em></td>
+    <td width="72%">This attribute is no longer used. Since the
+    latest version of a patch is loaded (and if it cannot be loaded, 
+    the next latest, and so on), a superseded version is not looked at. 
+    Therefore this attribute is not necessary.
+   </td>
+  </tr>
+
+</table>
+
+
+
+<hr><h2 id="336"><a name="creating-patch-file-2">7.5 Creating a patch file</a></h2>
+
+<p id="337">A patch file is a compiled Lisp file. At the start of the patch
+file, there should be a <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> form, followed by the code that
+implements the patch. Therefore, a skeleton patch file will look like
+the following:</p>
+
+<pre id="338">
+;; Our application
+;; patch for report XXXX
+
+(sys:defpatch "mpnnn" 1 ;; replace mpnnn with the product version (m),
+                        ;; product code (p), the patch id number (nnn) and 
+                        ;; 1 with the patch version
+"MESSAGE"               ;; Brief patch information (should fit on one line)
+:type :myapp            ;; Type should be a keyword of your choosing.
+;; Other arguments may be specified.
+)
+
+;; Put patch code after here ...
+
+(in-package :blah)
+</pre>
+
+<p id="339">The required arguments to <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> are:</p>
+
+<blockquote>
+  <p id="340"><em>id</em></p>
+  <blockquote>
+    <p id="341">A string identifying the patch number or name. This is usually the
+    [m][p][nnn] of the patch file name and typically includes zero-filled
+    numeric characters -- e.g. "0a001", "1j195", "0z234" -- but
+    can include alphabetic characters and need not be exactly five characters long. It is not
+    the patch file prefix. This id is unique to the patch.</p>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <p id="342"><em>version</em></p>
+  <blockquote>
+    <p id="343">A fixnum in the range 1 to 999 inclusive. This is the [v] of the patch file name.</p>
+  </blockquote>
+  <p id="344"><em>desc</em></p>
+  <blockquote>
+    <p id="345">A string containing a brief description of the patch. Short strings are better because
+    this string is printed by <a href="operators/excl/dribble-bug.htm"><b>dribble-bug</b></a>
+    when it reports information of patches and long strings may mess up the printing (by
+    forcing line wraps). Example "Fixes filename bug" or "Speeds up processing
+    employee info".</p>
+  </blockquote>
+</blockquote>
+
+<p id="346">The keyword arguments to <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> are:</p>
+
+<blockquote>
+  <p id="347"><em>type</em></p>
+  <blockquote>
+    <p id="348">A keyword specifying the type of the patch. Default is
+    <code>:unknown</code>.  Application programmers should decide on a
+    single type or a group of types for their application and classify
+    their patches according to that scheme. When information on
+    patches in an image is printed by <a href="operators/excl/dribble-bug.htm"><b>dribble-bug</b></a>, they are organized by
+    type. The following types are reserved by Allegro CL and should
+    not be used by application programmers: <code>:lisp</code>,
+    <code>:aclwin</code>, <code>:clim</code>,
+    <code>:system</code>, and <code>:allegro*</code> (any keyword
+    starting with :allegro).</p>
+  </blockquote>
+  <p id="349"><em>defpatch-version</em></p>
+  <blockquote>
+    <p id="350">Default is 1. If a new version of sys:defpatch is supplied by
+    Franz Inc., the default will be changed and patches with the old
+    version will be rejected. In general, do not worry about this
+    argument unless a new version of <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> is distributed (that
+    distribution will include additional instructions).</p>
+  </blockquote>
+  <p id="351"><em>post-loadable</em></p>
+  <blockquote>
+    <p id="352">Default <code>t</code>. When <code>t</code>, the patch file can be loaded into a running
+    image. When <code>nil</code>, the patch file can only
+    be included in an image during image creation with <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>.  The patch
+    load will abort if <a href="operators/system/load-patches.htm"><b>load-patches</b></a> tries to load it into a
+    running image.</p>
+  </blockquote>
+</blockquote>
+
+
+<blockquote>
+  <p id="353"><em>feature</em></p>
+  <blockquote>
+    <p id="354">Default <code>nil</code>. When true, value can be any form acceptable
+    as an argument to <a href="operators/excl/featurep.htm"><b>featurep</b></a>. If <a href="operators/excl/featurep.htm"><b>featurep</b></a> returns <code>nil</code> when
+    applied to the form, the patch loading is aborted. The reason for aborting printed by the
+    system is the form that is the value of this argument (made into a string).</p>
+  </blockquote>
+  <p id="355"><em>compile-feature</em></p>
+  <blockquote>
+    <p id="356">Default <code>nil</code>. When true, value can be any form acceptable as an argument to
+    <a href="operators/excl/featurep.htm"><b>featurep</b></a>.</p>
+  </blockquote>
+  <blockquote>
+    <p id="357">The <em>compile-feature</em> keyword argument is designed to
+    facilitate producing patches for different platforms. For example,
+    suppose a patch is only applicable to versions of Allegro CL that
+    use os-threads for multiprocessing. Specifying
+    <code>:os-threads</code> as the value of <em>compile-feature</em>
+    will cause compilation to proceed when compiled by a platform that
+    uses OS threads but to abort
+    when compiled by a non-os-threads Allegro
+    CL. Aborting is what you want in that case, since the patch is not
+    needed for such platforms. The aborting of compilation will signal
+    a condition which looks for a
+    <code>sys::abort-patch-compiling</code> restart.  If that restart
+    is not present, an error is signaled (and the programmer must
+    intervene to do something). More typically, compilation of patch
+    files are done in a form like the following:</p>
+  </blockquote>
+  <blockquote>
+    <pre id="358">
+    (dolist (x patch-files)
+  (restart-case (compile-file x)
+    (sys::abort-patch-compiling (patch)
+      ;; Actions of your choice, e.g printing a message like:
+      (format t "Aborted patch file ~s, featurep returned nil"
+              x))))
+    </pre>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <p id="359">Compilation of the remaining patch files will continue and all
+    relevant patch fasl files will be present when the
+    <strong>dolist</strong> form completes.</p>
+  </blockquote>
+</blockquote>
+
+
+
+<hr><h2 id="360"><a name="placing-patch-files-2">7.6 What to do with patch files</a></h2>
+
+<p id="361">
+How you and your application team will manage patch files depends
+on how you deliver your application and whether or not your customers
+can build new images with <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. Only customers of properly
+licensed VARs and customers who hold an appropriate license from Franz
+Inc. for Allegro CL will be able to build new images. Customers (of
+yours) who receive runtime images (and are not independently licensed
+by Franz Inc.) cannot make new original images because <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> (called by <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>) does not work in
+runtime images.
+</p>
+
+<p id="362">
+This is an issue because (1) patches which are not post-loadable
+(i.e. cannot be loaded into a running Lisp) can only be included in a
+new original image; and (2) post-loadable patches can be loaded into a
+running image but should not be loaded into an image which already
+contains them. Therefore, if you have runtime customers (who cannot
+build original images), you can send them post-loadable patches and
+arrange for those to be loaded automatically, but you may also send
+them new images from time to time (which include non-post-loadable
+patches but will usually include all available post-loadable patches
+as well). You must ensure that such users do not load the
+post-loadable patches in their possession which are already included
+in the current image.
+</p>
+
+<p id="363">
+Here is a possible scheme which will work for applications which
+are distributed as runtime images. (This is not the only possible
+scheme or even the best for your situation.  It illustrates how the
+tools and their features can be used to produce a scheme that works.)
+</p>
+
+<ol>
+  <li id="364">Your application, <em>myapp</em>, is distributed in a
+    directory. That directory contains a subdirectory
+    <em>update-myapp/</em> and your users are informed to put patches
+    from you in that directory. Patch files are named
+    <em>p[m]a[nnn].[vvv]</em>.</li> 
+    <li id="365">As part of the
+    <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a>, the following
+    <a href="operators/system/load-patches.htm"><b>load-patches</b></a> forms
+    are evaluated: <br>
+    <code>(sys:load-patches :update-directory
+    "sys:;update-myapp;" :product #\a)</code><br>
+    <code>(sys:load-patches);; to load any Allegro CL patches in
+    </code><code><em>update/</em></code><br>
+    Each time the application is
+    started, all patch files named in the <em>update-myapp</em>
+    directory will be loaded automatically along with any in
+    <em>update</em>.</li> 
+    <li id="366">You create a new image for distribution
+    to customers. This image includes all myapp patches, as well as
+    non-post-loadable patches (which you have been testing internally)
+    and perhaps other features and enhancements unrelated to
+    patches. In this image, the first <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a> form in <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> is
+    changed to<br>
+    <code>(sys:load-patches :update-directory
+    "sys:;update-myapp;" :product #\b)</code></li>
+    <li id="367">You distribute the new image to customers, telling them to
+    delete all p[m]a[nnn].[vvv] files from
+    <em>update-myapp</em> and remarking that patches associated with
+    this image will be named p[m]b[nnn].[vvv].</li>
+</ol>
+
+<p id="368">Note that even if your customer ignores your instruction to delete
+the <em>p[m]a[nnn].[vvv]</em> files from
+<em>myapp-update</em>, those (no longer valid) patches will not be
+loaded because <a href="operators/system/load-patches.htm"><b>load-patches</b></a> is looking for product
+<em>b</em> and those files have product <em>a</em>.</p>
+
+
+
+<hr><h2 id="369"><a name="including-patches-2">7.7 Including application patches in an image at build time</a></h2>
+
+<p id="370">
+The discussion under the previous heading concerns distributing
+patches to users who cannot themselves build an original image with
+<a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. You,
+however, will build original images (and perhaps your customers are
+licensed to do so as well). How do you include patch files in the
+image when it is built? You put appropriate <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a> forms in
+<i>custom.cl</i> and make sure all your patches are in
+the directories specified in the <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a> forms. Allegro CL patches
+can be put in the <i>update</i> subdirectory (they will
+be included automatically by the image build process). See <a href="building-images.htm#custom-dot-cl-1">Use of
+custom.cl</a> in <a href="building-images.htm">building-images.htm</a>.
+</p>
+
+
+
+<hr><h2 id="371"><a name="superseding-patches-2">7.8 Superseding a patch</a></h2>
+
+<p id="372">Say you have sent a patch, <i>p0a001.001</i> to your
+users (the first 0 would actually be the value of
+<code>excl::*cl-patch-version-char*</code>). The <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> form at the top of
+the patch file is:</p>
+
+<pre id="373">
+(sys:defpatch "0a001" 1 "Fixes whatever" :type :myapp)
+</pre>
+
+<p id="374">A user complains that including the patch fixes the problem
+reported but seems to cause another problem. You check it out and find
+that the patch does introduce new problems. So you create a new
+version. You put it into a file and compile it to
+<i>p0a001.002</i>.  The <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> form at the head of the file
+is:</p>
+
+<pre id="375">
+(sys:defpatch "0a001" 2 "Fixes whatever" :type :myapp)
+</pre>
+
+<p id="376">
+When the user gets the new patch, the patch loader will load it. But
+you should also provide a new, withdrawn version of the original patch
+file. Then the actual bad patch file no longer exists and cannot
+be accidentally loaded.
+</p>
+
+
+
+<hr><h2 id="377"><a name="withdrawing-patches-2">7.9 Withdrawing a patch</a></h2>
+
+<p id="378">
+Bad (for whatever reason -- introduces a new bug or does not do what
+it was supposed to or whatever) patch files should be simply
+withdrawn. A speed-enhancement patch which actually slows things down
+is one example (your idea for a speedup failed and you do not have
+other ideas). We recommend replacing the defective patch file with a
+new file (same filename and version, so the bad file is overwritten)
+marked withdrawn. This shows the fact that the patch is withdrawn in
+the <a href="operators/excl/dribble-bug.htm"><b>dribble-bug</b></a> output. So,
+the <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> form in
+the replaced <i>p0a001.001</i> would be (like
+above):</p>
+
+<pre id="379">
+(sys:defpatch "0a001" 1 "Fixes nothing" :type :myapp :withdrawn t)
+</pre>
+
+
+<p id="380">
+When the compiler processes this
+<a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> form, it
+stops compiling the file. Therefore, you can leave the original patch
+source (for later reference) without worrying that the patch fasl file
+will be larger than necessary or contain bogus compiled code.
+</p>
+
+
+
+<hr><h2 id="381"><a name="distributing-patches-2">7.10 Distributing patches</a></h2>
+
+<p id="382">In the era of the World Wide Web, ftp, and users around the world,
+a typical way to distribute patches to users is having them download
+the patches from an ftp (or www) site directly into the appropriate
+directory without actual human contact between you and your users. If
+you use this model, you should tell your users to download every
+patch, you should use the version mechanisms we
+describe above, and you should tell your users to expect files to be
+overwritten.</p>
+
+<p id="383">You can also, of course, distribute patches on request, one at a
+time, with instructions (which usually include `delete all earlier
+versions of this patch!') The more patch distribution has a
+human-contact element, the less you have to worry about old version
+and bad patches not being deleted. The more the system is automated,
+with less handholding, the more being very careful about version numbers
+becomes necessary.</p>
+
+
+
+<hr><h2 id="384"><a name="loading-patches-2">7.11 Loading patches</a></h2>
+
+<p id="385">Patches are compiled lisp files, and such files can be loaded in a
+number of ways.  There is no reason a post-loadable patch file cannot
+be loaded with <strong>load</strong>.  Often that is useful for quick
+tests. However, Allegro CL provides a patch-loading function carefully
+integrated with the patch system described in this section. As far as
+possible we recommend that you load with <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a>.</p>
+
+<p id="386">The function <a href="operators/excl/featurep.htm"><b>featurep</b></a> returns true or <code>nil</code> as the features called for in its argument are or
+are not on <code>*features*</code>.  It is thus a functional analog of
+the #+/#- reader macros. It is used by <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a> to process the
+<i>feature</i> argument in <a href="operators/system/defpatch.htm"><b>sys:defpatch</b></a> forms. </p>
+
+<p id="387">Things to note </p>
+
+<ul>
+  <li id="388">No attempt has been made at this time to allow for co-requisite
+    patches. Pre-requisite patches can be created using the
+    <em>feature</em> keyword, but the best philosophy, if possible, is
+    to always create patches in self-contained files.</li> 
+    <li id="389">Loading
+    patches with <strong>load</strong>. Patch files 
+    are <i>fasl</i>
+    files that can be loaded with load and its friends but note the
+    following: if something causes the load of a patch to be aborted
+    (the required features are not present, the patch is not
+    post-loadable, a patch with the same id is already loaded) the
+    system looks for a restart named
+    <code>sys::abort-patch-loading</code>. If that restart is found,
+    it is invoked. If no such restart is found, an error is
+    signaled. <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a> sets up the restart but
+    no such restart will (likely) be present when loading a patch file
+    with load.  Therefore, using <strong>load</strong> is best done
+    with single or just a few patches but <a href="operators/system/load-patches.htm"><b>sys:load-patches</b></a> should be used for any
+    automated procedure or when many patches are involved. Note that
+    loading patches marked withdrawn does not signal an
+    error.</li> 
+    <li id="390">Never lambda-bind <code>*features*</code> while
+    loading a patch since the patch file may add a feature to that
+    list, but the addition will be lost when the binding is
+    undone.</li>
+</ul>
+
+
+
+
+
+<hr><hr><h2 id="391"><a name="ntservice-app-1">8.0 Turning your application into a Windows Service</a></h2>
+
+
+<p id="392">
+On Windows, you can turn your Common Lisp application into a Windows
+NT/2000/XP/Server 2003 service with the ntservice package. There is an
+example in the <b>examples/ntservice/</b> directory.
+</p>
+<p id="393">
+If you have a Common Lisp application that you would like to start up
+automatically when the system starts, and shut down cleanly when the
+system is shutting down, then this package is for you.
+</p>
+<p id="394">
+Follow these steps and you'll be on the road to servicedom. 
+</p>
+<ol>
+<li id="395">
+<b>First write/test/debug your application without ntservice</b>.
+Your application should be working properly as a standalone
+application (generated by <a href="operators/excl/generate-executable.htm"><b>generate-executable</b></a> or <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>) before attempting to
+involve `ntservice'.
+</li>
+<li id="396">
+<b>Add the following form to your application</b>, so that the
+<b>:ntservice</b> module is loaded and available for use:
+<pre id="397">
+(eval-when (compile eval load) (require :ntservice))
+</pre>
+</li>
+<li id="398">
+<b>The main function in your application should call
+ntservice:execute-service as soon as possible</b>.  <a href="delivery.htm#execute-service-op-bookmarkxx"><b>ntservice:execute-service</b></a> will be
+responsible for executing any initialization functions which your
+program may need.  It is also responsible for starting the main loop
+of your program.  Please note: <a href="delivery.htm#execute-service-op-bookmarkxx"><b>ntservice:execute-service</b></a> calls
+<code>(exit 0 :no-unwind t :quiet t)</code> when the service is
+stopped (see <a href="operators/excl/exit.htm"><b>exit</b></a>).  If you
+need things to happen before <a href="operators/excl/exit.htm"><b>exit</b></a> is called, use the
+<i>stop</i> keyword argument to <a href="delivery.htm#execute-service-op-bookmarkxx"><b>ntservice:execute-service</b></a> to pass
+in a function that can do cleanup.
+</li>
+<li id="399">
+<b>Regenerate your application with the updated code</b>.
+</li>
+<li id="400">
+<b>Call ntservice:create-service to add your program to the list of
+Windows services</b>. Usually this would be done by the program that
+installs your application.  See <i>examples/ntservice/testapp.cl</i>
+for an example of how to add command-line switches to your program to
+allow a user to add/remove the service easily. <a href="delivery.htm#create-service-op-bookmarkxx"><b>ntservice:create-service</b></a> is defined
+below.
+</li>
+<li id="401">
+<b>Test it</b>!  Your service should now be listed in the Services
+control panel applet.  Try starting and stopping your service.  If it
+works as planned, you can use the Services control panel applet to
+make the service start automatically instead of manually.
+</li>
+</ol>
+
+<p id="402">
+If you want to remove your program from the list of services, you can
+use <a href="delivery.htm#delete-service-op-bookmarkxx"><b>ntservice:delete-service</b></a> to delete
+the service.
+</p>
+<p id="403">
+The <b>LocalSystem</b> account is very powerful!  Be careful of what
+you allow your program to do.  Also note that the <b>LocalSystem</b>
+account usually does not have access to network filesystems.  This may
+lead to confusion if your service tries to access drive letters that
+are mapped to network drives, or if it tries to access remote
+filesystems via UNC names (\\host\\share\file).
+</p>
+<p id="404">
+You can use the Services control panel applet to change who the
+service runs as.  Note that no account but <b>LocalSystem</b> will be
+able to interact with the desktop (i.e., your program's window will be
+invisible if you don't run as `LocalSystem').
+</p>
+<p id="405">
+See <i>examples/ntservice/testapp.cl</i> for an example skeleton for a
+service application.
+</p>
+<p id="406">
+To start and stop services programatically, you can use the <a href="delivery.htm#start-service-op-bookmarkxx"><b>ntservice:start-service</b></a> and <a href="delivery.htm#stop-service-op-bookmarkxx"><b>ntservice:stop-service</b></a> functions.
+</p>
+
+<hr><h2 id="407"><a name="ntservice-functions-2">8.1 ntservice functions</a></h2>
+
+<p id="408">
+The functions in the <b>ntservice</b> module are as follows. All are
+named by symbols in the <b>ntservice</b> package.
+</p>
+
+<ul>
+<li id="409">
+<a href="delivery.htm#create-service-op-bookmarkxx"><b>create-service</b></a>
+</li>
+<li id="410">
+<a href="delivery.htm#delete-service-op-bookmarkxx"><b>delete-service</b></a>
+</li>
+<li id="411">
+<a href="delivery.htm#execute-service-op-bookmarkxx"><b>execute-service</b></a>
+</li>
+<li id="412">
+<a href="delivery.htm#set-service-description-op-bookmarkxx"><b>set-service-description</b></a>
+</li>
+<li id="413">
+<a href="delivery.htm#start-service-op-bookmarkxx"><b>start-service</b></a>
+</li>
+<li id="414">
+<a href="delivery.htm#stop-service-op-bookmarkxx"><b>stop-service</b></a>
+</li>
+</ul>
+
+
+<hr><h3 id="415"><a name="execute-service-op-bookmarkxx"></a>execute-service</h3><h3 id="416">Function</h3><h4 id="417">Package: ntservice</h4>
+
+<p id="418"><b>Arguments: </b><i>
+service-name main </i>&amp;key <i>init stop shutdown</i><i>
+</i></p>
+<p id="419">
+<b><i>service-name</i></b> is a string naming the
+service.  This name is the same name that is used when creating the
+service (with <a href="delivery.htm#create-service-op-bookmarkxx"><b>create-service</b></a>).
+<b><i>main</i></b> should be a function (or a symbol
+naming a function) which constitutes the main loop of your program.
+This function will be called when the service starts running.  No
+arguments are passed to this function.  This function should never
+return (if it does, Windows will complain that the service terminated
+prematurely).
+</p>
+<p id="420">
+The keyword arguments <i>init</i>,
+<i>stop</i>, and <i>shutdown</i> are
+optional.
+</p>
+<p id="421">
+<b><i>init</i></b> specifies a function (or a symbol
+naming a function) that should be executed before the main loop is
+executed.  Such a function might load in configuration settings or
+verify the system environment.  The <i>init</i> function
+should be prepared to accept a single argument.  This argument is the
+list of "Start parameters" that have been specified for the service.
+This list is usually empty but can be modified using the Services
+control panel applet.  If the <i>init</i> function
+returns <code>nil</code>, the service will not be started
+and an error will be logged and/or reported.  Make sure
+<i>init</i> returns non-<code>nil</code>
+under normal circumstances.
+</p>
+<p id="422">
+<b><i>stop</i></b> specifies a function (or a symbol
+naming a function) that should be executed when the service is to be
+stopped.  Such a function might do work that your application needs
+done before Lisp exits.  This function should do its job fairly
+swiftly, otherwise Windows might complain that the service isn't
+stopping properly.  No arguments are passed to this function.
+</p>
+<p id="423">
+<b><i>shutdown</i></b> is like
+<i>stop</i> and specifies a function (or a symbol
+naming a function) that should be executed when the service is to be
+stopped due to the computer being shut down.
+</p>
+<p id="424">
+Please remember that <a href="delivery.htm#execute-service-op-bookmarkxx"><b>execute-service</b></a> never returns to its
+caller.  It calls <code>(exit 0 :no-unwind t :quiet t)</code> to
+exit Lisp (see <a href="operators/excl/exit.htm"><b>excl:exit</b></a>).
+</p>
+
+<hr>
+
+<hr><h3 id="425"><a name="create-service-op-bookmarkxx"></a>create-service</h3><h3 id="426">Function</h3><h4 id="427">Package: ntservice</h4>
+
+<p id="428"><b>Arguments: </b><i>
+name displaystring cmdline </i>&amp;key  (<i>start</i> :manual) (<i>interact-with-desktop</i> t)<i> description username</i> (<i>password</i> "")<i>
+</i></p>
+<p id="429">
+<b><i>name</i></b> should be a string that identifies
+your service.  The maximum string length is 256 characters. The
+service control manager database preserves the case of the characters,
+but service name comparisons are always case insensitive.
+Forward-slash (/) and back-slash (\) are invalid service name
+characters.
+</p>
+<p id="430">
+<b><i>displaystring</i></b> should be a string that
+contains the display name to be used by user interface programs to
+identify the service. This string has a maximum length of 256
+characters. The name is case-preserved in the service control
+manager. Display name comparisons are always case-insensitive.
+</p>
+<p id="431">
+<b><i>cmdline</i></b> should be a string that contains
+the command line for executing your service program.  The first word
+in the string should be the fully-qualified pathname to the
+executable.
+</p>
+<p id="432">
+<b><i>start</i></b> can either be
+<code>:manual</code> or <code>:auto</code>.  If
+<code>:manual</code>, the service must be started and stopped
+manually.  If <code>:auto</code>, the service will start
+automatically at boot time.
+</p>
+<p id="433">
+If <b><i>interact-with-desktop</i></b> is true (the default),
+then the service will be allowed
+to interact with the desktop. Note that on Windows Vista,
+interaction with the desktop is limited, even with
+<i>interact-with-desktop</i> is true. See
+<b>http://msdn2.microsoft.com/en-us/library/ms683502.aspx</b> for
+details. If <i>interact-with-desktop</i> is true, then
+<i>username</i> (see below) must
+be <code>nil</code>.
+</p>
+<p id="434">
+<b><i>description</i></b>, if
+non-<code>nil</code>, must be a string, which (typically)
+explains the purpose of the service.
+</p>
+<p id="435">
+<b><i>username</i></b> specifies the name of the account
+under which the service should run. If this parameter
+is <code>nil</code> or zero, the LocalSystem account will
+be used.
+</p>
+<p id="436">
+<b><i>password</i></b> specifies the password for the
+account specified in <i>username</i>.  Use a null
+string ("") if the account has no password.
+</p>
+<h4 id="437">
+Return values
+</h4>
+<p id="438">
+If <a href="delivery.htm#create-service-op-bookmarkxx"><b>create-service</b></a> is successful, it
+returns <code>t</code>.  If it is not successful, it
+returns two values: <code>nil</code> and the Windows error
+code.  You can use <b>ntserver:winstrerror</b> to convert the code
+into a string.
+</p>
+<h4 id="439">
+Example:
+</h4>
+<pre id="440">
+  (multiple-value-bind (success errcode)
+        (ntservice:create-service 
+          "MyService" 
+          "My Common Lisp program service" 
+          "c:\\devel\\program\\program.exe /runfast /dontcrash")
+     (if success
+         (format t "all is well~%")
+       (error "create-service failed: ~A"
+              (ntservice:winstrerror errcode))))
+</pre>
+<p id="441">
+Your service will be created with the following properties:
+</p>
+<pre id="442">
+    Manual start
+    Run as LocalSystem account
+    Allow program to interact with desktop
+</pre>
+
+<hr>
+
+<hr><h3 id="443"><a name="set-service-description-op-bookmarkxx"></a>set-service-description</h3><h3 id="444">Function</h3><h4 id="445">Package: ntservice</h4>
+
+<p id="446"><b>Arguments: </b><i>
+name description
+</i></p>
+
+<p id="447">
+<b><i>name</i></b> must be the name of an existing
+service. <b><i>description</i></b> must be a string or
+<code>nil</code>. If <code>nil</code>, any
+existing description for the named service will be removed.
+Otherwise, the service description for the name service will be set.
+</p>
+
+<hr>
+
+<hr><h3 id="448"><a name="delete-service-op-bookmarkxx"></a>delete-service</h3><h3 id="449">Function</h3><h4 id="450">Package: ntservice</h4>
+
+<p id="451"><b>Arguments: </b><i>
+name
+</i></p>
+<p id="452">
+<b><i>name</i></b> is the name you gave the service in
+your call to <a href="delivery.htm#create-service-op-bookmarkxx"><b>create-service</b></a>.  It seems to be
+possible to request deletion of a running service.  This disables the
+service from further starts and marks it for deletion once it stops.
+<a href="delivery.htm#delete-service-op-bookmarkxx"><b>delete-service</b></a> returns <code>t</code> if the removal was successful, otherwise it returns
+three values: <code>nil</code>, the Windows error code,
+and a string with the name of the function that actually failed. You
+can use <b>ntserver:winstrerror</b> to convert the code into a string.
+</p>
+
+<hr>
+
+<hr><h3 id="453"><a name="start-service-op-bookmarkxx"></a>start-service</h3><h3 id="454">Function</h3><h4 id="455">Package: ntservice</h4>
+
+<p id="456"><b>Arguments: </b><i>
+name </i>&amp;key  (<i>wait</i> t)<i>
+</i></p>
+<p id="457">
+<b><i>name</i></b> is the name of the service.  If
+<b><i>wait</i></b> is true (the default), then this
+function will wait until it has confirmation that the service has
+started before returning.
+</p>
+
+<hr>
+
+<hr><h3 id="458"><a name="stop-service-op-bookmarkxx"></a>stop-service</h3><h3 id="459">Function</h3><h4 id="460">Package: ntservice</h4>
+
+<p id="461"><b>Arguments: </b><i>
+name </i>&amp;key  (<i>timeout</i> 30)<i>
+</i></p>
+
+<p id="462">
+<b><i>name</i></b> is the name of the service.
+<b><i>timeout</i></b> is the number of seconds to wait
+for the service to stop.  Currently, this function does not
+automatically stop dependent services.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="463"><a name="ntservice-tutorial-2">8.2 ntservice tutorial</a></h2>
+
+<p id="464">
+This tutorial will show you how to use the <b>testapp</b> example
+found in <b>examples/ntservice/</b>.
+</p>
+<p id="465">
+First, startup Allegro, and do this:
+</p>
+
+
+
+
+<p id="466">
+This will build the test application and put the result in
+</p>
+
+
+
+<p id="467">
+Now, start up a <b>cmd.exe</b> (Command Prompt) and do this:
+</p>
+
+
+
+<p id="468">
+This will install the test service.  You can now start the test
+service by doing this:
+</p>
+<pre id="469">
+  net start MyService
+</pre>
+<p id="470">
+The name <b>MyService</b> was set in <i>testapp.cl</i> and is just an
+example service name.  You should see an Allegro CL console window
+with contents something like this:
+</p>
+
+
+
+<p id="471">
+You can either close the application (with the <b>close</b> button on
+the window) or you can shut down the service by doing this:
+</p>
+<pre id="472">
+  net stop MyService
+</pre>
+<p id="473">
+Both methods for stopping the service will work.
+</p>
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/delivery.htm">9.0 version</a></td></tr></table></html>

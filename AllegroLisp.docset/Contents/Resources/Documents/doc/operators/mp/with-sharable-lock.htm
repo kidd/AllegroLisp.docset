@@ -1,0 +1,97 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>with-sharable-lock</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/with-sharable-lock.htm">9.0 version</a></td></tr></table><h2 id="2">with-sharable-lock</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(mode lock </i>&amp;key <i>recursive-p yield-rate timeout timeout-body</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+Evaluate a body of code in the context of a <a href="../../classes/mp/sharable-lock.htm"><code>sharable-lock</code></a> acquired in the
+specified <i>mode</i>.  This macro allows more control
+of the behavior than <a href="with-shared-lock.htm"><b>with-shared-lock</b></a> or <a href="with-exclusive-lock.htm"><b>with-exclusive-lock</b></a> and the values returned by
+this macro (the value of the last body form when the lock is
+successfully acquired) is consistent with other <b>with-XXX</b> macros
+in Common Lisp, unlike <a href="with-shared-lock.htm"><b>with-shared-lock</b></a> or <a href="with-exclusive-lock.htm"><b>with-exclusive-lock</b></a> which
+return <code>t</code>.
+</p>
+<p id="5">
+This macro is in
+the <code>smputil</code> module and may not be included in the
+image util <code>(require :smputil)</code> is evaluated.
+</p>
+
+<p id="6">
+The <b><i>mode</i></b> argument must evaluate to one of
+the keywords <code>:exclusive</code>
+or <code>:shared</code>.
+</p>
+<p id="7">
+The <b><i>lock</i></b> argument must evaluate to an
+instance of <a href="../../classes/mp/sharable-lock.htm"><code>sharable-lock</code></a>.
+</p>
+<p id="8">
+The <b><i>yield-rate</i></b> argument, if specified,
+must evaluate to a positive integer, or the
+keyword <code>:never</code>. The specified value overrides the
+value in the lock instance. If the argument is omitted, or specified
+as <code>nil</code>, than the value in the lock instance
+is used.
+</p>
+<p id="9">
+The <b><i>timeout</i></b> argument, if specified, must
+evaluate to <code>nil</code> or a number of seconds. The
+value determines how long the program will wait if the lock is not
+immediately available. A timeout value of zero (or a negative value)
+specifies that the lock must be available immediately.
+</p>
+<p id="10">
+The <b><i>recursive-p</i></b> argument can be used to
+override the <i>recursive-p</i> specification in the
+<a href="../../classes/mp/sharable-lock.htm"><code>sharable-lock</code></a> instance.
+See <a href="make-sharable-lock.htm"><b>make-sharable-lock</b></a>.
+</p>
+<p id="11">
+The <b><i>body</i></b> expressions are evaluated as a
+<a href="../../../ansicl/dictentr/progn.htm"><b>progn</b></a> body and the returned
+values are the values of the progn when the lock is successfully
+acquired. (The return values when the lock is not acquired are
+described below.)
+</p>
+<p id="12">
+The <b><i>timeout-body</i></b> argument specified the
+behavior when a timout is requested.
+The <i>timeout-body</i> argument must be a list of
+expressions beginning with <code>nil</code> or a bound
+variable list. The default timeout behavior is <code>((x) (values
+nil x))</code>
+</p>
+<p id="13">
+If a timeout occurs, or when <i>timout</i> is zero or
+negative and the lock is not available immediately, the first variable
+in the list of bound variables is bound to the reason for the timeout
+and the remainder of the <b><i>timout-body</i></b> is
+evaluated as a <a href="../../../ansicl/dictentr/letlet.htm"><b>let</b></a> body.  The
+values returned by the <i>timeout-body</i> forms are the
+values returned from the <a href="with-sharable-lock.htm"><b>with-sharable-lock</b></a> form.  In the event of a true
+timeout, the reason is always :timeout, but when timout is zero or
+negative, the reason may be one of the keywords returned by
+<a href="sharable-lock-lock.htm"><b>sharable-lock-lock</b></a>.
+</p>
+<p id="14">
+If the timeout does not occur,
+the <b><i>timeout-body</i></b> argument is never
+evaluated, and the values of the body forms are returned.
+</p>
+
+<p id="15">
+See <a href="../../smp.htm#sharable-locks-2">Sharable
+locks</a> in <a href="../../smp.htm">smp.htm</a>.
+</p>
+<p id="16">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/with-sharable-lock.htm">9.0 version</a></td></tr></table></body></html>

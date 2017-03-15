@@ -1,0 +1,59 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>critical-section</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/critical-section.htm">9.0 version</a></td></tr></table><h2 id="2">critical-section</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(</i>&amp;key <i>block non-smp</i><i>)
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+
+
+<p id="4">
+This macro expands into code that uses a unique basic-lock associated with
+the expansion to control execution of the body code. Only one process at a
+time can acquire ownership of the lock and execute the forms in body.
+Ownership of the lock is relinquished when control leaves body by falling
+through or by non-local exit. The result of evaluating the critical-section
+code is the result of the last form in body.
+</p>
+<p id="5">
+The arguments are:
+</p>
+<ul>
+<li id="6">
+<b><i>block</i></b>: used for special internal
+functions. Users should not specify a value for this argument.
+</li>
+<li id="7">
+<b><i>non-smp</i></b>: what code to generate in a
+non-smp lisp. Legal values are:
+<ul>
+<li id="8">
+<code>:without-scheduling</code>: to get the equivalent of
+<code>(mp:without-scheduling . body)</code>
+</li>
+<li id="9">
+<code>:without-interrupts</code>: to get the equivalent of
+<code>(excl:without-interrupts . body)</code>
+</li>
+<li id="10">
+<code>:atomically</code>: to get the equivalent of
+<code>(excl::atomically . body)</code>
+</li>
+<li id="11">
+[omitted]: to get object-locking code like SMP.
+This may be inefficient or even
+problematic in a non-SMP Lisp.
+</li>
+</ul>
+</li>
+</ul>
+
+<p id="12">
+See <a href="../../smp.htm">smp.htm</a>
+and <a href="../../multiprocessing.htm">multiprocessing.htm</a> for more information on
+this macro and on multiprocessing.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/critical-section.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,285 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>fslot-value-typed</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/fslot-value-typed.htm">9.0 version</a></td></tr></table><h2 id="2">fslot-value-typed</h2>
+
+<p id="3"><b>Arguments: </b><i>
+type allocation object </i> &amp;rest <i>slot-names</i><i>
+</i></p>
+
+<p id="4">
+Accesses a slot of a foreign object. <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> may be used with this function to change
+the value in the slot. (The <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> is like that of <a href="fslot-value.htm"><b>fslot-value</b></a>, but the <i>type</i>
+and <i>allocation</i> arguments are also
+specified. There are examples below and in
+<a href="../../ftype.htm">ftype.htm</a>.)
+</p>
+<p id="5">
+The <i>type</i> argument declares the type of the object
+being accessed. (When an object that is embedded within or pointed to
+by another object is being accessed, then this is the type of the
+outermost object, and the type does <b>not</b>
+need to be declared for the inner objects.)  It may be:
+</p>
+
+<ul>
+<li id="6">
+a symbol naming a foreign type.
+</li>
+<li id="7">
+a type description using the syntax shown in <a href="../../ftype.htm#foreign-type-syntax-1">The Syntax for Foreign Types</a> in
+<a href="../../ftype.htm">ftype.htm</a>.
+</li>
+<li id="8">
+a foreign type object, that is a foreign class metaobject, such as is
+returned by <a href="def-foreign-type.htm"><b>def-foreign-type</b></a>,
+<a href="../../../ansicl/dictentr/find-cla.htm"><b>find-class</b></a>, or <a href="../../../ansicl/dictentr/class-of.htm"><b>class-of</b></a>.
+</li>
+</ul>
+
+<p id="9">
+The <i>allocation</i> argument declares the storage
+class of the object being accessed. <i>allocation</i>
+must be one of <code>:foreign</code>,
+<code>:foreign-static-gc</code>, <code>:lisp</code>,
+<code>:c</code>, <code>:aligned</code>
+or <code>nil</code>.  If the allocation
+is <code>nil</code> then the allocation type will be
+computed from the <i>object</i> argument. When
+the <i>allocation</i> argument is
+not <code>nil</code>, and the slot names are all
+constants, then this function will be open coded by the compiler if
+the <a href="../../variables/compiler/optimize-fslot-value-switch.htm"><code>optimize-fslot-value-switch</code></a> is true.
+</p>
+
+
+<p id="10">
+The <i>object</i> argument identifies the object being
+accessed. The following table shows what <i>object</i>
+should be given the value of <i>allocation</i>:
+</p>
+
+<table border="1" width="90%">
+  <tr>
+    <td width="45%" align="center"><strong>Allocation argument</strong></td>
+    <td width="45%" align="center"><strong>Object argument</strong></td>
+  </tr>
+  <tr>
+    <td width="45%" align="left" VALIGN="TOP"><code>:foreign</code></td>
+    <td width="45%" align="left" VALIGN="TOP">A foreign object allocated in the Lisp heap</td>
+  </tr>
+  <tr>
+    <td width="45%" align="left" VALIGN="TOP"><code>:foreign-static-gc</code></td>
+    <td width="45%" align="left" VALIGN="TOP">A foreign object allocated in the Lisp static memory</td>
+  </tr>
+  <tr>
+    <td width="45%" align="left" VALIGN="TOP"><code>:lisp</code></td>
+    <td width="45%" align="left" VALIGN="TOP">A Lisp array of type (unsigned-byte 8)
+    of sufficient size to hold the foreign object.</td>
+  </tr>
+<tr>
+<td width="45%" align="left" VALIGN="TOP">
+<code>:lisp-short</code>
+</td>
+<td width="45%" align="left" VALIGN="TOP">
+A Lisp short-array of type (unsigned-byte 8) of sufficient size to
+hold the foreign object. This type is otherwise the same as the
+<code>:lisp</code> type described just above, except that the
+data is held in a short-array. (short-arrays are a new data type
+corresponding to the older array type in Allegro CL. See <a href="../../implementation.htm#arrays-1">Arrays and short
+arrays</a> section in <a href="../../implementation.htm">implementation.htm</a>.)
+</td>
+  </tr>
+  <tr>
+    <td width="45%" align="left" VALIGN="TOP"><code>:c</code></td>
+    <td width="45%" align="left" VALIGN="TOP">A Lisp integer representing the
+    address of the object in memory.</td>
+  </tr>
+  <tr>
+    <td width="45%" align="left" VALIGN="TOP"><code>:aligned</code></td>
+    <td width="45%" align="left" VALIGN="TOP">A Lisp integer representing the aligned
+    address of the object in memory.</td>
+  </tr>
+  <tr>
+    <td width="45%" align="left" VALIGN="TOP"><code>nil</code></td>
+    <td width="45%" align="left" VALIGN="TOP">Any of the four types above.</td>
+  </tr>
+</table>
+
+
+
+<p id="11">
+The <i>slot-names</i> are symbols or
+integers. Symbols name the slots to access.  Integers are used to
+specify array indices.
+</p>
+
+<p id="12">
+The symbol naming a slot can either be the exact symbol used when
+the type was defined, or it can be a keyword package symbol with the
+same symbol-name as the one used to define the slot.
+</p>
+
+<p id="13">
+When the accessed slot is a primitive type, then the value of the slot
+is returned. When the accessed slot is a composite type such as a
+sub-structure or an array, then the address of the sub-structure or
+array is returned as a Lisp integer. Please see the caution in the
+description of <a href="fslot-address-typed.htm"><b>fslot-address-typed</b></a> about using the
+returned address value.
+</p>
+
+<p id="14">
+The special slot-name asterisk <b>*</b> is used to denote
+dereferencing a pointer. If a slot has the type <b>(* foo)</b> then
+you use the <b>*</b> slot name to indicate that you want to follow the
+pointer to the foo-typed object. If the object is an array, then the
+asterisk will access the first element of the array (the element at
+index zero).
+</p>
+
+<p id="15">
+When the <i>allocation</i> argument is
+not <code>nil</code>, and the slot names are all
+constants, then this function will be open coded by the compiler if
+the <a href="../../variables/compiler/optimize-fslot-value-switch.htm"><code>optimize-fslot-value-switch</code></a> is true.
+</p>
+
+<p id="16">
+<a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> can be used with this
+function to change the value.
+</p>
+
+<h3 id="17">Examples</h3>
+
+<pre id="18">
+;;  Here are some general examples. We create foreign types and
+;;  allocate some instances (we do not specify any values, so
+;;  the values you see if you do this are defaults or meaningless
+;;  data.
+
+(def-foreign-type sub-rec (:struct (a :int) (b :int)))
+
+(def-foreign-type record-date 
+        (:struct
+            (day :int)
+            (month :int)
+            (year :int)))
+
+(def-foreign-type record
+	(:struct
+	   (num1 :int)
+	   (num2 :int)
+	   (nums (:array :int 17))
+	   (floats (:array :float 11 12))
+	   (internal sub-rec)
+	   (pointer (* record-date))
+	   (sarray (:array sub-rec 7))
+	   ))
+
+(setq x (allocate-fobject 'record))
+
+(setq rd (allocate-fobject 'record-date :c))
+
+(fslot-value-typed 'record nil x 'num1)
+<b>RETURNS</b> the integer value of slot num1
+
+(fslot-value-typed 'record nil x 'nums 3)
+<b>RETURNS</b> the integer value of element 3 of 
+the array at slot nums
+
+(fslot-value-typed 'record nil x 'floats 5 7)
+<b>RETURNS</b> the float indexed with 5 and 7 in 
+the array at slot floats
+
+(fslot-value-typed 'record nil x 'internal)
+<b>RETURNS</b> an integer that represents the 
+address of the sub-structure.
+
+(fslot-value-typed 'record nil x 'internal 'a)
+<b>RETURNS</b> the integer value of slot a of 
+the sub-structure of type sub-rec at slot internal
+
+(fslot-value-typed 'record nil x 'pointer)
+<b>RETURNS</b> the address in slot pointer
+This address is an integer that can be used with the
+allocation type :c to access data stored at 
+the pointer location
+
+(setf (fslot-value-typed 'record nil x 'pointer) rd)
+
+(fslot-value-typed 'record nil x 'pointer '* 'year)
+<b>RETURNS</b> the integer value of slot year in the instance
+of type record-date stored at the address in slot pointer
+
+(fslot-value-typed 'record nil x 'sarray 3 'b)
+<b>RETURNS</b> the integer value of slot b in the structure of
+type sub-rec that is stored as element 3 of the array
+at slot sarray
+</pre>
+
+<p id="19">
+In the last example above, we specified that the top-level foreign
+object being accessed is a <code>record</code> structure, but it
+was not necessary to also state that the lower-level object in its
+<code>sarray</code> slot is an array of
+<code>sub-rec</code> structures.  The reason is that this
+information is declared in the <a href="def-foreign-type.htm"><b>def-foreign-type</b></a> for the
+<code>record</code> structure, and so the compiler can derive
+that information from there.  In some cases, however, the top-level
+foreign object may not define the types of its subobjects, such as
+when it is an array of pointers to other arrays.  In such cases, the
+type argument to <a href="fslot-value-typed.htm"><b>fslot-value-typed</b></a> may be a nested list that
+specifies the type of the top-level object as well as its
+subobjects. See <a href="../../ftype.htm#foreign-type-syntax-1">The Syntax for Foreign Types</a> in
+<a href="../../ftype.htm">ftype.htm</a> for the complete definition of Allegro's
+foreign type format.
+</p>
+<p id="20">
+For example, in the following function, which asks GTK for all of its
+available font faces, the GTK function
+<b>pango_context_list_families</b> fills in a longword (which we have
+passed to it) with a pointer to a vector of pointers to GTK
+PangoFontFamily objects.  To access each font family, the call to
+<a href="fslot-value-typed.htm"><b>fslot-value-typed</b></a> near the
+bottom specifies the foreign type as the nested list <code>(*
+(:array (* PangoFontFamily)))</code>, indicating that we are
+accessing a pointer to an array of pointers to PangoFontFamily
+objects.
+</p>
+<p id="21">
+To be precise, the simpler expression <code>(* (:array
+:long))</code> would have worked just as well here, because the
+nested expression <code>(:array :long)</code> would still tell
+lisp what sort of object the final "j" slot argument is accessing, but
+<code>(* :long)</code> is not sufficient for that.
+</p>
+<pre id="22">
+(defun available-gtk-font-families (&amp;optional pango-context)
+  (with-stack-fobjects
+      ((array-pointer '(* (:array (* PangoFontFamily))))
+       (count-integer '(:array gint 1)))
+    (pango_context_list_families
+     (or pango-context (gdk_pango_context_get))
+     array-pointer count-integer)
+    (do* ((faces nil)
+	  (count (fslot-value-typed '(:array gint 1) nil
+				    count-integer 0))
+	  (j 0 (1+ j)))
+	((&gt;= j count)
+	 (sort faces #'string&lt;))
+      (push (native-to-string
+	     (pango_font_family_get_name
+	      (fslot-value-typed '(* (:array (* PangoFontFamily)))
+				 nil array-pointer 0 j)))
+	    faces))))
+
+</pre>
+
+<p id="23">
+See <a href="../../ftype.htm">ftype.htm</a> for
+information on foreign types in Allegro CL and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL.
+</p>
+
+<hr><p id="24"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/fslot-value-typed.htm">9.0 version</a></td></tr></table></body></html>

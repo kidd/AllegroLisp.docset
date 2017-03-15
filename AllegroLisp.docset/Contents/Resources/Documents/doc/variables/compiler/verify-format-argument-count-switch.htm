@@ -1,0 +1,122 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>verify-format-argument-count-switch</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: compiler</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">verify-format-argument-count-switch</h2>
+
+<p id="3">
+This compiler switch can direct the compiler to examine format
+statemnts being compiled to check whether the number of arguments
+supplied in the format statement corresponds to the number called for
+in the format control string.
+</p>
+<p id="4">
+Format statements may have the exact number of arguments called for:
+</p>
+
+<pre id="5">
+(format t "~d days left for a ~d percent discount~%" 10 20)
+</pre>
+
+<p id="6">
+Too few arguments:
+</p>
+
+<pre id="7">
+  (format t "~d days left for a ~d percent discount~%" 10 )
+</pre>
+<p id="8">
+  Or too many arguments:
+    </p>
+
+<pre id="9">
+  (format t "~d days left for a ~d percent discount~%" 10 20 30 40)
+</pre>
+<p id="10">
+Having exactly the number of arguments called for is normal
+practice. It is not an error (indeed it is explicilty permitted) to
+have more than are called for. Having too few is not in itself an
+error but if the form is ever evaluated, an error will be signaled.
+</p>
+<p id="11">
+This compiler switch variable differs from other in that its value can
+be one of the integers 0, 1, 2, 3, and 4, as well
+as <code>nil</code> (equivalent to 0)
+and <code>t</code> (equivalent to 2). Actually, any
+non-<code>nil</code> value other than 0, 1, 2, 3, and 4
+is equivalent to <code>t</code> (which, again, is
+equivalent to 2).
+</p>
+<p id="12">
+When the value of this switch is 1, 2 (or <code>t</code>),
+3, or 4, then when a <a href="../../../ansicl/dictentr/format.htm"><b>format</b></a> form is compiled, information is
+collected on whether the number of arguments supplied is less than,
+equal to, or more than the number called for in the format string. If
+the format string is too complex to analyse (perhaps because it will
+not be known until run time whether or not there are enough
+arguments), that information is also collected. Finally, if certain
+errors in the format form are detected, that information is collected.
+</p>
+<p id="13">
+Like other switches, this one can be set or bound to one of the legal
+values, or set or bound to a function object that accepts five
+arguments and returns <code>t</code>
+or <code>nil</code> or 0, 1, 2, 3, or 4. The arguments
+passed to the function will be the values of the safety, space, speed,
+debug, and compilation-speed optimization qualities, in that order.
+</p>
+<p id="14">
+Here is the behavior for the various values of the switch:
+</p>
+<ul>
+<li id="15">
+0 or <code>nil</code>: Collect no statistics, signal no
+warning or compiler notes.
+</li>
+<li id="16">
+<code>t</code>, 1, 2, 3, or 4: Collect statistics about
+format argument counts compared to what is called for in format
+strings; about format strings too complex to analyze; and about
+syntactic errors in format forms.
+</li>
+<li id="17">
+1: Gather statistics only. Signal no
+warnings or compiler notes.
+</li>
+<li id="18">
+<code>t</code> or 2: Gather statistics, signal
+style-warning if not enough arguments.
+</li>
+<li id="19">
+3: Like 2, but signal a compiler-note when too many arguments are
+detected. (It is not an error to supply too many arguments, but a
+compiler-note can be useful if that is not what is intended.)
+</li>
+<li id="20">
+4: Like 3, but also signal a compiler-note when a format string is too
+complex to analyse.
+</li>
+</ul>
+<p id="21">
+Statistics are only kept if the value of the
+variable <a href="../excl/s_format-arg-count-stats_s.htm"><code>*format-arg-count-stats*</code></a> is a list of six
+fixnums (representing all, missing args, args equal in number to
+needed, args more than needed, too complex, and syntax error). These
+numbers are incremented appropriately as format forms are
+analysed. Warnings and compiler-notes are printed if the switch value
+calls for them. The function <a href="../../operators/excl/format-arg-count-stats.htm"><b>format-arg-count-stats</b></a> prints the
+collected statistics.
+</p>
+<p id="22">
+This switch is initially bound to a function which returns 1 for
+safety 0 and compilation-speed 0 or 1; returns 2 for safety 1, 2 or 3
+and compilation-speed 0 or 1; and returns 0 for compilation speed 2 or
+3. The initial values of safety and compilation-speed are both 1, so
+initially this switch returns 2.
+</p>
+
+<p id="23">
+See <a href="../../miscellaneous.htm#format-checking-1">Checking
+format forms during compilation</a>
+in <a href="../../miscellaneous.htm">miscellaneous.htm</a> for more information.
+</p>
+
+<hr><p id="24"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

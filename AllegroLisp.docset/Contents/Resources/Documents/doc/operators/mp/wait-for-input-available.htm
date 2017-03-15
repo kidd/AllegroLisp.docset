@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>wait-for-input-available</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/wait-for-input-available.htm">9.0 version</a></td></tr></table><h2 id="2">wait-for-input-available</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream-or-fds </i>&amp;key <i>wait-function whostate timeout</i><i>
+</i></p>
+
+<p id="4">This lower-level function extends the capabilities of 
+<a href="process-wait.htm"><b>mp:process-wait</b></a> and 
+<a href="process-wait-with-timeout.htm"><b>mp:process-wait-with-timeout</b></a>
+to allow a process to wait for input from multiple streams and to wait
+for input from a file.</p>
+
+<p id="5">The <i>stream-or-fds</i> argument may be a single element
+or a list of elements. Each element may be a stream object or a
+file descriptor obtained from the operating
+system (typically a small non-negative integer).</p>
+
+<p id="6">This function waits for input to become available on any of the
+streams, and when that happens a list of streams/fds (some subset of
+the given <i>stream-or-fds</i> argument) that have input
+available is returned. Here <em>have input available</em> means (when
+the default <i>wait-function</i> is used) that a
+subsequent call to <a href="../../../ansicl/dictentr/read-cha.htm"><b>read-char</b></a>
+or <a href="../../../ansicl/dictentr/read-byt.htm"><b>read-byte</b></a> will immediately
+return without blocking. (It might return end-of-file status,
+however).</p>
+
+<p id="7">
+The <b><i>wait-function</i></b> argument should be a
+function that accepts one argument. If a single stream-or-fd is passed
+as the <i>stream-or-fds</i> argument, then the wait
+function will be called with that stream-or-fd.  If a list of
+stream-or-fds is supplied to <a href="wait-for-input-available.htm"><b>wait-for-input-available</b></a> then the wait function
+will be called on each of those stream-or-fds in turn until it returns
+non-<code>nil</code>. If every one of the stream-or-fds
+gets us a <code>nil</code> return on the first pass, then
+this process goes into a wait, with enough information handy to let us
+do an appropriate select-equivalent OS call when there are no
+processes ready to run.
+</p>
+
+
+<p id="8">The default value for the <i>wait-function</i>
+keyword argument is <code>#'<a href="../excl/stream-listen.htm"><b>stream-listen</b></a></code>. This generic function
+has methods defined both for integer file descriptors and for
+terminal, socket, or other "interactive'' streams. This function
+may be applied to streams that do not have a corresponding file
+descriptor, such as a window-stream (in Common Windows on Unix).
+</p>
+<p id="9">
+If you supply your own <i>wait-function</i>, it must
+determine whether input is available for there is no additional test
+made by <a href="wait-for-input-available.htm"><b>wait-for-input-available</b></a> beyond the value
+returned by the wait function.
+</p>
+<p id="10">While waiting, the current process's whostate is set to the value
+specified for the <i>whostate</i> keyword argument, defaulting to
+"waiting for input", as if a 
+<a href="process-wait.htm"><b>process-wait</b></a> or 
+<a href="process-wait-with-timeout.htm"><b>process-wait-with-timeout</b></a>
+were being called. If a value is specified for the <i>timeout</i>
+keyword argument and no stream has input available before the timeout
+occurs, <code>nil</code> is returned. The value of the
+<i>timeout</i> argument (if it is specified) should be a
+non-negative real number. The units are seconds. Note that a value
+less than the granularity of the system will timeout immediately.</p>
+
+
+
+<p id="11">See the discussion in the following sections in
+<a href="../../multiprocessing.htm">multiprocessing.htm</a> for information on why to use
+this function rather than <a href="process-wait.htm"><b>process-wait</b></a> when waiting for input from a
+file. Note that the <strong>:os-threads</strong> and <strong>non
+:os-threads</strong> versions are discussed in different sections.</p>
+
+<ul>
+  <li id="12"><a href="../../multiprocessing.htm#waiting-for-input-ost-2">Waiting for input 
+     from a stream</a></li>
+  <li id="13"><a href="../../multiprocessing.htm#process-wait-vs-wait-for-input-available-ost-3">mp:process-wait 
+     vs mp:wait-for-input-available</a></li>
+</ul>
+
+<p id="14">See also <a href="process-wait.htm"><b>process-wait</b></a> and 
+<a href="waiting-for-input-available.htm"><b>waiting-for-input-available</b></a>.</p>
+
+<p id="15">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/wait-for-input-available.htm">9.0 version</a></td></tr></table></body></html>

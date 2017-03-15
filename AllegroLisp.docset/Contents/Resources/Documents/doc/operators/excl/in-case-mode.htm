@@ -1,0 +1,233 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>in-case-mode</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/in-case-mode.htm">9.0 version</a></td></tr></table><h2 id="2">in-case-mode</h2>
+
+<p id="3"><b>Arguments: </b><i>
+mode
+</i></p>
+
+<p id="4">
+This macro is designed to assist users who work in one case mode who
+need to use compiled files written for another mode. Case modes in
+Allegro CL are described in <a href="../../case.htm">case.htm</a>.
+</p>
+<p id="5">
+What <a href="in-case-mode.htm"><b>in-case-mode</b></a> does is
+complicated. It is designed as part of a more complex system to
+support interoperability among modes, but at the moment it is only
+supported for dealing with the issue of loading files compiled in one
+mode into a Lisp running in another mode. We give a suggested recipe
+for loading files compiled in a case mode different from the case mode
+you are using. This recipe involves using an auxiliary file. We
+discuss using <a href="in-case-mode.htm"><b>in-case-mode</b></a>
+directly as well, but we recommend using the procedure we describe.
+</p>
+<p id="6">
+Except when using <a href="in-case-mode.htm"><b>in-case-mode</b></a> as described here, trying
+to load an ANSI-Lisp compiled file into a modern Lisp signals an
+error. Trying to load a modern-Lisp compiled file into an ANSI Lisp
+does not signal an error but may nonetheless result in problems.
+</p>
+<p id="7">
+The value of the <b><i>mode</i></b> argument (which is
+not evaluated) should be either <code>:local</code>
+(corresponding to modern mode) or
+<code>:common</code> (corresponding to ANSI mode).
+</p>
+<p id="8">
+If you are running a modern mode Lisp (mlisp or equivalent), you
+should load an ANSI-mode compiled file <i>foo.fasl</i> by writing an
+auxilliary file <i>aux.cl</i> with the following contents:
+</p>
+<pre id="9">
+(in-case-mode :common)
+(load "foo.fasl")
+</pre>
+<p id="10">
+If you are running an ANSI mode Lisp (alisp or equivalent), you
+should load a modern-mode compiled file <i>foo.fasl</i> by writing an
+auxilliary file <i>aux.cl</i> with the following contents:
+</p>
+<pre id="11">
+(in-case-mode :local)
+(load "foo.fasl")
+</pre>
+<p id="12">
+You use auxiliary files because <a href="../../../ansicl/dictentr/load.htm"><b>load</b></a> binds relevant variables (such as
+<a href="../../../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a> and
+<a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a>) which
+are affected by <a href="in-case-mode.htm"><b>in-case-mode</b></a>
+so when the loading is complete, the values of those variables in the
+Lisp calling <a href="../../../ansicl/dictentr/load.htm"><b>load</b></a> are
+unchanged. The auxiliary file can thus be used in any Lisp, ANSI or
+modern. It need not but can be compiled.
+</p>
+<p id="13">
+Multiple files can be loading with a single auxiliary file.
+</p>
+<p id="14">
+You may want to set <a href="../../variables/excl/s_ignore-package-name-case_s.htm"><code>*ignore-package-name-case*</code></a> to true when loading
+files compiled in a different mode.
+</p>
+<h3 id="15">
+Restrictions
+</h3>
+<p id="16">
+This method for loading files compiled in another mode does not work
+in all cases. Specifically, it will not work when:
+</p>
+<ul>
+<li id="17">
+You have modified the current readtable (the value
+of <a href="../../../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a>
+to affect its handling of case.
+</li>
+<li id="18">
+You are using functionality in modules which do not
+support <a href="in-case-mode.htm"><b>in-case-mode</b></a>,
+such as the winapi module and the gtk module.
+</li>
+<li id="19">
+You are intending for behaviors of <a href="../../../ansicl/dictentr/intern.htm"><b>intern</b></a>, <a href="../../../ansicl/dictentr/make-sym.htm"><b>make-symbol</b></a>, <a href="../../../ansicl/dictentr/find-sym.htm"><b>find-symbol</b></a>, and <a href="../../../ansicl/dictentr/symbol-n.htm"><b>symbol-name</b></a> to be consistent
+across <a href="in-case-mode.htm"><b>in-case-mode</b></a>
+invocations of opposite modes. See <a href="#gravity">below</a> for more
+information on this point.
+</li>
+</ul>
+<p id="20">
+We recommend loading files compiled in another mode early in a Lisp session.
+</p>
+
+
+<h3 id="21">
+What in-case-mode does
+</h3>
+
+<p id="22">
+When <a href="in-case-mode.htm"><b>in-case-mode</b></a> is called
+with <i>mode</i> having the same value as the current
+value of
+<a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a>, nothing is done. When it
+is called with mode having a different value as the current
+value of
+<a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a>,
+the following occurs:
+</p>
+<ul>
+<li id="23">
+The value of <a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a> is set to the
+new mode.
+</li>
+<li id="24">
+If the current value of <a href="../../../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a> (in the current thread) is the same
+as <code>(global-symbol-value *readtable*)</code>, the value
+of <code>*readtable*</code> is set to the result
+of <code>(copy-readtable nil)</code>. (The internal readtable
+cannot be changed, but copies can be, so this step ensure the value is
+a copy.)
+</li>
+<li id="25">
+The internal Lisp readtable is changed (if <i>mode</i>
+is <code>:common</code>, to an upcasing readtable,
+if <code>:local</code> to a case-sensitive readtable).
+</li>
+<li id="26">
+The printer is modified to print according to the mode.
+</li>
+</ul>
+
+<a name="gravity"></a>
+<h3 id="27">
+When the case-translation-gravity is different from the value of *case-translation*
+</h3>
+
+<p id="28">
+When Lisp starts, the value returned by
+<a href="case-translation-gravity.htm"><b>case-translation-gravity</b></a> and the value
+of <a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a> are the same. When you
+change the mode with <a href="in-case-mode.htm"><b>in-case-mode</b></a>, the value of
+<a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a> and the value returned by
+<a href="case-translation-gravity.htm"><b>case-translation-gravity</b></a> are
+different (the function is unchanged, the value of the variable
+changes). 
+</p>
+<p id="29">
+When the value returned by the function is different from the value of
+the variable, the behavior of the functions <a href="../../../ansicl/dictentr/intern.htm"><b>intern</b></a>, <a href="../../../ansicl/dictentr/make-sym.htm"><b>make-symbol</b></a>, <a href="../../../ansicl/dictentr/find-sym.htm"><b>find-symbol</b></a>, and <a href="../../../ansicl/dictentr/symbol-n.htm"><b>symbol-name</b></a> are changed so that effectively:
+</p>
+<ul>
+<li id="30">
+When a string is passed to intern, its case is reversed before being
+stored (so if the string is "aaa", it is stored as "AAA" and if the
+string is "AAA", it is stored as "aaa"). Also an alternative name is
+stored which is the unmodified name. If the string is mixed case, it
+is not modified and no alternative name is stored. If the reader was
+involved in creating the string, it is passed to intern after the
+readtable case etc. is applied.
+</li>
+<li id="31">
+When a symbol name is printed or searched for, its alternative name,
+if there is one, is used. Otherwise the symbol name is used.
+</li>
+</ul>
+<p id="32">
+Now, in a fasl file compiled in alisp and not using the mixed case
+names mentioned above, all symbols are named with uppercase letters
+(because the reader upcased the letters when the symbol name was
+read). Therefore, when in an mlisp in :common mode, that fasl file is
+read, the symbol names are stored downcased but (while the mode is
+:common) referenced upcased. If the symbol AAA is encountered, its
+name is stored as "aaa" and it is given an alternative name "AAA"
+which is also stored. If the symbol CAR is encountered, the system
+checks for "car" and finds the Common Lisp symbol of that name. An
+alternative name "CAR" is created and stored for that symbol. (We will
+discuss what we mean by "stored" below.)
+</p>
+<p id="33">
+When the mode is changed back to :local, the symbol names are still
+stored downcased and because <a href="case-translation-gravity.htm"><b>case-translation-gravity</b></a> and the value
+of <a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a>
+are the same, the alternative names are no longer used. 
+</p>
+
+
+<h3 id="34">
+Using in-case-mode in individual files
+</h3>
+<p id="35">
+We recommend using <a href="in-case-mode.htm"><b>in-case-mode</b></a> in an auxiliary file as described,
+but you can place an in-case-mode form at the top of a source file (it
+must be the very first form, even before the in-package form). That
+produces a file that can be generally loaded into any Lisp without
+using an auxiliary file.
+</p>
+<h3 id="36">
+Using in-case-mode at the top-level
+</h3>
+<p id="37">
+You can also evaluate <code>(in-case-mode &lt;mode&gt;)</code>
+at the top level and then call load to load fasl files as we suggest
+doing with an auxiliary file. You should change the mode back after
+the files are loaded.
+</p>
+<h3 id="38">
+Some lower level details
+</h3>
+<p id="39">
+Symbol objects have a normal symbol name location and an alternative
+symbol name location (the exact details of where these are stored and
+how they are accessed do not concern us here). When a string is
+interned by <a href="../../../ansicl/dictentr/intern.htm"><b>intern</b></a>, the string
+is treated as follows. If the <a href="case-translation-gravity.htm"><b>case-translation-gravity</b></a> and the value
+of <a href="../../variables/excl/s_case-translation_s.htm"><code>*case-translation*</code></a>
+are the same, the name is stored as passed and nothing is stored in
+the alternative name location. If the values are different and the
+string is not mixed case, the string case is inverted ("AAA" to "aaa"
+and "aaa" to "AAA") and stored in the normal name location, and the
+unmodified name is stored in the alternative name location.
+</p>
+<p id="40">
+When the values are different, the functions <a href="../../../ansicl/dictentr/symbol-n.htm"><b>symbol-name</b></a> and <a href="../../../ansicl/dictentr/find-sym.htm"><b>find-symbol</b></a> use the alternate name (when there
+is one) instead of the normal name.
+</p>
+<hr><p id="41"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/in-case-mode.htm">9.0 version</a></td></tr></table></body></html>

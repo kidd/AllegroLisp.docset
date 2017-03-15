@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>declaration-information</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/declaration-information.htm">9.0 version</a></td></tr></table><h2 id="2">declaration-information</h2>
+
+<p id="3"><b>Arguments: </b><i>
+symbol </i> &amp;optional <i>env</i><i>
+</i></p>
+
+<p id="4">
+This function returns information about declarations named by
+<i>symbol</i> in the environment specified by
+<i>env</i>. The null lexical environment is used when
+<i>env</i> is unspecified or <code>nil</code>.
+</p>
+<p id="5">
+<a href="declaration-information.htm"><b>declaration-information</b></a>
+only returns declarations that are not usually associated with a
+variable or function namespace.  If the name or value of a variable or
+function has been given a declaration, then that declaration will not
+be retrieved by <a href="declaration-information.htm"><b>declaration-information</b></a>, it will instead be
+retrieved by the appropriate <a href="variable-information.htm"><b>variable-information</b></a> or <a href="function-information.htm"><b>function-information</b></a> call, and will be
+returned as an element of the third value returned.
+</p>
+<p id="6">
+When <i>symbol</i> is <code>optimize</code>,
+<a href="declaration-information.htm"><b>declaration-information</b></a>
+returns a list whose elements are of the form <code>(quality
+value)</code> -- i.e. (space 2) or (speed 3) -- where the
+<i>quality</i> is one of the optimization qualities
+<code>space</code>, <code>size</code>,
+<code>speed</code>, <code>compilation-speed</code>, and
+<code>debug</code>, and the <i>value</i> is 0, 1,
+2, or 3. This list is the single value returned. This list must not be
+modified.
+</p>
+<p id="7">
+When <i>symbol</i> is <code>declaration</code>,
+<a href="declaration-information.htm"><b>declaration-information</b></a>
+returns a list whose elements are declaration names that have been
+proclaimed valid through the use of <code>declaration</code>
+proclamations. This list is the single
+value returned. This list must not be modified.
+</p>
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/declaration-information.htm">9.0 version</a></td></tr></table></body></html>

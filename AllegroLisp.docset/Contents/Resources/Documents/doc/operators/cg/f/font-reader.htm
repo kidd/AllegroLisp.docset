@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>font-reader</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/font-reader.htm">9.0 version</a></td></tr></table><h2 id="2">font-reader</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-column
+</i></p>
+
+<p id="4">
+Returns a function that returns the font to use when drawing each grid
+cell of a a particular column, or else returns <code>nil</code> to determine the font in other ways. This
+function is called by the default <a href="../c/cell-font.htm"><b>cell-font</b></a> method, which in
+turn is typically called by a <a href="../d/draw-cell.htm"><b>draw-cell</b></a> method (including those
+supplied by <a href="../../../classes/cg/editable-text-column-mixin.htm"><code>editable-text-column-mixin</code></a> and
+other mixins).  A <a href="../f/font-reader.htm"><b>font-reader</b></a> may be <code>nil</code> rather than a function if this facility is not
+used.  The default value is <code>nil</code>.
+</p>
+<p id="5">
+The <a href="../f/font-reader.htm"><b>font-reader</b></a> function is a
+property of a particular <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>, and is called once for
+each <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a>
+that intersects that column, to determine the font of the cell at the
+intersection of that row and column. The function should take one
+argument, which is the <a href="../d/data-object.htm"><b>data-object</b></a> of the <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a>. If the font
+for a particular cell should be determined by the <a href="../f/font-reader.htm"><b>font-reader</b></a> function, then it
+should return the font to use, and otherwise it should return <code>nil</code>.
+</p>
+<p id="6">
+This property value may be specified as either a function name symbol
+(which would be more debuggable), or a function object (which may be
+slightly faster, though probably insignificantly), or <code>nil</code>.
+</p>
+<p id="7">
+An application does not call the font-reader function; it supplies the
+font-reader function by calling (setf font-reader) or by passing the
+:font-reader initarg when calling <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> to create a <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>, and the specified
+function is then called automatically by the system as needed.
+</p>
+<p id="8">
+See the <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> class
+for an overview of writing grid-widget code.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/font-reader.htm">9.0 version</a></td></tr></table></body></html>

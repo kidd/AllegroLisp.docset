@@ -1,0 +1,58 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>open-server</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dde</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dde/open-server.htm">9.0 version</a></td></tr></table><h2 id="2">open-server</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key  (<i>name</i> *service-name*) (<i>topics</i> *service-topics*) (<i>server-port-class</i> (quote server-port))<i>
+</i></p>
+
+<p id="4">
+Establishes the current Lisp process as a DDE server. Any DDE client
+program can thereafter (until <a href="close-server.htm"><b>close-server</b></a> or <a href="close-dde.htm"><b>close-dde</b></a> is called) connect to
+this server by specifying the service name indicated by the name
+argument and one of the topics indicated by the
+<i>topics</i> argument.
+</p>
+<p id="5">
+A service name or topic may be either a string or a symbol, though
+they are always passed between programs as strings. When a symbol, its
+<a href="../../../ansicl/dictentr/symbol-n.htm"><b>symbol-name</b></a> is
+used to communicate with other programs.
+</p>
+<p id="6">
+The <i>name</i> argument defaults to the value of
+<a href="../../variables/dde/s_service-name_s.htm"><code>*service-name*</code></a>, which initially is
+the symbol <code>:allegro</code>, meaning that a DDE client
+program would specify the service name as "allegro" to connect to the
+Lisp DDE server.  The <i>topics</i> argument defaults to
+the value of <a href="../../variables/dde/s_service-topics_s.htm"><code>*service-topics*</code></a>, which initially
+is the list of symbols <code>(nil :system, :eval)</code>,
+meaning that a DDE client program would specify either "nil",
+"system", or "eval" as the topic in order to connect to the Lisp DDE
+server.
+</p>
+<p id="7">
+<i>server-port-class</i> is the name of the class that
+should be instantiated internally whenever a DDE client program
+connects to this DDE server. The default is
+<i>server-port</i> (naming the class <a href="../../classes/dde/server-port.htm"><code>server-port</code></a>).  It may be useful to
+pass the name of a <a href="../../classes/dde/server-port.htm"><code>server-port</code></a> subclass that you have created in
+order to specialize a <a href="dde-message.htm"><b>dde-message</b></a> method on that
+subclass.
+</p>
+<p id="8">
+The functions <a href="service-name.htm"><b>service-name</b></a> and <a href="service-topics.htm"><b>service-topics</b></a> may be called later
+to retrieve the values that were most recently specified as the
+<a href="open-server.htm"><b>open-server</b></a>
+arguments in a particular process.
+</p>
+<p id="9">
+Any Lisp process can act as only a single DDE server, though DDE
+client programs may each open multiple client ports to it.
+</p>
+<p id="10">
+See <a href="../../dde.htm">dde.htm</a> for information about
+DDE support.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dde/open-server.htm">9.0 version</a></td></tr></table></body></html>

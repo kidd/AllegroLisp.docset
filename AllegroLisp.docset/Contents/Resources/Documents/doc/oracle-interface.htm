@@ -1,0 +1,1788 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Oracle Interface: Allegro Oracle Direct Connect</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/oracle-interface.htm">9.0 version</a></td></tr></table><h1 id="2">Oracle Interface: Allegro Oracle Direct Connect</h1><p id="3">This document contains the following sections:</p><a href="#oracle-interface-intro-1">1.0 Oracle Interface introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#oracle-prereq-2">1.1 Prerequisites and implementation details</a><br><a href="#oracle-connections-1">2.0 Connections to Oracle</a><br>&nbsp;&nbsp;&nbsp;<a href="#oracle-blocking-connections-2">2.1 Blocking and non-blocking modes</a><br><a href="#datatypes-1">3.0 The Oracle datatypes</a><br><a href="#cursors-1">4.0 Cursors</a><br><a href="#interface-api-1">5.0 The Oracle interface API</a><br>&nbsp;&nbsp;&nbsp;<a href="#api-connecting-2">5.1 API for connecting and disconnecting</a><br>&nbsp;&nbsp;&nbsp;<a href="#dml-ddl-2">5.2 Excuting DML and DDL</a><br>&nbsp;&nbsp;&nbsp;<a href="#one-step-2">5.3 One step execution of an sql statement</a><br>&nbsp;&nbsp;&nbsp;<a href="#step-by-step-2">5.4 Step by step execution of a sql statement</a><br>&nbsp;&nbsp;&nbsp;<a href="#convert-arg-2">5.5 The Convert Argument</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#convert-syntax-3">5.5.1 The syntax of the convert argument</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#convert-arg-values-3">5.5.2 The convert argument values</a><br>&nbsp;&nbsp;&nbsp;<a href="#binding-parameters-2">5.6 Binding parameters</a><br>&nbsp;&nbsp;&nbsp;<a href="#multiple-handles-2">5.7 Multiple statement handles</a><br>&nbsp;&nbsp;&nbsp;<a href="#statement-handle-parameters-2">5.8 Statement handle parameters</a><br>&nbsp;&nbsp;&nbsp;<a href="#setting-flags-2">5.9 Setting flags</a><br>&nbsp;&nbsp;&nbsp;<a href="#scheme-info-2">5.10 Obtaining schema information</a><br>&nbsp;&nbsp;&nbsp;<a href="#managing-cursors-2">5.11 Managing cursors</a><br><a href="#examples-1">6.0 Examples using the Oracle interface</a><br><a href="#index-1">7.0 Index for Oracle Interface</a><br><hr><hr><h2 id="4"><a name="oracle-interface-intro-1">1.0 Oracle Interface introduction</a></h2>
+
+<p id="5">
+This interface connects Allegro Common Lisp to Oracle (version 9 or higher)
+using the Oracle C Interface (OCI) libraries from Oracle.
+</p>
+<p id="6">
+The API of the interface is similar to the Allegro ODBC interface (see
+<a href="aodbc.htm">aodbc.htm</a>) and the Allegro MySQL Direct interface
+(see <a href="mysql.htm">mysql.htm</a>) but it differs where necessary in
+order to better match Oracle.
+</p>
+
+
+<hr><h2 id="7"><a name="oracle-prereq-2">1.1 Prerequisites and implementation details</a></h2>
+
+<h3 id="8">
+Oracle requirements
+</h3>
+
+<p id="9">
+In order to use this interface you must have the Oracle Client
+Libraries installed on your machine and your dynamic loader 
+shell environment variable must include the Oracle Client Library
+directory. 
+</p>
+<p id="10">
+If you have got an oracle server on your machine and if you can run
+the <b>sqlplus</b> program then you should be ready to run the Oracle
+Allegro CL interface. If you don't have the Oracle Client Libraries
+installed on your machine then go to the download page on <a href="http://www.oracle.com">www.oracle.com</a> and download the
+<b>InstantClient</b> libraries. If you're on UNIX then after
+installing the Instant Client libraries you will want to create a
+symbolic link from <i>libclntsh.so</i> to the version of
+<i>libclntsh.so</i> that is included with the libraires (that symbolic
+link should have been included in the install but wasn't for some
+reason).  On HPUX machines the name of the library is
+<i>libclntsh.sl</i> instead of <i>libclntsh.so</i>.
+</p>
+
+<h3 id="11">
+Package and module information
+</h3>
+
+<p id="12">
+Functions, variables and classes in this interface are exported from
+the <code>dbi.oracle</code> package.
+</p>
+<p id="13">
+The module name for the Oracle Interface is
+<code>:oracle</code>. To load the module, evaluate
+</p>
+<pre id="14">
+(require :oracle)
+</pre>
+
+
+
+
+<hr><hr><h2 id="15"><a name="oracle-connections-1">2.0 Connections to Oracle</a></h2>
+
+<p id="16">
+The <a href="oracle-interface.htm#connect-op-bookmarkxx"><b>connect</b></a> function establishes
+a connect to a database.  A connection is a single channel through
+which sql commands can be sent and values returned.  It is the user
+program's responsibility to ensure that only one command at a time is
+sent through a connection.  If you want to issue more than one command
+at a time to the database in different threads then you should create
+multiple connections.
+</p>
+
+
+<hr><h2 id="17"><a name="oracle-blocking-connections-2">2.1 Blocking and non-blocking modes</a></h2>
+
+<p id="18">
+A connection is in either blocking or non-blocking mode.
+You can change the mode of a connection at any time.
+</p>
+<p id="19">
+In blocking mode Lisp cannot do any processing while waiting
+for a response from the server.  When the response is ready
+Lisp will resume processing immediately.
+</p>
+<p id="20">
+In non-blocking mode Lisp will allow other programs to run
+if it finds that the oracle server does not have an answer
+immediately.  When the Oracle server does respond it may
+take a little while for Lisp to check on that response.
+</p>
+<p id="21">
+You want to run in blocking mode if
+</p>
+<ul>
+<li id="22">
+You are executing a large number of statements and wish to maximize
+performance.
+</li>
+<li id="23">
+The application is only running the database access code and should
+the database be slow in responding there's nothing else that the
+application can do while waiting for the database.
+</li>
+</ul>
+
+<p id="24">
+You want to run in non-blocking mode if
+</p>
+<ul>
+<li id="25">
+Your application has other active lisp threads that can do useful work
+while waiting for the database to respond.
+</li>
+<li id="26">
+You have more than one connection to the database and there is a
+possibility that actions on each connection could be modifying the
+same object.  In this case Lisp can freeze if in locking mode if
+Oracle blocks one connection while waiting for a lock.
+</li>
+</ul>
+
+
+
+<hr><hr><h2 id="27"><a name="datatypes-1">3.0 The Oracle datatypes</a></h2>
+
+<p id="28">
+Oracle stores all numbers effectively in character format. That is, a
+number is stored as a sequence of decimal characters with a decimal
+point.  If the decimal point is at the end, the number is an
+integer.  The maximum number of decimal digits is 38. The biggest
+integer that can be stored on a 32-bit machine in binary format is
+just barely 10 decimal digits. Therefore if you're going to be storing
+or retrieving with very large numbers it is best to use the string
+representation of numbers
+</p>
+<p id="29">
+There are four collections of datatypes involved using this interface
+</p>
+<blockquote>
+<h4 id="30">
+1. The data types used in sql DDL statements to define the columns
+</h4>
+<p id="31">
+For Oracle there are a set of data types that closely match the
+internal oracle data types.  Also supported are data types defined by
+standard SQL.
+</p>
+<h4 id="32">
+2. Internal Oracle data types
+</h4>
+<p id="33">
+These describe the data as it is actually stored in the database.
+</p>
+<h4 id="34">
+3. External Oracle data types.
+</h4>
+<p id="35">
+These are types in a programming
+language.  In the case of the OCI interface written in C these
+are C data types. User code in C using the OCI always works in with
+these external data types and the OCI does the job of converting
+data between the Internal and External types.
+</p>
+<h4 id="36">
+4. Lisp data types
+</h4>
+<p id="37">
+The set of lisp data types which store the data from the Oracle
+database and which can be stored in the Oracle database.
+</p>
+</blockquote>
+
+<p id="38">
+Let us consider the Internal Oracle data types and how those relate to
+the other 3 types of data types.
+</p>
+<h3 id="39">
+Numeric
+</h3>
+
+<p id="40">
+There is only one Internal data type for storing numbers in Oracle and
+that's called simply: <b>Number</b>. A number is stored in binary
+coded decimal format (equivalent to a character string of decimal
+numbers) and also includes the location of the decimal point and a
+sign.
+</p>
+<p id="41">
+The Precision of a Number is the number of decimal digits. It can
+range from 1 to 38.
+</p>
+<p id="42">
+The Scale of a number is the number of the decimal digits that are to the
+right of the decimal point. The Scale can range from -84 to 127.
+</p>
+<p id="43">
+In SQL DDL statements you can specify this Internal data type 
+with any of these types:
+</p>
+<ul>
+<li id="44">
+<b>number</b> - holds a number with any Precision and Scale in the
+valid range
+</li>
+<li id="45">
+<b>number(p,s)</b> - holds a number with a max precision of p and a
+scale of exactly s.  This is a <i>fixed point</i> number.
+</li>
+<li id="46">
+<b>number(p)</b> - the same as number(p,0) which is an integer of a
+maximum precision.
+</li>
+<li id="47">
+<b>float</b> - same as number
+</li>
+<li id="48">
+<b>float(b)</b> - number with a maximum number of *binary* digits of b
+(mult b by 0.30103 to get the number of decimal digits).
+</li>
+</ul>
+<h3 id="49">
+ANS type specifiers:
+</h3>
+<ul>
+<li id="50">
+<b>numeric(p,s)</b> - same as number(p,s)
+</li>
+<li id="51">
+<b>decimal(p,s)</b> - same as number(p.s)
+</li>
+<li id="52">
+<b>integer</b> - same as number(38)
+</li>
+<li id="53">
+<b>int</b> - same as number(38)
+</li>
+<li id="54">
+<b>smallint</b> - same as number(38)
+</li>
+<li id="55">
+<b>double precision</b> - same as float(126)
+</li>
+<li id="56">
+<b>real</b> - same as number
+</li>
+</ul>
+<p id="57">
+When information about a column is returned by Oracle the description
+contains typecode == 2 [see table 3-1 in the OCI programmer's ref] and
+</p>
+<table BORDER="1" CELLSPACING="1" CELLPADDING="2" WIDTH="90%">
+<tr>
+<td WIDTH="31%" VALIGN="TOP"><strong>Precision</strong></td>
+<td WIDTH="25%" VALIGN="TOP"><strong>Scale</strong></td>
+<td WIDTH="43%" VALIGN="TOP"><strong>Description</strong></td>
+</tr>
+<tr>
+<td WIDTH="31%" VALIGN="TOP">0</td>
+<td WIDTH="25%" VALIGN="TOP">-127</td>
+<td WIDTH="43%" VALIGN="TOP">for <b>number</b> (any kind of number)</td>
+</tr>
+<tr>
+<td WIDTH="31%" VALIGN="TOP">9</td>
+<td WIDTH="25%" VALIGN="TOP">0</td>
+<td WIDTH="43%" VALIGN="TOP">for number(9) == number(9,0) - 9 digit integer</td>
+</tr>
+<tr>
+<td WIDTH="31%" VALIGN="TOP">100</td>
+<td WIDTH="25%" VALIGN="TOP">-127</td>
+<td WIDTH="43%" VALIGN="TOP">float(100) floating point 100 binary digits</td>
+</tr>
+<tr>
+<td WIDTH="31%" VALIGN="TOP">38</td>
+<td WIDTH="25%" VALIGN="TOP">0</td>
+<td WIDTH="43%" VALIGN="TOP">integer or smallint</td>
+</tr>
+</table>
+
+<p id="58">
+Thus: scale of -127 indicates a floating point number where precision
+is the binary precision.  A precision of 0 means <i>unspecified</i> so
+it can vary up to the maximum precision.
+</p>
+<p id="59">
+Otherwise scale of not -127 means it is a fixed point value with
+precision being the decimal precision.  A scale of 0 means
+integer.
+</p>
+<p id="60">
+These are the numeric External data types (as best as we can
+determine):
+</p>
+<ul>
+<li id="61">
+<b>SQLT_NUM</b> - (ORANET TYPE) oracle numeric. This is a char[21]
+which holds precisely the oracle numeric object in 21 bytes.
+</li>
+<li id="62">
+<b>SQLT_INT</b>  - (ORANET TYPE) integer. This is a
+<ul>
+<li id="63">
+signed char - 1 byte
+</li>
+<li id="64">
+signed short - 2 bytes
+</li>
+<li id="65">
+signed int - 2 bytes or 4 bytes
+</li>
+<li id="66">
+signed long - 4 bytes
+</li>
+</ul>
+<p id="67">
+The number of bytes is specified as an additional parameter when
+SQLT_INT is given as the external type.  Note that on a 64 bit machine
+you can specify 8 bytes as the length but still you can only get a 32
+bit value (it is unclear if it zero fills the upper 4 bytes or sign
+extends or what but it is clear that you cannot get Oracle to give you
+a 64 bit integer).
+</p>
+</li>
+<li id="68">
+<b>SQLT_FLT</b> - (ORANET TYPE) Floating point number. This is a float
+or double. We believe that you can distinguish between float and
+double by an extra parameter giving a size of 4 or 8 bytes.
+</li>
+<li id="69">
+<b>SQLT_VNU</b> - NUM with preceding length byte. A char[22] (the same
+as SQL_NUM except it begins with a length byte showing how many of the
+following 21 bytes contain real data.
+</li>
+<li id="70">
+<b>SQLT_UIN</b> - unsigned integer. We think that this is like SQL_INT
+except that the values are unsigned rather than signed integer values.
+</li>
+</ul>
+
+
+<p id="71">
+In lisp the data types we will use to represent numbers are:
+</p>
+<ul>
+<li id="72">
+<b>fixnum</b> (signed 30 bit on 32-bit machine, signed 61-bit on 64
+bit machine)
+</li>
+<li id="73">
+<b>bignum</b>: integer of effectively any length
+</li>
+<li id="74">
+<b>double</b>: double precision floating point number
+</li>
+<li id="75">
+<b>single</b>: single precision floating point number
+</li>
+</ul>
+<p id="76">
+And the following, using the <a href="operators/ff/def-foreign-type.htm"><b>def-foreign-type</b></a> facility to create locations
+for storing raw data:
+</p>
+<ul>
+<li id="77">
+<b>integer box</b> - 32 bit signed value
+</li>
+<li id="78">
+<b>unsigned integer box</b> - 32 bit unsigned value
+</li>
+<li id="79">
+<b>long integer box</b> - 32 bit signed value (32-bit machine); 64 bit
+signed value (64-bit machine)
+</li>
+<li id="80">
+<b>long unsigned integer box</b> - 32 bit unsigned value (32-bit
+machine); 64 bit unsigned value (64-bit machine)
+</li>
+</ul>
+
+<p id="81">
+The following conversions are supported:
+</p>
+<ul>
+<li id="82">
+<b>:int</b> - fit into a C int (which is 4 bytes even on 64-bit
+machines).
+</li>
+<li id="83">
+<b>:bigint</b> - any size integer, will read a string and do the
+conversion ourselves
+</li>
+<li id="84">
+<b>:double</b> - will read as double float
+</li>
+<li id="85">
+<b>:float</b>, <b>:single</b> - will read as single float
+</li>
+<li id="86">
+<b>:string</b> - will return the number as if printed. For floating
+point values with a large number of significant digits this is the
+only way to read the number and not lose information.
+</li>
+</ul>
+<p id="87">
+A conversion code of <code>t</code> will examine the
+scale and precision and will do either
+</p>
+<ul>
+<li id="88">
+<b>:int</b> - scale of 0, if precision will fit
+</li>
+<li id="89">
+<b>:bigint</b> - scale of 0, otherwise
+</li>
+<li id="90">
+<b>:double</b> - scale not zero
+</li>
+</ul>
+
+<hr><hr><h2 id="91"><a name="cursors-1">4.0 Cursors</a></h2>
+
+<p id="92">
+Oracle has the ability to return a collection of rows in a variable
+whose type is known as a <b>cursor</b>. This is sometimes also known
+as a <b>result set</b> and a variable which points to a cursor is
+known as a <b>ref cursor</b>. A cursor is in some ways similar to a
+prepared statement that has been executed: with both you can fetch
+rows of data one after another.
+</p>
+<p id="93">
+A cursor is an internal oracle datatype whose External representation
+is identified using SQLT_RSET. There is no native Lisp datatype for
+cursors.  Instead, a cursor is an opaque object which you can operate
+on using functions provided by this API. The cursor functions are
+<a href="oracle-interface.htm#fetch-from-cursor-op-bookmarkxx"><b>fetch-from-cursor</b></a>, <a href="oracle-interface.htm#free-cursor-op-bookmarkxx"><b>free-cursor</b></a>, and <a href="oracle-interface.htm#cancel-cursor-op-bookmarkxx"><b>cancel-cursor</b></a>.
+<code>:cursor</code> can be the value of the
+<i>type</i> argument to <a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a>.  See also
+<a href="oracle-interface.htm#parameter-value-op-bookmarkxx"><b>parameter-value</b></a>.  <b>Example
+5</b> is <a href="#examples-1">Section 6.0 Examples using the Oracle interface</a> deals with ref
+cursors.
+</p>
+
+<p id="94">
+Having a cursor open, means that you have reserved some state in the
+Oracle database.  As such, it is very important to free the cursor
+when you are done with it.  Otherwise you introduce what is known as a
+cursor leak. If you are retreiving values from a cursor and decide to
+stop before all the data is retreived, you must call <a href="oracle-interface.htm#cancel-cursor-op-bookmarkxx"><b>cancel-cursor</b></a>.
+</p>
+
+<hr><hr><h2 id="95"><a name="interface-api-1">5.0 The Oracle interface API</a></h2>
+
+<p id="96">
+Functions, variables and classes in this interface are
+exported from the dbi.oracle package.
+</p>
+
+<hr><h3 id="97"><a name="s_db_s-var-bookmarkxx"></a>*db*</h3><h3 id="98">Variable</h3><h4 id="99">Package: dbi.oracle</h4>
+
+<p id="100">
+This special variable holds the default database connection object
+used in most of the oracle API functions. The <a href="oracle-interface.htm#connect-op-bookmarkxx"><b>connect</b></a>
+function returns a database connection object and also sets <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a> to the connection
+object.
+</p>
+
+<hr>
+
+<hr><h3 id="101"><a name="s_null-value_s-var-bookmarkxx"></a>*null-value*</h3><h3 id="102">Variable</h3><h4 id="103">Package: dbi.oracle</h4>
+
+<p id="104">
+The value of this variable is returned by the sql function (and
+related functions) to indicate a null value in a column. Its initial
+value is :null-value. A value should be something which could not be
+otherwise returned as a column value (thus nil, for example, is an
+inappropriate value).
+</p>
+
+<hr>
+
+<hr><h2 id="105"><a name="api-connecting-2">5.1 API for connecting and disconnecting</a></h2>
+
+<hr><h3 id="106"><a name="connect-op-bookmarkxx"></a>connect</h3><h3 id="107">Function</h3><h4 id="108">Package: dbi.oracle</h4>
+
+<p id="109"><b>Arguments: </b><i>
+</i>&amp;key <i>database user password non-blocking autocommit</i><i>
+</i></p>
+
+<p id="110">
+Create a connection to the given <i>database</i> using
+user-name/password authentication. If <i>database</i> is
+a string then a TCP/IP connection will be made to the server.  If
+<i>database</i> is <code>nil</code> then a
+connection to the Oracle default database will be made. (The Oracle
+system has the notion of a <i>default database</i>. If you use the
+Oracle <b>sqlplus</b> program to access a database and you do not
+specify a database then it connects to the default database.)
+</p>
+<p id="111">
+If <i>non-blocking</i> is true (it defaults to true)
+then the connection will be set to non-blocking mode. If specified
+<code>nil</code>, the connection will be set to blocking
+mode. See <a href="#oracle-blocking-connections-2">Section 2.1 Blocking and non-blocking modes</a>
+for information on choosing between blocking and non-blocking
+modes. <a href="oracle-interface.htm#set-db-flags-op-bookmarkxx"><b>set-db-flags</b></a> can be used to
+change the blocking/non-blocking modes of a database.
+</p>
+<p id="112">
+If <i>autocommit</i> is true then a commit will be done
+after every successful sql call.
+</p>
+<p id="113">
+The database connection object will be returned and the variable
+<a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a> will be set to that
+connection as well. The value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a> is
+the default value for functions in this interface that take a
+<i>db</i> keyword argument.
+</p>
+
+<hr>
+
+<hr><h3 id="114"><a name="disconnect-op-bookmarkxx"></a>disconnect</h3><h3 id="115">Function</h3><h4 id="116">Package: dbi.oracle</h4>
+
+<p id="117"><b>Arguments: </b><i>
+</i>&amp;key <i>db</i><i>
+</i></p>
+
+
+<p id="118">
+This function commits any changes to the database and closes the
+connection to the database.
+</p>
+<p id="119">
+<i>db</i> defaults to the value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="120"><a name="dml-ddl-2">5.2 Excuting DML and DDL</a></h2>
+
+<p id="121">
+Executing an sql statement involves these steps:
+</p>
+
+<ol>
+<li id="122">
+prepare the statement; the sql statement is sent to the Oracle database
+server to be parsed
+</li>
+<li id="123">
+bind lisp objects for all the parameters in the sql statement
+</li>
+<li id="124">
+store values into each of the lisp objects that are bound to the parameters
+</li>
+<li id="125">
+execute the statement; Oracle executes the sql statement in the database
+</li>
+<li id="126">
+If the sql statement is a select statement then Oracle will be
+returning rows of data so go to step 6. Otherwise there is no more
+work to be done for this statement. Either go to step 10 to finish or
+if you wish to execute the same statement with different parameter
+values then go to step 3.
+</li>
+<li id="127">
+reserve space to store the data from a single row
+</li>
+<li id="128">
+fetch the next row into the the reserved space. If there are no more
+rows then either go to step 10 to finish or go to step 3 to run the
+same statement with different parameter values.
+</li>
+<li id="129">
+convert the data returned by Oracle into Lisp objects
+</li>
+<li id="130">
+go to step 7
+</li>
+<li id="131">
+finished
+</li>
+</ol>
+
+<p id="132">
+These steps can be run individually if your program needs control
+at each step, or you can use the sql function to run through 
+all the steps.
+</p>
+<p id="133">
+We mentioned the 'parameterized' sql statement above. In Oracle
+a parameter is denoted by a name preceded by a colon.
+This sql statement has two parameters, foo and bar:
+</p>
+<pre id="134">
+    select * from mytab where i &lt; :foo and b &lt; :bar
+</pre>
+
+
+
+<hr><h2 id="135"><a name="one-step-2">5.3 One step execution of an sql statement</a></h2>
+
+
+<hr><h3 id="136"><a name="sql-op-bookmarkxx"></a>sql</h3><h3 id="137">Function</h3><h4 id="138">Package: dbi.oracle</h4>
+
+<p id="139"><b>Arguments: </b><i>
+statement
+</i>&amp;key <i>db names retrieve convert</i><i>
+</i></p>
+
+<p id="140">
+Execute the sql <i>statement</i> and return any values
+sent from the database server as a result of the statement.
+</p>
+<p id="141">
+<i>db</i> defaults the value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>;
+<i>names</i> defaults to <code>t</code>;
+<i>retrieve</i> defaults to <code>t</code>;
+<i>convert</i> defaults to <code>nil</code>.
+</p>
+<p id="142">
+If the statement is a sql select statement and
+<i>retrieve</i> is true then after the statement is
+executed the rows that are returned by the select are returned by the
+<a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> function.  The first
+value returned by <a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> is a list of the rows,
+each row being a list of the column values.  The second value returned
+is a list of the column names (as long as the keyword argument
+<i>names</i> is true).
+</p>
+<p id="143">
+The <i>convert</i> argument determines how values are
+converted after being retrieved from the database.  See
+<a href="#convert-arg-2">Section 5.5 The Convert Argument</a>.
+</p>
+<p id="144">
+If the statement has any sql parameters in it then you cannot use this
+<a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> function, instead you
+must use <a href="oracle-interface.htm#prepare-sql-op-bookmarkxx"><b>prepare-sql</b></a>, <a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a> and <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a>.
+</p>
+<p id="145">
+If <i>statement</i> is a select statement and
+<i>retrieve</i> is <code>nil</code> then you
+can call <a href="oracle-interface.htm#fetch-next-row-op-bookmarkxx"><b>fetch-next-row</b></a> and <a href="oracle-interface.htm#get-row-data-op-bookmarkxx"><b>get-row-data</b></a> to retrieve the
+results.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="146"><a name="step-by-step-2">5.4 Step by step execution of a sql statement</a></h2>
+
+<hr><h3 id="147"><a name="prepare-sql-op-bookmarkxx"></a>prepare-sql</h3><h3 id="148">Function</h3><h4 id="149">Package: dbi.oracle</h4>
+
+<p id="150"><b>Arguments: </b><i>
+statement
+</i>&amp;key <i>db statement-handle</i><i>
+</i></p>
+
+<p id="151">
+This function passes the sql <i>statement</i> to Oracle
+for parsing in preparation for executing the statement.
+</p>
+<p id="152">
+<i>db</i> defaults to the value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>.
+</p>
+<p id="153">
+statement-handle can be one of 
+</p>
+<ul>
+<li id="154">
+<code>nil</code>, meaning use the statement handle
+associated with this database connection, allocating one if necessary.
+</li>
+<li id="155">
+a db-statement object, meaning use the statement handle in this
+object. The value of db passed to <a href="oracle-interface.htm#prepare-sql-op-bookmarkxx"><b>prepare-sql</b></a> will not be used
+as the statement handle is already associated with a particular
+database object.
+</li>
+<li id="156">
+<code>:new</code>, meaning create a new statement handle for the
+database connection, do the <a href="oracle-interface.htm#prepare-sql-op-bookmarkxx"><b>prepare-sql</b></a> action, and then
+return a db-statement object that holds this new statement handle.
+</li>
+</ul>
+
+<p id="157">
+This function must be used if the statement has any parameters (which
+are symbols beginning with a colon) as in
+</p>
+<pre id="158">
+      &quot;select from foo where i &lt; :maxval&quot;
+</pre>
+<p id="159">
+This function can also be used if there are no parameters.
+</p>
+
+<hr>
+
+<p id="160">
+At this point you would call <a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a> and <a href="operators/ff/fslot-value.htm"><b>(setf
+ff:fslot-value)</b></a> to bind parameters and store values in the
+parameters. This is covered in the
+<a href="#binding-parameters-2">Section 5.6 Binding parameters</a>.
+</p>
+
+
+
+<hr><h3 id="161"><a name="run-prepared-sql-op-bookmarkxx"></a>run-prepared-sql</h3><h3 id="162">Function</h3><h4 id="163">Package: dbi.oracle</h4>
+
+<p id="164"><b>Arguments: </b><i>
+</i>&amp;key <i>db statement-handle names retrieve convert</i><i>
+</i></p>
+
+<p id="165">
+This function executes the last prepared sql statement using the
+current value of all bound parameters.
+</p>
+<p id="166">
+<i>db</i> defaults to the value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>. <i>names</i>
+defaults to <code>t</code>.  <i>retrieve</i>
+defaults to <code>t</code>.  <i>convert</i>
+defaults to <code>nil</code>. <i>statement-handle</i> defaults
+to <code>nil</code>.
+</p>
+<p id="167">
+statement handle can be one of
+</p>
+<ul>
+<li id="168">
+nil - use the statement handle associated with this db connection
+</li>
+<li id="169">
+a db-statement object - use the statement handle in the object
+</li>
+</ul>
+
+<p id="170">
+This function returns the same two values returned by the <a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> function.
+</p>
+
+<hr>
+
+
+<hr><h3 id="171"><a name="run-prepared-sql-op-bookmarkxx"></a>run-prepared-sql</h3><h3 id="172">Function</h3><h4 id="173">Package: dbi.oracle</h4>
+
+<p id="174"><b>Arguments: </b><i>
+statement-handle
+</i></p>
+
+<p id="175">
+This function returns the db object associated with the given statement handle.
+</p>
+
+<hr>
+
+
+<hr><h3 id="176"><a name="fetch-next-row-op-bookmarkxx"></a>fetch-next-row</h3><h3 id="177">Function</h3><h4 id="178">Package: dbi.oracle</h4>
+
+<p id="179"><b>Arguments: </b><i>
+</i>&amp;key <i>db</i><i>
+</i></p>
+
+<p id="180">
+This function retrieves the next row from the oracle server.  It
+returns true if successful and returns <code>nil</code> if
+there are no more rows. <i>db</i> defaults to the value
+of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>.
+</p>
+<p id="181">
+The values retrieved are stored in objects not accessible to user
+code.  The program must call <a href="oracle-interface.htm#get-row-data-op-bookmarkxx"><b>get-row-data</b></a> to convert the
+values to lisp objects.
+</p>
+
+<hr>
+
+<hr><h3 id="182"><a name="get-row-data-op-bookmarkxx"></a>get-row-data</h3><h3 id="183">Function</h3><h4 id="184">Package: dbi.oracle</h4>
+
+<p id="185"><b>Arguments: </b><i>
+</i>&amp;key <i>db</i><i>
+</i></p>
+
+<p id="186">
+After a call to <a href="oracle-interface.htm#fetch-next-row-op-bookmarkxx"><b>fetch-next-row</b></a> you call this
+function to convert the fetched data to a list of column values.
+</p>
+<p id="187">
+<i>db</i> defaults to the value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>.
+</p>
+    
+<hr>
+
+
+<hr><h3 id="188"><a name="get-column-value-op-bookmarkxx"></a>get-column-value</h3><h3 id="189">Function</h3><h4 id="190">Package: dbi.oracle</h4>
+
+<p id="191"><b>Arguments: </b><i>
+</i>&amp;key <i>db</i><i>
+</i></p>
+
+<p id="192">
+After a call to <a href="oracle-interface.htm#fetch-next-row-op-bookmarkxx"><b>fetch-next-row</b></a> returns
+<code>t</code> you can use this function to retrieve the
+value of a specific column. Column numbers are 0-based.  This is
+intended to be used in place of <a href="oracle-interface.htm#get-row-data-op-bookmarkxx"><b>get-row-data</b></a> if you want to
+avoid consing up a list of all the column values.  You can use <a href="oracle-interface.htm#result-columns-count-op-bookmarkxx"><b>result-columns-count</b></a> after a
+call to <a href="oracle-interface.htm#fetch-next-row-op-bookmarkxx"><b>fetch-next-row</b></a> in order to
+determine how many columns are in the result set.
+</p>
+
+
+<hr>
+
+<hr><h3 id="193"><a name="result-columns-count-op-bookmarkxx"></a>result-columns-count</h3><h3 id="194">Function</h3><h4 id="195">Package: dbi.oracle</h4>
+
+<p id="196"><b>Arguments: </b><i>
+</i>&amp;key <i>db</i><i>
+</i></p>
+
+<p id="197">
+After a call to <a href="oracle-interface.htm#fetch-next-row-op-bookmarkxx"><b>fetch-next-row</b></a> this function
+will return the number of columns in the result set.  Every row in the
+result set has the same number of columns.
+</p>
+
+
+<hr>
+
+<hr><h3 id="198"><a name="db-statement-db-op-bookmarkxx"></a>db-statement-db</h3><h3 id="199">Function</h3><h4 id="200">Package: dbi.oracle</h4>
+
+<p id="201"><b>Arguments: </b><i>
+</i>&amp;key <i>statement-handle</i><i>
+</i></p>
+
+<p id="202">
+Returns the database object associated with the given statement
+handle.
+</p>
+
+<hr>
+
+
+
+
+<hr><h2 id="203"><a name="convert-arg-2">5.5 The Convert Argument</a></h2>
+
+<p id="204">
+The values returned by the database are converted into appropriate
+lisp values as directed by the <i>convert</i> keyword
+argument to <a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> and <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a>.
+</p>
+<p id="205">
+The <i>convert</i> argument provides an argument
+descriptor for each column in the result set.
+</p>
+
+<hr><h2 id="206"><a name="convert-syntax-3">5.5.1 The syntax of the convert argument</a></h2>
+
+<p id="207">
+<i>convert</i> can be a list that's at least as long as
+the number of columns, e.g. <code>(t nil :int nil nil t)</code>.
+or <i>convert</i> can be an atom or a list that is
+shorter than the number of columns in which case the missing values at
+the end are computed as follows:
+</p>
+<blockquote>
+<p id="208">
+If convert is a list then the cdr of the last cons in the list is
+repeated as much as necessary to fill out the convert list. Thus a
+convert list of
+</p>
+<pre id="209">
+(a b . c)    [ notice the period between the b and c]
+</pre>
+<p id="210">
+is the same as (a b c c c c c c c c c c c c ...). As a consequence of
+this (a b) is the same as (a b . nil) and thus denotes the convert
+list (a b nil nil nil nil nil nil nil ....).
+</p>
+<p id="211">
+If the convert argument is an atom then this denotes a convert list
+consisting of just that atom. Thus a <i>convert</i>
+argument of <code>:int</code> is the same as (:int :int :int
+:int ....)  and a <i>convert</i> argument of <code>nil</code> denotes (nil nil nil nil nil nil ...)
+</p>
+</blockquote>
+
+
+
+
+<hr><h2 id="212"><a name="convert-arg-values-3">5.5.2 The convert argument values</a></h2>
+
+<p id="213">
+As mentioned above, the first column's database value is converted
+to a lisp object based on the value of the first item in the
+convert list.  The second column is converted based on the second
+item in the convert list, and so on.
+</p>
+<p id="214">
+The possible values for the convert specification are:
+</p>
+<ul>
+<li id="215">
+<code>nil</code> - return the values from the database as
+a string if they are textual or an unsigned-byte 8 array if they are
+not.
+</li>
+<li id="216">
+<code>t</code> - return the appropriate lisp type based on
+the internal type of the column. For numeric columns this returns
+either an integer (fixnum or bignum) or a double float, depending on
+the precision and scale values for the column.
+</li>
+<li id="217">
+<code>:int</code> - return a fixnum or bignum after having
+converted the database internal value into a 4 byte signed integer. If
+the database value is too large to be converted into a 4 byte signed
+integer than an error will be signalled.
+</li>
+<li id="218">
+<code>:bigint</code> - return a fixnum or bignum by having lisp
+build the number based on its string representation.  This is slower
+than the :int case but this case can handle the full range of integers
+that can be stored in an Oracle database
+</li>
+<li id="219">
+<code>:double</code> - return a lisp double-float object.  This
+may result in a loss of information as oracle can store data with more
+precision than a double float can represent.
+</li>
+<li id="220">
+<i>:single</i> - return a lisp single-float object.  This
+may result in a loss of information as oracle can store data with more
+precision than a single float can represent.
+</li>
+<li id="221">
+<code>:float</code> - this is the same as
+<code>:single</code>.
+</li>
+<li id="222">
+<code>:string</code> - a lisp string less than 4096 characters
+in size. It is permitted to return numeric columns as string and in
+fact this is a good idea if you're not going to do numeric operations
+on the values and you want to preserve their precision.
+</li>
+<li id="223">
+<code>:usb8</code> - a vector of element-type
+<code>(unsigned-byte 8)</code>.
+</li>
+<li id="224">
+<code>:ut</code> - universal time. For columns of type DATE this
+returns the date as a lisp universal time. The date object in oracle
+doesn't contain timezone information but under the default Oracle
+configuration the dates are stored with the local time (rather than
+GMT) thus when the lisp universal time is returned the time in the
+date object is interpreted as a local time, not a GMT.
+</li>
+</ul>
+
+
+
+
+
+
+<hr><h2 id="225"><a name="binding-parameters-2">5.6 Binding parameters</a></h2>
+
+
+    
+<p id="226">
+Note: A simpler method of setting statement parameters is described in
+the <a href="#statement-handle-parameters-2">Section 5.8 Statement handle parameters</a>
+section below.
+</p>
+<p id="227">
+Binding a parameter causes a region of memory to be associated with a
+parameter in an sql statement. When the sql statement is executed
+(with <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a>) whatever
+value is in the memory object is then used as the value of that
+parameter.
+</p>
+<p id="228">
+The Lisp memory objects bound to parameters are Foreign Type objects
+(see <a href="ftype.htm">ftype.htm</a> for a full description of foreign
+types).
+</p>
+
+<hr><h3 id="229"><a name="bind-parameter-op-bookmarkxx"></a>bind-parameter</h3><h3 id="230">Function</h3><h4 id="231">Package: dbi.oracle</h4>
+
+<p id="232"><b>Arguments: </b><i>
+location existing-obj type width
+</i>&amp;key <i>db statement-handle</i><i>
+</i></p>
+
+<p id="233">
+This function binds a Foreign Type object to the parameter at the
+given location and returns that object.
+</p>
+<p id="234">
+<i>location</i> is an integer or a string. Use 1 for the
+first parameter mentioned in the sql statement, and 2 for the second
+and so on. You can also specify the parameter by the names. <b>Do not
+include the colon preceding the name</b> when specifying the name to
+<a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a>.
+</p>
+<p id="235">
+<i>existing-obj</i> is an existing Foreign Type object
+or <code>nil</code>. If you pass <code>nil</code> then an appropriate object will be created. If
+you pass an object as the value then you must be sure that the object
+has the correct type (and generally that means passing in an object
+that was returned by a previous call to <a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a> that you know
+is no longer in use).
+</p>
+<p id="236">
+<i>type</i> is one of
+</p>
+<ul>
+<li id="237">
+<code>:int</code> - for a 32-bit signed integer
+</li>
+<li id="238">
+<code>:char</code> - for a sequence of 8-bit bytes with no
+nulls.
+</li>
+<li id="239">
+<code>:byte</code> - for a sequence of octets that can have
+nulls. This can only be used for columns declared to have type 'long'.
+</li>
+<li id="240">
+<code>:float</code> - for a double float value.
+</li>
+<li id="241">
+<code>:double</code> - also for a double float value.
+</li>
+<li id="242">
+<code>:ut</code> - a lisp universal time.
+</li>
+<li id="243">
+<code>:cursor</code> - for a ref cursor parameter
+</li>
+</ul>
+
+<p id="244">
+<i>width</i> is the number of bytes if the type is given
+as :char, otherwise width is ignored. If <i>type</i> is
+<code>:char</code> and <i>width</i> is <code>nil</code> then <i>width</i> is assumed to be
+4096.
+</p>
+<p id="245">
+<i>db</i> defaults to the value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>.
+</p>
+    
+<hr>
+
+<p id="246">
+Once you call <a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a> and have an
+object returned you will want to save a reference to that object
+somewhere so that for the lifetime of the binding that object is not
+garbage collected.  You cannot just bind the parameter, set the value
+and then lose a pointer to the object.
+</p>
+<p id="247">
+To set the value you use <a href="operators/ff/fslot-value.htm"><b>(setf ff:fslot-value)</b></a>.
+</p>
+<p id="248">
+For an <code>:int</code> type object <i>obj</i>:
+</p>
+<pre id="249">
+     (setf (ff:fslot-value obj :data) 324534)
+</pre>
+<p id="250">
+For a <code>:char</code> type object <i>obj</i>:
+</p>
+<pre id="251">
+     (setf (ff:fslot-value obj :data) "this is a string")
+</pre>
+<p id="252">
+For a <code>:float</code> or <code>:double</code> object
+<i>obj</i> you must make sure that the value stored is a
+double-float value:
+</p>
+<pre id="253">
+     (setf (ff:fslot-value obj :data) 1.2d0)
+</pre>
+<p id="254">
+or for <i>val</i> being an integer or float:
+</p>
+<pre id="255">
+     (setf (ff:fslot-value obj :data) (float val 1.0d0))
+</pre>
+<p id="256">
+For a universal time object you have to use this function
+to store all of the fields:
+</p>
+<pre id="257">
+     (store-universal-time obj  universal-time)
+</pre>
+<p id="258">
+For a ref cursor parameters, it is recommended that you use the
+simpler method described below for fetching the cursor from the
+parameter after executing the query. See
+<a href="#statement-handle-parameters-2">Section 5.8 Statement handle parameters</a>.
+</p>
+<p id="259">
+A parameter object contains two values: the first is a specific type
+of value determined by how the parameter was allocated, and the second
+is a flag that says whether this parameter's value is 'null' or not.
+</p>
+
+<hr><h3 id="260"><a name="set-parameter-null-op-bookmarkxx"></a>set-parameter-null</h3><h3 id="261">Function</h3><h4 id="262">Package: dbi.oracle</h4>
+
+<p id="263"><b>Arguments: </b><i>
+obj
+</i></p>
+
+<p id="264">
+The <a href="oracle-interface.htm#set-parameter-null-op-bookmarkxx"><b>set-parameter-null</b></a> function
+says that the parameter represents the null value regardless of
+whatever value has been stored in the parameter with setf of <a href="operators/ff/fslot-value.htm"><b>fslot-value</b></a>.
+</p>
+
+<hr>
+
+<hr><h3 id="265"><a name="unset-parameter-null-op-bookmarkxx"></a>unset-parameter-null</h3><h3 id="266">Function</h3><h4 id="267">Package: dbi.oracle</h4>
+
+<p id="268"><b>Arguments: </b><i>
+obj
+</i></p>
+
+<p id="269">
+This function clears the flag in the parameter that says that it has a
+null value.  After this function is called the value of the parameter
+is the last value that was stored in it with setf of <a href="operators/ff/fslot-value.htm"><b>fslot-value</b></a>.
+</p>
+    
+<hr>
+
+<p id="270">
+After <a href="oracle-interface.htm#set-parameter-null-op-bookmarkxx"><b>set-parameter-null</b></a> is called
+on a parameter object the only way to make the parameter represent a
+non null value is to call <a href="oracle-interface.htm#unset-parameter-null-op-bookmarkxx"><b>unset-parameter-null</b></a>.
+calling setf of <a href="operators/ff/fslot-value.htm"><b>fslot-value</b></a> will not change the
+null flag inside a parameter object.
+</p>
+    
+
+
+<hr><h2 id="271"><a name="multiple-handles-2">5.7 Multiple statement handles</a></h2>
+
+<p id="272">
+The <a href="oracle-interface.htm#connect-op-bookmarkxx"><b>connect</b></a> function creates a
+single connection to the database. You can use the mutiple statement
+handle feature to prepare in advance multiple sql statements, however
+you can only execute one statement at a time.
+</p>
+<p id="273">
+That is you can do this:
+</p>
+<pre id="274">
+prepare the sql for execution
+
+   (setq h1 (prepare-sql "sql stmt 1" :statement-handle :new))
+   (setq h2 (prepare-sql "sql stmt 2" :statement-handle :new))
+   (setq h3 (prepare-sql "sql stmt 3" :statement-handle :new))
+
+and then bind any parameters
+
+   (setq p1-1 (bind-parameter 1 nil :int nil :statement-handle h1))
+   (setq p2-1 (bind-parameter 1 nil :int nil :statement-handle h2))
+   (setq p3-1 (bind-parameter 1 nil :int nil :statement-handle h3))
+
+and then set the parameters
+
+   (setf (ff:fslot-value p1-1 :data) 10)
+   (setf (ff:fslot-value p2-1 :data) 20)
+   (setf (ff:fslot-value p3-1 :data) 30)
+
+and then run sql statements        
+
+   (run-prepared-sql :statement-handle h1)
+   (run-prepared-sql :statement-handle h2)
+   (run-prepared-sql :statement-handle h3)
+</pre>
+
+<p id="275">
+However if you specify <code>:retrieve nil</code> to <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a> then you
+must retrieve all the rows that you want to retrieve before calling
+<a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a> again, since
+when <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a> is called it
+will end the retrieval of the previous query.
+</p>
+
+
+
+<hr><h2 id="276"><a name="statement-handle-parameters-2">5.8 Statement handle parameters</a></h2>
+
+
+<p id="277">
+The mechanism described here for setting statement parameters can be
+used instead of <a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a>. If you use
+the calls given in this section then do not use <a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a> calls for the
+same statement handle.
+</p>
+<p id="278">
+Above we've shown how to create a statement handle object,
+e.g.
+</p>
+<pre id="279">
+    (setq h (prepare-sql "insert into foo(i,j) values(:ipar, :jpar)" 
+                         :statement-handle :new))
+</pre>
+
+<p id="280">
+The above statement has two parameters, denoted either by
+their positions: 1 and 2 or by their names "ipar" and "jpar".
+</p>
+<p id="281">
+In order to specify values for the parameters before calling <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a> you can do
+</p>
+<pre id="282">
+     (set-parameter-value h "ipar" 23)  ; set param named "ipar"
+     (set-parameter-value h  2 "smith") ; set second parameter (i.e. "jpar")
+</pre>
+
+<p id="283">
+then you can do
+</p>
+<pre id="284">
+     (run-prepared-sql :statement-handle h) 
+</pre>
+
+<p id="285">
+to do the sql insert statement.
+</p>
+
+<hr><h3 id="286"><a name="set-parameter-value-op-bookmarkxx"></a>set-parameter-value</h3><h3 id="287">Function</h3><h4 id="288">Package: dbi.oracle</h4>
+
+<p id="289"><b>Arguments: </b><i>
+statement-handle param value
+</i>&amp;key <i>type</i><i>
+</i></p>
+
+<p id="290">
+This function stores the given value as the value for the given
+parameter.
+</p>
+<p id="291">
+<i>statement-handle</i> is an object returned by <a href="oracle-interface.htm#prepare-sql-op-bookmarkxx"><b>prepare-sql</b></a>.
+</p>
+<p id="292">
+<i>param</i> is a string naming a parameter or a positive
+integer specifying the position of the parameter.  You must be
+consistent -- for a given parameter always use either a number or a
+name. You can also supply a symbol as an argument in which case the
+symbol's name will be used.  Since Oracle's parameters appear to be
+Lisp keyword symbols in the sql it is nice to use Lisp keywords to
+represent parameters in the Lisp code as well.
+</p>
+<p id="293">
+<i>value</i> is the value to store in the parameter. If
+the value is <code>nil</code> or the value of <a href="oracle-interface.htm#s_null-value_s-var-bookmarkxx"><code>*null-value*</code></a> then a null will
+be stored in this column.
+</p>
+<p id="294">
+<i>type</i> is one of the bind parameter types and need
+only be specified if value could be interpreted as being one of many
+types.
+</p>
+<p id="295">
+You'll need to specify a type in the following cases:
+</p>
+<ul>
+<li id="296">
+<i>value</i> is a lisp universal time and you want it
+stored in oracle as a date object. In this case specify a type of
+<code>:ut</code>.
+</li>
+<li id="297">
+<i>value</i> is a lisp string containing nulls and you
+want it treated as an oracle LONG object.  In this case specify a type
+of <code>:byte</code>.
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="298"><a name="parameter-value-op-bookmarkxx"></a>parameter-value</h3><h3 id="299">Function</h3><h4 id="300">Package: dbi.oracle</h4>
+
+<p id="301"><b>Arguments: </b><i>
+statement-handle param 
+</i></p>
+
+<p id="302">
+This function returns the last value stored with <a href="oracle-interface.htm#set-parameter-value-op-bookmarkxx"><b>set-parameter-value</b></a>.
+</p>
+<p id="303">
+<i>statement-handle</i> is an object returned by
+prepare-sql
+</p>
+<p id="304">
+<i>param</i> is a string naming a parameter or a positive
+integer specifying the position of the parameter.  You must be
+consistent -- for a given parameter always use either a number or a
+name.
+</p>
+<p id="305">
+For out parameters and function result parameters, it is often
+necessary to call <a href="oracle-interface.htm#set-parameter-value-op-bookmarkxx"><b>set-parameter-value</b></a> to set
+the correct type, even when no value is being set. This is especially
+important for cursor parameters, where the type must be set. In cases
+where no value is being set and only the type is important, use
+<code>nil</code> as the value.  See <b>Example 5</b> in
+<a href="#examples-1">Section 6.0 Examples using the Oracle interface</a>.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="306"><a name="setting-flags-2">5.9 Setting flags</a></h2>
+
+<p id="307">
+To set flags affecting the operation of the interface use <a href="oracle-interface.htm#set-db-flags-op-bookmarkxx"><b>set-db-flags</b></a>.
+</p>
+
+<hr><h3 id="308"><a name="set-db-flags-op-bookmarkxx"></a>set-db-flags</h3><h3 id="309">Function</h3><h4 id="310">Package: dbi.oracle</h4>
+
+<p id="311"><b>Arguments: </b><i>
+</i>&amp;key <i>db non-blocking autocommit</i><i>
+</i></p>
+
+<p id="312">
+The <i>db</i> argument defaults to the value of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>.
+</p>
+<p id="313">
+If the <i>non-blocking</i> argument is provided then it
+sets the interface into non-blocking mode if the value is true and
+blocking mode if <code>nil</code>.
+</p>
+<p id="314">
+If the <i>autocommit</i> is provided then if true it
+causes a commit to done after every successful execution of an sql
+statement (either via the <a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> function or the <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a> function).
+</p>
+<p id="315">
+You can set any number of flag values in one call.
+</p>
+<p id="316">
+If you specify exactly one flag value (as well as possibly a value
+for <i>db</i>) then the return value from this function
+is the previous value of the flag.
+</p>
+
+<hr>
+
+
+
+
+<hr><h2 id="317"><a name="scheme-info-2">5.10 Obtaining schema information</a></h2>                
+
+<p id="318">
+In order to find information on tables you retrieve data from
+system tables and views.
+</p>
+<ul>
+<li id="319">
+"select * from all_tables": finds names and other info from all tables
+in the database (a big list).
+</li>
+<li id="320">
+"select * from user_tables": finds names and other info in
+user-defined tables.
+</li>
+<li id="321">
+"select * from user_tab_columns where table_name='MYTAB'": finds
+information about the columns of table MYTAB (case is important and
+you must use upper).  You can use the view all_tab_columns to retrieve
+information about non-user-defined tables.
+</li>
+</ul>
+]
+
+
+<hr><h2 id="322"><a name="managing-cursors-2">5.11 Managing cursors</a></h2>  
+
+<p id="323">
+See <a href="#cursors-1">Section 4.0 Cursors</a>.  </p>
+
+<hr><h3 id="324"><a name="fetch-from-cursor-op-bookmarkxx"></a>fetch-from-cursor</h3><h3 id="325">Function</h3><h4 id="326">Package: dbi.oracle</h4>
+
+<p id="327"><b>Arguments: </b><i>
+cursor
+</i>&amp;key <i>names retrieve convert</i><i>
+</i></p>
+
+<p id="328">
+Similar to <a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a> but for a
+cursor instead of a statement, this function takes a cursor object and
+returns rows of data when <i>retrieve</i> is set to
+true.  Otherwise, it prepares the cursor so that <a href="oracle-interface.htm#fetch-next-row-op-bookmarkxx"><b>fetch-next-row</b></a> and <a href="oracle-interface.htm#get-row-data-op-bookmarkxx"><b>get-row-data</b></a> will return rows
+from this cursor. It is only possible to fetch data from one statement
+or cursor at a time. See <a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> for a discussion of the
+keyword arguments.
+</p>
+<ul>
+<li id="329">
+<i>names</i> defaults to <code>t</code>.
+</li>
+<li id="330">
+<i>retrieve</i> defaults to <code>t</code>
+</li>
+<li id="331">
+<i>convert</i> defaults to <code>nil</code>
+</li>
+</ul>
+<p id="332">
+This function returns the same two values returned by the <a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a> function.
+</p>
+
+<hr>
+
+<hr><h3 id="333"><a name="free-cursor-op-bookmarkxx"></a>free-cursor</h3><h3 id="334">Function</h3><h4 id="335">Package: dbi.oracle</h4>
+
+<p id="336"><b>Arguments: </b><i>
+cursor
+</i></p>
+
+<p id="337">
+Once an application has fetched the data from a cursor using <a href="oracle-interface.htm#fetch-from-cursor-op-bookmarkxx"><b>fetch-from-cursor</b></a>, it is
+important to call <a href="oracle-interface.htm#free-cursor-op-bookmarkxx"><b>free-cursor</b></a>.  A cursor object
+holds state in the database server and this function allows that state
+to be freed.  Not freeing a cursor results in what is known as a
+cursor leak.
+</p>
+
+<hr>
+
+<hr><h3 id="338"><a name="cancel-cursor-op-bookmarkxx"></a>cancel-cursor</h3><h3 id="339">Function</h3><h4 id="340">Package: dbi.oracle</h4>
+
+<p id="341"><b>Arguments: </b><i>
+</i>&amp;key  (<i>db</i> *db*)<i>
+</i></p>
+
+<p id="342">
+If you wish to quit retrieving values from a cursor before you have
+read all the values, you must call this function. It assumes that a
+cursor is being read and it is that cursor that is cancelled.
+</p>
+
+<hr>
+
+
+
+<hr><hr><h2 id="343"><a name="examples-1">6.0 Examples using the Oracle interface</a></h2>           
+
+<p id="344">
+In all examples shown here we assume but do not show that we have loaded
+in the oracle interface and that we have caused the user package to use
+the <code>dbi.oracle</code> package.
+</p>
+
+<h3 id="345">
+Example 1
+</h3>
+
+<p id="346">
+This example shows connecting, simple operations and
+disconnecting. Note how the use of <a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a> as
+the default allows one to interactively access the database with
+minimal typing.
+</p>
+
+<pre id="347">
+;; we connect to the default database with user name &quot;jkf&quot; and
+;; password &quot;jkf&quot;.  This assigns the variable *db* to
+;; the database object that's returned.
+;; 
+cl-user(3): (connect :user &quot;jkf&quot; :password &quot;jkf&quot;)
+; Foreign loading libclntsh.so.
+#&lt;db @ #x71aafb12&gt;
+
+;; we drop the table &quot;samp&quot; if it already exists so that we
+;; can redefine it (the ignored error indicates it did not exist).
+cl-user(4): (ignore-errors (sql &quot;drop table samp&quot;))
+nil
+#&lt;simple-error @ #x71dbf262&gt;
+
+;; we create the table
+cl-user(5): (sql &quot;create table samp(i int, j int)&quot;)
+nil
+
+;; we add some rows to the table
+cl-user(6): (sql &quot;insert into samp values(1,10)&quot;)
+nil
+cl-user(7): (sql &quot;insert into samp values(2,20)&quot;)
+nil
+cl-user(8): (sql &quot;insert into samp values(3,30)&quot;)
+nil
+
+;; we test to see if those rows are in the table
+cl-user(9): (sql &quot;select * from samp&quot;)
+((&quot;1&quot; &quot;10&quot;) (&quot;2&quot; &quot;20&quot;) (&quot;3&quot; &quot;30&quot;))
+(&quot;I&quot; &quot;J&quot;)
+
+;; we commit our changes.  In this case the commit wasn't
+;; necessary since the disconnect we do next also does a commit.
+cl-user(10): (commit)
+0
+
+;; we disconnect.
+cl-user(11): (disconnect)
+t
+</pre>
+
+<h3 id="348">
+Example 2
+</h3>
+
+<p id="349">
+Shows fetching one row at a time. You can use this technique if you
+have a huge result set and do not want to create a big list of all the
+rows.
+</p>
+
+<pre id="350">
+cl-user(2): (connect :user &quot;jkf&quot; :password &quot;jkf&quot;)
+; Foreign loading libclntsh.so.
+#&lt;db @ #x71db7b8a&gt;
+
+;; specify that we don't want the sql function to retrieve the rows
+cl-user(3): (sql &quot;select * from samp&quot; :retrieve nil)
+nil
+
+;; now call fetch-next-row until it returns nil
+cl-user(4): (fetch-next-row)
+t
+
+;; and after each successful fetch call get-row-data to get the row
+cl-user(5): (get-row-data)
+(&quot;1&quot; &quot;10&quot;)
+cl-user(6): (fetch-next-row)
+t
+cl-user(7): (get-row-data)
+(&quot;300&quot; &quot;20&quot;)
+cl-user(8): (fetch-next-row)
+t
+cl-user(9): (get-row-data)
+(&quot;3&quot; &quot;30&quot;)
+
+;; this time fetch-next-row returns nil - no more rows to read
+cl-user(10): (fetch-next-row)
+nil
+cl-user(11): (disconnect)
+t
+cl-user(12): 
+</pre>
+
+<h3 id="351">
+Example 3
+</h3>
+
+<p id="352">
+Shows binding of parameters. We build a table by binding parameters
+and rerunning a parameterized sql statement.
+</p>
+
+<pre id="353">
+cl-user(2): (connect :user &quot;jkf&quot; :password &quot;jkf&quot;)
+; Foreign loading libclntsh.so.
+#&lt;db @ #x71dc298a&gt;
+cl-user(3): (ignore-errors (sql &quot;drop table squares&quot;))
+nil
+#&lt;simple-error @ #x71de5bea&gt;
+cl-user(4): (sql &quot;create table squares (val int, square int)&quot;)
+nil
+
+;; this sql statement has two parameters
+cl-user(5): (prepare-sql &quot;insert into squares values (:val, :sq)&quot;)
+&quot;insert into squares values (:val, :sq)&quot;
+
+;; we bind each parameter.  The first we bind by order in the sql
+;; statement the second we bind by name
+
+cl-user(6): (setq vv (bind-parameter 1 nil :int nil))
+#&lt;foreign object of class oracle-int-param&gt;
+
+
+cl-user(7): (setq sqsq (bind-parameter &quot;sq&quot; nil :int nil))
+#&lt;foreign object of class oracle-int-param&gt;
+
+;; and now insert 1000 rows
+cl-user(8): (dotimes (i 1000)
+	      (setf (ff:fslot-value vv :data) i)
+	      (setf (ff:fslot-value sqsq :data) (* i i))
+	      (run-prepared-sql))
+nil
+
+;; we use the table to find the value of 34 squared.
+cl-user(9): (sql &quot;select square from squares where val = 34&quot;)
+((&quot;1156&quot;))
+(&quot;SQUARE&quot;)
+cl-user(10): (disconnect)
+t
+cl-user(11): 
+</pre>
+
+<h3 id="354">
+Example 4
+</h3>
+
+<p id="355">
+Shows transactions and multiple connections open at once.
+</p>
+
+<pre id="356">
+;; open two connections to oracle
+cl-user(2): (setq db-one (connect :user &quot;jkf&quot; &quot;jkf&quot;))
+; Foreign loading libclntsh.so.
+#&lt;db @ #x71dcd38a&gt;
+cl-user(3): (setq db-two (connect :user &quot;jkf&quot; &quot;jkf&quot;))
+#&lt;db @ #x71dcda72&gt;
+
+
+;; using the db-one connection create a table called 'concur' 
+;; and adds a row
+cl-user(4): (sql &quot;create table concur(i int)&quot; :db db-one)
+nil
+cl-user(5): (sql &quot;insert into concur values(1)&quot; :db db-one)
+nil
+
+
+;; view the table using the db-two connection  The table is present
+;; even before the commit, but there are no rows in it.
+cl-user(6): (sql &quot;select * from concur&quot; :db db-two)
+nil
+(&quot;I&quot;)
+
+
+;; however viewed from db-one connection we see the rows
+cl-user(7): (sql &quot;select * from concur&quot; :db db-one)
+((&quot;1&quot;))
+(&quot;I&quot;)
+
+;; commit the changes on the db-one connection
+cl-user(8): (commit :db db-one)
+0
+
+;; and now the row is seen on the db-two connection
+cl-user(9): (sql &quot;select * from concur&quot; :db db-two)
+((&quot;1&quot;))
+(&quot;I&quot;)
+
+cl-user(10): (disconnect :db db-one)
+t
+cl-user(11): (disconnect :db db-two)
+t
+cl-user(12): 
+</pre>
+
+<h3 id="357">
+Example 5: ref cursors
+</h3>
+
+<p id="358">
+First create the following stored procedure in oracle using the
+scott/tiger standard test account.  You can do this easily using
+<b>sqlplus</b>.
+</p>
+<p id="359">
+Then create or replace procedure <b>get_emps(o_cur out
+sys_refcursor)</b> as
+</p>
+<pre id="360">
+begin
+   open o_cur for select ename, empno from emp order by ename;
+end;
+/
+</pre>
+<p id="361">
+Now in Lisp...
+</p>
+<pre id="362">
+CL-USER(1): (require :oracle)
+T
+
+CL-USER(2) (in-package :dbi.oracle)
+#&lt;The DBI.ORACLE package&gt;
+DBI.ORACLE(3): (connect :database &quot;oracle&quot; :user &quot;scott&quot; :password &quot;tiger&quot;)
+; Foreign loading libclntsh.so.
+#&lt;Oracle db connection to oracle @ #x71718be2&gt;
+
+DBI.ORACLE(4): (setq stmt (prepare-sql &quot;begin get_emps(:cur); end;&quot;
+                                       :statement-handle :new))
+#&lt;statement for oracle db tickdb @ #x71741e92&gt;
+
+DBI.ORACLE(5): (set-parameter-value stmt &quot;cur&quot; nil :type :cursor)
+NIL
+
+DBI.ORACLE(6): (run-prepared-sql :statement-handle stmt)
+NIL
+
+DBI.ORACLE(7): (setq cur (parameter-value stmt &quot;cur&quot;))
+#&lt;statement for oracle db tickdb @ #x7178726a&gt;
+
+DBI.ORACLE(8): (fetch-from-cursor cur)
+((&quot;ADAMS&quot; &quot;7876&quot;) (&quot;ALLEN&quot; &quot;7499&quot;) (&quot;BLAKE&quot; &quot;7698&quot;) (&quot;CLARK&quot; &quot;7782&quot;)
+(&quot;FORD&quot; &quot;7902&quot;) (&quot;JAMES&quot; &quot;7900&quot;) (&quot;JONES&quot; &quot;7566&quot;) (&quot;KING&quot; &quot;7839&quot;)
+(&quot;MARTIN&quot; &quot;7654&quot;)
+ (&quot;MILLER&quot; &quot;7934&quot;) (&quot;SCOTT&quot; &quot;7788&quot;) (&quot;SMITH&quot; &quot;7369&quot;) (&quot;TURNER&quot; &quot;7844&quot;)
+(&quot;WARD&quot; &quot;7521&quot;))
+(&quot;ENAME&quot; &quot;EMPNO&quot;)
+
+DBI.ORACLE(9): (free-cursor cur)
+NIL
+
+
+</pre>
+
+
+
+<hr><hr><h2 id="363"><a name="index-1">7.0 Index for Oracle Interface</a></h2>
+
+<ul>
+<li id="364">
+<a href="oracle-interface.htm#bind-parameter-op-bookmarkxx"><b>bind-parameter</b></a>
+</li>
+<li id="365">
+<a href="oracle-interface.htm#connect-op-bookmarkxx"><b>connect</b></a>
+</li>
+<li id="366">
+<a href="oracle-interface.htm#s_db_s-var-bookmarkxx"><code>*db*</code></a>
+</li>
+<li id="367">
+<a href="oracle-interface.htm#db-statement-db-op-bookmarkxx"><b>db-statement-db</b></a>
+</li>
+<li id="368">
+<a href="oracle-interface.htm#disconnect-op-bookmarkxx"><b>disconnect</b></a>
+</li>
+<li id="369">
+<a href="oracle-interface.htm#fetch-from-cursor-op-bookmarkxx"><b>fetch-from-cursor</b></a>
+</li>
+<li id="370">
+<a href="oracle-interface.htm#fetch-next-row-op-bookmarkxx"><b>fetch-next-row</b></a>
+</li>
+<li id="371">
+<a href="oracle-interface.htm#free-cursor-op-bookmarkxx"><b>free-cursor</b></a>
+</li>
+<li id="372">
+<a href="oracle-interface.htm#get-column-value-op-bookmarkxx"><b>get-column-value</b></a></li>
+<li id="373">
+<a href="oracle-interface.htm#get-row-data-op-bookmarkxx"><b>get-row-data</b></a>
+</li>
+<li id="374">
+<a href="oracle-interface.htm#s_null-value_s-var-bookmarkxx"><code>*null-value*</code></a>
+</li>
+<li id="375">
+<a href="oracle-interface.htm#parameter-value-op-bookmarkxx"><b>parameter-value</b></a>
+</li>
+<li id="376">
+<a href="oracle-interface.htm#prepare-sql-op-bookmarkxx"><b>prepare-sql</b></a>
+</li>
+<li id="377">
+<a href="oracle-interface.htm#result-columns-count-op-bookmarkxx"><b>result-columns-count</b></a>
+</li>
+<li id="378">
+<a href="oracle-interface.htm#run-prepared-sql-op-bookmarkxx"><b>run-prepared-sql</b></a>
+</li>
+<li id="379">
+<a href="oracle-interface.htm#set-db-flags-op-bookmarkxx"><b>set-db-flags</b></a>
+</li>
+<li id="380">
+<a href="oracle-interface.htm#set-parameter-null-op-bookmarkxx"><b>set-parameter-null</b></a>
+</li>
+<li id="381">
+<a href="oracle-interface.htm#set-parameter-value-op-bookmarkxx"><b>set-parameter-value</b></a>
+</li>
+<li id="382">
+<a href="oracle-interface.htm#sql-op-bookmarkxx"><b>sql</b></a>
+</li>
+<li id="383">
+<a href="oracle-interface.htm#unset-parameter-null-op-bookmarkxx"><b>unset-parameter-null</b></a>
+</li>
+</ul>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/oracle-interface.htm">9.0 version</a></td></tr></table></html>

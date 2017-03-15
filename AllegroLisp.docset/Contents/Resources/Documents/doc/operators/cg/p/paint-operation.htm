@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>paint-operation</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/paint-operation.htm">9.0 version</a></td></tr></table><h2 id="2">paint-operation</h2>
+
+<p id="3"><b>Arguments: </b><i>
+graphical-stream
+</i></p>
+
+<p id="4">
+Returns the current paint operation of the specified stream, which
+should be a <a href="../../../classes/cg/graphical-stream.htm"><code>graphical-stream</code></a>.  The value may be changed at
+any time by calling <a href="../p/paint-operation.htm"><b>(setf paint-operation)</b></a> or <a href="../w/with-paint-operation.htm"><b>with-paint-operation</b></a>.  The initial
+paint operation of any graphical-stream is <a href="../../../variables/cg/po-replace.htm"><code>po-replace</code></a>.
+</p>
+<p id="5">
+A paint operation determines how the colors of new content that is
+being drawn are combined with the current colors of the stream's
+pixels to determine the final colors that will appear.
+</p>
+<p id="6">
+A paint operation value should be the value of one of the following
+constants: <a href="../../../variables/cg/po-replace.htm"><code>po-replace</code></a>,
+<a href="../../../variables/cg/po-paint.htm"><code>po-paint</code></a>, <a href="../../../variables/cg/po-xor.htm"><code>po-xor</code></a>, <a href="../../../variables/cg/po-invert.htm"><code>po-invert</code></a>, <a href="../../../variables/cg/po-fill.htm"><code>po-fill</code></a>, <a href="../../../variables/cg/po-erase.htm"><code>po-erase</code></a>, and <a href="../../../variables/cg/po-and.htm"><code>po-and</code></a>.  Here is an example that uses several of
+them:
+</p>
+<pre id="7">
+(in-package :cg-user)
+
+(let* ((frame (make-window :paint-operations
+                :class 'bitmap-window
+                :exterior (make-box-relative 100 200 300 300)))
+       (pane (frame-child frame)))
+  
+  ;; Starting out with a black background is handy for 
+  ;; some paint operations.
+  (with-background-color (pane black)
+    (clear-page pane))
+  
+  ;; Draw a basic red block using the default po-replace operation.
+  (with-foreground-color (pane red)
+    (fill-box pane (make-box 40 40 200 200)))
+
+  ;; Use po-paint to merge part of a dark-green block
+  ;; with part of the red block.
+  (with-paint-operation (pane po-paint)
+    (with-foreground-color
+        (pane (make-rgb :red 60 :green 130 :blue 40))
+      (fill-box pane (make-box 100 100 240 240))))
+  
+  ;; Use po-erase to draw an upper line that erases redness.
+  (with-line-width (pane 7)
+    (with-foreground-color (pane red)
+      (with-paint-operation (pane po-erase)
+        (draw-line pane (make-position 0 0)
+                   (make-position 300 300)))
+      
+      ;; And finally use po-and to draw a lower line that
+      ;; erases all color EXCEPT redness.
+      (with-paint-operation (pane po-and)
+        (draw-line pane (make-position 0 0)
+                   (make-position 300 400))))))
+</pre>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/paint-operation.htm">9.0 version</a></td></tr></table></body></html>

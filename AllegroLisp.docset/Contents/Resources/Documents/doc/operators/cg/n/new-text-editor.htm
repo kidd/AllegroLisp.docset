@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>new-text-editor</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/n/new-text-editor.htm">9.0 version</a></td></tr></table><h2 id="2">new-text-editor</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window
+</i></p>
+
+<p id="4">
+This function is used by the <a href="../../../ide-menus-and-dialogs/file-menu.htm#new">File | New</a> menu-item of the
+default menu-bar that may be interactively attached to a form. In the
+IDE, it demonstrates a typical "New" command for creating a text
+editor but this function is not available in a runtime image. A custom
+application that implements a "New" command will need to supply its
+own code for such a command instead, but it may be useful to model
+after the default menu-bar's example.  Here is the code for the
+<a href="../n/new-text-editor.htm"><b>new-text-editor</b></a>
+example (note: this code changed, adding values for the
+<i>width</i> and <i>height</i> arguments,
+between release 6.2 and release 7.0):
+</p>
+<pre id="5">
+(in-package :cg)
+(defmethod new-text-editor ((window basic-pane))
+  ;; Called by the default "New" menu-item added to a form.
+  (make-window (gensym-sequential-name :editor)
+    :device 'text-edit-window
+    :parent window
+    :width (floor (interior-width window) 1.2)
+    :height (floor (interior-height window) 1.2)))
+</pre>
+
+
+<p id="6">
+See also <a href="../s/save-text-file.htm"><b>save-text-file</b></a>, <a href="../s/save-as-text-file.htm"><b>save-as-text-file</b></a>, and <a href="../o/open-text-file.htm"><b>open-text-file</b></a>.
+</p>
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/n/new-text-editor.htm">9.0 version</a></td></tr></table></body></html>

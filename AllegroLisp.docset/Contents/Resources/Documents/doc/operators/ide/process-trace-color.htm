@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>process-trace-color</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/process-trace-color.htm">9.0 version</a></td></tr></table><h2 id="2">process-trace-color</h2>
+
+<p id="3"><b>Arguments: </b><i>
+process
+</i></p>
+
+<p id="4">
+Returns either an RGB color object (see <a href="../cg/m/make-rgb.htm"><b>make-rgb</b></a>) or <code>nil</code>, indicating the background color to use in the
+<a href="../../ide-menus-and-dialogs/trace-dialog.htm">Trace Dialog</a>
+outline for traced calls that occur in <i>process</i>,
+which must be a process (see <a href="../mp/process-name-to-process.htm"><b>process-name-to-process</b></a>). The
+initial value is <code>nil</code>, indicating that the
+default window background color (normally white) will be used.
+</p>
+<p id="5">
+The setf of this function may be called to set or change the trace
+color of any process. This may be helpful for finding relevant trace
+output when traced functions are being called in multiple processes.
+(The <a href="../../ide-menus-and-dialogs/trace-dialog.htm">Trace
+Dialog</a> already uses its title-bar to indicate the process of
+the currently selected item, but adding color to all of the items
+gives a more immediate overview.)  As usual, the <a href="../../ide-menus-and-dialogs/trace-dialog.htm">Trace Dialog</a> must be
+present when traced functions are called in order for it to collect
+the trace output.
+</p>
+<p id="6">
+Of the standard IDE processes, only the IDE GUI thread has an initial
+trace color, which is the very pale blue returned by
+<code>(make-rgb :red 240 :green 240 :blue 255)</code>. Calls in
+this thread typically do not involve application code, and so are
+likely to be of little interest to application developers. Trace
+colors generally should be pale to contrast with the black text. For
+example, the following form would cause all subsequent traced calls in
+the current process to appear in the Trace Dialog with a pale red
+background:
+</p>
+<pre id="7">
+(setf (process-trace-color sys:*current-process*)
+      (make-rgb :red 255 :green 224 :blue 224))
+</pre>
+<p id="8">
+See also <a href="with-trace-color.htm"><b>with-trace-color</b></a>.
+</p>
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/process-trace-color.htm">9.0 version</a></td></tr></table></body></html>

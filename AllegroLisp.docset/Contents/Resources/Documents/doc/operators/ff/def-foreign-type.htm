@@ -1,0 +1,90 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-foreign-type</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/def-foreign-type.htm">9.0 version</a></td></tr></table><h2 id="2">def-foreign-type</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name definition
+</i></p>
+
+<p id="4">
+Defines <i>name</i> to be a user-defined foreign class
+with the given <i>definition</i>.
+<i>name</i> must either be a symbol or a list beginning
+with a symbol and followed by attributes (see
+below). <i>definition</i> is not evaluated and must be a
+foreign type description as described in <a href="../../ftype.htm#foreign-type-syntax-1">The Syntax for Foreign Types</a> in
+<a href="../../ftype.htm">ftype.htm</a>.
+</p>
+<p id="5">
+Like <a href="../../../ansicl/dictentr/defclass.htm"><b>defclass</b></a>,
+<a href="def-foreign-type.htm"><b>def-foreign-type</b></a> returns the
+class metaobject. The class metaobject can also be retrieved in the
+usual way by <a href="../../../ansicl/dictentr/find-cla.htm"><b>find-class</b></a>.
+</p>
+<p id="6">
+The <a href="def-foreign-type.htm"><b>def-foreign-type</b></a> macro
+immediately defines the given class in the current Lisp. It also
+expands into a form that causes that type definition to be made when
+the resulting form is evaluated.
+</p>
+
+<p id="7">
+Note that when a new foreign type is defined in terms of one or more
+named previously defined foreign types, the new definition is
+expressed in terms of the current primitive definition of the named
+types. If the named types are subsequently re-defined, the new type
+definition will not change. Thus:
+</p>
+
+<pre id="8">
+(def-foreign-type one (:struct (nil :int)))
+
+(def-foreign-type two one)
+
+(def-foreign-type one (:struct (nil (:array :int 4))))
+</pre>
+
+<p id="9">
+The foreign type <code>two</code> is not affected by the
+redefinition of the foreign type <code>one</code>.
+</p>
+
+
+<p id="10">
+Only one attribute can be specified. It is:
+</p>
+
+<table border="2" cellpadding="6" width="482">
+  <tr>
+    <td width="86"><b>Attribute</b></td>
+    <td width="80"><b>Type</b></td>
+    <td width="268"><b>What</b></td>
+  </tr>
+  <tr>
+    <td width="86"><b>:pack</b></td>
+    <td width="80">integer</td>
+    <td width="268">worst case alignment needed by data objects.</td>
+  </tr>
+</table>
+
+<p id="11">
+For example:
+</p>
+
+<pre id="12">
+(def-foreign-type (foostruct (:pack 1)) (:struct (x :char) (y :int)))
+</pre>
+
+<p id="13">
+Would pack the integer right next to the character, without the normal
+3 bytes of padding. 
+</p>
+
+<p id="14">
+See <a href="../../ftype.htm">ftype.htm</a> for
+information on foreign types in Allegro CL and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL.
+</p>
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/def-foreign-type.htm">9.0 version</a></td></tr></table></body></html>

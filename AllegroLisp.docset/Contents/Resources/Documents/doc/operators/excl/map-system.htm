@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>map-system</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/map-system.htm">9.0 version</a></td></tr></table><h2 id="2">map-system</h2>
+
+<p id="3"><b>Arguments: </b><i>system fun </i>&amp;key <i>silent simulate include-components module-keys</i></p>
+
+<p id="4">
+This generic function maps function over each module-group in
+<i>system</i>. <i>fun</i> should be a
+function that takes one argument which will be a module-group. The
+default method returns <code>nil</code>, but is called for
+its side effects.
+</p>
+
+<p id="5">
+The value of the <i>silent</i> keyword argument can
+be <code>t</code> or <code>nil</code>. Its
+default value is <code>nil</code>. <code>t</code> means do not print anything while performing the
+operation. A true value of
+<i>simulate</i> overrides <i>silent</i>
+&nbsp;<code>t</code>. If the value of this
+keyword argument is <code>t</code>, then the functionality
+is similar to <strong>make -s</strong>.
+</p>
+
+<p id="6">
+The value of the <i>simulate</i> keyword argument can
+be t or <code>nil</code>. <code>t</code> means
+print the list of actions that would be taken if the operations were
+to be performed at this time, but do not actually perform the
+operations. If the value of this keyword argument is <code>t</code>, then the functionality is similar to <strong>make
+-n</strong>.
+</p>
+
+<p id="7">The value of the <i>include-components</i> keyword
+argument can be <code>t</code> or <code>nil</code>.  The default value is <code>t</code>, which means perform a map-system operation on all
+component systems of system. A value of <code>nil</code>
+means ignore component systems.</p>
+
+<p id="8">The value of the <i>module-keys</i> keyword should be
+a list of keywords and arguments to be passed as a keyword list to the
+map-module-action method for each module-group.</p>
+
+<p id="9">In this example, we pretty print each module in a system.</p>
+
+<pre id="10">
+USER(9): (defsystem :my-serial-sys () 
+                    (:serial &quot;my1&quot; &quot;my2&quot;))
+:MY-SERIAL-SYS
+USER(10): (map-system :my-serial-sys 
+             '(lambda (module) (pprint module)))
+#&lt;DEFSYSTEM:LISP-MODULE &quot;my1&quot; @ #x68c9a6&gt; 
+#&lt;DEFSYSTEM:LISP-MODULE &quot;my2&quot; @ #x69197e&gt; 
+NIL 
+USER(11):
+</pre>
+<p id="11">
+Although the home package of the symbol naimg this operator is the
+excl package, it is also exported from the defsystem package.
+</p>
+<p id="12">
+See also <a href="../../defsystem.htm">defsystem.htm</a> for general
+information on the defsystem facility in Allegro
+CL.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/map-system.htm">9.0 version</a></td></tr></table></body></html>

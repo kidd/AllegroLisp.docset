@@ -1,0 +1,65 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>focus-cell</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/focus-cell.htm">9.0 version</a></td></tr></table><h2 id="2">focus-cell</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-widget
+</i></p>
+
+<p id="4">
+Returns multiple values to indicate where the keyboard focus currently
+is within the <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> passed as the single
+argument. The values returned are
+</p>
+<ol>
+<li id="5">
+row-section
+</li>
+<li id="6">
+column-section
+</li>
+<li id="7">
+row
+</li>
+<li id="8">
+column
+</li>
+<li id="9">
+row-index
+</li>
+<li id="10">
+column-index
+</li>
+</ol>
+
+<p id="11">
+If the row-section that contains the grid's focus has no subsections,
+then the returned row and row-index will each be <code>nil</code>. Similarly, if the column-section that contains
+the grid's focus has no subsections, then the returned column and
+column-index will each be <code>nil</code>.
+</p>
+<p id="12">
+Otherwise, the row-section, column-section, row, and column will
+always be instances of the <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a>, <a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a>,
+<a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a>, and
+<a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a>
+classes (respectively) or their subclasses, and the row-index and
+column-index will each always be a non-negative integer indicating
+which replication of the row or column has the grid's focus (this is
+always 0 for a non-replicated row or column).
+</p>
+<p id="13">
+The above values are returned even when the grid-widget itself does
+not have the keyboard focus, indicating to where the keyboard focus
+will return if and when it returns to the grid-widget.  If the
+grid-widget has not yet had the keyboard focus, then the first
+replications of the first subsections of the first row-section and
+column-section will be returned.
+</p>
+<p id="14">
+To move the focus to a different <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> cell programmatically, call
+<a href="../s/set-focus-cell.htm"><b>set-focus-cell</b></a>.
+</p>
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/focus-cell.htm">9.0 version</a></td></tr></table></body></html>

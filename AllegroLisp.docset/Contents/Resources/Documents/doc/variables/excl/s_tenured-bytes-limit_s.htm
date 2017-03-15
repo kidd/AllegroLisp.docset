@@ -1,0 +1,74 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*tenured-bytes-limit*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_tenured-bytes-limit_s.htm">9.0 version</a></td></tr></table><h2 id="2">*tenured-bytes-limit*</h2>
+
+<p id="3">
+The value of this variable should be a positive integer or <code>nil</code>. We will discuss the value <code>nil</code> below. If the value is a positive integer, it
+specifies the number of bytes that must be tenured before a global gc
+warning or an automatic global gc (depending on the value of <a href="s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a>)
+occurs. 
+The default value depends on the specific architecture but is
+generally 20 megabytes for 32 bit Lisps and 50 megabytes for 64
+bit lisps. We strongly advise
+against values less than 5000000 (i.e. approximately five megabytes).
+</p>
+
+<p id="4">
+An internal counter keeps track of the number of bytes tenured. If
+the value of <a href="s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a> is not
+<code>nil</code> and the value of
+<a href="s_tenured-bytes-limit_s.htm"><code>*tenured-bytes-limit*</code></a> is also 
+not <code>nil</code>,
+this counter is updated and then checked after each scavenge. If its
+value exceeds the value of 
+<a href="s_tenured-bytes-limit_s.htm"><code>*tenured-bytes-limit*</code></a>,
+action depending on the value of 
+<a href="s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a> is
+taken (a warning or a global gc). The counter is reset to 0 after a
+global gc (however triggered). If the value of 
+<a href="s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a> is
+<code>nil</code>, the value of 
+<a href="s_tenured-bytes-limit_s.htm"><code>*tenured-bytes-limit*</code></a>
+has no user visible effect.</p>
+
+<p id="5">Note that binding this variable will likely not have the desired
+effect because in the presence of multiprocessing (always enabled when
+the Emacs-Lisp interface is used), a garbage collection can be
+triggered by another process, in which case the bound value will be
+ignored.</p>
+
+<p id="6">If the value of <a href="s_tenured-bytes-limit_s.htm"><code>*tenured-bytes-limit*</code></a> is <code>nil</code>, the counter which keeps track of the number of
+bytes tenured since the last global gc is not updated after a
+scavenge. Thus, you have more control over global gc automation since
+you can switch off information gathering as well as control the
+action. Setting the value of 
+<a href="s_tenured-bytes-limit_s.htm"><code>*tenured-bytes-limit*</code></a>
+to <code>nil</code> essentially suspends the automatic
+global gc behavior. For example, suppose you have a large application
+named <em>foo</em>, which uses the <code>foo</code> package. Then you
+might load it with the following code. Note that we bind the value of
+<code>excl:*tenured-bytes-limit*</code> to <code>nil</code>, suspending the collection of information about
+bytes tenured and explicitly handle gc's ourselves. Automatic gc's are
+re-enabled when the code has finished. </p>
+
+<pre id="7">
+(defpackage :foo)
+(let ((old-spread (sys:gsgc-parameter :generation-spread))
+      (excl:*record-source-file-info* nil)
+      (excl:*tenured-bytes-limit* nil))
+  (setf (sys:gsgc-parameter :generation-spread) 0)
+  (require :foo)
+  (princ "; Finished loading FOO. Global GC...")
+  (terpri) (force-output)
+  (gc :tenure) (gc :tenure) (gc t)
+  (setf (sys:gsgc-parameter :generation-spread) old-spread))
+</pre>
+
+<p id="8">
+See also <a href="../../gc.htm">gc.htm</a> for general information on
+garbage collection in Allegro CL, including information on gsgc 
+switches and parameters.
+</p>
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_tenured-bytes-limit_s.htm">9.0 version</a></td></tr></table></body></html>

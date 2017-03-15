@@ -1,0 +1,153 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>new-start-emacs-lisp-interface</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/new-start-emacs-lisp-interface.htm">9.0 version</a></td></tr></table><h2 id="2">new-start-emacs-lisp-interface</h2>
+
+<p id="3"><b>Arguments: </b><i></i>&amp;key  (<i>background-streams</i> t) (<i>listener-number</i> 1)<i> port announce-to-file</i></p>
+
+<p id="4">
+This function starts the emacs-lisp interface.
+</p>
+<p id="5">
+Users do not typically call this function. Lisp is typically started
+as a subprocess of Emacs with the Emacs function
+<b>fi:common-lisp</b>, or perhaps with a custom Emacs function that
+itself calls <b>fi:common-lisp</b>. (See <a href="../../eli.htm#funs-and-vars-for-interacting-2">Functions and variables for
+Interacting with a CL subprocess</a> in
+<a href="../../eli.htm">eli.htm</a> for a discussion of <b>fi:common-lisp</b>
+and examples of custom functions.) When Lisp is started in that way,
+<a href="new-start-emacs-lisp-interface.htm"><b>new-start-emacs-lisp-interface</b></a> is called
+automatically and transparently. (See also <a href="../../startup.htm#acl-as-emacs-subprocess-1">Running Lisp as a subprocess of
+Emacs</a> in <a href="../../startup.htm">startup.htm</a>.)
+</p>
+
+<p id="6">
+When a Lisp is started with <strong>fi:common-lisp</strong>, then this
+expression:
+</p>
+
+<pre id="7">
+-e (new-start-emacs-lisp-interface)
+</pre>
+
+
+<p id="8">
+(or an equivalent form) is made a command line argument to
+Lisp. If, because command-line arguments are ignored, the Emacs-Lisp
+interface does not start up (or if it does not start up for any other
+reason), you can start it directly from within Lisp by calling this
+function. 
+</p>
+
+<p id="9">
+The arguments are:
+</p>
+
+<ul>
+<li id="10">
+<i>background-streams</i>: if true, then the
+function <a href="use-background-streams.htm"><b>use-background-streams</b></a> is used to initialize
+background streams, which provide a separate buffer for debugging
+processes other than the listener process. The value of
+<i>background-streams</i> is passed to the function
+<a href="use-background-streams.htm"><b>use-background-streams</b></a> (see
+<a href="../../debugging.htm#background-processes-1">Debugging
+background processes</a> in
+<a href="../../debugging.htm">debugging.htm</a>). The default value of
+<i>use-background-streams</i> is <code>t</code>.
+</li>
+<li id="11">
+<i>listener-number</i>: a value should only be specified
+when starting using a file as described under the heading <b>Starting
+the interface after Lisp is already running</b> below. The valuie
+should be an integer which is not already used for a *common-lisp*
+buffer, if any exist. Typical values are 1 (the default) or 2 or 3.
+</li>
+<li id="12">
+<i>port</i>: a value should only be specified when
+starting using a file as described under the heading <b>Starting the
+interface after Lisp is already running</b> below. The value can be it
+can be any valid port number on the machine that is not already in
+use. Specifying the value <code>nil</code> (the default)
+causes the system to choose an appropriate value for the port.
+</li>
+<li id="13">
+<i>announce-to-file</i>: a value should only be
+specified when starting using a file as described under the heading
+<b>Starting the interface after Lisp is already running</b>
+below. This file (which should not already exists -- it will be
+created by this call) is the file used by Eamcs to communicate to Lisp.
+</li>
+</ul>
+
+
+<p id="14">
+The typical form that will start the Emacs-Lisp interface is:
+</p>
+
+
+<pre id="15">
+(excl:new-start-emacs-lisp-interface)
+</pre>
+
+
+<p id="16">
+It is not an error to call this function when the Emacs-Lisp
+interface is in fact running. Doing so will cause some printing to the
+listener but have no other effect.
+</p>
+
+<h3 id="17">Starting the interface after Lisp is already running</h3>
+
+<p id="18">
+You can start the interface after Lisp has been started, typically not
+in Emacs, with this function and the emacs-lisp interface function
+<b>fi:start-interface-via-file</b>. This is typically done
+for debugging a running but apparently broken process. To do this, in
+Lisp call a form like:
+</p>
+<pre id="19">
+(excl:new-start-emacs-lisp-interface :port 7666 :announce-to-file "~/.eli-startup")
+</pre>
+
+<p id="20">
+We have not specified a value for the
+<i>listener-number</i>, so the default 1 is used (if a
+*common-lisp* already exists and uses 1, specify a different number),
+or for <i>background-streams</i>, so the default <code>t</code> is used. The value given for
+<i>port</i> is 7666 (it can be any valid port number on
+the machine that is not already in use and can be <code>nil</code>, which causes the system to choose an appropriate
+port number), and the value for <i>announce-to-file</i>
+is the file that will be used (it must not exist; it will be created
+for this call). Then, sometime later on the emacs side, do this (the
+host is "pie"):
+</p>
+
+<pre id="21">
+(fi:start-interface-via-file "pie" "*common-lisp*" "~/.eli-startup")
+</pre>
+
+<p id="22">
+The arguments are the host running Lisp, the buffer name, and the filename.
+</p>
+
+
+<p id="23">See <a href="../../eli.htm">eli.htm</a> for information on the
+Emacs-Lisp interface. </p>
+
+<h3 id="24">
+This function does not work with the 6.2 version of the Emacs-Lisp interface
+</h3>
+
+<p id="25">
+It may be that you are running Allegro CL 7.0 but (for whatever
+reason) using the version of the Emacs-Lisp interface distributed with
+Allegro CL 6.2, and you want to connect Emacs to an already running
+Lisp. In that unusual case, you should use the obsolete function
+<a href="start-emacs-lisp-interface.htm"><b>start-emacs-lisp-interface</b></a> rather than
+this function. The version of the emacs-lisp interface is stored in
+the emacs variable
+<code>fi:emacs-lisp-interface-version</code>. If the value of
+that variable is "3.9" or greater, you are using the 7.0 interface.
+</p>
+
+<hr><p id="26"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/new-start-emacs-lisp-interface.htm">9.0 version</a></td></tr></table></body></html>

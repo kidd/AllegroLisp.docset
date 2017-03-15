@@ -1,0 +1,41 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>close-current-project</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/close-current-project.htm">9.0 version</a></td></tr></table><h2 id="2">close-current-project</h2>
+
+<p id="3"><b>Arguments: </b><i>
+nil
+</i></p>
+
+<p id="4">
+This function closes the project that is currently being edited in the
+IDE. This project is the value returned by the function <a href="current-project.htm"><b>current-project</b></a>, and was
+opened by either the <a href="../../ide-menus-and-dialogs/file-menu.htm#open-project">File | Open Project</a> command or the <a href="../../ide-menus-and-dialogs/file-menu.htm#new-project">File | New
+Project</a> command, or by calling <a href="open-project.htm"><b>open-project</b></a> directly.
+</p>
+<p id="5">
+Closing the current project causes its forms and their running windows
+(if any) to be closed. If the project's <i>.lpr</i>
+project definition file is being edited in the IDE editor, this editor
+pane is closed as well. There will then no longer be a current project
+until another one is opened or created.
+</p>
+<p id="6">
+If you are no longer using the current project, then closing it may
+result in some IDE dialogs behaving more conveniently, such as not
+asking whether to add a new editor file to the current project, or not
+defaulting the file selection dialog to the project's directory.  The
+<a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog's toolbar contains a button with a red X that
+calls <a href="close-current-project.htm"><b>close-current-project</b></a>.
+</p>
+<p id="7">
+It is not necessary to explicitly close the current project
+before opening or creating another one, because
+the <a href="../../ide-menus-and-dialogs/file-menu.htm#open-project">File | Open Project</a> command and the <a href="../../ide-menus-and-dialogs/file-menu.htm#new-project">File | New
+Project</a> command automatically call it to clear the previous
+project out of the way.
+</p>
+
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/close-current-project.htm">9.0 version</a></td></tr></table></body></html>

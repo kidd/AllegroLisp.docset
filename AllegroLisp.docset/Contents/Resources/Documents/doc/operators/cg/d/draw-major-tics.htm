@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>draw-major-tics</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-major-tics.htm">9.0 version</a></td></tr></table><h2 id="2">draw-major-tics</h2>
+
+<p id="3"><b>Arguments: </b><i>
+chart-axis
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../d/draw-major-tics.htm"><b>draw-major-tics</b></a> property of
+a <a href="../../../classes/cg/chart-axis.htm"><code>chart-axis</code></a>. The value
+may be set at creation time by passing
+the <code>:draw-major-tics</code> initarg, or any
+time later by calling <a href="../d/draw-major-tics.htm"><b>(setf draw-major-tics)</b></a>.
+</p>
+<p id="5">
+A value indicating whether (and how) tic marks are drawn for the major
+tic positions of a <a href="../../../classes/cg/chart-axis.htm"><code>chart-axis</code></a> in a <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>. Here are the possible values:
+</p>
+<ul>
+<li id="6">
+
+<code>nil</code> - Major tic marks are not drawn.
+
+</li>
+<li id="7">
+
+<code>t</code> - Major tic marks are drawn, and are drawn
+at the major tic positions.  This is the default value.
+
+</li>
+<li id="8">
+
+<code>:after</code> - Each major tic mark is drawn midway
+between its official position and the position of the next major tic
+mark. This may be useful for delimiting groups of non-stacked bars,
+for example, rather than pointing to the middle of each group of bars.
+This choice is probably not aesthetic when <a href="../d/draw-minor-grid-lines.htm"><b>draw-minor-grid-lines</b></a> is true.
+
+</li>
+<li id="9">
+
+<code>:before</code> - Like <code>:after</code>, except
+that each tic mark is drawn between its official position and that of
+the previous tic mark.
+
+</li>
+<li id="10">
+
+<code>:between</code> - Like <code>:after</code> and
+<code>:before</code> except that no tic mark is drawn before the
+first major tic position or after the last one.
+
+</li>
+</ul>
+<p id="11">
+See also <a href="../d/draw-major-labels.htm"><b>draw-major-labels</b></a>,
+<a href="../m/major-tic-length.htm"><b>major-tic-length</b></a>,
+<a href="../m/major-tic-width.htm"><b>major-tic-width</b></a>,
+<a href="../m/major-tic-increment.htm"><b>major-tic-increment</b></a>, and
+<a href="../d/draw-minor-tics.htm"><b>draw-minor-tics</b></a>.
+</p>
+
+
+<p id="12">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and
+also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-major-tics.htm">9.0 version</a></td></tr></table></body></html>

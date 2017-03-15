@@ -1,0 +1,65 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>read-tiny-float</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/read-tiny-float.htm">9.0 version</a></td></tr></table><h2 id="2">read-tiny-float</h2>
+
+<p id="3"><b>Arguments: </b><i>string </i>&amp;key  (<i>return-zero</i> t)</p>
+
+<p id="4">
+This is a convenience function which allows users to read a
+small-magnitude float safely (that is, without
+floating-point-underflow errors). If the float is smaller in magnitude
+than the least-positive float of the appropriate format, then zero in
+the appropriate form (in the appropriate format) is returned by
+default, or, if the <b><i>return-zero</i></b> keyword
+argument is specified as <code>nil</code>, the
+least-positive or elast negative float of the appropriate format is
+returned.
+</p>
+<p id="5">
+string must be a string whose contents read as a single floating-point
+number. It is an error resulting in undefined behavior if there is
+more in the string than the representation of a sinlge floating point
+number. (The function decides on whether the resulting float is
+positive or negative based on the presence and location of a \#-
+charater. Such characters after the float representation could result
+in an incorrect value. If string represents a float larger than the
+least positive float or smaller than the least negative, the read is
+as if done by read-from-string. No protection is provided against
+floating-point-overflow errors.
+</p>
+<h3 id="6">
+Example
+</h3>
+<pre id="7">
+;;  This function is intended to allow for forms like the following:
+;;  (defconstant *app-single-eps* 
+;;               (max least-positive-single-float 1.0e-50))
+;;  LEAST-POSITIVE-SINGLE-FLOAT is 1.0e-45, so that is the desried value
+;;  but reading 1.0e-50 may cause a floating-point-underflow error.
+;;  That can be protected against with this form:
+;; (defconstant *app-single-eps* 
+;;              (max least-positive-single-float 
+;;                   (read-tiny-float "1.0e-50")))
+;;
+;;  In the reamining examples, we assume *read-default-float-format*
+;;  is single-float.
+;;
+(read-tiny-float "1.0") <b>RETURNS</b> 1.0
+(read-tiny-float "1.0e-50") <b>RETURNS</b> 0.0
+(read-tiny-float "1.0e-50" :return-zero nil) <b>RETURNS</b> 1.0e-45
+        ;; i.e. least-positive-single-float
+(read-tiny-float "-1.0e-50" :return-zero nil) <b>RETURNS</b> -1.0e-45
+        ;; i.e. least-negative-single-float
+(read-tiny-float "-1.0d-50" :return-zero nil) <b>RETURNS</b> -1.0d-50
+(read-tiny-float "-1.0d-550" :return-zero nil) <b>RETURNS</b> -5.0d-324
+        ;; i.e. least-negative-double-float
+</pre>
+<p id="8">
+See
+<a href="../../implementation.htm#infinities-nans-2">Floating-point infinities and NaNs, and
+floating-point underflow and overflow</a> in
+<a href="../../implementation.htm">implementation.htm</a> for more information and sample
+handler code to cath the errors.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/read-tiny-float.htm">9.0 version</a></td></tr></table></body></html>

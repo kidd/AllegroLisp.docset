@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>temporary-directory</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/temporary-directory.htm">9.0 version</a></td></tr></table><h2 id="2">temporary-directory</h2>
+
+<p id="3"><b>Arguments: </b></p>
+
+<p id="4">
+Returns the pathname of the temporary directory used by the current
+running Lisp for writing temporary files and sets, if necessary, the
+value of <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a> to that
+directory.
+</p>
+<p id="5">
+This function works as follows:
+</p>
+<ol>
+<li id="6">
+The value of <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a> is examined. If
+its value is <code>nil</code>, a new temporary directory
+is selected using the algorithm below.
+</li>
+<li id="7">
+The value of (probe-file sys:*temporary-directory*) is examined. If it
+is true, the value of <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a> is returned. If
+the value returned by <a href="../../../ansicl/dictentr/probe-fi.htm"><b>probe-file</b></a>
+is <code>nil</code>, then a new temporary directory is
+selected using the algorithm below.
+</li>
+</ol>
+<p id="8">
+In a freshly installed Lisp image, the initial value
+of <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a>
+is <code>nil</code>. However, in a user-built image (made
+with <a href="../excl/dumplisp.htm"><b>dumplisp</b></a> or
+<a href="../excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or
+<a href="../excl/generate-application.htm"><b>generate-application</b></a>), <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a> may have been
+given a value, which might or might not be a valid value on the
+machine where the image is run. If it is not a valid value, the
+behavior is the same as when the value
+is <code>nil</code>. But it can happen (perhaps
+unexpectedly) that the value is valid and in that case it is used.
+</p>
+<h3 id="9">
+Algorithm for choosing a temporary directory
+</h3>
+<p id="10">
+If a temporary directory must be chosen, it is chosen according to the
+following algorithms.
+</p>
+
+<p id="11"><b>On UNIX and the Mac</b>: #p"/tmp/". 
+</p>
+
+<p id="12"><b>On Windows</b>: the first of the following to be a valid
+directory is used: </p>
+
+<ul>
+<li id="13">
+the value of the environment variable TEMP
+</li>
+<li id="14">
+the value of the environment variable TMP
+</li>
+<li id="15">
+[current-drive]:\tmp
+</li>
+<li id="16">
+C:\ (the last presumably always exists)
+</li>
+</ul>
+<p id="17">
+When a directory is chosen by this algorithm, the value
+of <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a> is set to it.
+</p>
+
+<p id="18">
+This function does not work with <strong>setf</strong>. It is
+informational only. You can change the temporary directory by changing
+the value of <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a> to the desired
+directory pathname. Whenever this function is called, it tests
+whether <code>(probe-file sys:*temporary-directory*)</code>
+returns true, returning the value of <a href="../../variables/system/s_temporary-directory_s.htm"><code>sys:*temporary-directory*</code></a> when it
+is. If <code>(probe-file sys:*temporary-directory*)</code>
+returns <code>nil</code>, a new value is chosen using the
+algorithm above. Changing the temporary directory is not recommended.
+</p>
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/temporary-directory.htm">9.0 version</a></td></tr></table></body></html>

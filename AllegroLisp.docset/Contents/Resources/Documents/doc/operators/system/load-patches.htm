@@ -1,0 +1,120 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>load-patches</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/load-patches.htm">9.0 version</a></td></tr></table><h2 id="2">load-patches</h2>
+
+<p id="3"><b>Arguments: </b><i></i>&amp;key <i>update-directory product patch-file-filter patch-file-sorter</i></p>
+
+<p id="4">This function loads patch files from
+<i>update-directory</i> and does useful checks on the
+consistency of the patch files, described below. </p>
+
+<p id="5">The arguments are:</p>
+
+<table border="1" width="84%">
+  <tr>
+    <td width="25%"><i>update-directory</i></td> <td width="75%">The directory in which to look for patch
+    files. Defaults to the Allegro CL patch directory,
+    <em>sys:;update</em>.</td>
+  </tr>
+  <tr>
+    <td width="25%"><i>product</i></td> 
+    <td width="75%">Value should
+    be <code>nil</code>, meaning load all patch files regardless of
+    the product code (the third letter of the filename), or a
+    character or list of characters, meaning load only those files
+    whose product code (third letter) match the single character or is
+    in the list of characters.</td>
+  </tr>
+  <tr>
+    <td width="25%"><i>patch-file-filter</i></td> <td width="75%">A function of three arguments, a product code, a
+    pathname, and a version (the [m] described in 
+    <a href="../../delivery.htm#patch-naming-2">The Allegro CL patch naming scheme</a>
+    in <a href="../../delivery.htm">delivery.htm</a>). Returns true if
+    the pathname names a valid patch file (based on parsing the name
+    and location only).</td>
+  </tr>
+  <tr>
+    <td width="25%"><i>patch-file-sorter</i></td> <td width="75%">A function of three arguments, a product, a list of
+    patch files (validated by the
+    <i>patch-file-filter</i>), and a version ([m]
+    described in <a href="../../delivery.htm#patch-naming-2">The Allegro CL patch naming scheme</a> in
+    <a href="../../delivery.htm">delivery.htm</a>). Sorts the list
+    into the order in which the files should be loaded 
+    (from highest to lowest).</td>
+  </tr>
+  <tr>
+    <td width="25%"><i>version</i></td> <td width="75%">Specifies the version ([m] described in 
+    <a href="../../delivery.htm#patch-naming-2">The Allegro CL patch naming scheme</a>
+    in <a href="../../delivery.htm">delivery.htm</a>). Should be a
+    character object naming a decimal digit (#\0 - #\9). This is for
+    use with application patches only. Defaults to 
+    the value of <code>excl::*cl-patch-version-char*</code>.</td>
+  </tr>
+</table>
+
+<p id="6">
+There is also a libfasl keyword argument which is accepted for
+backward compatibility but ignored. In releases prior to 7.0, patches
+would be loaded in libfasl (Allegro Presto) mode if the argument was
+true. In 7.0, the Allegro Presto facility has been removed. See
+<a href="../../loading.htm#presto-1">The Allegro Presto facility
+has been removed</a> in <a href="../../loading.htm">loading.htm</a> for
+further information.
+</p>
+
+<p id="7">There should be an <em>update/</em> subdirectory to your
+application directory (or wherever <em>sys:</em> translates to in your
+application). Allegro CL patches will be loaded from that
+directory. You can make patches for your own applications if
+desired. See <a href="../../delivery.htm#patching-after-delivery-1">Patching your application after
+delivery</a> in <a href="../../delivery.htm">delivery.htm</a>. </p>
+
+<p id="8">As patches are loaded, information on them is recorded in
+Lisp. This information includes the patch id, the version and the
+description (the three required arguments in the <a href="defpatch.htm"><b>defpatch</b></a> form at the top of the patch
+file). Information about loaded patches is placed in the list that is
+the value of <a href="../../variables/system/s_patches_s.htm"><code>sys:*patches*</code></a>.
+</p>
+<p id="9">
+The loading of the body of the patch file (everything after the
+<a href="defpatch.htm"><b>defpatch</b></a> form) is
+aborted if the defpatch version specified in the <a href="defpatch.htm"><b>defpatch</b></a> form is out-of-date
+(this should be very rare) or if the patch is marked not-post-loadable
+(the <i>post-loadable</i> argument to <a href="defpatch.htm"><b>defpatch</b></a> is <code>nil</code>), or withdrawn (the
+<i>withdrawn</i> argument is true). Loading will also be
+aborted if <a href="../excl/featurep.htm"><b>featurep</b></a>, applied
+to the value of the <i>feature</i> argument in the
+<a href="defpatch.htm"><b>defpatch</b></a> form,
+returns <code>nil</code>. If loading is aborted, no error
+is signaled (because the condition signaled is caught by the
+appropriate restart in <a href="load-patches.htm"><b>sys:load-patches</b></a>) and subsequent patch files
+are loaded (but information on why the loading was aborted is
+saved).
+</p>
+
+<p id="10">As each patch file is loaded, its id is compared to already loaded
+(and not aborted) patches. If any patch with the same id is seen to
+already be loaded, the conflicting patch is placed on a special
+list. After all patches are loaded, that list is checked, and if it is
+non-empty, <a href="load-patches.htm"><b>sys:load-patches</b></a> signals an error.</p>
+
+<p id="11">It is important to be clear on what we mean by two loaded patches
+with the same id because we have used the word <em>load</em> loosely
+up to this point. We describe just above how a patch file is `loaded'
+and its <a href="defpatch.htm"><b>defpatch</b></a> form is
+examined. Information in the <a href="defpatch.htm"><b>defpatch</b></a> form might cause the load to be
+aborted. Such patches are not loaded in the sense of this paragraph
+because everything after the <a href="defpatch.htm"><b>defpatch</b></a> form is ignored. 
+</p>
+
+<p id="12">
+Patches for your application are described in <a href="../../delivery.htm#patching-after-delivery-1">Patching your
+application after delivery</a> in
+<a href="../../delivery.htm">delivery.htm</a>.  Patches for Allegro CL products are
+described in <a href="../../introduction.htm#patches-2">Patches and updates</a> in
+<a href="../../introduction.htm">introduction.htm</a>. See also <a href="update-allegro.htm"><b>update-allegro</b></a> for information on
+automatically downloading Allegro CL patches.
+</p>
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/load-patches.htm">9.0 version</a></td></tr></table></body></html>

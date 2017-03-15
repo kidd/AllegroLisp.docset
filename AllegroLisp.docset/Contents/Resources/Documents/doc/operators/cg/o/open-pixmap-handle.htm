@@ -1,0 +1,52 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>open-pixmap-handle</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/open-pixmap-handle.htm">9.0 version</a></td></tr></table><h2 id="2">open-pixmap-handle</h2>
+
+<p id="3"><b>Arguments: </b><i>
+pixmap </i>&amp;key <i>recreate window</i><i>
+</i></p>
+
+<p id="4">
+Tells the operating system to create a "device-dependent bitmap" from
+the texture of the specified Common Graphics pixmap oject (passed as the
+<i>pixmap</i> argument), and sets the <a href="../p/pixmap-handle.htm"><b>pixmap-handle</b></a> property of pixmap to
+be the handle to that device-dependent pixmap. (The pixels and
+colormap of a device-dependent pixmap are managed in the operating
+system rather than in Lisp.)  If the pixmap has a mask texture (in the
+<a href="../m/mask.htm"><b>mask</b></a> property),
+<a href="../o/open-pixmap-handle.htm"><b>open-pixmap-handle</b></a> also creates a
+device-dependent bitmap for the mask texture and stores it in the
+<a href="../m/mask-handle.htm"><b>mask-handle</b></a>
+property of the pixmap.
+</p>
+<p id="5">
+After this is done, whenever the pixmap is drawn the drawing will be
+accomplished by passing this pixmap handle to the operating system
+rather than by sending an array of all of the actual pixels plus the
+pixmap's color palette to the operating system each time.  If the
+pixmap uses a palette that contains colors other than the 20 colors in
+the default system palette, and the user is running Windows in
+something less than 24-bit true-color mode (which is now atypical),
+then the pixmap will be drawn using the correct colors only if (1) the
+window argument is passed here, (2) that window currently has a
+palette that contains all of the pixmap's colors, and (3) the pixmap
+is drawn only in that window without changing that window's palette in
+the interim.
+</p>
+<p id="6">
+<a href="../c/close-pixmap-handle.htm"><b>close-pixmap-handle</b></a>
+may be called later to get rid of the device-dependent pixmap if
+desired, and the pixmap will be drawn thereafter from its lisp texture
+once again. <a href="../o/open-pixmap-handle.htm"><b>open-pixmap-handle</b></a> does nothing if
+the pixmap object already has a handle, unless recreate is
+true, in which case the old pixmap handle will be
+closed and a new one created. Using a pixmap handle may result in
+faster drawing, especially of larger pixmaps, but the device-dependent
+pixmap will also consume operating system pixmap resources.
+</p>
+
+
+
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/open-pixmap-handle.htm">9.0 version</a></td></tr></table></body></html>

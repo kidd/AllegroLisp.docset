@@ -1,0 +1,93 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>mouse-middle-down</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mouse-middle-down.htm">9.0 version</a></td></tr></table><h2 id="2">mouse-middle-down</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object buttons cursor-position
+</i></p>
+
+<p id="4">
+This generic function is called when the user presses the middle mouse
+button while the mouse cursor is in the interior (client) area of a
+window, <a href="../../../classes/cg/dialog-item.htm"><code>dialog-item</code></a>, or <a href="../../../classes/cg/hotspot.htm"><code>hotspot</code></a>.  An application
+may add methods to this generic function to respond to mouse events in
+these objects.
+</p>
+<p id="5">
+<i>object</i> is the window, dialog-item, or hotspot in
+which the event occurred. If the event occurred in a dialog-item, then
+this function will be called on the <a href="../../../classes/cg/dialog-item.htm"><code>dialog-item</code></a> and also on its associated <a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a>.  An application
+could specialize on whichever object is more convenient (this is
+typically the <a href="../../../classes/cg/dialog-item.htm"><code>dialog-item</code></a>).
+In any case, the built-in methods on the <a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a> normally should not be overridden,
+because they implement the widget's built-in click behavior.
+</p>
+<p id="6">
+<i>buttons</i> is an integer indicating which mouse
+buttons and shift keys were down when the event occurred.  The value
+is the result of applying <a href="../../../../ansicl/dictentr/logandlo.htm"><b>logior</b></a> to the values of the
+following bit-flag variables: 
+</p>
+<ul>
+<li id="7">
+<a href="../../../variables/cg/left-mouse-button.htm"><code>left-mouse-button</code></a>
+</li>
+<li id="8">
+<a href="../../../variables/cg/middle-mouse-button.htm"><code>middle-mouse-button</code></a>
+</li>
+<li id="9">
+<a href="../../../variables/cg/right-mouse-button.htm"><code>right-mouse-button</code></a>
+</li>
+<li id="10">
+<a href="../../../variables/cg/first-x-button.htm"><code>first-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>)
+</li>
+<li id="11">
+<a href="../../../variables/cg/second-x-button.htm"><code>second-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>),
+</li>
+<li id="12">
+<a href="../../../variables/cg/shift-key.htm"><code>shift-key</code></a>
+</li>
+<li id="13">
+<a href="../../../variables/cg/control-key.htm"><code>control-key</code></a>
+</li>
+<li id="14">
+<a href="../../../variables/cg/alt-key.htm"><code>alt-key</code></a>
+</li>
+</ul>
+<p id="15">
+Other bits might be turned on as well, so functions such as <a href="../../../../ansicl/dictentr/logtest.htm"><b>logtest</b></a> should be used to
+determine whether a particular mouse button or shift key was down; for
+example,
+</p>
+<pre id="16">
+(logtest left-mouse-button buttons) 
+</pre>
+<p id="17">
+will return
+true if and only if the left mouse button was down.  For "down"
+events, the value includes the button or key being pressed now; for
+"up" events, the value does not include the button or key being
+released.
+</p>
+<p id="18">
+<i>cursor-position</i> is a position object indicating
+the location of the mouse cursor when the event occurred.  It is in
+"stream coordinates", which are relative to the origin of the possibly
+scrolled page (canvas) of the window; pixels are the unit of distance
+unless the window is a <a href="../../../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a>.  (The origin of a
+stream is typcially left at 0,0, which indicates the top-left corner
+of the scrollable page; see <a href="../s/stream-origin.htm"><b>stream-origin</b></a>.)
+</p>
+
+<p id="19">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics.
+</p>
+
+
+
+
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/mouse-middle-down.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>standard-toolbar-icons</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/standard-toolbar-icons.htm">9.0 version</a></td></tr></table><h2 id="2">standard-toolbar-icons</h2>
+
+<p id="3"><b>Arguments: </b><i>
+configuration
+</i></p>
+
+<p id="4">
+A configuration option that indicates which IDE commands are present
+as buttons on the main IDE toolbar (which is the toolbar to the left
+of the Components toolbar).
+The current development configuration is the value of <code>(configuration
+*ide-system*)</code>. (See <a href="../cg/c/configuration.htm"><b>configuration</b></a> and <a href="../../variables/ide/s_ide-system_s.htm"><code>*ide-system*</code></a>.)
+</p>
+
+<p id="5">
+The value is a list of keywords with
+names similar to the IDE menu-bar commands to which they correspond.
+The special value :gap is used to indicate where a vertical separator
+bar should appear between buttons on the toolbar. The initial value is:
+</p>
+<pre id="6">
+(:new :save :open :save-all :gap 
+ :incremental-compile :load :gap
+ :new-project :run-project :new-form :stop)
+</pre>
+<p id="7">
+The allowable values are:
+</p>
+<pre id="8">
+(:apropos :breakpoint :breakpoint-status :browse-class
+ :find-debug-prompt :find-definition :find-in-file
+ :gap :graph-subclasses :graph-superclasses
+ :incremental-compile :inspect :load :macroexpand
+ :new :new-form :new-project :open :print
+ :profile :profile-status :quick-symbol-info
+ :run-project :save :save-all :stop :trace
+ :trace-status :unbreakpoint :unbreakpoint-all
+ :unprofile :unprofile-all :untrace :untrace-all
+ :windows-help)
+</pre>
+<p id="9">
+The extended toolbar (displayed with the <a href="../../ide-menus-and-dialogs/view-menu.htm#extended-toolbar">View |
+Extended Toolbar</a> menu command) will contain all of the
+commands that are <b>not</b> on the main toolbar.
+</p>
+<p id="10">
+This option may be set programmatically by calling <a href="standard-toolbar-icons.htm"><b>(setf
+standard-toolbar-icons)</b></a>. Alternately, the value may
+be modified interactively by dragging icons between the main toolbar
+and the extended toolbar in the following way:
+</p>
+<ol>
+<li id="11">
+Invoke the <a href="../../ide-menus-and-dialogs/view-menu.htm#extended-toolbar">View | Extended Toolbar</a> command to
+show the extended toolbar.
+</li>
+<li id="12">
+While holding down the Alt key, click down on an icon in the
+extended toolbar, drag it to the main toolbar, and release the mouse
+button to drop it there.
+</li>
+</ol>
+<p id="13">
+Commands can similarly be moved from the main toolbar to the
+extended toolbar, or within one of the toolbars.  (The Components
+toolbar may not be modified.)
+</p>
+<p id="14">
+The value may also be modified in the inspector by using the <a href="../../ide-menus-and-dialogs/tools-menu.htm#inspect-system-data">Tools | Inspect System Data | IDE Configuration
+Options</a> command.
+</p>
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/standard-toolbar-icons.htm">9.0 version</a></td></tr></table></body></html>

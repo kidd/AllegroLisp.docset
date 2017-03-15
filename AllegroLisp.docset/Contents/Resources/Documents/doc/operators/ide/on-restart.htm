@@ -1,0 +1,68 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>on-restart</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/on-restart.htm">9.0 version</a></td></tr></table><h2 id="2">on-restart</h2>
+
+<p id="3"><b>Arguments: </b><i>
+project
+</i></p>
+
+<p id="4">
+<a href="on-restart.htm"><b>on-restart</b></a> is a
+property of an IDE project. Its value is the name of the function that
+is called internally to start up a standalone application that has
+been generated from the project. Normally the value is <a href="../cg/d/do-default-restart.htm"><b>do-default-restart</b></a>,
+though it may be changed to facilitate the debugging of a standalone
+application that is not successfully starting up and reaching a point
+where it could be debugged by pressing the BREAK key to enter the
+debugger in the console window.
+</p>
+<p id="5">
+In this case, you could debug the standalone application in the
+following way: 
+</p>
+<ol>
+<li id="6">
+Open its project in the IDE
+</li>
+<li id="7">
+change the value of the <a href="on-restart.htm"><b>on-restart</b></a> property of the current
+project to <a href="../cg/d/do-default-debugable-restart.htm"><b>do-default-debugable-restart</b></a>
+</li>
+<li id="8">
+Regenerate and run the standalone application
+</li>
+</ol>
+<p id="9">
+This simply shows the console window Lisp listener, in which you can
+evaluate expressions to set up an initial environment for
+debugging. Then evaluate <code>(do-default-restart)</code> in
+the console to run the project code in the customized environment.
+</p>
+<p id="10">
+Alternately, you could change the <a href="on-restart.htm"><b>on-restart</b></a> property to the name of
+some other function that programmatically customizes the environment.
+An <a href="on-restart.htm"><b>on-restart</b></a>
+function should take no arguments.  After setting things up for
+debugging, it should then either call <a href="../cg/d/do-default-restart.htm"><b>do-default-restart</b></a> (with no
+arguments) or else start up the application by hand. The application
+is started by hand by calling <a href="../cg/i/initialize-cg.htm"><b>initialize-cg</b></a>, then calling the
+project's <a href="on-initialization.htm"><b>on-initialization</b></a> function, and
+finally calling <a href="../cg/e/event-loop.htm"><b>event-loop</b></a> to handle events.
+</p>
+<p id="11">
+Note that the way to customize the way a standalone application for a
+project really starts up is to use the project's <a href="on-initialization.htm"><b>on-initialization</b></a> property.
+<a href="on-restart.htm"><b>on-restart</b></a>, in
+contrast, is intended only for debugging the standalone application.
+</p>
+<p id="12">
+You can inspect the current project by invoking the <a href="../../ide-menus-and-dialogs/view-menu.htm#project-manager">View |
+Project Manager</a> command and then clicking on the Inspect
+Project button in the <a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project Manager</a>'s toolbar. The
+"Events" tab of the inspector will then show the <a href="on-initialization.htm"><b>on-initialization</b></a> and <a href="on-restart.htm"><b>on-restart</b></a> properties of
+the current project.
+</p>
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/on-restart.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,115 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>About color palettes in Common Graphics</title></head><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-color-palettes.htm">9.0 version</a></td></tr></table><h1 id="2">About color palettes in Common Graphics</h1><p id="3">
+A palette holds an arbitrary set of colors for drawing in one or more
+windows. An application needs to use a palette only if
+</p><ol>
+<li id="4">
+The end user might be running the Windows operating system in
+256-color mode or (perhaps) 65,536-color mode; and
+</li>
+<li id="5">
+Colors other than the 20 colors in the end user's Control Panel
+color scheme are needed.
+</li>
+</ol><p id="6">
+The end user's Control Panel color scheme
+normally includes the 16 standard VGA colors <a href="../variables/cg/black.htm"><code>black</code></a>, <a href="../variables/cg/white.htm"><code>white</code></a>, <a href="../variables/cg/gray.htm"><code>gray</code></a>, <a href="../variables/cg/light-gray.htm"><code>light-gray</code></a>, <a href="../variables/cg/red.htm"><code>red</code></a>, <a href="../variables/cg/green.htm"><code>green</code></a>, <a href="../variables/cg/blue.htm"><code>blue</code></a>, <a href="../variables/cg/yellow.htm"><code>yellow</code></a>, <a href="../variables/cg/cyan.htm"><code>cyan</code></a>, <a href="../variables/cg/magenta.htm"><code>magenta</code></a>, <a href="../variables/cg/dark-red.htm"><code>dark-red</code></a>, 
+<a href="../variables/cg/dark-green.htm"><code>dark-green</code></a>,
+<a href="../variables/cg/dark-blue.htm"><code>dark-blue</code></a>, <a href="../variables/cg/dark-yellow.htm"><code>dark-yellow</code></a>, <a href="../variables/cg/dark-cyan.htm"><code>dark-cyan</code></a>, and <a href="../variables/cg/dark-magenta.htm"><code>dark-magenta</code></a>, plus four
+special colors for button background and 3d edges and so on. The
+linked names are to constants whose values are the named colors.
+</p><p id="7">
+By default, calling the function <a href="../operators/cg/p/palette.htm"><b>palette</b></a> on a Common Graphics window
+returns the symbol :RGB, which indicates that the window has not been
+given a custom palette. To draw in color on a window that has no
+custom palette, you simply set the <a href="../operators/cg/f/foreground-color.htm"><b>foreground-color</b></a> or <a href="../operators/cg/b/background-color.htm"><b>background-color</b></a> to be an
+RGB color object (as created by <a href="../operators/cg/m/make-rgb.htm"><b>make-rgb</b></a> named by constants such as
+<a href="../variables/cg/blue.htm"><code>blue</code></a> and
+<a href="../variables/cg/red.htm"><code>red</code></a>), and then
+call various drawing functions.
+</p><p id="8">
+But if Windows is not in true color mode (that is, less than 24-bit
+color) and the requested RGB color is not one of the 20 system colors
+(either a VGA color or one of the other four colors in the current
+Control Panel color scheme), then this actual color will not be
+used. Instead, for a line-drawing operation, one of the 20 system
+colors that is nearest to the requested color will be substituted; and
+for a space-filling operation, each pixel that is drawn will be one of
+two system colors in such a proportion as to approximate the requested
+color (this approximation technique is called dithering, and does not
+look as nice as every pixel being the actual requested color).
+</p><p id="9">
+The alternative to the above is to define and use a custom color
+palette. The basic procedure to set up a custom palette is to
+</p><ol>
+<li id="10">
+Create a vector of RGB color objects.
+</li>
+<li id="11">
+Create a palette by calling <a href="../operators/cg/o/open-palette.htm"><b>open-palette</b></a> on that
+RGB vector.
+</li>
+<li id="12">
+Assign the palette handle returned by <a href="../operators/cg/o/open-palette.htm"><b>open-palette</b></a> to a window by calling
+setf of <a href="../operators/cg/p/palette.htm"><b>palette</b></a>.
+</li>
+</ol><p id="13">
+To then draw in the window,
+</p><ol>
+<li id="14">
+<b>setf</b> the current <a href="../operators/cg/f/foreground-color.htm"><b>foreground-color</b></a> and/or <a href="../operators/cg/b/background-color.htm"><b>background-color</b></a> of the
+window to be the index of the desired color in the color vector that
+you defined earlier.
+</li>
+<li id="15">
+Call drawing functions on the window.
+</li>
+</ol><p id="16">
+A palette should be no larger than the number of colors in which the
+end user is running the Windows operating system. If Windows is
+running in 256-color mode (8-bit color), for example, then no more
+than 256 different colors may appear on the screen at any time, and a
+palette may contain no more than 256 colors.
+</p><p id="17">
+If multiple windows (including those in other applications) are using
+palettes, and Windows is running in 256-color mode, then any given
+window that is using a palette will typically not display the correct
+colors except when it is the most recently selected window that uses a
+palette, since the combined palettes will typically contain more
+colors than the whole system can display.
+</p><p id="18">
+The set of colors currently being displayed system-wide is sometimes
+referred to as the system palette. Common Graphics knows to force a
+window's full palette into the system palette whenever it is selected.
+</p><p id="19">
+When Windows is running in 256-color mode, it is recommended that a
+palette have somewhat less than 256 colors, so that when the window is
+selected, the basic colors used in other windows will still have room
+in the system palette and so other windows will not switch to odd
+colors borrowed from your custom palette. A palette of 236 colors or
+less would still leave room for the user's 20 colors from their
+Control Panel color scheme.
+</p><p id="20">
+The Windows OS may be run in 1-bit (monochrome) mode, 4-bit (16-color
+/ VGA) mode, 8-bit (256-color) mode, 16-bit (65,536-color) mode, or
+24- or 32-bit (true color) mode, depending on the end user's settings
+in Control Panel. True color never uses a palette because the 24 bits
+or more for each pixel is large enough to contain an accurate RGB
+(red-green-blue) specification directly rather than serving as an
+index into a smaller table of color definitions. Though most any color
+computer that is sold nowadays is capable of true color, the end user
+may still elect to run in 256-color mode either to achieve a greater
+screen resolution (width by height) or to achieve greater speed of
+graphical output. So in general it should not be assumed that an end
+user will run your application in true color unless that is an
+explicit requirement of the application.
+</p><p id="21">
+A special case is 16-bit color mode, where the OS appears to use a
+default palette with millions of colors that approximate true
+color. In this mode, arbitrary RGB colors may be used for foreground
+and background colors of Common Graphics windows without using custom
+palettes, but the colors actually used will still only be approximate
+(though a much better approximation than dithering). A custom palette
+may still be needed even in this mode for better color accuracy.
+</p></body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/cg/cg-color-palettes.htm">9.0 version</a></td></tr></table></html>

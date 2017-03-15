@@ -1,0 +1,52 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>show-dialog-on-compiler-warnings</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/show-dialog-on-compiler-warnings.htm">9.0 version</a></td></tr></table><h2 id="2">show-dialog-on-compiler-warnings</h2>
+
+<p id="3"><b>Arguments: </b><i>
+configuration
+</i></p>
+
+<p id="4">
+If this configuration option is true, as it is initially, then a
+modal dialog is shown when any compilation warnings result from
+compiling source code files by using various IDE commands. (The
+dialog is not shown when there are no warnings.)
+</p>
+<p id="5">
+The dialog lists the warning messages and provides an OK button to
+proceed with loading the compiled file(s) and a cancel button to skip
+loading the compiled file(s). In addition, if the compilation is being
+done by <a href="../../ide-menus-and-dialogs/run-menu.htm#run-project">Run | Run Project</a> or <a href="../../ide-menus-and-dialogs/run-menu.htm#run-form">Run | Run
+Form</a>, then canceling the dialog will avoid running the
+form or project.
+</p>
+<p id="6">
+The commands affected are <a href="../../ide-menus-and-dialogs/file-menu.htm#compile">File | Compile</a> (no Cancel
+button is shown since no files are loaded by this command), <a href="../../ide-menus-and-dialogs/file-menu.htm#compile-and-load">File |
+Compile and Load</a>, <a href="../../ide-menus-and-dialogs/tools-menu.htm#compile-project">Tools | Compile
+Project</a>, <a href="../../ide-menus-and-dialogs/tools-menu.htm#full-compile">Tools | Full Compile</a>, <a href="../../ide-menus-and-dialogs/run-menu.htm#run-project">Run | Run
+Project</a>, and <a href="../../ide-menus-and-dialogs/run-menu.htm#run-form">Run | Run Form</a>.
+</p>
+<p id="7">
+If this option is <code>nil</code>, then no dialog is
+shown, the loading is never skipped (unless a compilation error
+occurs), and (in the case of Run Project and Run Form) the project or
+form is always run. Compilation warnings are printed to the Debug
+Window regardless of the value of this option.
+</p>
+<p id="8">
+This option can be set in the <b>Optional Dialogs</b> group on the
+<a href="../../ide-menus-and-dialogs/options-dialog-ide-1-2.htm">IDE 1</a> tab of
+the <a href="../../ide-menus-and-dialogs/options-dialog.htm">Options</a>
+dialog. It may also be set with <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> and this function.
+</p>
+
+<p id="9">
+The current development configuration is the value of
+<code>(configuration *ide-system*)</code>. (See <a href="../cg/c/configuration.htm"><b>configuration</b></a> and <a href="../../variables/ide/s_ide-system_s.htm"><code>*ide-system*</code></a>.)
+</p>
+
+
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/show-dialog-on-compiler-warnings.htm">9.0 version</a></td></tr></table></body></html>

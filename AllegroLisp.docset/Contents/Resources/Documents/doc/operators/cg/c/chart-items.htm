@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>chart-items</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/chart-items.htm">9.0 version</a></td></tr></table><h2 id="2">chart-items</h2>
+
+<p id="3"><b>Arguments: </b><i>
+chart-widget
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../c/chart-items.htm"><b>chart-items</b></a> property of a <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>. The value may be set at creation
+time by passing the <code>:chart-items</code> initarg, or any
+time later by calling <a href="../c/chart-items.htm"><b>(setf chart-items)</b></a>.
+</p>
+<p id="5">
+This property contains a tree of values that are displayed in a
+<a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>. This tree is
+normally built indirectly by successive calls to <a href="../s/set-chart-value.htm"><b>set-chart-value</b></a>. Values are looked up here when
+the chart is being drawn, or when an application
+calls <a href="../c/chart-value.htm"><b>chart-value</b></a>.
+</p>
+<p id="6">
+An application normally does not need to access this property
+directly, though it could build the tree of values itself and call
+<a href="../c/chart-items.htm"><b>(setf
+chart-items)</b></a> to set all of the values at once. Here is an
+example of a <a href="../c/chart-items.htm"><b>chart-items</b></a>
+value:
+</p>
+
+<pre id="7">
+((:values #((:value 164) (:value 152 :low-value 148) (:value 103))
+  :id (2005 dec 12))
+ (:values #((:value 168) nil (:value 145 :icon-size 6))
+  :id (2006 feb 3))
+ ...)
+</pre>
+
+<p id="8">
+The value is a list where each element of the list represents one
+chart item. An element for one chart item is a property list that can
+contain an <code>:id</code> entry for the chart item's ID and/or
+a <code>:values</code> item that contains a sequence of values.
+The value sequence may be either a list or a vector.  Each element of
+the value sequence is a property list that holds the values for one
+chart object at this chart item. This property list can contain
+entries for any of the allowed types of values (see <a href="../s/set-chart-value.htm"><b>set-chart-value</b></a>).
+</p>
+<p id="9">
+In the example above, the first chart item species a value of 164 for
+the first chart object, a value of 152 and a low-value of 148 for the
+second chart object, and so on. The second chart item
+specifies <code>nil</code> as a placeholder for the second
+chart object (which has no value at this chart item) so that it can
+specify a value for the third chart object.
+</p>
+<p id="10">
+To avoid building this tree of values at all, use a
+<a href="../c/chart-value-returner.htm"><b>chart-value-returner</b></a> function
+instead.
+</p>
+
+
+<p id="11">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/chart-items.htm">9.0 version</a></td></tr></table></body></html>

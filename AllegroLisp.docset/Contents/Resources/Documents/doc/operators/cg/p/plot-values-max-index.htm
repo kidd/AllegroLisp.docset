@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>plot-values-max-index</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/plot-values-max-index.htm">9.0 version</a></td></tr></table><h2 id="2">plot-values-max-index</h2>
+
+<p id="3"><b>Arguments: </b><i>
+plot-widget
+</i></p>
+
+
+
+<p id="4">
+Returns the value of the <a href="../p/plot-values-max-index.htm"><b>plot-values-max-index</b></a> property of a
+<a href="../../../classes/cg/plot-widget.htm"><code>plot-widget</code></a>. The value may
+be set at creation time by passing
+a <i>plot-values-max-index</i> initarg
+to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or any time
+later by calling <a href="../p/plot-values-max-index.htm"><b>(setf plot-values-max-index)</b></a>.
+</p>
+<p id="5">
+<a href="../p/plot-values-max-index.htm"><b>plot-values-max-index</b></a> is the
+index of the last plot value of a plot-widget that should be displayed
+at the current time. The value should be a non-negative integer, or
+else <code>nil</code> for no maximum. The default value is
+<code>nil</code>.
+</p>
+<p id="6">
+If <a href="../s/set-plot-value.htm"><b>set-plot-value</b></a> has been
+used to add values to the plot, then any value whose index is greater
+than this property value (if it is a number) will not appear in the
+plot. When the property value is <code>nil</code>, then no
+items are excluded. This property can be used to display a subset of
+collected values that are of interest at the moment.
+</p>
+<p id="7">
+If instead a <a href="../p/plot-value-returner.htm"><b>plot-value-returner</b></a> function is used for looking
+up plot data, then this property should always be set to a
+non-negative integer to tell the plot the maximum value index that it
+should pass to the <a href="../p/plot-value-returner.htm"><b>plot-value-returner</b></a> function. Otherwise the
+plot-widget has no way of knowing how many values your function is
+prepared to return. (The property will arbitrarily default to 100 in
+this case, though that would usually not match your available data.)
+</p>
+<p id="8">
+This property is the maximum index that will be included, rather than
+the number of indexes to include. So for a <a href="../p/plot-value-returner.htm"><b>plot-value-returner</b></a> function to cover all values
+from a 100-element vector, for example, the value of this property
+should be 99 rather than 100.
+</p>
+<p id="9">
+If a <a href="../p/plot-value-returner.htm"><b>plot-value-returner</b></a>
+function is used, and some chart objects have more data points than
+others, then this property should be set to the high enough to cover
+the object that has the most points. And the <a href="../p/plot-value-returner.htm"><b>plot-value-returner</b></a> function should
+return <code>nil</code> (rather than breaking) if it is
+passed an index for some other object that is beyond the number of
+data points for that object.
+</p>
+<p id="10">
+See also <a href="../p/plot-values-min-index.htm"><b>plot-values-min-index</b></a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/plot-values-max-index.htm">9.0 version</a></td></tr></table></body></html>

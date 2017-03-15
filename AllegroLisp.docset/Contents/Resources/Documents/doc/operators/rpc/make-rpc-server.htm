@@ -1,0 +1,304 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-rpc-server</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/make-rpc-server.htm">9.0 version</a></td></tr></table><h2 id="2">make-rpc-server</h2>
+
+<p id="3"><b>Arguments: </b><i>port-class
+</i>&amp;key <i>name open local-host local-port limit max timeout home re-connect begin connect-action connect-function connect-args debug verbose mode export message-timeout message-length certificate key other-certificates tester passcode confirm</i><i>
+ &amp;allow-other-keys
+</i></p>
+
+<p id="4">
+This function creates a server object appropriate for the specified
+<i>port-class</i>. The <i>port-class</i>
+argument may be <code>nil</code>. In that case the default
+port-class is <a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>. 
+</p>
+<p id="5">
+When the <i>port-class</i> argument is a subtype of
+<a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>,
+then an instance of a stream socket server is created.  When the
+<i>port-class</i> argument is further a subclass of
+<a href="../../classes/rpc/with-rpc-server-enabler.htm"><code>with-rpc-server-enabler</code></a> (such as <a href="../../classes/rpc/rpc-socket-server-with-enabler.htm"><code>rpc-socket-server-with-enabler</code></a>), additional
+keyword arguments <i>tester</i> and
+<i>passcode</i> are supported. They are described below
+with the other keyword arguments.
+</p>
+<p id="6">
+When the <i>port-class</i> argument is a subtype of
+<a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>,
+then an instance of a datagram connection server is created.  Note
+that when creating a datagram connection server, no value should be
+specified for the <i>name</i>. The name of datagram
+servers and ports is always generated from the host and port
+information. Since each RPC call looks like a new connection to a
+server, the <i>limit</i> argument should be normally nil
+or a large number.
+</p>
+<p id="7">
+This new server object must be activated with a call to <a href="rpc-open-listener.htm"><b>rpc-open-listener</b></a> or <a href="rpc-open-server.htm"><b>rpc-open-server</b></a>. If the
+<i>open</i> argument is <code>:listener</code>
+then <a href="rpc-open-listener.htm"><b>rpc-open-listener</b></a> is
+called implicitly. If the <i>open</i> argument is
+<code>:port</code> then <a href="rpc-open-server.htm"><b>rpc-open-server</b></a> is called implicitly.
+</p>
+<p id="8">
+Multiple values are returned: 
+</p>
+<ol>
+<li id="9">
+the server-instance (<code>nil</code> if a server cannot
+be created)
+</li>
+<li id="10">
+the port-instance (non-<code>nil</code> only when the
+value of the <i>open</i> argument is
+<code>:port</code>)
+</li>
+<li id="11">
+the listener-process (non-<code>nil</code> only when the
+value of the <i>open</i> argument is
+<code>:listener</code>)
+</li>
+<li id="12">
+error-code
+</li>
+</ol>
+<p id="13">
+Additional error information may be returned as fifth and subsequent values.
+</p>
+
+<p id="14">
+The keyword arguments are:
+</p>
+
+<ul>
+<li id="15">
+<i>name</i>: when <i>port-class</i> is a
+subclass of <a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a> (or nil),
+<i>name</i> may be a <code>nil</code> (or
+omitted), a string, a symbol (whose print name is used), or a
+function of no arguments that returns a string. The
+<i>name</i> argument is used to produce a string naming
+the server. If <code>nil</code>, a name is generated.
+<p id="16">
+The server name must be unique in every active rpc-port connection in
+a set of connected Lisp images. The default name is likely to be
+unique but is not guaranteed to be so. If distinct connections have
+identical names, an error is signaled when the conflict is detected,
+normally when a connection is opened.
+</p>
+<p id="17">
+When <i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>, no value
+should be specified for <i>name</i>. The name of
+datagram servers and ports is always generated from the host and port
+information.
+</p>
+</li>
+<li id="18">
+<i>limit</i>: the total number of distinct connections
+allowed over the life of the server. <code>nil</code>
+means no limit. When <i>port-class</i> is a subclass of
+<a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>,
+<i>limit</i> should be <code>nil</code> or a
+large number since each datagram call counts as a separate connection.
+</li>
+<li id="19">
+<i>max</i>: the number of simultaneous active
+connections allowed.
+</li>
+<li id="20">
+<i>re-connect</i>: when non-<code>nil</code>
+allows client to disconnect and reconnect. When <code>nil</code>, the client may connect exactly once.
+Non-<code>nil</code> values are
+<code>:on-demand</code>, <code>:demand</code>,
+<code>:first-use</code>, and <code>:explicit</code>.
+The default is
+<code>:demand</code>. When <i>port-class</i> is a
+subclass of <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>, this argument is
+ignored and the setting is always <code>:demand</code>. 
+</li>
+<li id="21">
+<i>home</i>: may be a string, a symbol or a
+function. The value is used as a starting point when generating a
+unique name for a new connection.
+<p id="22">
+The home name must be unique in every active rpc-port connection in a
+set of connected Lisp images. The default name is likely to be unique
+but is not guaranteed to be so. When many communicating Lisp images are 
+created in a short time interval, it is good practice to supply a unique
+home name in each Lisp image.  The internal algorithm will guarantee uniqueness
+in each Lisp image, and the unique home prefixes will guarantee
+uniqueness in the entire set.
+</p>
+<p id="23">
+If distinct connections have identical
+names, an error is signaled when the conflict is detected, normally
+when a connection is opened.
+</p>
+<p id="24">
+When <i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>, this
+argument is ignored because the home name of datagram ports is always
+generated.
+</p>
+</li>
+<li id="25">
+<i>if-error</i>: may be :close or :shutdown, default is
+:close. If a socket or protocol error is detected, the connection is
+closed temporarily (until a re-connect) or shut down permanently.
+</li>
+<li id="26">
+<i>connect-action</i>,
+<i>connect-function</i> and
+<i>connect-args</i>: these are used at the time of
+connection (see <a href="rpc-open-server.htm"><b>rpc-open-server</b></a>).
+</li>
+<li id="27">
+<i>begin</i>: when <code>t</code> causes
+sender and receiver processes to be started as soon as a connection is
+made. If the <i>open</i> argument is non-<code>nil</code>, then <i>begin</i> is set to
+<code>t</code> unless explicitly specified as <code>nil</code>.
+<p id="28">
+When <i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>, this
+argument is ignored.
+</p>
+</li>
+<li id="29">
+<i>local-host</i>: <code>nil</code> or a
+string naming the host where the server is advertising.
+</li>
+<li id="30">
+<i>local-port</i>: <code>nil</code> or a
+port number of the port where the server is advertising.
+</li>
+<li id="31">
+<i>verbose</i> and <i>debug</i>: these
+arguments are passed to the connected port.
+</li>
+<li id="32">
+<i>mode</i>: specifies the default handling
+of recursive remote calls. When <i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>,
+the choices for <i>mode</i>
+are:
+<ul>
+<li id="33">
+<code>:nested</code> - a call back to the
+calling host is handled in the same dynamic environment where the
+initial call was made. Subsequent recursive calls build a chain of
+nested dynamic environments on each host.
+</li>
+<li id="34">
+<code>:parallel</code> - each call from a remote host is
+executed in a new Lisp process.
+</li>
+<li id="35">
+<code>:blocking</code> -  recursive calls are prohibited.
+</li>
+</ul>
+<p id="36">
+When <i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>, the mode
+is <code>:blocking</code> and the <i>mode</i>
+argument is ignored.
+</p>
+</li>
+<li id="37">
+<i>message-timeout</i>: the value is inherited by any
+ports created for new connections to the server. The message-timeout
+value is a default timeout value for any RPC call made on a
+port. Ignored when <i>port-class</i> argument is a
+subtype of <a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>.
+</li>
+<li id="38">
+<i>message-length</i>: specifies the longest incoming
+message allowed (the units are octets). Note that a datagram rpc call
+must be entirely contained in one message. The default value is
+4096. This argument is meaningful only when the value of the
+<i>port-class</i> argument is a subtype of <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>; in other
+cases, it is ignored.
+</li>
+<li id="39">
+<i>export</i>: a list of the form <code>((symbol
+string) ...)</code> each pair in the list is passed to <a href="export-remote-symbol.htm"><b>export-remote-symbol</b></a> when
+a connection port is created.
+</li>
+<li id="40">
+<i>certificate</i>: when <i>port-class</i>
+argument is a subclass of <a href="../../classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>, this argument is used to
+specify a secure socket (SSL) connection.  If the argument is <code>nil</code>, an ordinary socket connection is used.  If the
+argument is non-<code>nil</code>, <a href="../socket/make-ssl-server-stream.htm"><b>make-ssl-server-stream</b></a> is called immediately
+after accepting a socket connection. The
+<i>certificate</i> argument and the
+<i>key</i> and <i>other-certificates</i>
+arguments are passed to <a href="../socket/make-ssl-server-stream.htm"><b>make-ssl-server-stream</b></a> to specify the
+parameters of the secure connection.
+<p id="41">
+When <i>port-class</i> is a subclass of <a href="../../classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>, this
+argument, as well as the <i>key</i> and
+<i>other-certificates</i> arguments are ignored.
+</p>
+</li>
+<li id="42">
+<i>key</i>: when the <i>certificate</i>
+argument is used to specify a secure connection, this argument is
+passed to <a href="../socket/make-ssl-server-stream.htm"><b>make-ssl-server-stream</b></a>. Otherwise this
+argument is ignored.
+</li>
+<li id="43">
+<i>other-certificates</i>: when the
+<i>certificate</i> argument is used to specify a secure
+connection, this argument is passed to <a href="../socket/make-ssl-server-stream.htm"><b>make-ssl-server-stream</b></a>. Otherwise this
+argument is ignored.
+</li>
+<li id="44">
+<i>tester</i> (this argument is only used when
+<i>port-class</i> is a subclass of <a href="../../classes/rpc/with-rpc-server-enabler.htm"><code>with-rpc-server-enabler</code></a>, for example, when
+it is an instance of <a href="../../classes/rpc/rpc-socket-server-with-enabler.htm"><code>rpc-socket-server-with-enabler</code></a>): the value
+of this argument should be a symbol naming a function of two arguments
+that returns <code>nil</code> or non-<code>nil</code>. The default is <code>eql</code>.
+</li>
+<li id="45">
+<i>passcode</i> (this argument is only used when
+<i>port-class</i> is a subclass of <a href="../../classes/rpc/with-rpc-server-enabler.htm"><code>with-rpc-server-enabler</code></a>, for example, when
+it is an instance of <a href="../../classes/rpc/rpc-socket-server-with-enabler.htm"><code>rpc-socket-server-with-enabler</code></a>): the value
+of this argument should be an atom or a list of atoms.
+<p id="46">
+When the value is a single atom, the first action of a client must be
+to call <a href="rpc-send-request.htm"><b>rpc-send-request</b></a>
+with the value of the <i>name</i>
+&nbsp;<code>:enable-client</code>. The argument must
+match the passcode value with the value of <i>tester</i>
+as the test function.  Multiple clients may connect using the same
+passcode (subject to the limit and max constraints).
+</p>
+<p id="47">
+When the value is a list, each client must also send an
+<code>:enable-client</code> request. The argument must be one of
+the items in the list to enable the client connection. When a client
+connects, the matching passcode is removed from the list. In this way,
+the server accepts connections only from a fixed set of distinct
+clients.
+</p>
+</li>
+<li id="48">
+<i>confirm</i>: when this argument is non-<code>nil</code>, the Lisp RPC protocol includes additional
+confirmation messages that track the progress of a remote call in more
+detail (see <a href="rpc-query.htm"><b>rpc-query</b></a> for more details).  The
+default value is <code>nil</code>.
+<p id="49">
+A non-<code>nil</code> value may be applicable when using
+a very slow network connection. In such cases more detailed progress
+information could be useful.
+</p>
+<p id="50">
+This argument was not available in releases prior to 6.2, where the
+function <b>define-rpc-server</b> worked as if this argument was
+specified non-<code>nil</code>.
+</p>
+</li>
+</ul>
+
+<p id="51">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="52"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/make-rpc-server.htm">9.0 version</a></td></tr></table></body></html>

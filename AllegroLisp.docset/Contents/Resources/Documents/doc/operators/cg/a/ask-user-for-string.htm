@@ -1,0 +1,131 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ask-user-for-string</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-string.htm">9.0 version</a></td></tr></table><h2 id="2">ask-user-for-string</h2>
+
+<p id="3"><b>Arguments: </b><i>
+prompt string1 option1 option2 
+</i> &amp;optional <i>prompt2 string2 title stream cursor-at-end</i><i>
+</i></p>
+
+<p id="4">
+Displays a modal dialog prompting for one or two strings.  Prompts for
+one string if the <b><i>prompt2</i></b> and
+<b><i>string2</i></b> optional arguments are not
+supplied or are supplied as <code>nil</code>. Prompts for
+two strings if <i>prompt2</i>
+and <i>string2</i> are supplied and are true. The string
+arguments are copied so <b><i>string1</i></b> and (if
+supplied)
+<i>string2</i> will be unchanged after this function
+returns.
+</p>
+<p id="5">
+The <b><i>option1</i></b>
+and <b><i>option2</i></b> arguments provide titles for
+buttons that appear on the dialog. Clicking a button causes the dialog
+to exit and the function to return. Each of these values may be either
+a string or a symbol, and a tilde character (~) in the string or
+symbol name indicates that the next character should be an underlined
+access character for the button.
+</p>
+<p id="6">
+This function returns four values. The first two are the strings as
+modified by the user except that the second value will be <code>nil</code> when the optional <i>prompt2</i>
+and <i>string2</i> arguments are not passed or are
+<code>nil</code>. As the third value, <a href="../a/ask-user-for-string.htm"><b>ask-user-for-string</b></a> returns the
+string which is the value of the selected button argument (that is,
+option1 or option2 depending on which button the user clicks).
+</p>
+<p id="7">
+The fourth value indicates whether the user
+accepted or canceled the dialog. The value is t if the user either
+clicked the option1 button or pressed the ENTER key, and nil if the
+user either clicked the option2 button or pressed the ESCAPE key to
+cancel the dialog. In a sense, this repeats the information in the
+third returned value, since a string comparison such as
+</p>
+<pre id="8">
+(when (string= third-value &quot;~OK&quot;) 
+   &lt;process-the-string&gt;)
+</pre>
+<p id="9">
+The fourth value allows a simpler test such as:
+</p>
+<pre id="10">
+(when fourth-value &lt;process-the-string&gt;)
+</pre>
+<p id="11">
+This also removes the need to hardcode the button label twice or to
+let bind it.
+</p>
+<p id="12">
+The <b><i>title</i></b> argument (if supplied) should be
+a string and provides the title of the dialog. The
+<b><i>prompt</i></b>, <b><i>string1</i></b>,
+<b><i>option1</i></b>,
+and <b><i>option2</i></b> arguments should also be
+strings.
+</p>
+<p id="13">
+The <b><i>stream</i></b> argument indicates the owner
+window for the dialog. It defaults to the stream returned
+by <a href="../s/selected-window-or-screen.htm"><b>selected-window-or-screen</b></a>.
+</p>
+
+<p id="14">
+If <b><i>cursor-at-end</i></b> is true, then the text
+cursor will initially be at the end of the initial string, to
+facilitate extending the suggested string.
+If <code>nil</code>, then the entire string will initially
+be selected, to facilitate replacing the string. 
+</p>
+
+<p id="15">
+Note several things:
+</p>
+<ul>
+<li id="16">
+The names of the buttons (provided by the option1 and option2
+arguments) do not have effect in themselves. Even though the button
+named "Cancel" is clicked, nothing is canceled. The string "Cancel" is
+returned as the third value and the program must interpret the
+returned value to act appropriately
+</li>
+<li id="17">
+Pressing ENTER has the same effect as clicking on the button
+associated with option1. Pressing ESC has the same effect as clicking
+on the button associated with option2. Pressing the space bar is not
+equivalent to pressing ENTER (as it often is with dialogs) because the
+space is interpreted as a character in one of the strings.
+</li>
+<li id="18">
+Even if a string is unmodified by the user, a copy rather than the
+original argument is returned.
+</li>
+</ul>
+<p id="19">
+The position of the dialog when displayed is controlled by <a href="../p/position-utility-dialog.htm"><b>position-utility-dialog</b></a>.
+</p>
+<p id="20">
+See also <a href="../p/pop-up-string-dialog.htm"><b>pop-up-string-dialog</b></a> and <a href="../p/pop-up-strings-dialog.htm"><b>pop-up-strings-dialog</b></a>. Their return
+values include the number of the button pressed and thus it may be
+easier to know what the user did using those functions rather than
+this one.
+</p>
+
+<h3 id="21">Example</h3>
+
+<pre id="22">
+(ask-user-for-string
+ "Enter the correct answer and win a beautiful lounge suite."
+ "default answer" :~OK :~cancel nil nil "Answer Box"
+ (selected-window (screen *system*)))
+</pre>
+
+
+<p id="23">
+A typical usage of the returned string or strings would be to pass
+them to <a href="../s/string-search.htm"><b>string-search</b></a> or <a href="../s/string-replace.htm"><b>string-replace</b></a>.
+</p>
+
+<hr><p id="24"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-string.htm">9.0 version</a></td></tr></table></body></html>

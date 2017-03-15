@@ -1,0 +1,840 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Loading</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/loading.htm">9.0 version</a></td></tr></table><h1 id="2">Loading</h1><p id="3">This document contains the following sections:</p><a href="#using-load-1">1.0 Using the load function</a><br>&nbsp;&nbsp;&nbsp;<a href="#eof-encountered-2">1.1 EOF encountered error during a load</a><br>&nbsp;&nbsp;&nbsp;<a href="#app-load-utils-2">1.2 Special utilities for loading applications</a><br><a href="#search-lists-1">2.0 Search lists</a><br>&nbsp;&nbsp;&nbsp;<a href="#search-list-struct-2">2.1 Search List Structure</a><br>&nbsp;&nbsp;&nbsp;<a href="#search-list-vars-2">2.2 Search lists variables</a><br>&nbsp;&nbsp;&nbsp;<a href="#search-list-example-2">2.3 Search list example</a><br><a href="#presto-1">3.0 The Allegro Presto facility has been removed</a><br><a href="#load-case-issues-1">4.0 Loading and case modes</a><br><hr><hr><h2 id="4"><a name="using-load-1">1.0 Using the load function</a></h2>
+
+<p id="5">
+In Allegro CL, <a href="../ansicl/dictentr/load.htm"><b>load</b></a> has
+additional keyword arguments, <i>searchlist</i>,
+<em>system-library</em>, and <i>foreign</i> (and also
+the now unused <i>libfasl</i>), described in the next three
+bullets. Note that if the argument is a foreign library file (such as
+a so/sl/dll file) without any directory information, Allegro CL passes
+the filename off to the Operating System without merging the name with
+<a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> or using the search
+list.
+</p>
+
+<ul>
+<li id="6">
+The <i>search-list</i>, if specified, should be a search list which
+will be used instead of <a href="variables/system/s_load-search-list_s.htm"><code>*load-search-list*</code></a>. (See
+<a href="#search-lists-1">Section 2.0 Search lists</a>.)
+</li>
+<li id="7">
+The <em>system-library</em> argument, if true (default is <code>nil</code>) tells the system that the file being loaded is a
+system library file. The file should be a foreign library file, that
+is a shared object (<em>.so</em>) file on most Unix platforms, a
+shared-library file (<em>.sl</em>) on HP's, or a dynamic link library
+(<em>.dll</em>) file on Windows. Specifying this argument true has no
+practical effect on the running Lisp image but it tells <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> not to copy the
+file to the application directory (or any subdirectory) when building
+an application. (It is a bad idea to copy system libraries to an
+application directory because (1) it may be illegal to distribute
+them; (2) having an application use a personal copy of a system
+library which may be different from the version installed on the
+system can lead to subtle errors. For example, when CLIM is loaded on
+Windows, it loads the system library <em>user32.dll</em> with
+<em>system-library</em> t, and so <em>user32.dll</em> does not get
+copied to CLIM application directories created with <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>.) See
+<a href="delivery.htm">delivery.htm</a>, particularly <a href="delivery.htm#windows-install-2">Installation of your
+application on Windows using the Install Wizard</a>, for more
+information.
+</li>
+<li id="8">
+The <i>foreign</i> keyword argument, if true (default is
+<code>nil</code>), tells the system that the file being
+loaded is a foreign library file. Typically, the system checks the
+file extension and if it is one listed in the value of <a href="variables/excl/s_load-foreign-types_s.htm"><code>*load-foreign-types*</code></a>, it
+treats the file as a foreign library file and acts
+appropriately. However, on some systems, extensions of foreign library
+files is not consistent (some may add version numbers to the
+extension, for example). Users should not modify <a href="variables/excl/s_load-foreign-types_s.htm"><code>*load-foreign-types*</code></a>, but if a
+file is a foreign library file whose extension is not listed in
+<a href="variables/excl/s_load-foreign-types_s.htm"><code>*load-foreign-types*</code></a>,
+it will be loaded as a foreign library if the
+<i>foreign</i> keyword argument is specified true.
+</li>
+<li id="9">
+The <i>libfasl</i> argument used to control whether fasl files would
+be loaded in libfasl (Allegro Presto) mode. However, starting in
+release 7.0, Allegro Presto is no longer supported (see
+<a href="#presto-1">Section 3.0 The Allegro Presto facility has been removed</a> for details). This argument to
+<a href="../ansicl/dictentr/load.htm"><b>load</b></a> is still
+accepted for backward compatibility, but any value specified is
+ignored and a warning is signaled if it is specified.
+</li>
+</ul>
+
+<p id="10">Note that certain global variables are bound when load is loading a
+file. Therefore, setting those variables in an initialization file
+(such as <i>.clinit.cl</i>) will not have the desired effect. (See
+also the next section which discusses setting global values in an
+initialization file). The following table shows what variables are
+bound by <a href="../ansicl/dictentr/load.htm"><b>load</b></a>:</p>
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8">
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><p id="11" ALIGN="CENTER">Variable</p></td>
+    <td WIDTH="50%" VALIGN="TOP"><p id="12" ALIGN="CENTER">Bound to</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/package.htm"><code>*package*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/package.htm"><code>*package*</code></a></td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a></td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="variables/excl/s_source-pathname_s.htm"><code>excl:*source-pathname*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP">name of file being loaded</td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="variables/excl/s_redefinition-warnings_s.htm"><code>*redefinition-warnings*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP"><a href="variables/excl/s_redefinition-warnings_s.htm"><code>*redefinition-warnings*</code></a></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" COLSPAN="2"><p id="13" ALIGN="CENTER">Table 1 Variables bound by load</p></td>
+  </tr>
+</table>
+</div>
+
+<p id="14">The top-level command <a href="tpl-commands/ld.htm"><b>:ld</b></a> calls the <a href="../ansicl/dictentr/load.htm"><b>load</b></a> function. 
+<a href="tpl-commands/ld.htm"><b>:ld</b></a> will accept multiple
+filenames but it does not accept keyword arguments. 
+<a href="tpl-commands/ld.htm"><b>:ld</b></a> reads its arguments as
+strings and does not accept pathnames or streams as filename
+arguments. Therefore, to load the file <em>test.cl</em>, the following 
+<a href="tpl-commands/ld.htm"><b>:ld</b></a> command will work:</p>
+
+<pre id="15">
+:ld test.cl 
+</pre>
+
+<p id="16">
+The file is found via the load search list, described below. With the
+default value of the load search-list (it is the value of the variable
+<a href="variables/system/s_load-search-list_s.htm"><code>*load-search-list*</code></a>),
+the path provided is merged with <a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>.
+</p>
+<p id="17">
+There are other keyword arguments for <a href="../ansicl/dictentr/load.htm"><b>load</b></a> in Allegro CL other than those specified by
+the ANSI standard, such as <i>unreferenced-lib-names</i>, used when
+load loads foreign (C or Fortran) object files. See
+<a href="foreign-functions.htm">foreign-functions.htm</a> for details of these
+additional keyword arguments. </p>
+
+
+<hr><h2 id="18"><a name="eof-encountered-2">1.1 EOF encountered error during a load</a></h2>
+
+<p id="19">
+If you try to load a file that contains an incomplete form (because
+of, e.g., a missing closing parenthesis), <a href="../ansicl/dictentr/load.htm"><b>load</b></a> signals an error with condition
+end-of-file. Consider the following file <i>missing-paren.cl</i>:
+</p>
+
+<pre id="20">
+(defun foo nil nil)
+(defun bar (a b) (+ a b)
+</pre>
+
+<p id="21">The closing parenthesis is missing from the definition of
+<b>bar</b>. When Lisp tries to load this file, it signals an
+error:</p>
+
+<pre id="22">
+USER(1): :ld missing-paren.cl
+; Loading /net/rubix/usr/tech/dm/missing-paren.cl.
+Error: eof encountered on stream #&lt;EXCL::CHARACTER-INPUT-FILE-STREAM
+#p&quot;/net/rubix/usr/tech/dm/missing-paren.cl&quot; pos 45 @ #xa91f02&gt;
+starting at position 20.
+ [condition type: END-OF-FILE]
+
+Restart actions (select using :continue):
+ 0: retry the load of missing-paren.cl
+[1] USER(2):
+</pre>
+
+<p id="23">Note the line:</p>
+
+<pre id="24">
+starting at position 20.
+</pre>
+
+<p id="25">That indicates that the incomplete form starts at position 20 in
+the file. Opening the file in Emacs and entering the command C-u 20
+C-f (assuming standard keybindings) should bring you to the beginning
+of the incomplete form.</p>
+
+
+
+<hr><h2 id="26"><a name="app-load-utils-2">1.2 Special utilities for loading applications</a></h2>
+
+<p id="27">Allegro CL does provide certain utilities for loading collections
+of files, in particular collections of files which comprise an
+application. The primary utility for this purpose is the defsystem
+utility, described in <a href="defsystem.htm">defsystem.htm</a>.  A
+couple of simpler utilities are also available: the macros <a href="operators/excl/load-application.htm"><b>load-application</b></a> and <a href="operators/excl/tenuring.htm"><b>tenuring</b></a>.</p>
+
+<p id="28"><a href="operators/excl/tenuring.htm"><b>tenuring</b></a> allows evaluation
+of forms with all live objects tenured at the end of the evaluation. You might want to
+call <a href="../ansicl/dictentr/load.htm"><b>load</b></a> within that macro. See the discussion in <a href="gc.htm">gc.htm</a> for
+more information. </p>
+
+<p id="29"><a href="operators/excl/load-application.htm"><b>load-application</b></a>
+allows you to specify the environment in which the loading takes place. </p>
+
+
+
+<hr><hr><h2 id="30"><a name="search-lists-1">2.0 Search lists</a></h2>
+
+<p id="31">
+Now that logical pathnames are available in Lisp, search lists may be
+obsolete. However, they are preserved for backward compatibility.
+</p>
+
+<p id="32">
+This section describes how load and require find the files they are
+called upon to load. Novice users, who keep the files to load in the
+same directory as they run Lisp need not concern themselves with the
+subtleties of this section. However, the facilities defined in this
+section are very powerful, allowing complicated mechanisms to be
+defined for finding files specified without directory paths or with
+only relative directory paths. If such capability will be useful to
+you, you should read on.
+</p>
+
+<p id="33">The functions <a href="../ansicl/dictentr/provider.htm"><b>require</b></a> and
+<a href="../ansicl/dictentr/load.htm"><b>load</b></a> (and the top-level
+command <a href="tpl-commands/ld.htm"><b>:ld</b></a>) read
+files. The Common Lisp standard specifies how the filename argument to
+these functions is processed to yield the true name of the file to be
+read: the argument is merged (using the Common Lisp function <a href="../ansicl/dictentr/merge-pa.htm"><b>merge-pathnames</b></a>) with the value of
+<a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. This file-finding mechanism
+is inadequate for all but the simplest of applications although
+logical pathnames may be adequate. Note that using the initial value
+of the load search-list, pathnames are merged with <a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. Note further that
+the directory specified by <a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> may be different
+from the directory returned by <a href="operators/excl/current-directory.htm"><b>current-directory</b></a> (see the description of
+<a href="operators/excl/chdir.htm"><b>chdir</b></a>).
+</p>
+
+<p id="34">
+Addressing the need for a more flexible file-finding mechanism,
+Allegro CL incorporates <i>search lists</i>, data structures
+embodying information about how the functions <a href="../ansicl/dictentr/provider.htm"><b>require</b></a> and <a href="../ansicl/dictentr/load.htm"><b>load</b></a> will find a file to load into Lisp. Both
+functions have their own search list.
+</p>
+
+<p id="35">
+Autoloading (where an action like calling a function triggers the
+loading of the module containing the associated functionality) also
+uses a search list. We do not discuss it much in this document since
+autoloading is usually invisible to the user.
+</p>
+
+<p id="36">
+Search lists permit the user to specify a sequence of pathnames to
+be merged with the filename argument to <a href="../ansicl/dictentr/provider.htm"><b>require</b></a> or <a href="../ansicl/dictentr/load.htm"><b>load</b></a>. We henceforth
+refer to this filename argument as the <i>supplied</i>
+<i>name</i>. From among those pathnames resulting from the sequence of
+merging operations, the first pathname that satisfies the given
+criteria will be loaded.  Further, it is possible to specify side
+effects, e.g. to compile a file if the source file has been modified
+more recently than the corresponding compiled (<i>fasl</i>) file. This
+very general mechanism provides considerable control over file-loading
+operations.
+</p>
+
+
+
+
+<p id="37">
+In general, most of the default Lisp functionality stored in a
+file called the <em>bundle file</em>, whose name is <em>files</em> and
+whose extension is <em>bu</em> or <em>ebu</em>.  When you load a
+module (for example, inspect, foreign-functions, trace, etc.) the
+system must know to look in the bundle file instead of looking for the
+<em>fasl</em> file in the Lisp library. The <code>:lib-bundle</code>
+search list keyword argument provides this functionality.
+</p>
+
+
+
+<hr><h2 id="38"><a name="search-list-struct-2">2.1 Search List Structure</a></h2> 
+
+<p id="39">
+A search list is a recursive data structure. It may be a symbol,
+string, pathname, or a list of search lists. (The car of a list is
+interpreted specially.) The elements of a search list are processed
+sequentially. If the search list is recursive, it is processed in
+depth-first fashion. The goal of processing a search list is to locate
+a file to be loaded -- in effect a search list returns the pathname of
+a file. It is often convenient to refer to search lists as returning a
+pathname, especially when discussing recursive search lists. It is an
+error if a file cannot be located within the given constraints. The
+different kinds of search lists are handled as follows:
+</p>
+
+<ul>
+<li id="40">
+<b>Symbols</b>. If the symbol is bound, then its value is interpreted
+as a search list. If the symbol is unbound, it is ignored. If the
+symbol is <code>nil</code>, the denoted file is the filename supplied
+as an argument to <a href="../ansicl/dictentr/load.htm"><b>load</b></a> or
+<a href="../ansicl/dictentr/provider.htm"><b>require</b></a>.
+</li>
+<li id="41">
+<b>Strings and pathnames</b>. The file is determined by merging the
+string or pathname with the supplied name. If search-element is a
+string or pathname search list, the denoted file will be
+<code>(merge-pathnames supplied-name search-element)</code>.
+</li>
+<li id="42">
+<b>Lists</b>. The car of the list determines how the elements of the
+list are processed.  The car may be a keyword or a search list. If it
+is a keyword, it must be one of <code>:lib-bundle</code>,
+<code>:first</code>, <code>:newest</code>,
+<code>:newest-ask-compile</code> ,
+<code>:newest-do-compile</code>, or <code>:call</code>. If
+it is not a keyword, the list is treated as if it began with the
+keyword <code>:first</code>.
+</li>
+</ul>
+
+<p id="43">
+We now define the effect of the keywords that can be the car of a
+search list which is a list. In the definitions below, we borrow the
+Common Lisp notation <em>&rest search-list</em> to represent the
+rest of the list.
+</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="7">
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><b>Keyword</b></td>
+<td WIDTH="25%" VALIGN="TOP"><b>Arguments</b></td>
+<td WIDTH="50%" VALIGN="TOP"><b>Description</b></td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP">
+<code>:first</code>
+</td>
+<td WIDTH="25%" VALIGN="TOP"><i>&rest search-list</i></td> 
+<td WIDTH="50%" VALIGN="TOP">
+<em>search-list</em> may be one or more symbols, strings, pathnames or
+lists of search lists. When this search list keyword is processed,
+each element of <em>search-list</em> is merged with the supplied name
+and the first existing file is returned. Once an existing file is
+found, any remaining elements in <em>search-list</em> are not
+processed. <em>search-list</em> is processed sequentially from head to
+tail. The search list returns <code>nil</code> if, after
+processing all elements of <em>search-list</em>, no such file
+exists. Note that if no search list keyword is specified, then the
+search list is treated as if it began with :first.
+</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><code>:newest</code></td>
+<td WIDTH="25%" VALIGN="TOP"><i>&rest search-list</i></td>
+<td WIDTH="50%" VALIGN="TOP"><em>search-list</em> may be one or more symbols, strings,
+pathnames or lists of search-lists. When this search list keyword is processed, all of the
+elements in <em>search-list</em> are merged with the supplied name and the newest file is
+returned. If no files exist then <code>nil</code> is returned.</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><code>:newest-ask-compile</code></td>
+<td WIDTH="25%" VALIGN="TOP"><i>fasl-name &rest search-list</i></td>
+<td WIDTH="50%" VALIGN="TOP">
+<em>fasl-name</em> must be a string or pathname. <em>search-list</em>
+may be one or more symbols, strings, pathnames or lists of
+search-lists. fasl-name is merged with the supplied name and the
+resulting pathname must name a <i>fasl</i> (compiled Lisp) file. Each
+element of <em>search-list</em> is then merged with the supplied name
+and the first existing file denoted among them, which should be a
+source file, is selected. If the <em>fasl</em> file exists, and if it
+is newer than the first source file, the pathname of the <em>fasl</em>
+file will be returned. If no source file exists, the <em>fasl</em>
+file is returned. If no <em>fasl</em> file exists, or if the
+<em>fasl</em> file is older than the first source file, the user is
+asked whether the source file should be compiled to yield a new fasl
+file. If the response is affirmative, the file is compiled and the
+pathname of the <em>fasl</em> file is returned. Otherwise, the
+pathname of the newest source file is returned. If neither
+<em>fasl</em> file nor source file exists, <code>nil</code> is
+returned.</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><code>:newest-do-compile</code></td>
+<td WIDTH="25%" VALIGN="TOP"><i>fasl-name </i>&rest<i> search-list</i></td>
+<td WIDTH="50%" VALIGN="TOP">
+<em>fasl-name</em> must be a string or pathname. <em>search-list</em>
+may be one or more symbols, strings, pathnames or lists of
+search-lists. A list containing this keyword is processed identically
+to a list containing the <code>:newest-ask-compile</code> keyword,
+except that the user is not asked whether a file should be
+compiled. The compilation is always performed if required and the
+pathname of the resulting fasl file is returned. Note that if two
+source files mutually require each other, then this option can result
+in an infinite loop (where neither can be compiled until the other
+is). To resolve this conflict, one of the files must be loaded
+interpreted. Therefore, the <code>:newest-do-compile </code>option is
+not recommended for <a href="variables/system/s_require-search-list_s.htm"><code>*require-search-list*</code></a>.</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><code>:call</code></td>
+<td WIDTH="25%" VALIGN="TOP"><i>function </i>&rest<i> search-list</i></td>
+<td WIDTH="50%" VALIGN="TOP">
+<em>function</em> must be funcallable. <em>search-list</em> may be one
+or more symbols, strings, pathnames or lists of search-lists. This
+search list keyword argument can be used by the user to add a new
+feature to search list processing.  Note that misuse of this search
+list keyword argument can make it difficult to use Lisp.  Most users
+will never have a use for this search list keyword argument. This
+function is applied, once, to five arguments: the supplied name,
+search-list, order, check-bundle, and check-lower-case. The argument
+order defaults to :first, but may be set to other values while
+processing an earlier search list (see the example
+below). check-bundle is non-<code>nil</code> if the bundle is to be
+checked. check-lower-case is non-nil is there are no lowercase
+characters in the filename (meaning it might be worth checking a
+lowercase version of the name). The function must return a pathname or
+a string or <code>nil</code>, and this value is returned by the search
+list. See the example just below this table. Note: the fifth argument,
+check-lower-case, was added in release 7.0.</td>
+</tr>
+<tr>
+<td WIDTH="25%" VALIGN="TOP"><code>:lib-bundle</code></td> 
+<td WIDTH="17%" VALIGN="TOP">
+<i>sub-pathname &optional
+default-pathname</i>
+</td>
+<td WIDTH="67%" VALIGN="TOP">
+<em>sub-pathname</em> and <em>default-pathname</em> can
+each be either pathnames or symbols whose symbol-value is a
+pathname. <em>sub-pathname</em> may be a list of pathnames that are
+merged together when the search list is processed.
+<p id="44">
+This search list keyword argument first merges the supplied name and
+<em>sub-pathname</em>.  Then the <a href="../ansicl/dictentr/namestri.htm"><b>enough-namestring</b></a> function is used to find the
+shortest string to identify uniquely the pathname relative to
+<em>default-pathname</em>. In other words, the pathname to be
+processed is determined by the form below:
+</p>
+<pre id="45">
+(enough-namestring (merge-pathname supplied-name sub-path)
+default-pathname)
+</pre>
+<p id="46">
+If the pathname produced by the form above is in the bundle, then
+three values are returned: the pathname, the Allegro CL compiler time
+stamp and <code>t</code>. If the pathname is not in the
+bundle, then <code>nil</code> is returned.
+</p>
+</td>
+</tr>
+</table>
+
+<p id="47">For an example using <code>:call</code>, a user supplied function could look like:</p>
+
+<pre id="48">
+(defun my-call 
+ (target search-list order check-bundle)
+ ;; User supplied code, eventually returning a pathname,
+ ;; a string or nil.
+ )
+;; A sample searchlist that uses :call.
+(:newest
+ (:call my-call . . .)
+ (:call my-call . . .))
+;; The order argument to my-call will be :newest instead
+;; of :first. 
+</pre>
+
+
+
+<hr><h2 id="49"><a name="search-list-vars-2">2.2 Search lists variables</a></h2> 
+
+<p id="50">The search list for the <a href="../ansicl/dictentr/load.htm"><b>load</b></a> function is bound to the symbol <a href="variables/system/s_load-search-list_s.htm"><code>*load-search-list*</code></a>. The
+default value on many platforms for this symbol is </p>
+
+<pre id="51">
+(#p"" #p(:type "fasl") #p(:type
+      "cl") #p(:type "lisp"))
+</pre>
+
+<p id="52">Thus <a href="../ansicl/dictentr/load.htm"><b>load</b></a> function looks
+for its file first by its supplied name in the directory which is the
+value of <a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. If
+it cannot find the file there, it looks in the same place for a file
+with a "fasl" file type, then with a "cl" file
+type, and then with a "lisp" file type. If no file is found,
+then the search list returns <code>nil</code> indicating
+no satisfactory file corresponding to the supplied name was
+found. </p>
+
+<p id="53">
+The search list for the <a href="../ansicl/dictentr/provider.htm"><b>require</b></a> function is bound to the symbol <a href="variables/system/s_require-search-list_s.htm"><code>*require-search-list*</code></a>. The
+initial value for this symbol changed in release 6.0 compared to
+earlier releases. Its value is now:
+</p>
+
+<pre id="54">
+((:first #p"sys:;code;.fasl"
+	 #p"sys:;private;.fasl"
+	 #p"sys:;clos;.fasl"
+	 #p"sys:;sys;.fasl"
+         (:lib-bundle #p"sys:;code;.fasl")
+         (:lib-bundle #p"sys:;private;.fasl")
+         (:lib-bundle #p"sys:;clos;.fasl")
+         (:lib-bundle #p"sys:;sys;.fasl"))
+ #p"src:;code;.cl"
+ #p"src:;private;.cl"
+ #p"src:;clos;.cl"
+ #p"src:;sys;.cl")
+</pre>
+
+<p id="55">
+<a href="../ansicl/dictentr/provider.htm"><b>require</b></a> now only looks for
+<i>fasl</i> files in subdirectories of <i>sys:</i> and for source
+files in subdirectories of <i>src:</i>. In <i>sys:</i> it also looks
+in the bundle file. A problem with <a href="../ansicl/dictentr/provider.htm"><b>require</b></a> in earlier releases, where it looked in
+the current directory as well as library directories, was that files
+with names the same as module name ("build" for example) were loaded
+in preference to the library file, with undesired results.
+</p>
+<p id="56">
+Note that looking in the bundle file is preceded by looking in
+<i>code/</i>.  If a file exists in both the bundle and in the
+<em>code/</em> subdirectory, then the first file encountered will be
+in <em>code/</em> and will be used. (This ensures that a fixed
+<em>fasl</em> file which was originally part of the bundle, supplied
+as a patch and placed in <em>code/</em>, will be used instead of the
+version in the bundle file.)
+</p>
+
+<p id="57">There is also an autoload search list, the value of <a href="variables/system/s_autoload-search-list_s.htm"><code>*autoload-search-list*</code></a>,
+which is used by the system when an autoload is triggered. Autoloads
+are triggered by actions such as calling a function whose
+functionality is not presently in the system.  (Not all such functions
+trigger autoloads. Typically only the important functions of a
+facility.) Autoloading is usually nearly invisible to users. Most
+modules are autoloaded from the bundle. The structure of the search
+list, however, ensures that updated fasl files which replace fasl
+files in the bundle are found and used correctly.</p>
+
+
+
+<hr><h2 id="58"><a name="search-list-example-2">2.3 Search list example</a></h2>
+
+<p id="59">Suppose that you maintain a personal Lisp library in a subdirectory
+of your home-directory, and that you wish to have the load function
+look for files in this subdirectory. Let us assume this subdirectory
+is named <i>lisplib</i>. It would be reasonable to search your library
+directory after searching the directory which is the
+value of <a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. (Note that
+the directory specified by <a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> may be different
+from the directory returned by <a href="operators/excl/current-directory.htm"><b>current-directory</b></a>. See the description of
+<a href="operators/excl/chdir.htm"><b>chdir</b></a>.) 
+</p>
+<p id="60">
+Further, say
+you would like to compile automatically all files that are in your
+working or library directories. The following definition of
+system:*load-search-list* in an initialization file (such as
+<i>.clinit.cl</i>) will accomplish this. Your home directory pathname
+is denoted with a tilde (`~'). </p>
+
+<pre id="61">
+(setq system:*load-search-list*
+  '(:first
+    (:newest-do-compile 
+      #.(make-pathname :type "fasl")
+      #.(make-pathname :type "cl"))
+     (:newest-do-compile
+     #.(make-pathname :directory "~/lisplib"
+:type "fasl")
+      #.(make-pathname :directory "~/lisplib"
+:type "cl"))
+ ))
+</pre>
+
+<p id="62">If you start up Lisp in the directory <i>~/work</i>, the expression </p>
+
+<pre id="63">
+(load "foo") 
+</pre>
+
+<p id="64">will result in the following pathnames being generated. </p>
+
+<pre id="65">
+&gt;~/work/foo.fasl ;; these two point to
+~/work/foo.cl ;; the current directory
+~/lisplib/foo.fasl ;; these two point to the 
+~/lisplib/foo.cl ;; lisplib directory
+</pre>
+
+<p id="66">If <em>~/work/foo.cl</em> exists, it will be compiled, if
+necessary, and <em>~/work/foo.fasl</em> will be loaded. If
+<em>~/work/foo.fasl</em> exists but <em>~/work/foo.cl</em> does not,
+<em>~/work/foo.fasl</em> will be loaded. If neither of these files
+exists, the next two files are examined. If <em>~/lisplib/foo.cl</em>
+exists, it will be compiled, if necessary, and
+<em>~/lisplib/foo.fasl</em> will be loaded.  If
+<em>~/lisplib/foo.fasl</em> exists but <em>~/lisplib/foo.cl</em> does
+not, <em>~/lisplib/foo.fasl</em> will be loaded. If neither of these
+files exist, an error is signaled. </p>
+
+<p id="67">
+Note: if you change the value of <a href="variables/system/s_require-search-list_s.htm"><code>*require-search-list*</code></a>, you must include 
+</p>
+
+<pre id="68">
+(:newest (:lib-bundle #p"sys:;code;.fasl") 
+         #p"sys:;code;.fasl"
+         #p"sys:;code;.cl" 
+</pre>
+
+<p id="69">so that Lisp will be able to find library files such as
+<i>foreign.fasl</i>. </p>
+
+
+
+<hr><hr><h2 id="70"><a name="presto-1">3.0 The Allegro Presto facility has been removed</a></h2>
+
+
+<p id="71">
+The Allegro Presto facility was a space saving option in releases of
+Allegro CL prior to 7.0. It is no longer supported. It worked by only
+partially loading function definitions when a
+<i>fasl</i> file was loaded in <b>libfasl</b> mode,
+loading the full definition only when the function was actually
+called. It has been removed bacause the space savings can, for the
+most part, be obtained in other ways, for example by using
+<i>pll</i> files, and the residual space savings no
+longer justify the costs of Allegro Presto. (The main cost was extra
+complexity, both within Allegro CL and in user code and
+applications. This complexity could result in bugs which were often
+subtle and difficult to fix.)
+</p>
+
+<p id="72">
+For the most part, few or no changes to user code are necessitated by
+the removal of the Allegro Presto facility. The operators, variables,
+and arguments associated with Allegro Presto are retained for backward
+compatibility (although use in some cases signals a warning), but are
+effectively no-ops. Here is a list of specific changes:
+</p>
+<ul>
+<li id="73">
+<b>:libfasl argument to load and to load-patches</b>: the functions
+<a href="../ansicl/dictentr/load.htm"><b>load</b></a> and <a href="operators/system/load-patches.htm"><b>load-patches</b></a> took a
+<i>libfasl</i> keyword argument, which, when true,
+caused a <i>fasl</i> file or patch to be loaded in
+libfasl (that is, Allegro Presto) mode (i.e. for functions to be
+partially loaded). That argument is accepted but ignored. When
+specified to <a href="../ansicl/dictentr/load.htm"><b>load</b></a>, a
+warning is signaled (<a href="operators/system/load-patches.htm"><b>load-patches</b></a> ignores it silently). All code
+specifying a value for the <i>libfasl</i> keyword
+argument to either function should be modified to remove reference to
+that argument.
+</li>
+<li id="74">
+<a href="variables/excl/s_libfasl_s.htm"><code>*libfasl*</code></a>: this
+variable provided the default for the <i>libfasl</i>
+keyword argument to <a href="../ansicl/dictentr/load.htm"><b>load</b></a>. It still exists but is
+ignored. References to it should be removed. It may be removed in a
+later release.
+</li>
+<li id="75">
+<b>:presto, :presto-flush-to-code-file, and :presto-lib arguments to
+build-lisp-image</b>: the function <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> took
+<i>presto</i>,
+<i>presto-flush-to-code-file</i>, and
+<i>presto-lib</i> keyword
+arguments. <i>presto</i> controlled the Allegro Presto
+behavior in the image being built and the other two were auxilliary
+arguments for Presto handling.  The arguments are accepted but
+ignored.  A warning is signaled when <i>presto</i> is
+specifed (the other two are ignored silently). All code specifying a
+value for the arguments should be modified to remove references to
+them.
+</li>
+<li id="76">
+<a href="operators/system/prestop.htm"><b>sys:prestop</b></a>: images built
+with the <i>presto</i> keyword argument to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> specified <code>nil</code> were not enabled for Allegro Presto. <a href="operators/system/prestop.htm"><b>sys:prestop</b></a> returned <code>t</code> or <code>nil</code> as the running
+image was or was not Allegro Presto enabled. The operator still exists
+and always returns <code>nil</code>.
+</li>
+<li id="77">
+<a href="operators/excl/resident-function.htm"><b>resident-function</b></a>: this
+function fully loaded its function object argument if necessary, and
+then returned the (perhaps now fully loaded) function object. Since
+all functions are now fully loaded, <a href="operators/excl/resident-function.htm"><b>resident-function</b></a> when applied to a function
+object now effectively acts like <a href="../ansicl/dictentr/identity.htm"><b>identity</b></a> applied to the same
+argument.
+</li>
+<li id="78">
+<a href="operators/system/presto-build-lib.htm"><b>sys:presto-build-lib</b></a>: this
+function bundled all partially loaded <i>fasl</i> files
+into a single file. It is now a no-op (i.e. does nothing) and a
+warning is signaled when it is called.
+</li>
+<li id="79">
+<a href="operators/system/presto-fasl-set.htm"><b>sys:presto-fasl-set</b></a>: this
+function returned a list of files containing partially loaded
+definitions. The operator still exists and always returns <code>nil</code>.
+</li>
+<li id="80">
+<b>Integrated Development Environment tools for building projects</b>:
+options allowed building Allegro Presto images. These options have
+been removed. See <a href="operators/ide/build-flags.htm"><b>build-flags</b></a> and the page for the
+<a href="ide-menus-and-dialogs/project-manager-dialog-advanced.htm">Advanced</a> tab of the
+<a href="ide-menus-and-dialogs/project-manager-dialog.htm">Project Manager
+Dialog</a>.
+</li>
+<li id="81">
+<a href="classes/excl/compiler-no-in-package-warning.htm"><code>compiler-no-in-package-warning</code></a>: this condition
+class was signaled when a file without an <a href="../ansicl/dictentr/in-packa.htm"><b>in-package</b></a> form was compiled or
+loaded. (Such <i>fasl</i> files could not be libfasl
+loaded.) This condition is no longer signaled under any circumstances,
+but the class is still defined for backward compatibility (since
+handlers will error if they are defined with non-existent condition
+classes).
+</li>
+</ul>
+
+
+<hr><hr><h2 id="82"><a name="load-case-issues-1">4.0 Loading and case modes</a></h2>
+
+<p id="83">
+Allegro CL supports both modes regarding case of letters in symbols
+naming Common Lisp objects: a case-insensitive mode where
+<code>foo</code>, <code>FOO</code>,
+<code>foO</code>, <code>Foo</code>, etc. all name the same
+symbol; and a case-sensitive mode where they all name different
+symbols. See <a href="case.htm">case.htm</a> for information on deciding
+upon, setting, and changing the case mode in Allegro CL. (Besides
+case-sensitivity, the mode also controls case preference, specifying
+the case of standard Common Lisp symbols, among other things, as
+described in <a href="case.htm">case.htm</a>.)
+</p>
+
+<p id="84">
+A problem with allowing different case modes is that a
+<i>fasl</i> file compiled in an image using one mode
+will not behave as expected when loaded into an image. Consider for
+example the file containing two function definitions:
+</p>
+
+<pre id="85">
+(in-package :cl-user)
+
+(defun FOO (x) (+ 1 x))
+
+(defun foo (y) (* 2 y))
+</pre>
+
+<p id="86">
+In an ANSI-mode (case-insensitive) image, loading this file (as a
+source file) would result in one function definition, on the symbol
+<code>FOO</code>, which multiplied the argument by 2 and
+returned the result. In a modern-mode (case-sensitive) image, loading
+this file would result in two function definitions, one on
+<code>FOO</code>, and one on <code>foo</code>.
+</p>
+
+<p id="87">
+That problem (different behavior when the same source file is loaded
+into images using different modes) is, however, not surprising given
+the nature of case-sensitivity. Users working in different modes must
+manage the issue of symbols differing only in the case of the
+alphabetic letters in the name of the symbol.
+</p>
+
+<p id="88">
+A more serious problem occurs when dealing with compiled (fasl)
+files. If the file above is compiled in an ANSI-mode image, it will
+contain two (compiled) definitions of the function named by the symbol
+<code>FOO</code>. If the file is compiled in a modern-mode
+image, it will contain, again, two definitions: one on
+<code>FOO</code>, and one on <code>foo</code>. Now
+consider what happens when these fasl files are loaded. Let us
+consider all the cases (we are assuming the setting of <a href="operators/excl/convert-mixed-case-symbols.htm"><b>convert-mixed-case-symbols</b></a> is its
+initial value <code>t</code>, see below in this section
+for the behavior when the value is <code>nil</code>) :
+</p>
+
+<ul>
+<li id="89">
+Compiled in modern-mode, loaded into modern-mode: two definitions, one on
+<code>FOO</code>, and one on <code>foo</code>.
+</li>
+<li id="90">
+Compiled in modern-mode, loaded into ANSI-mode: one definition, on
+<code>FOO</code>.
+</li>
+<li id="91">
+Compiled in ANSI-mode, loaded into ANSI-mode: one definition, on
+<code>FOO</code>.
+</li>
+<li id="92">
+Compiled in ANSI-mode, loaded into modern-mode: one definition, on
+<code>FOO</code>.
+</li>
+</ul>
+
+<p id="93">
+Note the fourth case: when the file is compiled in ANSI-mode and
+loaded into modern-mode, the behavior is different from the source
+file being loaded into a modern-mode image. In all other cases,
+loading the source file and loading the compiled file produces the
+same behavior. Therefore, Allegro CL signals a continuable error with
+condition type <code>excl:fasl-casemode-mismatch</code>
+when an attempt is made to load a fasl file compiled in an ANSI-mode
+image into a modern-mode image:
+</p>
+
+<pre id="94">
+; Fast loading x.fasl
+Error: #p&quot;x.fasl&quot; was compiled in case-insensitive-upper mode.  
+      Continuing to load this file may result in symbol-name mismatches.
+ [condition type: fasl-casemode-mismatch]
+
+Restart actions (select using :continue):
+0: Continue loading x.fasl
+1: retry the load of x.fasl
+2: skip loading x.fasl
+3: Return to Top Level (an &quot;abort&quot; restart)
+4: Abort #&lt;process Initial Lisp Listener&gt;
+[1] cl-user(2): 
+</pre>
+
+<p id="95">
+The correct thing to do at this point is to recompile the source file
+in the modern-mode image (assuming that is possible). The results of
+choosing to continue (by, e.g. calling <a href="tpl-commands/continue.htm"><b>:continue</b></a>) are undefined (but will not be
+untoward if in fact there are no name conflicts).
+</p>
+
+<p id="96">
+Note that the setting of <a href="operators/excl/convert-mixed-case-symbols.htm"><b>convert-mixed-case-symbols</b></a> does not affect
+compilation: all (unescaped) symbol names are converted to uppercase
+in ANSI-mode images during compilation. The setting does affect
+loading of fasl files, however. If the setting is <code>nil</code> (the initial setting is <code>t</code>), then the second case listed above:
+</p>
+
+<ul>
+<li id="97">
+Compiled in modern-mode, loaded into ANSI-mode: one definition, on
+<code>FOO</code>.
+</li>
+</ul>
+
+<p id="98">
+produces the results: two definitions, one on <code>FOO</code>
+and one on <code>|foo|</code> (we are using escapes to indicate
+that the print name of the symbol is all lower case).
+</p>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/loading.htm">9.0 version</a></td></tr></table></html>

@@ -1,0 +1,96 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>body-left-indentation</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/body-left-indentation.htm">9.0 version</a></td></tr></table><h2 id="2">body-left-indentation</h2>
+
+<p id="3"><b>Arguments: </b><i>
+text-edit-pane
+</i></p>
+
+
+<p id="4">
+Returns the current indentation of the lefthand side of a paragraph of
+text in a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>, or the indentation
+indicated by the corresponding lower-left slider of a <a href="../../../classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a>.
+</p>
+<p id="5">
+This generic function may be called either on a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> (typically a <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a>) or on
+a <a href="../../../classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a>.  The methods
+behave somewhat differently: for a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>, <a href="../b/body-left-indentation.htm"><b>body-left-indentation</b></a> is relative
+to <a href="../t/top-left-indentation.htm"><b>top-left-indentation</b></a> to match the
+rich text specification and the Microsoft rich edit control; for a
+<a href="../../../classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a>, <a href="../t/top-left-indentation.htm"><b>top-left-indentation</b></a> is instead
+relative to <a href="../b/body-left-indentation.htm"><b>body-left-indentation</b></a> to match the
+intuitive practice of moving the overall indentation of one or more
+paragraphs without changing the relative indentation of the first line
+of each paragraph.
+</p>
+<p id="6">
+The <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> method returns the
+left indentation of the body of the paragraph that contains the
+text-edit-pane's text cursor (or the first paragraph partly or wholly
+contained in the selected text, if any).  The body is considered to be
+all lines of the paragraph except the first.  This value is measured
+in points, and is measured rightward from the text-edit-pane's <a href="../t/top-left-indentation.htm"><b>top-left-indentation</b></a>,
+which in turn is measured rightward from the interior left of the
+text-edit-pane.  A point is one seventy-second of an inch.  Therefore,
+if a paragraph's body is indented by one inch and its first line is
+indented by a further inch, the top-left-indentation would be 144 and
+the body-left-indentation would be -72.  This is the way that the
+rich-edit control was designed in the operating system, and reflects
+the rich text specification and the values that appear in the rich
+text string that might be read from the text-edit-pane.  For a more
+intuitive style of measurement, it may be preferable to use the
+indentation of an associated <a href="../../../classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a> instead.
+</p>
+<p id="7">
+The setf method for <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> sets the indentation
+of the body of the paragraph that contains the text cursor (or all
+paragraphs that are partly or wholly selected, if any).  If there is a
+<a href="../../../classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a> associated with the
+text-edit-pane (see the function <a href="../r/ruler.htm"><b>ruler</b></a>), then the rich-edit-ruler's
+indentation will be automatically modified to match.
+</p>
+<p id="8">
+The <a href="../../../classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a> method returns the
+position of the slider at the lower left of the ruler, measured in
+points from the leftmost position.  This is not relative to the
+position of the upper left slider, which is normally used to control
+the <a href="../t/top-left-indentation.htm"><b>top-left-indentation</b></a> of a
+text-edit-pane.
+</p>
+<p id="9">
+The setf method for <a href="../../../classes/cg/rich-edit-ruler.htm"><code>rich-edit-ruler</code></a> moves the
+lower-left slider of the ruler to the specified position.  Since the
+<a href="../t/top-left-indentation.htm"><b>top-left-indentation</b></a> of a
+rich-edit-ruler is relative to the <a href="../b/body-left-indentation.htm"><b>body-left-indentation</b></a>, the
+upper-left slider will also move by the same amount.  Each slider will
+be independently constrained at position 0 (the leftmost position) if
+an attempt is made to move it to a negative position.  If there is a
+text-edit-pane associated with the ruler (see the function <a href="../r/rich-edit.htm"><b>rich-edit</b></a>), then the
+paragraph in the text-edit-pane that contains the text cursor (or all
+paragraphs that are partly or wholly contained in the selected text,
+if any) will be automatically modified to match.
+</p>
+<p id="10">
+To apply this function to a <a href="../../../classes/cg/rich-edit.htm"><code>rich-edit</code></a> control, first apply
+<a href="../w/window.htm"><b>window</b></a> to the
+control to obtain a <a href="../../../classes/cg/rich-edit-pane.htm"><code>rich-edit-pane</code></a> to pass to this
+function.
+</p>
+<p id="11">
+To read or modify multiple paragraph attributes of a <a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a> at
+once, see <a href="../g/get-paragraph-format.htm"><b>get-paragraph-format</b></a> or <a href="../s/set-paragraph-format.htm"><b>set-paragraph-format</b></a>.
+See also <a href="../r/right-indentation.htm"><b>right-indentation</b></a>.
+</p>
+
+
+<p id="12">
+See <a href="../../../cg/cg-rich-text.htm">cg-rich-text.htm</a> for information on
+rich text editing in Common Graphics.
+</p>
+
+
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/body-left-indentation.htm">9.0 version</a></td></tr></table></body></html>

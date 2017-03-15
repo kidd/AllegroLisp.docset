@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>configure-gestures</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">configure-gestures</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window </i>&amp;key <i>pan pan-with-single-finger-vertically pan-with-single-finger-horizontally pan-with-gutter pan-with-inertia two-finger-tap zoom rotate press-and-tap</i><i>
+</i></p>
+
+<p id="4">
+Establishes which capabilities of the gesture interface will be
+enabled for the specified window. The value of each keyword argument
+can be either <code>t</code> to enable the
+capability, <code>nil</code> or unspecified to disable it,
+or <code>:inherit</code> to inherit the value from an ancestor
+window or else the system defaults. Since unspecified values disable
+the associated capabilities, all capabilities that are to be enabled
+need to be passed on any call to this function.
+</p>
+<p id="5">
+Here are the meanings of the keyword arguments, all of which appear to
+be enabled by default (at least on the test machine) except where
+otherwise noted:
+</p>
+<ul>
+<li id="6">
+<b>pan</b> - This must be enabled to enable any panning by dragging
+one or two fingers across the screen.  Without the other panning
+options, two-fingered panning will be enabled both horizontally and
+vertically.
+</li>
+<li id="7">
+<b>pan-with-single-finger-vertically</b> - Enables panning vertically
+by dragging a single finger.
+</li>
+<li id="8">
+<b>pan-with-single-finger-horizontally</b> - Enables panning
+horizontally by dragging a single finger.  This one appears to be
+disabled by default to allow the default behavior to select text
+instead.
+</li>
+<li id="9">
+<b>pan-with-gutter</b> - If enabled, restricts panning to either the
+horizontal or vertical direction, whichever one the gesture begins
+with, unless the user also moves in the other direction by some
+minimum amount that breaks out of the gutter.
+</li>
+<li id="10">
+<b>pan-with-inertia</b> - If enabled, calls to <a href="../g/gesture-event.htm"><b>gesture-event</b></a> will continue to be made for a
+brief period after a panning gesture ends during a drag, to allow the
+pan to gradually slow to a halt.
+</li>
+<li id="11">
+<b>two-finger-tap</b> - Enables a simple tap with two fingers.
+</li>
+<li id="12">
+<b>zoom</b> - Enables a two-finger pinch or spread gesture.
+</li>
+<li id="13">
+<b>rotate</b> - Enables a two-finger circular motion around a central
+point.  This one appears to be disabled by default.
+</li>
+<li id="14">
+<b>press-and-tap</b> - Enables a gesture where one finger touches the
+screen momentarily, followed by a second finger while the first is
+still on the screen.
+</li>
+</ul>
+
+<p id="15">
+See also the <a href="../../../classes/cg/touch-point.htm"><code>touch-point</code></a>
+class and <a href="../../../cgide.htm#touch-gesture-1">About Touch
+Gesture Support in Common Graphics on Windows</a>
+in <a href="../../../cgide.htm">cgide.htm</a>.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

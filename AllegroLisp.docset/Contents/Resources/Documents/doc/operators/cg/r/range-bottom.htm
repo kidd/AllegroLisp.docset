@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>range-bottom</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/range-bottom.htm">9.0 version</a></td></tr></table><h2 id="2">range-bottom</h2>
+
+<p id="3"><b>Arguments: </b><i>
+value-axis
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../r/range-bottom.htm"><b>range-bottom</b></a> property of
+a <a href="../../../classes/cg/value-axis.htm"><code>value-axis</code></a>. The value
+may be set at creation time by passing
+the <code>range-bottom</code> initarg, or any
+time later by calling <a href="../r/range-bottom.htm"><b>(setf range-bottom)</b></a>.
+</p>
+<p id="5">
+A value to use for the low end of a <a href="../../../classes/cg/value-axis.htm"><code>value-axis</code></a> in a <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>.  The value should be a real
+number, or else <code>nil</code> to have the value
+computed automatically. The default value
+is <code>nil</code>.
+</p>
+<p id="6">
+When the value is a number, it should typically be less than or equal
+to the smallest data value that is being charted, or at least lower
+than the smallest value that you are interested in viewing at the
+moment.
+</p>
+<p id="7">
+When the value is computed automatically, a relatively "round" number
+is chosen that is equal to or somewhat less than the smallest data
+value. If <a href="../s/set-chart-value.htm"><b>set-chart-value</b></a> is
+later called to add a value that is less than the current
+automatically computed range bottom, then a new range bottom will be
+computed to encompass the new value.
+</p>
+<p id="8">
+The value should be less than the <a href="../r/range-top.htm"><b>range-top</b></a>. To make the values increase in the
+atypical direction, use <a href="../i/invert-axis.htm"><b>invert-axis</b></a> rather than a
+<a href="../r/range-bottom.htm"><b>range-bottom</b></a> that is greater
+than the <a href="../r/range-top.htm"><b>range-top</b></a>.
+</p>
+<p id="9">
+To force a new range bottom to be computed (when the value of this
+property is <code>nil</code>), call <a href="../u/update-chart-widget.htm"><b>update-chart-widget</b></a>.  This may be useful to
+recompute the range after <a href="../s/set-chart-value.htm"><b>set-chart-value</b></a> has been used to modify values
+so that the data range is smaller, or if something has changed to
+cause the widget's <a href="../c/chart-value-returner.htm"><b>chart-value-returner</b></a> function to return a
+different range of values.
+</p>
+<p id="10">
+See also <a href="../m/major-tic-increment.htm"><b>major-tic-increment</b></a>
+and <a href="../m/minor-tics-per-major-tic.htm"><b>minor-tics-per-major-tic</b></a>.
+</p>
+
+
+<p id="11">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/range-bottom.htm">9.0 version</a></td></tr></table></body></html>

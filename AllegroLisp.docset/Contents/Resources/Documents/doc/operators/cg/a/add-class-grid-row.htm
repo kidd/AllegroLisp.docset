@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>add-class-grid-row</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-class-grid-row.htm">9.0 version</a></td></tr></table><h2 id="2">add-class-grid-row</h2>
+
+<p id="3"><b>Arguments: </b><i>
+class-grid data-object </i>&amp;key <i>index scroll-into-view focus-on-row</i><i>
+</i></p>
+
+<p id="4">
+Adds a single object to the list of objects that a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> is displaying. An
+alternative is to replace the whole set of displayed objects by
+calling <a href="../v/value.htm"><b>(setf
+value)</b></a> on the grid, passing a list of all objects to display.
+</p>
+<p id="5">
+Internally this creates a <a href="../../../classes/cg/class-grid-body-row.htm"><code>class-grid-body-row</code></a> and adds it to the body
+<a href="../r/row-section.htm"><b>row-section</b></a> of the <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>.
+</p>
+<p id="6">
+<b><i>class-grid</i></b> is the <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> to which an object will be added.
+</p>
+<p id="7">
+<b><i>data-object</i></b> is the new object to display.
+It should be an instance of the <a href="../e/edited-class.htm"><b>edited-class</b></a> of the <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>.
+</p>
+<p id="8">
+<b><i>index</i></b> specifies the position of the new
+<a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a> among the existing
+rows.  It may be either an integer index, where zero means to add the
+row at the very top, or else <code>nil</code> to add the
+row at the very bottom.  The default is <code>nil</code>.
+</p>
+<p id="9">
+If <b><i>scroll-into-view</i></b> is true, then the body
+<a href="../r/row-section.htm"><b>row-section</b></a> will be
+scrolled as needed to make the new row fully visible.  If <code>nil</code>, then this is not done.  The default is <code>nil</code>.
+</p>
+<p id="10">
+If <b><i>focus-on-row</i></b> is true, then the keyboard
+focus within the grid will be moved to a cell of the new row. If
+<code>nil</code>, then this is not done.  The default is
+<code>nil</code>.  A true value still does not move the
+keyboard focus to the <i>class-grid</i> itself, but when
+it is next moved there the focus will be in the new row.  An
+application could call <a href="../s/set-focus-component.htm"><b>set-focus-component</b></a> to move the focus to the
+<i>class-grid</i> to allow the user to immediately edit
+the new row.
+</p>
+<p id="11">
+Modifying the list of instances that a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> displays will call the grid's <a href="../o/on-change.htm"><b>on-change</b></a> function because the list of
+instances is stored as the <a href="../v/value.htm"><b>value</b></a> property of the widget.
+</p>
+<p id="12">
+See also <a href="../d/delete-class-grid-row.htm"><b>delete-class-grid-row</b></a>.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/add-class-grid-row.htm">9.0 version</a></td></tr></table></body></html>

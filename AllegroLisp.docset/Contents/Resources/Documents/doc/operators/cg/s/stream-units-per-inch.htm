@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>stream-units-per-inch</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/stream-units-per-inch.htm">9.0 version</a></td></tr></table><h2 id="2">stream-units-per-inch</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+
+<p id="4">
+Returns two values; the number of stream units per inch horizontally
+and the number of stream units per inch
+vertically. <i>stream</i> may not be a <a href="../../../classes/cg/text-edit-window.htm"><code>text-edit-window</code></a> or a
+<a href="../../../classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>.
+</p>
+<p id="5">
+<a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> can be used with this
+function to change the scale at which drawing is done on certain
+streams (see below). Initial stream units are in pixels, so, for
+example, drawing a line from (0,0) to (0, 100) draws a line 100 pixels
+long. Changing the value returned by this function will make a line of
+length 100 stream units something other than 100 pixels long.
+</p>
+<p id="6">
+This makes it possible to redirect output that is usually drawn in a
+window so that it is drawn on a printer instead without having to
+scale the drawing coordinates in your own code. Suppose, for example,
+your monitor has 90 pixels per inch. Then
+</p>
+<pre id="7">
+(setf (stream-units-per-inch my-printer-stream) 90)
+</pre>
+<p id="8">
+allows drawing on the printer stream with the same coordinates as
+drawing in the window and getting an image the same size.
+</p>
+<p id="9">
+Only streams that have <a href="../../../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a> mixin can have their <a href="../s/stream-units-per-inch.htm"><b>stream-units-per-inch</b></a>
+modified. <a href="../../../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a> is
+the parent of the printer class but not of any of the built-in window
+classes. To make a scalable window, you must create a class with
+<a href="../../../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a> and some
+window class as superclasses.
+</p>
+
+
+<p id="10">
+See also <a href="../p/points-to-pixels.htm"><b>points-to-pixels</b></a> and
+<a href="../p/pixels-to-points.htm"><b>pixels-to-points</b></a>.
+</p>
+
+
+<h3 id="11">
+GTK Note
+</h3>
+
+<p id="12">
+The class <a href="../../../classes/cg/scaling-stream.htm"><code>scaling-stream</code></a>
+and the function <a href="../s/stream-units-per-inch.htm"><b>(setf stream-units-per-inch)</b></a>
+have not yet been implemented on the GTK platform.
+</p>
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/stream-units-per-inch.htm">9.0 version</a></td></tr></table></body></html>

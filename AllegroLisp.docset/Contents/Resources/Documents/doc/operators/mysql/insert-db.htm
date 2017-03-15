@@ -1,0 +1,87 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>insert-db</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dbi.mysql</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mysql/insert-db.htm">9.0 version</a></td></tr></table><h2 id="2">insert-db</h2>
+
+<p id="3"><b>Arguments: </b><i>
+cols-and-vals </i>&amp;key <i>table db showsql on-dup-keys</i><i>
+</i></p>
+
+<p id="4">
+<a href="insert-db.htm"><b>insert-db</b></a> is a
+macro that creates an sql statement to insert a row into a table. 
+</p>
+<p id="5">
+<b><i>db</i></b> should be a <a href="../../classes/mysql/mysql.htm"><code>mysql</code></a> object returned
+by <a href="connect.htm"><b>connect</b></a>. The value
+of <a href="../../variables/mysql/s_mysql_s.htm"><code>*mysql*</code></a> is a
+suitable value (and the default).
+</p>
+<p id="6">
+<i>table</i> specifies the table in the database into
+which the new row will be inserted. There is no meaningful default:
+you must specify a string naming a table as the value.
+</p>
+<p id="7">
+If <b><i>showsql</i></b> is specified true, the
+generated sql statement will be printed.
+</p>
+<p id="8">
+<b><i>cols-and-vals</i></b> specifies the columns and
+values. It looks like a <a href="../../../ansicl/dictentr/letlet.htm"><b>let</b></a>
+binding list:
+</p>
+
+<p id="9">
+The value of <b><i>on-dup-keys</i></b> has the same form
+as <i>cols-and-vals</i> and specifies which columns
+should be set to which values if the insert tries to insert a row with
+the same values in key columns as an existing row. Using this
+argument will save you the trouble of checking if a row exists and
+then either doing an insert or an update based on what you found.
+</p>
+
+
+<pre id="10">
+cl-user(62): (insert-db ((val 20) 
+                         (sq 400)) 
+                        :table "square" 
+                        :showsql t)
+sql: (format nil "insert into square(val,sq) values(~a,~a)" 20 400)
+nil
+cl-user(63): 
+</pre>
+
+<p id="11">
+If you are inserting a string or blob value you should specify a third
+value of <code>:text</code> in the
+<i>cols-and-vals</i> list.
+</p>
+
+<pre id="12">
+cl-user(63): (sql "create table atext(ttt text)")
+nil
+cl-user(64): (insert-db ((ttt "foo" :text)) :table "atext")
+nil
+</pre>
+
+<p id="13">
+If you do not specify <code>:text</code> and and the value to be
+stored in the column is a string then the string is put in the sql
+statement verbatim. This is useful to store the value of mysql
+built-in functions.
+</p>
+
+<pre id="14">
+cl-user(67): (insert-db ((val "now()") 
+                         (sq "now()*now()")) 
+                        :table "square")
+nil
+cl-user(68): 
+</pre>
+
+<p id="15">
+See <a href="../../mysql.htm">mysql.htm</a> for information on the Allegro MySQL
+facility.
+</p>
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mysql/insert-db.htm">9.0 version</a></td></tr></table></body></html>

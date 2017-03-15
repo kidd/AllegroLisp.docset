@@ -1,0 +1,37 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>title-reader</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/title-reader.htm">9.0 version</a></td></tr></table><h2 id="2">title-reader</h2>
+
+<p id="3"><b>Arguments: </b><i>
+check-box-column-mixin
+</i></p>
+
+<p id="4">
+An accessor on a check-box column (an instance of a subclass of
+<a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a> and <a href="../../../classes/cg/check-box-column-mixin.htm"><code>check-box-column-mixin</code></a>) of a
+<a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>. Returns (or sets with
+<a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>) the name of a function
+which will be called in order to obtain the string to display in each
+check-box grid cell. A title-reader may also be <code>nil</code> rather than a function, in which case no string
+is displayed and the <a href="../../../classes/cg/check-box.htm"><code>check-box</code></a> gadget is centered horizontally in the
+grid cell.  The default value is <code>nil</code>.
+</p>
+<p id="5">
+The function should take an arbitrary grid-row's <a href="../d/data-object.htm"><b>data-object</b></a> as its only argument,
+and return a string to display in that row. For example, here is the
+<a href="../t/title-reader.htm"><b>title-reader</b></a>
+function for the "Full Time?" column of the employee grid example on
+the Examples tab of the <a href="../../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator</a> dialog:
+</p>
+<pre id="6">
+(defun full-time-p-title-reader (employee)
+  ;; Show a string such as "Trent's full-time" 
+  ;; beside the check-box.
+  (format nil "~:(~a~)'s full-time" (name employee)))
+</pre>
+
+
+
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/title-reader.htm">9.0 version</a></td></tr></table></body></html>

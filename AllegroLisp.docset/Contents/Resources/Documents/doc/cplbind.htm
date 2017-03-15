@@ -1,0 +1,1117 @@
+<!DOCTYPE HTML PUBLIC>
+<html>
+
+<head>
+<title>Allegro C++ Binder</title>
+<!--  $Id: cplbind.htm,v 1.3 2009/04/20 18:59:01 layer Exp $  */  -->
+</head>
+
+<body>
+
+<hr>
+
+<h1>A Software Tool to Bind Allegro CL to C++ Libraries</h1>
+
+<hr>
+
+<h4>Draft History:</h4>
+<i>
+
+<p><br>
+2000Oct31 Update to version 1.6.1 - ACL 6.0 </i></p>
+
+<hr>
+
+<h3>Contents</h3>
+
+<ul>
+<!--
+<LI><A HREF="#hhh222">Header 2</A></LI>
+    <UL>
+    <LI><A HREF="#hhh333">Header 3</A></LI>
+    </UL>
+-->
+  <li><a HREF="#intro">Introduction</a></li>
+  <li><a HREF="#using">Using the Tool</a></li>
+  <ul>
+    <li><a HREF="#usingfn">The Main Conversion Function</a></li>
+    <li><a HREF="#usinglout4">Generated Output</a></li>
+    <ul>
+      <li><a HREF="#uglfunc">Ordinary Function Declaration</a> </li>
+      <li><a HREF="#uglsclass">Simple Class or Struct Declaration</a> </li>
+      <li><a HREF="#uglcclass">Complex Class Declaration</a> </li>
+      <li><a HREF="#uglfriends">Friend and Static Declarations</a> </li>
+      <li><a HREF="#uglctempl">Class Templates</a> </li>
+      <li><a HREF="#uglftempl">Function Templates</a> </li>
+      <li><a HREF="#uglother">Other Generated Constructs</a> </li>
+    </ul>
+    <li><a HREF="#usingcust">Customizing Lisp Output</a></li>
+    <li><a HREF="#usingcall">Dealing with Windows Calling Conventions</a></li>
+    <li><a HREF="#usingwarn">Warnings and Notes in Generated Output</a></li>
+    <ul>
+      <li><a HREF="#varargs">C Functions with Varying Number of Arguments</a> </li>
+    </ul>
+    <li><a HREF="#usingprob">Reporting Problems</a></li>
+  </ul>
+  <li><a HREF="#tech">Technical Details</a></li>
+  <ul>
+    <li><a HREF="#techgram">The C++ Grammar</a></li>
+    <li><a HREF="#technames">Wrapper Name Generation</a> </li>
+    <li><a HREF="#techmac">C Macros</a></li>
+  </ul>
+  <li><a HREF="#install">Installing the Tool</a></li>
+</ul>
+
+<hr>
+
+<h2><a NAME="intro">Introduction</a></h2>
+
+<p>The purpose of this tool is to facilitate the creation of an interface between Allegro
+CL and a library of C++ classes, functions, and subprograms. </p>
+
+<p>The C++ library is typically defined by one or more header files that declare the
+classes, functions and variables that make up the interface and define named constants
+significant at the interface. This tool parses the header files and generates appropriate
+Lisp and C code to create the interface. In some cases, warning messages are generated to
+point out areas where programmer intervention may be required. </p>
+
+<p>The Binder tools assume that the (header file) input is a complete and accurate
+representation of the _interface_ to an application library. </p>
+
+<p>The Binder tools are not designed to examine a complete application and to somehow
+abstract out the interface definition. We assume that this abstraction step has already
+been taken by the time the input is presented to the tools. </p>
+
+<p>In the case of third party libraries, this is typically the case. The library is
+defined by a set of header files that are needed to write correct C++ code that calls
+these libraries. The same headers are necessary and usually sufficient to generate the
+Lisp interface to the library. </p>
+
+<p>In the case of user written applications or libraries, it is necessary for the user to
+create appropriate header files defining the interface. The binder tools will fail
+miserably if simply presented with the application code files. For example, the body of
+function definitions is entirely skipped by the source code analyzer; thus, if some type
+declaration occurs only in the scope of a function definition, it will never be seen. </p>
+
+<h2><a NAME="using">Using the Tool</a></h2>
+
+<h3><a NAME="usingfn">The Main Conversion Function</a></h3>
+
+<p>The binding process is normally invoked with the function <code><b>ff:build-C++binding</b></code>
+with the following arguments: </p>
+
+<pre>
+<b>ff:build-C++binding</b> <i>c-or-h-file</i>                     <b><i>Function</i></b>
+                    <b>&amp;key</b> (<i>c-args</i> &quot;-D__cplusplus&quot;)
+                         (<i>lisp-out</i> t)
+                         (<i>c-out</i> t)
+
+                         <i>include</i>
+                         <i>exclude</i>
+
+                         (<i>package</i> 
+                          <b>ff:*default-foreign-symbol-package*</b>)
+
+                         (<i>case</i> <b>ff:*decode-intern-case*</b>)
+                         (<i>hyphen</i> <b>ff:*decode-intern-hyphen*</b>)
+                         (<i>dash</i> <b>ff:*decode-intern-dash*</b>)
+                         (<i>res</i> <b>ff:*decode-intern-res*</b>)
+
+                         (<i>verbose</i> <b>nil</b>)
+
+</pre>
+
+<p>The first and only required argument, <code><i>c-or-h-file</i></code>, is the pathname
+to a file of C code. This file, and any files that it includes, will be parsed in order to
+determine what interface components need to be generated. This is normally a header file (<code>.h</code>
+file type or extension), but may also be a C source file. </p>
+
+<p>The keyword argument <code><i>c-args</i></code> is very important to the correct
+functioning of the interface generator. It is a string containing all the <code>-D</code>
+and <code>-I</code> switches required for a complete and correct compilation of the file
+specified in the <code><i>c-or-h-file</i></code> argument. <b>If this argument is missing
+or incorrect, the effect is usually to print many pre-processor and parser warnings and
+error messages; but it may also silently result in an incorrect interface definition. </b><i>
+
+<ul>
+  <li>When the pre-processor, parser and binder are run on a particular machine and operating
+    system the default assumption is that the header files and compiler options are the ones
+    appropriate for ordinary C compilations on that machine and operating system. </li>
+  <li>Since the Lisp/C binder is a purely symbolic process, these assumptions do not need to
+    hold. Thus, the pre-processor and parser could be run on an SGI/Irix machine, to process
+    header files appropriate to Windows NT. The Lisp image could itself be running on an AIX
+    machine. </li>
+  <li>This process will yield the correct result as long as the pre-processor and parser see
+    the appropriate sequence of header files and the appropriate definitions of C macros. This
+    is most easily achieved in the native environment, but careful analysis of include
+    statements and system macros should allow the correct environment to be created in an
+    unrelated machine. </li>
+</ul>
+</i>
+
+<p>The keyword argument <code><i>lisp-out</i></code> is the pathname of a file where the
+generated Lisp code is placed. If this argument is NIL, nothing is generated. If this
+argument is t, the output is printed to the current value of <code>*standard-output*</code>.
+</p>
+
+<p>The keyword argument <code><i>c-out</i></code> is the pathname of a file where the
+generated C code is placed. If this argument is NIL, nothing is generated. If this
+argument is t, the output is printed to the current value of <code>*standard-output*</code>.
+C program text is generated when wrapper functions are needed to transmit data correctly
+between Lisp and C; one situation is when we need to pass structure arguments by value
+between Lisp and C. </p>
+
+<p>The keyword arguments <code><i>include</i></code> and <code><i>exclude</i></code>
+determine which C files are used to generate Lisp interface components. Only one of these
+arguments may be used in any call to <code><b>ff:build-c-binding</b></code>. When
+specified, the value must be a pathname or a list of pathnames. The effect of the <code><i>include</i></code>
+keyword is to generate Lisp interface components only from the specified file or files;
+any other C files included in the compilation are ignored by the Lisp binder but may be
+essential to the C parsing stage of the process. The effect of the <code><i>exclude</i></code>
+keyword is to ignore the specified files in the Lisp binder. For large libraries using
+complex collections of include files, it may be necessary to make several passes through
+the binding process in order to sort out the files needed in the Lisp interface. The file
+selection arguments apply only to interface components generated from C statements. The
+current implementation cannot determine the origin of a C macro and therefore all constant
+definitions are always included in the generated output. </p>
+
+<p>The keyword arguments <code><i>case</i></code>, <code><i>hyphen</i></code>, <code><i>dash</i></code>,
+and <code><i>res</i></code> control how foreign symbol strings are translated into Lisp
+symbols. The default values are taken from corresponding special variables described in
+the sections on Lisp output and customization. The default behavior is to convert foreign
+name strings according to the current readtable case and to signal an error if a conflict
+occurs. A conflict occurs when two different foreign strings map to the same Lisp symbol
+or when the Lisp symbol is already bound or defined as a function or macro. </p>
+
+<p>The keyword argument <code><i>package</i></code> is the name of a package where foreign
+symbols are interned. The default is NIL. The effect is to use the value of the global
+variable <code><b>ff:*default-foreign-symbol-package*</b></code>. If the value of this
+variable is NIL, the effect is to use a package defined as follows </p>
+
+<pre>
+(defpackage &quot;C++&quot; (:use common-lisp foreign-functions))
+</pre>
+
+<p>It is a good idea to place all the foreign symbols in a Lisp package that does not use
+any other Lisp packages. This is the only definitive way to avoid symbol name conflicts. </p>
+
+<p>The keyword argument <code><i>verbose</i></code> controls the amount of information
+printed when a parse or translation error is encountered. When T, a fragment of the parse
+tree is printed. </p>
+
+<h3><a NAME="usinglout4">Generated Output</a></h3>
+
+<p>The generated Lisp output consists of 
+
+<ul>
+  <li><code><b>ff:bind-c-function</b></code> or <code><b>ff:bind-c-alternate</b></code> forms
+    for declared C functions or for generated C wrapper functions. </li>
+  <li><code><b>ff:bind-c-type</b></code> or <code><b>ff:bind-c-typedef</b></code> forms for
+    declared C types </li>
+  <li><code><b>ff:bind-c-constant</b></code> forms for C constants defined with <code><b>#define</b></code>
+  </li>
+</ul>
+
+<p>The pupose of these macros is to allow further customization of the generated code when
+so desired by the user. </p>
+
+<p>The default definitions of these macros expand to 
+
+<ul>
+  <li><code><b>ff:defforeign</b></code>, </li>
+  <li><code><b>ff:def-c-type</b></code> or <code><b>ff:def-c-typedef</b></code>, and </li>
+  <li><code><b>defconstant</b></code> </li>
+</ul>
+
+<p>forms. In addition, the default definitions emit a call to the <code><b>ff:bind-c-export</b></code>
+macro to cause the conditional export of Lisp symbols corresponding to foreign
+identifiers. </p>
+
+<h4><a NAME="uglfunc">Ordinary Function Declaration</a></h4>
+
+<p>An ordinary function declaration generates the following C wrapper function </p>
+
+<pre>
+<!-- clex01.h:5 -->
+;; clex01.h:5 <1> void foo( int, int);
+
+/* Wrapper function to call (possibly overloaded) C++ function. */
+void  ACL_foo_I_I(  int Arg0, int Arg1)
+{
+  foo(Arg0, Arg1);
+}
+
+(bind-c-function foo_I_I
+     :unconverted-entry-name &quot;ACL_foo_I_I&quot;
+     :c-return-type (&quot;void&quot;)
+     :return-type :void
+     :c-arg-types ((&quot;int&quot;) (&quot;int&quot;))
+     :c-arg-names (Arg0 Arg1)
+     :arguments (:int :int)
+     :prototype t
+     )
+
+</pre>
+
+<p>The prefix &quot;<code>ACL</code>&quot; identifies all generated foreign names. The
+suffix &quot;<code>_I_I</code>&quot; is an abbreviated representation of the argument type
+signature. The Lisp form is generated to complete the interface. </p>
+
+<p>The C wrapper function is needed to avoid conflict with other functions since the name
+&quot;<code>foo</code>&quot; may be overloaded with many function definitions. </p>
+
+<h4><a NAME="uglsclass">Simple Class or Struct Declaration</a></h4>
+
+<p>When a class declaration is not derived from any other classes, and there are no
+virtual members, we generate a corresponding ACL foreign struct type. </p>
+
+<p>The generated C wrappers consist of wrapper functions to call the two explicit member
+functions, the single constructor, and the explicit destructor. </p>
+
+<p>The generated ACL interface defines foreign functions to call all the wrapper
+functions. </p>
+
+<pre>
+<!-- clex02.h:5 -->
+;; clex02.h:5 <2> 
+;; class cl {
+;;         public: int a, b, c;
+;;         int foo( int);
+;;         int foo( int, int);
+;;         cl( int);
+;;         ~ cl();
+;;         };
+
+// Begin member function wrappers for class cl
+
+
+// Wrapper to call member function.
+int ACL_foo_cl_I(  cl * x0, int x1)
+{
+  return(x0-&gt;foo(x1));
+}
+
+
+// Wrapper to call member function.
+int ACL_foo_cl_I_I(  cl * x0, int x1, int x2)
+{
+  return(x0-&gt;foo(x1, x2));
+}
+
+
+/* Wrapper function to call constructor member function. */
+cl *  ACL_cl_I(  int Arg0)
+{
+  return(&amp;cl::cl(Arg0));
+}
+
+
+/* Wrapper function to call destructor member function. */
+void  ACLd_cl(  cl * Arg0)
+{
+  Arg0-&gt;cl::~cl();
+}
+
+
+// End member function wrappers for class cl
+
+(bind-c-typedef cl dummy-forward-class) ;;  forward declaration 
+;; 
+;; Begin member function wrappers for class cl
+;; 
+(bind-c-function foo_cl_I
+     :unconverted-entry-name &quot;ACL_foo_cl_I&quot;
+     :c-return-type (&quot;int&quot;)
+     :return-type :int
+     :c-arg-types ((&quot;cl&quot; &quot;*&quot;) (&quot;int&quot;))
+     :c-arg-names (Arg0 Arg1)
+     :arguments ((* cl) :int)
+     :prototype t
+     )
+(bind-c-function foo_cl_I_I
+     :unconverted-entry-name &quot;ACL_foo_cl_I_I&quot;
+     :c-return-type (&quot;int&quot;)
+     :return-type :int
+     :c-arg-types ((&quot;cl&quot; &quot;*&quot;) (&quot;int&quot;) (&quot;int&quot;))
+     :c-arg-names (Arg0 Arg1 Arg2)
+     :arguments ((* cl) :int :int)
+     :prototype t
+     )
+(bind-c-function cl_I
+     :unconverted-entry-name &quot;ACL_cl_I&quot;
+     :c-return-type (&quot;cl&quot; &quot;*&quot;)
+     :return-type (* cl)
+     :c-arg-types ((&quot;int&quot;))
+     :c-arg-names (Arg0)
+     :arguments (:int)
+     :prototype t
+     )
+(bind-c-function ~cl
+     :unconverted-entry-name &quot;ACLd_cl&quot;
+     :c-return-type (&quot;void&quot;)
+     :return-type :void
+     :c-arg-types ((&quot;cl&quot; &quot;*&quot;))
+     :c-arg-names (Arg0)
+     :arguments ((* cl))
+     :prototype t
+     )
+;; 
+;; End member function wrappers for class cl
+;; 
+(bind-c-type cl (:struct
+  (a :int)   ;; int a
+  (b :int)   ;; int b
+  (c :int)   ;; int c
+  ))   ;; bind-c-type cl
+
+</pre>
+
+<h4><a NAME="uglcclass">Complex Class Declaration</a></h4>
+
+<p>When a class is derived from other classes or contains virtual member functions, we do
+not generate a foreign struct type to avoid dependency on the possibly non-portable
+representation of complex class instances. Instead, we generate a set of access wrappers
+for all the members of the class. </p>
+
+<p>For all the data members, we generate access wrappers that allow values to be extracted
+from or stored into the members. </p>
+
+<pre>
+<!-- clex03.h:5 -->
+;; clex03.h:5 <3> class base { };
+(bind-c-type base (:struct
+  (nil :char)   ;; C++ class without slots
+  ))   ;; bind-c-type base
+
+;; clex03.h:7 <4> 
+;; class clx: public base {
+;;         public: long aa;
+;;         int bb[  0x00000000a];
+;;         void foo( int, int);
+;;         };
+
+// Begin member function wrappers for class clx
+
+
+// Wrapper to call member function.
+void ACL_foo_clx_I_I(  clx * x0, int x1, int x2)
+{
+  x0-&gt;foo(x1, x2);
+}
+
+
+// End member function wrappers for class clx
+
+
+// Begin member access wrappers for class clx
+
+
+// Wrapper to extract scalar value of class member.
+long  ACLv_clx_aa ( clx* x ) {
+     return ( ((x-&gt;aa)) );
+}
+
+// Wrapper to store scalar value into class member.
+void ACLw_clx_aa ( clx* x, long y ) {
+      ((x-&gt;aa)) = y;
+}
+
+// Wrapper to extract address of  class member.
+int * ACLa_clx_bb ( clx* x ) {
+     return ( (int *)((x-&gt;bb)) );
+}
+
+// Wrapper to extract scalar value of indexed class member.
+int  ACLi_clx_bb ( clx* x , int i0 ) {
+     return ( ((x-&gt;bb)[i0]) );
+}
+
+// Wrapper to store scalar value into indexed class member.
+void ACLj_clx_bb ( clx* x , int i0, int y ) {
+      ((x-&gt;bb)[i0]) = y;
+}
+
+// End member access wrappers for class clx
+
+(bind-c-typedef clx dummy-forward-class) ;;  forward declaration 
+
+;; 
+;; Begin member function wrappers for class clx
+;; 
+(bind-c-function foo_clx_I_I
+     :unconverted-entry-name &quot;ACL_foo_clx_I_I&quot;
+     :c-return-type (&quot;void&quot;)
+     :return-type :void
+     :c-arg-types ((&quot;clx&quot; &quot;*&quot;) (&quot;int&quot;) (&quot;int&quot;))
+     :c-arg-names (Arg0 Arg1 Arg2)
+     :arguments ((* clx) :int :int)
+     :prototype t
+     )
+
+;; 
+;; End member function wrappers for class clx
+;; 
+(ff::bind-c-class clx opaque-C++class)  
+
+;; 
+;; Begin member access wrappers for class clx
+;; 
+(bind-c-function clx-aa
+     :unconverted-entry-name &quot;ACLv_clx_aa&quot;
+     :c-return-type (&quot;long&quot;)
+     :return-type :long
+     :c-arg-types ((&quot;clx&quot; &quot;*&quot;))
+     :c-arg-names (Arg0)
+     :arguments ((* clx))
+     :prototype t
+     )
+(bind-c-function set-clx-aa
+     :unconverted-entry-name &quot;ACLw_clx_aa&quot;
+     :c-return-type (&quot;void&quot;)
+     :return-type :void
+     :c-arg-types ((&quot;clx&quot; &quot;*&quot;) (&quot;long&quot;))
+     :c-arg-names (Arg0 Arg1)
+     :arguments ((* clx) :long)
+     :prototype t
+     )
+(defsetf clx-aa set-clx-aa)  
+(bind-c-function clx-bb-a
+     :unconverted-entry-name &quot;ACLa_clx_bb&quot;
+     :c-return-type (&quot;int&quot; &quot;*&quot;)
+     :return-type (* :int)
+     :c-arg-types ((&quot;clx&quot; &quot;*&quot;))
+     :c-arg-names (Arg0)
+     :arguments ((* clx))
+     :prototype t
+     )
+(bind-c-function clx-bb-i
+     :unconverted-entry-name &quot;ACLi_clx_bb&quot;
+     :c-return-type (&quot;int&quot;)
+     :return-type :int
+     :c-arg-types ((&quot;clx&quot; &quot;*&quot;) (&quot;int&quot;))
+     :c-arg-names (Arg0 Arg1)
+     :arguments ((* clx) :int)
+     :prototype t
+     )
+(bind-c-function set-clx-bb-i
+     :unconverted-entry-name &quot;ACLj_clx_bb&quot;
+     :c-return-type (&quot;void&quot;)
+     :return-type :void
+     :c-arg-types ((&quot;clx&quot; &quot;*&quot;) (&quot;int&quot;) (&quot;int&quot;))
+     :c-arg-names (Arg0 Arg1 Arg2)
+     :arguments ((* clx) :int :int)
+     :prototype t
+     )
+(defsetf clx-bb-i set-clx-bb-i)  
+
+;; 
+;; End member access wrappers for class clx
+;; 
+
+</pre>
+
+<p>In the case of the member 'bb' which is an array, we generate an additional wrapper to
+extract the address of the array. </p>
+
+<h4><a NAME="uglfriends">Friend and Static Declarations</a></h4>
+
+<p>In the following C++ example, we have a class that makes several friend and static
+declarations. </p>
+
+<p>The generated C code consists of a wrapper to call the member function of class
+'helper1, a wrapper to call the explicit friend function 'FriendFunc', and a wrapper to
+call the public member 'WithFriends::acc'. </p>
+
+<p>The private friend declaration causes no action at all since it is invisible at the
+interface. </p>
+
+<p>The private static slot is also invisible, but both the public slot and the public
+member function require a wrapper function. </p>
+
+<p>Note that if the same function is declared as a friend in several classses, several
+(duplicate) wrapper functions will be generated. </p>
+
+<p>The generated ACL interface consists of foreign functions to call all the defined
+wrapper functions. In this example, we can also define a foreign struct for class &quot;<code>WithFriends</code>&quot;
+since it has no base classes and no virtual members. </p>
+
+<pre>
+<!-- clex04.h:6 -->
+;; clex04.h:6 <5> class helper1 { int a, b; public: int acc(); };
+
+// Begin member function wrappers for class helper1
+
+
+// Wrapper to call member function.
+int ACL_acc_helper1(  helper1 * x0)
+{
+  return(x0-&gt;acc());
+}
+
+
+// End member function wrappers for class helper1
+
+(bind-c-typedef helper1 dummy-forward-class) ;;  forward declaration 
+
+;; 
+;; Begin member function wrappers for class helper1
+;; 
+(bind-c-function acc_helper1
+     :unconverted-entry-name &quot;ACL_acc_helper1&quot;
+     :c-return-type (&quot;int&quot;)
+     :return-type :int
+     :c-arg-types ((&quot;helper1&quot; &quot;*&quot;))
+     :c-arg-names (Arg0)
+     :arguments ((* helper1))
+     :prototype t
+     )
+
+;; 
+;; End member function wrappers for class helper1
+;; 
+(bind-c-type helper1 (:struct
+  (nil :int)   ;; int a
+  (nil :int)   ;; int b
+  ))   ;; bind-c-type helper1
+
+;; clex04.h:9 <6> class helper2;
+(bind-c-typedef helper2 dummy-forward-class) ;;  forward declaration 
+
+;; clex04.h:13 <7> 
+;; class WithFriends {
+;;         friend class helper2;
+;;         int x, y, z;
+;;         static int StaticPrivateSlot;
+;;         public: friend void FriendFunc( int, int);
+;;         friend int helper1:: acc();
+;;         int acc();
+;;         static int StaticPublicSlot;
+;;         static void StaticFunc();
+;;         };
+
+// Begin member function wrappers for class WithFriends
+
+
+/* Wrapper function to call explicit friend function. */
+void  ACL_FriendFunc_I_I(  int Arg0, int Arg1)
+{
+  FriendFunc(Arg0, Arg1);
+}
+
+
+// Wrapper to call member function.
+int ACL_acc_WithFriends(  WithFriends * x0)
+{
+  return(x0-&gt;acc());
+}
+
+
+// Wrapper to retrieve scalar value of static class slot
+int  ACL_WithFriends_StaticPublicSlot() { return WithFriends::StaticPublicSlot; }
+
+/* Wrapper function to call static member function. */
+void  ACL_WithFriends_StaticFunc( )
+{
+  WithFriends::StaticFunc();
+}
+
+
+// End member function wrappers for class WithFriends
+
+(bind-c-typedef WithFriends dummy-forward-class) ;;  forward declaration 
+
+;; 
+;; Begin member function wrappers for class WithFriends
+;; 
+(bind-c-function FriendFunc_I_I
+     :unconverted-entry-name &quot;ACL_FriendFunc_I_I&quot;
+     :c-return-type (&quot;void&quot;)
+     :return-type :void
+     :c-arg-types ((&quot;int&quot;) (&quot;int&quot;))
+     :c-arg-names (Arg0 Arg1)
+     :arguments (:int :int)
+     :prototype t
+     )
+
+;;    friend int helper1:: acc();
+;;    Wrapper for the above member is defined with class helper1
+(bind-c-function acc_WithFriends
+     :unconverted-entry-name &quot;ACL_acc_WithFriends&quot;
+     :c-return-type (&quot;int&quot;)
+     :return-type :int
+     :c-arg-types ((&quot;WithFriends&quot; &quot;*&quot;))
+     :c-arg-names (Arg0)
+     :arguments ((* WithFriends))
+     :prototype t
+     )
+(bind-c-function WithFriends_StaticPublicSlot
+     :unconverted-entry-name &quot;ACL_WithFriends_StaticPublicSlot&quot;
+     :c-return-type (&quot;int&quot;)
+     :return-type :int
+     :c-arg-types nil
+     :c-arg-names nil
+     :arguments (:void)
+     :prototype t
+     )
+(bind-c-function WithFriends_StaticFunc
+     :unconverted-entry-name &quot;ACL_WithFriends_StaticFunc&quot;
+     :c-return-type (&quot;void&quot;)
+     :return-type :void
+     :c-arg-types nil
+     :c-arg-names nil
+     :arguments (:void)
+     :prototype t
+     )
+
+;; 
+;; End member function wrappers for class WithFriends
+;; 
+(bind-c-type WithFriends (:struct
+  (nil :int)   ;; int x
+  (nil :int)   ;; int y
+  (nil :int)   ;; int z
+  ))   ;; bind-c-type WithFriends
+
+</pre>
+
+<h4><a NAME="uglctempl">Class Templates</a></h4>
+
+<p>Each new instance of a class template is treated as a separate class declaration and
+causes the generation of appropriate wrapper functions and ACL foreign functions. </p>
+
+<h4><a NAME="uglftempl">Function Templates</a></h4>
+
+<p>Function templates have no effect at the C++/ACL interface. In order to generate a
+wrapper and a foreign function, it is necessary to insert a declaring instance of the
+template for each combination of template arguments that are needed in the application. </p>
+
+<p>The C declaration </p>
+
+<pre>
+template &lt;class TP&gt; void tfunc(TP x, TP y) { ...}
+</pre>
+
+<p>does not generate any interface code. </p>
+
+<p>In order to generate a wrapper to call a particular instance of the template function,
+insert a declaration for the desired instance in the binder input: </p>
+
+<pre>
+void tfunc(double, double);
+</pre>
+
+<p>If the interface definition header files fail to mention a set of useful template
+instances, they can be activated without too much name polution by adding a single union
+type that includes all the missing instances: </p>
+
+<pre>
+typedef union { foo<bar> a; foo<baz> b; ... } ignored;
+</pre>
+
+<p>We do not look at the type in a variable declaration. If a variable declaration is the
+only instance of some template class, then we will miss that type. <i>Workaround: add a
+dummy typedef for the template instance.</i> </p>
+
+<h4><a NAME="uglother">Other Generated Constructs</a></h4>
+
+<p>When the C file contains a macro definition that defines an alternate name for a
+declared function, the additional names appear in a <code><b>:all-names</b></code> keyword
+argument in the <code><b>ff:bind-c-function</b></code> form. The value is an alist of a
+symbol and foreign string pair for each name of the foreign function. </p>
+
+<p>By default this list is sorted on the length of the foreign string. The first item in
+the list is used for the name of the primary lisp function defined by defforeign. The
+other names are used to define alternate macros with a bind-c-alternate form such as </p>
+
+<pre>
+;; #define AddAtom AddAtomA
+(ff:bind-c-alternate AddAtomA (&amp;rest args) `(AddAtom ,@args))
+</pre>
+
+<p>When a C function is declared to receive a struct by value, we need to generate some
+new C program code because ACL only allows struct pointers as arguments. We create an
+intermediate C function that receives a pointer argument and passes the dereferenced
+pointer to the intended function. When this situation is encountered in the C source file,
+the following comment is generated along with an appropriate wrapper. </p>
+
+<pre>
+;;NOTE: C wrapper needed to pass structure or union type
+;;    POINT  
+;;   as argument - using 't
+</pre>
+
+<p>Note how the foreign name in this case is not identical to the Lisp name of the C
+function. </p>
+
+<p>The additional C definition is generated in the C output file. </p>
+
+<p>When a C function returns a struct by value, a similar wrapper is generated to return a
+pointer to the structure in freshly allocated malloc memory. </p>
+
+<p>When the C function returns an unsigned value, we generate a Lisp wrapper to extract
+the value correctly. </p>
+
+<h3><a NAME="usingcust">Customizing Lisp Output</a></h3>
+
+<p>The macros <code>ff:bind-c-function</code> and friends are generated in the Lisp output
+file in order to allow convenient user customization of the actual foreign interface. The
+built-in definition in file <code>cdbind.cl</code> emits a <code>ff:defforeign</code> form
+formed by simply selecting the appropriate components of the <code>ff:def-c-binding</code>
+form. Users with their own foreign type layer may use other components of that form to
+generate a more specific foreign interface call. </p>
+
+<p>The function <code>ff::decode-intern</code> is used exclusively to convert strings to
+symbols in the binder. It is a function of one argument, a string or symbol. If the
+argument is a symbol, the function assumes it is already converted and does nothing. </p>
+
+<p>If the argument is a string, this function uses the following special variables
+(re-bound by build-c-binding) to determine how the conversion is done: </p>
+
+<pre>
+<b>*decode-intern-hypen*</b>
+
+   NIL - no effect
+    T  - Insert a hyphen at every lower-to-upper transition and every
+         case-sensitive-to-insensitive transition:
+
+	MenuItemFromPoint  ==&gt;  Menu-Item-From-Point
+        Menu3              ==&gt;  Menu-3
+</pre>
+
+<pre>         
+<b>*decode-intern-dash*</b>
+
+   NIL - no effect
+    T  - translate underscore characters to hyphens
+</pre>
+
+<pre>         
+<b>*decode-intern-case*</b>
+   
+   a readtable   - use the value of readtable-case for that readtable
+   :READER       - use the value of readtable-case for *readtable*
+   :PRESERVE     - keep the case of the string unchanged
+   :DOWNCASE     - convert the string to lowercase letters
+   :UPCASE       - convert the string to uppercase letters
+   :INVERT       - if all the case-sensitive letters are of one case
+                   switch them all to the other case, otherwise leave it be
+</pre>
+
+<pre>         
+<b>*decode-intern-res*</b>
+
+   :error - signal an error if a name conflict occurs
+   :index - try adding 0, 1, 2 to the end of the string until the
+            conflict is resolved
+   a list - take suffix strings in order from the list and append 
+            to the foreign until the conflict is resolved.  If the
+            list runs out, signal an error.
+</pre>
+
+<p>If a different name translation scheme is desired, the function <code><b>decode-intern</b></code>
+must be redefined as required. </p>
+
+<h3><a NAME="usingcall">Dealing with Windows Calling Conventions</a></h3>
+
+<p>The Microsoft C and C++ compilers for Windows allow calling conventions to be specified
+in function types used in declarations and argument prototypes. </p>
+
+<p>The Microsoft compiler expects the keyword tokens <code>__cdecl</code>, <code>__fastcall</code>,
+<code>__stdcall</code>, or <code>__declspec(<i>x</i>)<code> to appear as qualifiers on the
+function type, like <code>const</code> or <code>volatile</code> declarations. </p>
+
+<p>The GNU grammar and predefined macros for <code>__cdecl</code> and friends assume that
+the calling convention is specified by an attribute list following the function prototype. </p>
+
+<p>In order for MS header files to parse correctly with the GNU grammar, we set the
+calling convention macros to null strings. </p>
+
+<p>Since the ACL foreign function definition can specify the calling convention to be
+used, it is useful to capture the calling convention information in the C++ Binder. To do
+so, we must use some minor sleight of hand to work around the incompatibilites between the
+MS and GNU grammars. 
+
+<ol>
+  <li>Run through the header files with the default (null) definitions of __cdecl... </li>
+  <li>Search the resulting Lisp output file for occurrences of &quot;const&quot; and
+    &quot;volatile&quot; in the C++ comment lines. </li>
+  <li>If all 3 calling conventions must be distinguished, and neither &quot;const const&quot;
+    nor &quot;volatile&quot; declarations were found, we can use the following macro
+    definitions: <pre>
+#define __stdcall const const
+#define __cdecl   volatile
+#define __stdcall volatile volatile
+</pre>
+  </li>
+  <li>Modify the bind-c-function macro to scan the :c-modifiers argument and emit the
+    appropriate :convention argument: <pre>
+If &quot;const&quot; appears more than once in :c-modifiers,
+   emit  :convention :stdcall
+If &quot;volatile&quot; appears only once
+   emit  :convention :c
+If &quot;volatile&quot; appears more than once
+   emit  :convention :fastcall
+</pre>
+  </li>
+</ol>
+
+<h3><a NAME="usingwarn">Warnings and Notes in Generated Output</a></h3>
+
+<p>Messages of the form </p>
+
+<pre>
+ ... ;;WARNING: ... 
+</pre>
+
+<p>are emitted when the binder detects a situation where the generated code may function
+incorrectly or when the binder is unable to generate any correct code at all. </p>
+
+<p>Messages of the form </p>
+
+<pre>
+ ... ;;NOTE: ... 
+</pre>
+
+<p>are emitted when the binder generates additional Lisp or C code that may be needed to
+use the interface effectively. </p>
+
+<p>In many cases, inspection of the generated code and specific application knowledge will
+reveal that the generated code is adequate. In some cases it may be necessary to modify
+the generated code. </p>
+
+<p>The binder generates possibly incorrect code with a warning to prevent a possible
+cascade of subsequent warnings that might be caused by generating nothing. This might be
+the case if a type cannot be generated correctly </p>
+
+<pre>
+(FF:BIND-C-CONSTANT &quot;<i>FOO</i>&quot; &quot;<i>StrData</i>&quot;)  ;;WARNING: C code expects wide string&quot;
+</pre>
+
+<p>This warning is emitted when the C string is defined with the <code>L</code> modifier. </p>
+
+<pre>
+<!-- c-ex03.h:6 -->
+;; c-ex03.h:6 <7> typedef long long LongLong;
+
+;;WARNING:  'long long' is implemented as a struct of 2 long!
+(BIND-C-TYPE LONGLONG LONG-LONG)  
+</pre>
+
+<p>The binder defines and emits the following 64 and 128-bit types: </p>
+
+<pre>
+<i>long long</i>              -&gt; <b>FF:LONG-LONG</b>
+<i>unsigned long long</i>     -&gt; <b>FF:UNSIGNED-LONG-LONG</b>
+<i>long double</i>            -&gt; <b>FF:LONG-DOUBLE</b>
+</pre>
+
+<p>These are defines as structs of two long or two double values. This definition has the
+correct storage size but may or may not have the correct alignment. In addition, none of
+these definitions have a numeric equivalent in ACL, and thus do not behave as numbers in
+Lisp code. </p>
+
+<pre>
+;;WARNING: Eval of above Lisp form resulted in error:
+;;   <i>Lisp error condition</i>
+</pre>
+
+<p>This message is usually emitted following a foreign type definition. This result is
+likely to produce a cascade of subsequent error messages. </p>
+
+<h4><a NAME="varargs">C Functions with Varying Number of Arguments</a></h4>
+
+<p>Since all C++ functions require a wrapper, varying number of arguments cannot be
+supported at the general Lisp/C++ interface. Only a fixed number of arguments may be
+passed through the wrapper. In that case we generate the warning of the form </p>
+
+<pre>
+;;WARNING: This wrapper function will pass exactly 2 arguments
+</pre>
+
+<h3><a NAME="usingprob">Reporting Problems</a></h3>
+
+<p>The C parser and parse-tree decoder we use is far from complete from the point of view
+of C language semantics. We have attempted to handle a large collection of commonly found
+cases, but many others are still possible. The structure of the parse-tree decoder is
+modular and extensible so that new cases may be added easily when necessary. </p>
+
+<p>When a new unhandled case is encountered, and the :verbose argument to build-c-binding
+is T, we print a warning message of the form </p>
+
+<pre>
+;;WARNING Unknown STATEMENT
+#|
+:tag1
+<i>parse-tree-dump-1</i>
+:tag2
+<i>parse-tree-dump-2</i>
+...
+|#
+</pre>
+
+<p>and continue. In most cases, if you send us 
+
+<ul>
+  <li>the warning message. </li>
+  <li>the C statement that caused the message, </li>
+  <li>any context needed to compile the C statement, </li>
+</ul>
+
+<p>we may be able to create an extension to the parse-tree decoder in short order. </p>
+
+<h2><a NAME="tech">Technical Details</a></h2>
+
+<h3><a NAME="techgram">The C++ Grammar</a></h3>
+
+<p>The parser used in this tool is derived from the GNU C++ compiler. It uses the Bison
+grammar for C++ included with the distribution of GCC. The specific version of the grammar
+and parser can be obtained in the usual manner by calling our modified version of <code>cpp</code>
+with the <code>-version</code> switch. </p>
+
+<h3><a NAME="technames">Wrapper Name Generation</a></h3>
+
+<p>This section describes in more detail how function names and type names are constructed
+for foreign wrappers and as Lisp symbols. The construction rules are not designed to
+guarantee unique names in all possible cases. If a conflict does occur in a real
+situation, we will need to adjust the process to eliminate it. </p>
+
+<h5>Ordinary Function</h5>
+
+<pre>
+ACL_funcsig(arg, ...)
+  (funcsig arg ...)
+
+  funcsig -&gt; funcname_argsig_argsig...
+  argsig  -&gt; _type   _typeX   _typeXX
+          ;; Built-in types are abbreviated:
+    type  -&gt; C    char
+          -&gt; D    double
+          -&gt; F    float
+          -&gt; G    signed
+          -&gt; I    int
+          -&gt; L    long
+          -&gt; S    short
+          -&gt; U    unsigned
+          -&gt; V    void
+          ;; Modifiers are also abbreviated (most as suffixes):
+       X  -&gt; M    array declaration (one for each dim)
+          -&gt; O    functional argument such as   type(*)(argtype, ...)
+          -&gt; P    pointer    '*'
+          -&gt; R    reference  '&amp;'
+          -&gt; T    template argument (prefix)
+</pre>
+
+<h5>Ordinary Member Function</h5>
+
+<pre>
+ACL_memsig(instance, arg ...)
+  (memsig instance, arg ...)
+
+</pre>
+
+<h5>Qualified Class Name</h5>
+
+<pre>
+Qualified class name foo::bar::baz  
+  shows up as foo_bar_baz in Lisp function names
+  shows up as foo/bar/baz in Lisp foreign type name
+
+
+ACL_classname(arg, ...)          ;; constructor
+  (classname arg ...)
+
+ACLd_classname(instance)         ;; destructor
+  (~classname instance)
+
+ACL_class_slot()                 ;; static slot extractor
+  (class-slot)
+</pre>
+
+<h5>Slot Accessors</h5>
+
+<pre>
+ACLv_class_slot(instance)                   ;; extract value of slot
+  (class-slot instance)
+
+ACLs_class_slot(instance, val)              ;; store value in slot
+  (setf (class-slot instance) val)   
+  (set-class-slot instance val)
+
+
+ACLa_class_slot(instance)                   ;; extract address of slot
+  (class-slot-a instance)
+
+ACLu_class_slot(instance, ptr)              ;; store indirect value in slot
+  (setf (class-slot-a instance) val)
+  (set-class-slot-a instance val)
+
+
+ACLi_class_slot(instance, i0, i1, ...)      ;; extract indexed value from member
+  (class-slot-i instance i0 i1 ...)
+
+ACLj_class_slot(instance, i0, i1, ..., val) ;; store value in indexed member
+  (setf (class-slot-i instance i0 i1 ...) val)
+  (set-class-slot-i instance i0 i1 ... val)
+
+
+ACLr_class_slot(instance, i0, i1, ...)      ;; extract pointer to index part 
+                                            ;; of member
+  (class-slot-r instance i0 i1 ...)
+
+ACLq_class_slot(instance, i0, i1, ..., ptr) ;; store indirect value in indexed 
+                                            ;; part of member
+  (setf (class-slot-r instance i0 i1 ...) val)
+  (set-class-slot-r instance i0 i1 ... val)
+</pre>
+
+<h3><a NAME="techmac">C Macros</a></h3>
+
+<p>C macros are processed from the output of the GNU C pre-processor called with the <code>-dM</code>
+switch. This produces a list of <code>#define</code> lines that does not reflect the input
+order of the definitions. When dependencies between definitions can be determined, we
+order the corresponding Lisp definitions accordingly. Otherwise, the Lisp definitions are
+ordered alphabetically by name. </p>
+
+<p>Macro definitions are parsed by our own <i>ad hoc</i> parser that is described in the C
+Binder manual. 
+
+<ul>
+  <h2><a NAME="install">Installing the Tool</a></h2>
+  <p>The tool consists of two Unix executable files and 3 Lisp source files. The Lisp files
+  are loaded in the following sequence: </p>
+  <pre>
+   :ld loadcplb
+</pre>
+  <p>All three Lisp files are required in order to run the Binder. Only one file, <code>cdbind</code>,
+  is needed to compile and/or load the output of the binder. This file may also need to be
+  modified if the output of the binder needs to be customized. </p>
+  <p>The following two variables must be initialized in <code>loadcplb.cl</code> to the
+  correct pathname for the two Unix executables: </p>
+  <pre>
+<code><b>ff:*c-parser-cpp*</b></code>
+<code><b>ff:*c-parser-cc1plus*</b></code>
+</pre>
+  <p>Other variables: </p>
+  <pre>
+<code><b>ff:*default-foreign-symbol-package*</b></code>
+</pre>
+  <p>The setting of this variable is discussed above. </p>
+  <pre>
+<code><b>ff:*export-foreign-symbols*</b></code>
+</pre>
+  <p>When this variable is set to a non-NIL value, all symbols created in the above package
+  are exported. When this variable is non-NIL, foreign symbols are referenced with
+  single-colon notation from other Lisp packages. When this variable is set to NIL,
+  double-colon notation must be used for all symbols in the foreign-symbol package. </p>
+  <p>NOTE: in the current implementation, only symbols passed to <code><b>ff:bind-c-export</b></code>
+  are exported. </p>
+  <pre>
+<code><b>ff:*c-compiler-macro-names*</b></code>
+</pre>
+  <p>The value of this variable is a list of strings naming variables that should be ignored
+  by the interface generator. These are typically state variables for the compilation and do
+  not affect the usage of the interface. </p>
+</ul>
+</code></code>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>minor-tics-per-major-tic</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/minor-tics-per-major-tic.htm">9.0 version</a></td></tr></table><h2 id="2">minor-tics-per-major-tic</h2>
+
+<p id="3"><b>Arguments: </b><i>
+chart-axis
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../m/minor-tics-per-major-tic.htm"><b>minor-tics-per-major-tic</b></a> property of
+a <a href="../../../classes/cg/chart-axis.htm"><code>chart-axis</code></a>. The value
+may be set at creation time by passing
+the <code>minor-tics-per-major-tic</code> initarg, or any
+time later by calling <a href="../m/minor-tics-per-major-tic.htm"><b>(setf minor-tics-per-major-tic)</b></a>.
+</p>
+<p id="5">
+The number of minor tic positions per major tic position on a
+<a href="../../../classes/cg/chart-axis.htm"><code>chart-axis</code></a> in a
+<a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>. The value
+should be a positive integer, or else nil to use a default value. The
+default value is <code>nil</code> for
+a <a href="../../../classes/cg/value-axis.htm"><code>value-axis</code></a> and 1 for an
+<a href="../../../classes/cg/item-axis.htm"><code>item-axis</code></a>.
+</p>
+<p id="6">
+For a <a href="../../../classes/cg/value-axis.htm"><code>value-axis</code></a>, a value
+of <code>nil</code> causes the number of tics to be
+computed automatically such that the increment from one minor tic
+position to the next is a relatively "round" number. This is done
+after the <a href="../m/major-tic-increment.htm"><b>major-tic-increment</b></a>
+has been determined. For an <a href="../../../classes/cg/item-axis.htm"><code>item-axis</code></a>, a value
+of <code>nil</code> simply defaults to 1.
+</p>
+<p id="7">
+This value is actually the number of minor tic increments from one
+major tic position to the next. That is, if the value is 5 then 4
+minor tic marks will be drawn between the surrounding major tic marks
+to measure 5 increments from one major tic mark to the next.
+</p>
+<p id="8">
+A value of 1 means that there are no minor tic positions between major
+tic positions, resulting in a chart that has only major tic marks,
+major tic labels, and/or major grid lines.
+</p>
+<p id="9">
+See also <a href="../d/draw-major-tics.htm"><b>draw-major-tics</b></a> and
+<a href="../d/draw-minor-tics.htm"><b>draw-minor-tics</b></a>.
+</p>
+
+
+<p id="10">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/minor-tics-per-major-tic.htm">9.0 version</a></td></tr></table></body></html>

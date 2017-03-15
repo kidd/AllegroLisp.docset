@@ -1,0 +1,1443 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>The Debugger API</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/debugger-api.htm">9.0 version</a></td></tr></table><h1 id="2">The Debugger API</h1><p id="3">This document contains the following sections:</p><a href="#debug-api-intro-1">1.0 Introduction</a><br><a href="#debug-api-spec-1">2.0 The dynamic interface specification</a><br>&nbsp;&nbsp;&nbsp;<a href="#debug-api-stack-frames-2">2.1 Stack frames</a><br>&nbsp;&nbsp;&nbsp;<a href="#debug-api-stack-frame-filter-2">2.2 Stack frame filter</a><br>&nbsp;&nbsp;&nbsp;<a href="#debug-api-frame-references-2">2.3 Frame descriptors</a><br>&nbsp;&nbsp;&nbsp;<a href="#debug-api-frame-variables-2">2.4 Frame variables</a><br>&nbsp;&nbsp;&nbsp;<a href="#debug-api-distinguished-values-2">2.5 Distinguished values: unknown-p and none-p</a><br>&nbsp;&nbsp;&nbsp;<a href="#debug-api-transfering-2">2.6 Transferring Control to the debugger: break-hook</a><br>&nbsp;&nbsp;&nbsp;<a href="#debug-api-frame-interface-funs-2">2.7 Frame interface functions</a><br>&nbsp;&nbsp;&nbsp;<a href="#debugger-api-tpl-and-db-interface-2">2.8 Top-level and debugger interface</a><br>&nbsp;&nbsp;&nbsp;<a href="#debugger-api-env-objects-2">2.9 Environment objects</a><br><hr><hr><h2 id="4"><a name="debug-api-intro-1">1.0 Introduction</a></h2>
+
+<p id="5">
+This document is based on a design document prepared by Hans Muller,
+Cris Perdue, Dave Morein, all (at the time they wrote it) of Sun
+Microsystems. Many of their suggestions have been included in the
+Allegro CL debugger.
+</p>
+<p id="6">
+This document describes many of the internals of the Allegro CL
+debugger. (The standard interface to the debugger is described in
+<a href="debugging.htm">debugging.htm</a>.) While most users will have no need
+to concern themselves with debugger internals, certain application
+writers may wish to make use of the information in this document to
+facilitate error handling and debugging in applications.
+</p>
+
+<p id="7">
+Note that the symbols naming functions, variables, etc. in this
+document do not have their own description pages. All relevant
+documentation is in this document.  All symbols are in the
+<code>debugger</code> package (nicknamed
+<code>debug</code>). Some are present in any image that contains
+the debugger. Others are only present when <code>(require
+:sundebug)</code> is evaluated (loading the
+<code>sundebug</code> module). If you intend to use these
+functions, be sure to evaluate
+</p>
+<pre id="8">
+(require :sundebug)
+</pre>
+<p id="9">
+If you are building an application using these functions, be sure the
+<code>:sundebug</code> is included.
+</p>
+
+
+<hr><hr><h2 id="10"><a name="debug-api-spec-1">2.0 The dynamic interface specification</a></h2>
+
+<p id="11">
+This document specifies a set of functions that form the
+foundation for the debugger and inspector.
+</p>
+
+
+<p id="12">
+Many of the functions in this module take a frame-descriptor as an
+argument. For a variety of reasons, not everything that looks like a
+frame descriptor is actually valid. You can
+use <a href="#frame-reference-eq-f">frame-reference-eq</a>. to test
+the validity of a frame descriptor. It is recommended you validate
+frame desciptors with that function prior to passing them to the
+various other functions.
+</p>
+
+
+
+
+<hr><h2 id="13"><a name="debug-api-stack-frames-2">2.1 Stack frames</a></h2>
+
+<p id="14">
+A <i>frame</i> in this specification represents an event in Lisp
+execution which is recorded on the stack. The function <a href="#frame-type-f">frame-type</a> permits
+testing as to what a frame represents. The types of frames include
+</p>
+<ul>
+<li id="15"><code>:function</code>: A compiled or 
+interpreted function application.
+</li>
+<li id="16"><code>:eval</code>: The frame where evaluation of an
+s-expression starts.
+</li>
+<li id="17"><code>:interpreter</code>: An interpreter frame (for which
+<a href="#frame-interpreter-p-f">frame-interpreter-p</a> is
+true).
+</li>
+<li id="18"><code>:binding</code>: The frame where 
+variable binding starts.
+</li>
+<li id="19"><code>:catch</code>: Either an 
+interpreted or compiled catch frame.
+</li>
+<li id="20"><code>:special-form</code>: The frame where 
+evaluation of a special operator starts (the frame name comes from the
+old term for special operators).
+</li>
+</ul>
+
+<p id="21">
+Binding frames corresponding to binding events which are not
+associated directly with function invocation. For example,
+interpretation of LET and LET* forms would be represented as binding
+frames. In-line lambda expressions, such as
+</p>
+<pre id="22">
+((let ((x 2) (y 3)) (foo x y)))
+</pre>
+<p id="23">
+are represented as :binding frames.
+</p>
+<p id="24">
+The following frame interface functions apply to both compiled and 
+interpreted function frames:
+</p>
+<ul>
+<li id="25">
+<a href="#frame-number-vars-f">frame-number-vars</a>
+</li>
+<li id="26">
+<a href="#frame-var-value-f">frame-var-value</a>
+</li>
+<li id="27">
+<a href="#frame-var-name-f">frame-var-name</a>
+</li>
+<li id="28">
+<a href="#frame-var-type-f">frame-var-type</a>
+</li>
+</ul>
+<p id="29">
+When a frame is passed in as an argument to one of these functions, the
+interpreted lexical environment of the frame is accessed if the
+frame represents the interpretation of an s-expression; otherwise,
+the compiled lexical environment of the frame is accessed.
+</p>
+
+
+
+<hr><h2 id="30"><a name="debug-api-stack-frame-filter-2">2.2 Stack frame filter</a></h2>
+
+<p id="31">
+The stack frame filter is a mechanism that can be used by the programmer to 
+customize the presentation of the stack backtrace. The filter will elide
+frames based on frame type and, if the frame represents a function
+application, the function package or function name. Sometimes it
+is desirable to hide all of the functions in some package except a 
+few important ones. An exception can be created by unhiding a function
+whose home package is hidden. 
+</p>
+<p id="32">
+The top-level commands <a href="tpl-commands/hide.htm"><b>:hide</b></a>
+and <a href="tpl-commands/unhide.htm"><b>:unhide</b></a> provide the user interface
+to frame filtering and use these functions.
+</p>
+<p id="33">
+The function <a href="#frame-visible-p-f">frame-visible-p</a> is used to
+determine if a frame is to be displayed or not.
+</p>
+
+<a name="hide-packages-f"></a>
+<hr><h3 id="34"><a name="hide-packages-op-bookmarkxx"></a>hide-packages</h3><h3 id="35">Function</h3><h4 id="36">Package: debugger</h4>
+
+<p id="37"><b>Arguments: </b><i>
+</i> &amp;rest <i>package-names</i><i>
+</i></p>
+
+<p id="38">
+This function makes the specified packages (the names are typically
+keywords) invisible, meaning they will not be displayed in stack
+backtraces (unless all frames are displayed, see the
+<code>:all</code> argument to <a href="tpl-commands/zoom.htm"><b>:zoom</b></a>). If no arguments are supplied then
+this function returns a list of all of the hidden packages.
+</p>
+
+<hr>
+
+<a name="hide-package-internals-f"></a>
+<hr><h3 id="39"><a name="hide-package-internals-op-bookmarkxx"></a>hide-package-internals</h3><h3 id="40">Function</h3><h4 id="41">Package: debugger</h4>
+
+<p id="42"><b>Arguments: </b><i>
+</i> &amp;rest <i>package-names</i><i>
+</i></p>
+
+<p id="43">
+Similar to <a href="#hide-packages-f">hide-packages</a> except this
+function makes internal symbols the specified packages (the names are
+typically keywords) invisible, rather than all symbols.  If no
+arguments are supplied then this function returns a list of all of the
+hidden packages where internals are hidden.
+</p>
+
+<hr>
+
+<a name="hide-functions-f"></a>
+<hr><h3 id="44"><a name="hide-functions-op-bookmarkxx"></a>hide-functions</h3><h3 id="45">Function</h3><h4 id="46">Package: debugger</h4>
+
+<p id="47"><b>Arguments: </b><i>
+</i> &amp;rest <i>functions</i><i>
+</i></p>
+
+<p id="48">
+This function makes the specified functions invisible, meaning they
+will not be displayed in stack backtraces (unless all frames are
+displayed, see the <code>:all</code> argument to <a href="tpl-commands/zoom.htm"><b>:zoom</b></a>). If no arguments are supplied then
+this function returns a list of all of the hidden functions. 
+</p>
+
+<hr>
+
+<a name="hide-frames-f"></a>
+<hr><h3 id="49"><a name="hide-frames-op-bookmarkxx"></a>hide-frames</h3><h3 id="50">Function</h3><h4 id="51">Package: debugger</h4>
+
+<p id="52"><b>Arguments: </b><i>
+</i> &amp;rest <i>frame-types</i><i>
+</i></p>
+
+<p id="53">
+This function makes the specified frame types invisible, meaning they
+will not be displayed in stack backtraces (unless all frames are
+displayed, see the <code>:all</code> argument to <a href="tpl-commands/zoom.htm"><b>:zoom</b></a>). See <a href="#frame-type-f">frame-type</a> for a list of frame
+types. If no arguments are supplied then this function returns a list
+of all of the hidden frame-types.
+</p>
+
+<hr>
+  
+
+<a name="unhide-packages-f"></a>
+<hr><h3 id="54"><a name="unhide-packages-op-bookmarkxx"></a>unhide-packages</h3><h3 id="55">Function</h3><h4 id="56">Package: debugger</h4>
+
+<p id="57"><b>Arguments: </b><i>
+</i> &amp;rest <i>package-names</i><i>
+</i></p>
+
+<p id="58">
+This function makes the specified packages visible, meaning they will
+be displayed in a backtrace even when it is not displaying all frames
+(see the <code>:all</code> argument to <a href="tpl-commands/zoom.htm"><b>:zoom</b></a>). If no arguments are supplied then
+this function makes all packages visible.
+</p>
+
+<hr>
+
+<a name="unhide-package-internals-f"></a>
+<hr><h3 id="59"><a name="unhide-package-internals-op-bookmarkxx"></a>unhide-package-internals</h3><h3 id="60">Function</h3><h4 id="61">Package: debugger</h4>
+
+<p id="62"><b>Arguments: </b><i>
+</i> &amp;rest <i>package-names</i><i>
+</i></p>
+
+<p id="63">
+Similar to <a href="#unhide-packages-f">unhide-packages</a> except this
+function makes internal symbols the specified packages (the names are
+typically keywords) visible, rather than all symbols. If no
+arguments are supplied then this function makes the internals of all 
+packages visible.
+</p>
+
+<hr>
+
+<a name="unhide-functions-f"></a>
+<hr><h3 id="64"><a name="unhide-functions-op-bookmarkxx"></a>unhide-functions</h3><h3 id="65">Function</h3><h4 id="66">Package: debugger</h4>
+
+<p id="67"><b>Arguments: </b><i>
+</i> &amp;rest <i>functions</i><i>
+</i></p>
+
+<p id="68">
+This function makes the specified functions visible, meaning they will
+be displayed in a backtrace even when it is not displaying all frames
+(see the <code>:all</code> argument to <a href="tpl-commands/zoom.htm"><b>:zoom</b></a>). If no arguments are supplied then
+this function makes all functions visible.
+</p>
+
+<hr>
+
+<a name="unhide-frames-f"></a>
+<hr><h3 id="69"><a name="unhide-frames-op-bookmarkxx"></a>unhide-frames</h3><h3 id="70">Function</h3><h4 id="71">Package: debugger</h4>
+
+<p id="72"><b>Arguments: </b><i>
+</i> &amp;rest <i>types</i><i>
+</i></p>
+
+<p id="73">
+This function makes the specified types of stack frames visible,
+meaning they will be displayed in a backtrace even when it is not
+displaying all frames (see the <code>:all</code> argument to
+<a href="tpl-commands/zoom.htm"><b>:zoom</b></a>). If no arguments are
+supplied then this function makes all types of stack frames.  See
+<a href="#frame-type-f">frame-type</a> for a
+list of frame types.
+</p>
+
+<hr>
+
+	
+<a name="frame-visible-p-f"></a>
+<hr><h3 id="74"><a name="frame-visible-p-op-bookmarkxx"></a>frame-visible-p</h3><h3 id="75">Function</h3><h4 id="76">Package: debugger</h4>
+
+<p id="77"><b>Arguments: </b><i>
+frame
+</i></p>
+
+<p id="78">
+Returns true or <code>nil</code> as
+<i>frame</i> is visible (i.e. not hidden) or not
+(i.e. hidden). This function tests a frame with the following
+algorithm:
+</p>
+<pre id="79">
+- If the frame-type for this frame is hidden then return NIL.
+- If the frame-type for this frame is :function then
+        - If this function has been hidden then return NIL
+        - If (this function's package has been hidden AND
+             this function has NOT been :unhidden) then return NIL
+- Otherwise return T
+</pre>
+
+<hr>
+
+
+<a name="frame-filter-hook-f"></a>
+<hr><h3 id="80"><a name="frame-filter-hook-op-bookmarkxx"></a>frame-filter-hook</h3><h3 id="81">Function</h3><h4 id="82">Package: debugger</h4>
+
+<p id="83"><b>Arguments: </b><i>
+</i></p>
+
+
+<p id="84">
+The window debugger must be informed whenever the filter
+(i.e. what is and is not hidden) parameters are changed so that it can
+update the backtrace display. This function returns the function
+that is called after any change has been made to the frame filter
+parameters, i.e. when one of the <b>hide-</b> and <b>unhide-</b> (i.e
+<a href="#hide-packages-f">hide-packages</a>,
+<a href="#hide-functions-f">hide-functions</a>,
+<a href="#hide-frames-f">hide-frames</a>,
+<a href="#unhide-packages-f">unhide-packages</a>,
+<a href="#unhide-functions-f">unhide-functions</a>, and
+<a href="#unhide-frames-f">unhide-frames</a>)
+functions has been called. The value returned by this function
+can be changed with <b>setf</b>. The function returned by
+this function could be defined like this:
+</p>
+<pre id="85">
+(my-frame-filter-hook name args)
+</pre>
+<p id="86">
+Where <i>name</i> is a keyword that represents the
+hide/unhide filter function that was called and
+<i>args</i> is the list of arguments passed to the
+filter function.
+</p>
+
+<hr>
+
+
+
+
+
+
+<hr><h2 id="87"><a name="debug-api-frame-references-2">2.3 Frame descriptors</a></h2>
+
+<p id="88">
+Stack frames are referred to by "frame descriptors" (also known
+as "frame references"), which are
+implemented as structs. Descriptors may be compared with <a href="#frame-reference-eq-f">frame-reference-eq</a>.
+Descriptors must not be modified or generated inside of these
+functions. For all practical purposes, frame descriptors behave
+like pointers. A frame descriptor contains information
+identifying the process or thread it is referring to.
+</p>
+
+
+
+
+<hr><h2 id="89"><a name="debug-api-frame-variables-2">2.4 Frame variables</a></h2>
+
+<p id="90">
+The term "variables" in this document includes both parameters and
+other local variables. Where an index argument is specified in frame
+variable access primitives, it is assumed to be zero-based. It is
+permissible to change the order by which parameters and other locals
+are accessed by <a href="#frame-var-value-f">frame-var-value</a>. Frame
+variables are enumerated starting with requireds, then optionals,
+then extra-args, then the rest arg, then keywords, then locals, which
+may also include closed-over variables.  Whether a keyword is supplied
+or not depends on whether it was given as an argument.
+</p>
+<p id="91">
+Note that some variables may be shown but not bound, and the values of
+some variables may be out of date because of compiler optimizations.
+</p>
+
+
+
+
+<hr><h2 id="92"><a name="debug-api-distinguished-values-2">2.5 Distinguished values: unknown-p and none-p</a></h2>
+
+
+	
+<a name="unknown-p-f"></a>
+<hr><h3 id="93"><a name="unknown-p-op-bookmarkxx"></a>unknown-p</h3><h3 id="94">Function</h3><h4 id="95">Package: debugger</h4>
+
+<p id="96"><b>Arguments: </b><i>
+value
+</i></p>
+
+
+<p id="97">
+Some functions which return LISP values can possibly fail in such a
+way that it is known that the information requested is not
+retrievable. To cover this eventuality, this predicate and
+<a href="#none-p-f">none-p</a> have been
+defined. In this document UNKNOWN refers to an implementation-specific
+value which indicates that the answer to a query made through one of
+the functions in this interface is unknown, but that it may exist.
+NONE refers to an implementation-specific value which indicates that
+the answer to a particular query does not exist. The actual values of
+UNKNOWN and NONE are never directly accessed or manipulated by
+debugger tools. Instead, their presence is detected using
+this predicate and
+<a href="#none-p-f">none-p</a>.
+</p>
+<p id="98">
+The functions which may return these values include:
+</p>
+<ul>
+<li id="99"><a href="#frame-name-f">frame-name</a></li>
+<li id="100"><a href="#frame-type-f">frame-type</a></li>
+<li id="101"><a href="#frame-var-value-f">frame-var-value</a></li>
+<li id="102"><a href="#frame-var-name-f">frame-var-name</a></li>
+<li id="103"><a href="#frame-var-type-f">frame-var-type</a></li>
+</ul>
+
+<hr>
+
+	
+<a name="none-p-f"></a>
+<hr><h3 id="104"><a name="none-p-op-bookmarkxx"></a>none-p</h3><h3 id="105">Function</h3><h4 id="106">Package: debugger</h4>
+
+<p id="107"><b>Arguments: </b><i>
+value
+</i></p>
+
+
+<p id="108">
+Some functions which return LISP values can possibly fail in such a
+way that it is known that the information requested is not
+retrievable. To cover this eventuality, this predicate
+and <a href="#none-p-f">unknown-p</a> have been
+defined. In this document UNKNOWN refers to an implementation-specific
+value which indicates that the answer to a query made through one of
+the functions in this interface is unknown, but that it may exist.
+NONE refers to an implementation-specific value which indicates that
+the answer to a particular query does not exist. The actual values of
+UNKNOWN and NONE are never directly accessed or manipulated by
+debugger tools. Instead, their presence is detected using
+this predicate and
+<a href="#unknown-p-f">unknown-p</a>.
+</p>
+<p id="109">
+The functions which may return these values include:
+</p>
+<ul>
+<li id="110"><a href="#frame-name-f">frame-name</a></li>
+<li id="111"><a href="#frame-type-f">frame-type</a></li>
+<li id="112"><a href="#frame-var-value-f">frame-var-value</a></li>
+<li id="113"><a href="#frame-var-name-f">frame-var-name</a></li>
+<li id="114"><a href="#frame-var-type-f">frame-var-type</a></li>
+</ul>
+
+
+<hr>
+
+
+
+
+<hr><h2 id="115"><a name="debug-api-transfering-2">2.6 Transferring Control to the debugger: break-hook</a></h2>
+
+<a name="break-hook-f"></a>
+<hr><h3 id="116"><a name="break-hook-op-bookmarkxx"></a>break-hook</h3><h3 id="117">Function</h3><h4 id="118">Package: debugger</h4>
+
+<p id="119"><b>Arguments: </b><i>
+</i></p>
+
+<p id="120">
+The function <b>break-hook</b> returns the current value of the break
+hook variable (<code>excl::*break-hook*</code>), and
+<code>(setf (break-hook) value)</code> sets the break hook to
+<code>value</code>. The semantics of the break hook variable 
+are:
+</p>
+<ul>
+<li id="121">
+When this variable is null, and a break or error occurs (whether
+internally or externally generated), the break is processed
+in the LISP's usual manner.
+</li>
+<li id="122">
+When it is not null, it should be a function object and, upon a break
+or error, is FUNCALLed with the following argument list:
+<p id="123"><b>Arguments: </b><i>
+frame-descriptor source continue-format-string args condition
+</i></p>
+</li>
+</ul>
+<p id="124">
+The arguments of the function are as follows:
+</p>
+<ul>
+<li id="125">
+<i>frame-descriptor</i> is assumed to be the frame reference of the
+frame that corresponds to the break.
+</li>
+<li id="126">
+<i>source</i> is
+an indicator as the where the break occurred.  It should have a value
+of <code>:break</code>, <code>:error</code>,
+<code>:warn</code>, etc., depending upon where the break
+originated. 
+</li>
+<li id="127">
+<i>continue-format-string</i> can be <code>nil</code>. If it is not null, then the rest of the arguments
+to the break hook function are assumed to have the same meaning which
+they would have to <b>cerror</b>. If
+<i>continue-format-string</i> is <code>nil</code>, then the error is not assumed to be continuable,
+and <i>args</i> are processed as if they were passed in
+from a <b>break</b>, <b>error</b>, or
+<b>warn</b>. <i>condition</i> is the condition signaled.
+</li>
+</ul>
+<p id="128">
+After gaining control, the debugger will adjust the state of its
+screen display, output the error message, output the continue message
+(for continuable errors), and then call
+<b>excl::read-eval-print-loop</b> (an internal function
+that implements the standard read-eval-print-loop) or <a href="#read-eval-in-context-print-loop-f">read-eval-in-context-print-loop</a>
+if it's available.
+</p>
+<hr>
+
+
+
+<hr><h2 id="129"><a name="debug-api-frame-interface-funs-2">2.7 Frame interface functions</a></h2>
+
+
+
+<a name="frame-reference-p-f"></a>
+<hr><h3 id="130"><a name="frame-reference-p-op-bookmarkxx"></a>frame-reference-p</h3><h3 id="131">Function</h3><h4 id="132">Package: debugger</h4>
+
+<p id="133"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+
+<p id="134">
+This function allows easy identification of "bogus" frame
+references. It returns a non-<code>nil</code> value if and
+only if <i>frame-descriptor</i> refers to a LISP stack frame. If
+possible, this is an exact answer. If not possible, then this
+function at least performs some rudimentary range checking on
+<i>frame-descriptor</i> to reject pointers which are clearly wrong.
+</p>
+
+<hr>
+
+<a name="frame-reference-eq-f"></a>
+<hr><h3 id="135"><a name="frame-reference-eq-op-bookmarkxx"></a>frame-reference-eq</h3><h3 id="136">Function</h3><h4 id="137">Package: debugger</h4>
+
+<p id="138"><b>Arguments: </b><i>
+r1 r2
+</i></p>
+
+
+<p id="139">
+Returns non-<code>nil</code> if and only if the stack
+frame corresponding to <i>r1</i> is the same as the
+stack frame corresponding to <i>r2</i>.
+</p>
+
+<hr>
+
+<a name="oldest-frame-f"></a>
+<hr><h3 id="140"><a name="oldest-frame-op-bookmarkxx"></a>oldest-frame</h3><h3 id="141">Function</h3><h4 id="142">Package: debugger</h4>
+
+
+
+<p id="143"><b>Arguments: </b><i>
+</i> &amp;optional <i>process visible-only-p</i><i>
+</i></p>
+
+
+
+
+
+
+<hr>
+
+
+<a name="newest-frame-f"></a>
+<hr><h3 id="144"><a name="newest-frame-op-bookmarkxx"></a>newest-frame</h3><h3 id="145">Function</h3><h4 id="146">Package: debugger</h4>
+
+
+<p id="147"><b>Arguments: </b><i>
+</i> &amp;optional <i>process visible-only-p</i><i>
+</i></p>
+
+<p id="148">
+Returns a reference to the newest frame on the stack corresponding to
+<i>process</i>. If <i>process</i>
+is not supplied, then it defaults to the process of the caller.
+If <i>visible-only-p</i> is true, the newest frame that
+is not hidden is found.
+</p>
+
+<hr>
+
+
+<a name="newest-break-frame-f"></a>
+<hr><h3 id="149"><a name="newest-break-frame-op-bookmarkxx"></a>newest-break-frame</h3><h3 id="150">Function</h3><h4 id="151">Package: debugger</h4>
+
+<p id="152"><b>Arguments: </b><i>
+</i> &amp;optional <i>stack-group</i><i>
+</i></p>
+
+
+<p id="153">
+Returns a reference to the most recent break frame, that is, the frame
+which called the current invocation of the debugger in the stack
+corresponding to <i>stack-group</i>. If
+<i>stack-group</i> is not supplied, then it defaults to
+the stack group of the caller. This function, as well as
+<a href="#oldest-frame-f">oldest-frame</a>,
+return valid results at any time after the break hook
+function object gains control.
+</p>
+
+<hr>
+
+<a name="next-newer-frame-f"></a>
+<hr><h3 id="154"><a name="next-newer-frame-op-bookmarkxx"></a>next-newer-frame</h3><h3 id="155">Function</h3><h4 id="156">Package: debugger</h4>
+
+<p id="157"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+
+<p id="158">
+This function returns the reference of frame called from frame
+<i>frame-descriptor</i>.
+</p>
+
+<hr>
+<a name="next-older-frame-f"></a>
+<hr><h3 id="159"><a name="next-older-frame-op-bookmarkxx"></a>next-older-frame</h3><h3 id="160">Function</h3><h4 id="161">Package: debugger</h4>
+
+<p id="162"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+
+<p id="163">
+This function returns the reference of frame which called frame
+<i>frame-descriptor</i>.
+</p>
+
+<hr>
+
+<a name="frame-name-f"></a>
+<hr><h3 id="164"><a name="frame-name-op-bookmarkxx"></a>frame-name</h3><h3 id="165">Function</h3><h4 id="166">Package: debugger</h4>
+
+<p id="167"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+<p id="168">
+This function returns the function name corresponding to frame
+<i>frame-descriptor</i> or NONE in the case of an anonymous lambda. If
+<i>frame-descriptor</i> is a binding frame, and a special operator can be
+associated with the frame (e.g. let, let*), then this function returns
+the name of the special operator. If <i>frame-descriptor</i> is an
+<code>:eval</code> frame, then if the expression being evaluated is a
+function application, then this function returns the name of the
+function (if any), or NONE in the case of an anonymous lambda. If the
+expression being evaluated is atomic, then returns NONE.
+</p>
+<p id="169">
+If the function represents a runtime-system operation (an operation in
+the core or kernel of the lisp) then the name returned will be one of
+<code>sys::..context-saving-runtime-operation</code>,
+<code>sys::..lisp-breakpoint-runtime-handler</code>, or
+<code>sys::..runtime-operation</code>.
+</p>
+
+<p id="170">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+
+<hr>
+
+<a name="frame-type-f"></a>
+<hr><h3 id="171"><a name="frame-type-op-bookmarkxx"></a>frame-type</h3><h3 id="172">Function</h3><h4 id="173">Package: debugger</h4>
+
+<p id="174"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+<p id="175">
+This function returns the type of the frame <i>frame-descriptor</i>.
+The types of frames are:
+</p>
+<ul>
+<li id="176"><code>:function</code>: A compiled or 
+interpreted function application.
+</li>
+<li id="177"><code>:eval</code>: The frame where evaluation of an
+s-expression starts.
+</li>
+<li id="178"><code>:interpreter</code>: An interpreter frame (for which
+<a href="#frame-interpreter-p-f">frame-interpreter-p</a> is
+true).
+</li>
+<li id="179"><code>:binding</code>: The frame where 
+variable binding starts.
+</li>
+
+<li id="180"><code>:special-form</code>: The frame where 
+evaluation of a special operator starts (the frame name comes from the
+old term for special operators).
+</li>
+</ul>
+
+<hr>
+
+<a name="frame-interpreter-p-f"></a>
+<hr><h3 id="181"><a name="frame-interpreter-p-op-bookmarkxx"></a>frame-interpreter-p</h3><h3 id="182">Function</h3><h4 id="183">Package: debugger</h4>
+
+<p id="184"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+
+<p id="185"> Returns non-<code>nil</code> if and only if the frame
+referred to by <i>frame-descriptor</i> corresponds to part of the
+internal mechanism of the interpreter.
+</p>
+
+<hr>
+
+<a name="frame-interp-env-p-f"></a>
+<hr><h3 id="186"><a name="frame-interp-env-p-op-bookmarkxx"></a>frame-interp-env-p</h3><h3 id="187">Function</h3><h4 id="188">Package: debugger</h4>
+
+<p id="189"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+
+<p id="190">
+Returns a non-<code>nil</code> value if and only if there
+exists an interpreted environment corresponding to
+<i>frame-descriptor</i>. This would normally be true for those
+<code>:function</code> frames which represent applications of
+interpreted functions, and for <code>:binding</code> frames
+which represent interpretation of <b>let</b> and similar forms.
+</p>
+
+<hr>
+
+<a name="frame-number-vars-f"></a>
+<hr><h3 id="191"><a name="frame-number-vars-op-bookmarkxx"></a>frame-number-vars</h3><h3 id="192">Function</h3><h4 id="193">Package: debugger</h4>
+
+<p id="194"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+<p id="195">
+Returns the total number of variables in the frame referred to
+by <i>frame-descriptor</i>, including all parameters and other local
+variables. This function is used by the debugger to obtain a legal
+bound for parameter <i>n</i> in its calls to
+<a href="#frame-var-name-f">frame-var-name</a>,
+and <a href="#frame-var-type-f">frame-var-type</a>.
+</p>
+
+<hr>
+
+<a name="frame-var-value-f"></a>
+<hr><h3 id="196"><a name="frame-var-value-op-bookmarkxx"></a>frame-var-value</h3><h3 id="197">Function</h3><h4 id="198">Package: debugger</h4>
+
+<p id="199"><b>Arguments: </b><i>
+frame-descriptor n
+</i></p>
+
+<p id="200">
+Gets or sets with <b>setf</b> the value of variable number 
+<i>n</i> in
+stack frame <i>frame-descriptor</i>. <i>n</i> refers to
+the variable number and could refer either to a parameter or to
+another local variable. 
+</p>
+
+<hr>
+
+<a name="frame-var-name-f"></a>
+<hr><h3 id="201"><a name="frame-var-name-op-bookmarkxx"></a>frame-var-name</h3><h3 id="202">Function</h3><h4 id="203">Package: debugger</h4>
+
+<p id="204"><b>Arguments: </b><i>
+frame-descriptor n
+</i></p>
+
+<p id="205">
+Returns the name of variable <i>n</i> in stack frame
+<i>frame-descriptor</i>. If variable <i>n</i> has no
+name, then a value which satisfies NONE-P is returned. If
+variable <i>n</i> is known to have a name, but it cannot
+be retrieved, then a value which satisfies UNKNOWN-P is
+returned.
+</p>
+
+<hr>
+
+<a name="frame-var-type-f"></a>
+<hr><h3 id="206"><a name="frame-var-type-op-bookmarkxx"></a>frame-var-type</h3><h3 id="207">Function</h3><h4 id="208">Package: debugger</h4>
+
+<p id="209"><b>Arguments: </b><i>
+frame-descriptor n
+</i></p>
+
+<p id="210">
+Returns the "type" of a variable <i>n</i> in stack frame
+<i>frame-descriptor</i>. 
+The set of variable types expected, with
+associated meanings is: 
+</p>
+<ul>
+<li id="211"><code>:required</code>: a required parameter.</li>
+<li id="212"><code>:optional</code>: an optional parameter.</li>
+<li id="213"><code>:keyword</code>: a keyword parameter.</li>
+<li id="214"><code>:local</code>: a local variable allocated on
+the frame.</li>
+
+<li id="215"><code>:rest</code>: a rest parameter.</li>
+<li id="216"><code>:extra-arg</code>: an argument in excess of the number
+of allowed arguments (improperly) supplied to a function which does no
+argument count checking.</li>
+</ul>
+<p id="217">
+If the type
+cannot be determined, then a value of NONE is returned.
+</p>
+
+<hr>
+
+<a name="eval-frame-expr-f"></a>
+<hr><h3 id="218"><a name="eval-frame-expr-op-bookmarkxx"></a>eval-frame-expr</h3><h3 id="219">Function</h3><h4 id="220">Package: debugger</h4>
+
+<p id="221"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+
+<p id="222">
+This function returns the expression being evaluated by the
+interpreter in the frame corresponding to <i>frame-descriptor</i>,
+which must be an <code>:eval</code> frame.
+</p>
+
+<p id="223">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+<hr>
+
+<a name="frame-get-actuals-f"></a>
+<hr><h3 id="224"><a name="frame-retry-op-bookmarkxx"></a>frame-retry</h3><h3 id="225">Function</h3><h4 id="226">Package: debugger</h4>
+
+<p id="227"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+<p id="228">
+Returns the actual arguments passed the frame referred to by
+<i>frame-descriptor</i>. 
+</p>
+
+<p id="229">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+<hr>
+
+<a name="frame-retry-f"></a>
+<hr><h3 id="230"><a name="frame-retry-op-bookmarkxx"></a>frame-retry</h3><h3 id="231">Function</h3><h4 id="232">Package: debugger</h4>
+
+<p id="233"><b>Arguments: </b><i>
+frame-descriptor function </i> &amp;rest <i>actuals</i><i>
+</i></p>
+
+<p id="234">
+Retries the frame referred to by <i>frame-descriptor</i>, invoking the
+supplied <i>function</i> and using
+<i>actuals</i> as arguments. There is no default way to
+use the frame's existing arguments; to use the existing arguments, use
+<a href="#frame-get-actuals-f">frame-get-actuals</a> to supply
+the current arguments. If unable to retry the frame, then a value of
+<code>nil</code> is returned. Note that the function
+referenced in the frame is not looked at.
+</p>
+
+<hr>
+
+<a name="frame-return-f"></a>
+<hr><h3 id="235"><a name="frame-return-op-bookmarkxx"></a>frame-return</h3><h3 id="236">Function</h3><h4 id="237">Package: debugger</h4>
+
+<p id="238"><b>Arguments: </b><i>
+frame-descriptor </i> &amp;rest <i>values</i><i>
+</i></p>
+
+<p id="239">
+This function returns one or more values from the frame
+referred to by <i>frame-descriptor</i>. The form of the command is
+</p>
+<pre id="240">
+(frame-return frame value1 value2 ... valuen)
+</pre>
+<p id="241">
+If function A calls B with args C and D,
+</p>
+<pre id="242">
+(defun A (x y) ... (B C D) ...)
+</pre>
+<p id="243">
+and breaks, we would like to say
+</p>
+<pre id="244">
+(frame-return "B" 'E))
+</pre>
+<p id="245">
+This cuts the stack back to "B" and returns 'E to the caller of "B" [in
+this case, to "A"] If this function fails, it returns 2 values:
+<code>nil</code> and an error message which explains why
+it failed. Note: the error message is not output, just returned.
+</p>
+
+<p id="246">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+<hr>
+
+<a name="frame-returnable-p-f"></a>
+<hr><h3 id="247"><a name="frame-returnable-p-op-bookmarkxx"></a>frame-returnable-p</h3><h3 id="248">Function</h3><h4 id="249">Package: debugger</h4>
+
+<p id="250"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+<p id="251">
+Returns non-<code>nil</code> if <a href="#frame-return-f">frame-return</a> will succeed if
+applied to <i>frame-descriptor</i>. <code>nil</code>
+is returned if the frame is not valid (see <a href="#frame-reference-p-f">frame-reference-p</a>).
+</p>
+
+<hr>
+
+<a name="frame-retryable-p-f"></a>
+<hr><h3 id="252"><a name="frame-retryable-p-op-bookmarkxx"></a>frame-retryable-p</h3><h3 id="253">Function</h3><h4 id="254">Package: debugger</h4>
+
+<p id="255"><b>Arguments: </b><i>
+frame-descriptor 
+</i></p>
+
+<p id="256">
+Returns non-<code>nil</code>
+if <a href="#frame-retry-f">frame-retry</a> will succeed if
+applied
+to <i>frame-descriptor</i>. <code>nil</code>
+is returned if the frame is not valid (see <a href="#frame-reference-p-f">frame-reference-p</a>).
+</p>
+
+<hr>
+
+<a name="frame-context-p-f"></a>
+<hr><h3 id="257"><a name="frame-context-p-op-bookmarkxx"></a>frame-context-p</h3><h3 id="258">Function</h3><h4 id="259">Package: debugger</h4>
+
+<p id="260"><b>Arguments: </b><i>
+frame-descriptor 
+</i></p>
+
+
+<p id="261">
+Returns non-<code>nil</code> if and only if the frame
+referred to by <i>frame-descriptor</i> is a valid context for
+<a href="#eval-form-in-context-f">eval-form-in-context</a>.
+</p>
+
+<hr>
+
+
+
+<a name="frame-arglist-f"></a>
+<hr><h3 id="262"><a name="frame-arglist-op-bookmarkxx"></a>frame-arglist</h3><h3 id="263">Function</h3><h4 id="264">Package: debugger</h4>
+
+<p id="265"><b>Arguments: </b><i>
+frame-descriptor 
+</i></p>
+
+
+<p id="266">
+Returns the formal parameter list for the frame corresponding to
+<i>frame-descriptor</i>, or <code>:unknown</code> if this cannot
+be determined.
+</p>
+
+<hr>
+
+<a name="frame-number-actuals-f"></a>
+<hr><h3 id="267"><a name="frame-number-actuals-op-bookmarkxx"></a>frame-number-actuals</h3><h3 id="268">Function</h3><h4 id="269">Package: debugger</h4>
+
+<p id="270"><b>Arguments: </b><i>
+frame-descriptor 
+</i></p>
+
+
+<p id="271">
+Returns a best-guess at the list of actual arguments to the function
+frame corresponding to <i>frame-descriptor</i>. It may be wrong in that
+optional arguments which weren't passed in by the user will be
+returned.
+</p>
+
+<p id="272">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+
+<hr>
+
+<a name="frame-source-code-f"></a>
+<hr><h3 id="273"><a name="frame-source-code-op-bookmarkxx"></a>frame-source-code</h3><h3 id="274">Function</h3><h4 id="275">Package: debugger</h4>
+
+<p id="276"><b>Arguments: </b><i>
+frame-descriptor 
+</i></p>
+
+
+<p id="277">
+This function tries to find the source for the function for the frame
+<i>frame-descriptor</i>, reading the source file and returning a copy of
+the source as its value. If source-file recording is not turned on
+(see <a href="source-file-recording.htm">source-file-recording.htm</a>), or if the source
+cannot otherwise be determined, <code>nil</code> is
+returned.
+</p>
+
+<p id="278">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+
+
+<hr>
+
+
+
+
+<hr><h2 id="279"><a name="debugger-api-tpl-and-db-interface-2">2.8 Top-level and debugger interface</a></h2>
+
+
+
+
+<a name="debug-break-level-f"></a>
+<hr><h3 id="280"><a name="debug-break-level-op-bookmarkxx"></a>debug-break-level</h3><h3 id="281">Function</h3><h4 id="282">Package: debugger</h4>
+
+<p id="283"><b>Arguments: </b><i>
+</i> &amp;optional <i>process</i><i>
+</i></p>
+
+<p id="284">
+Returns the current debugger break level of
+<i>process</i> (the current process, which is the value
+of <a href="variables/system/s_current-process_s.htm"><code>*current-process*</code></a>, if unsupplied). Break
+level 0 corresponds to normal operation (no break).
+</p>
+
+<hr>
+
+<a name="debug-pop-f"></a>
+<hr><h3 id="285"><a name="debug-pop-op-bookmarkxx"></a>debug-pop</h3><h3 id="286">Function</h3><h4 id="287">Package: debugger</h4>
+
+<p id="288"><b>Arguments: </b><i>
+</i> &amp;optional <i>process n break-level</i><i>
+</i></p>
+
+<p id="289">
+Pops control to the previous break or the top level of process
+<i>process</i> (the current process, which is the value of
+<a href="variables/system/s_current-process_s.htm"><code>*current-process*</code></a>,
+if unsupplied). If <i>n</i> is specified and greater
+than 1, then multiple levels are popped.  In case of an error, this
+routine returns <code>nil</code>, although, if it returns
+at all, something has to be wrong. This function returns <code>nil</code> if an attempt was made to pop past the top-level.
+</p>
+<p id="290">
+<i>break-level</i> is the number of break-levels
+in the process to be popped from.  If not given, it is calculated.
+When break-level is one (the target process is at break-level 0)
+a process-reset is done instead of a <b>debug-pop</b> on that process.
+</p>
+
+<hr>
+
+<a name="debug-reset-f"></a>
+<hr><h3 id="291"><a name="debug-reset-op-bookmarkxx"></a>debug-reset</h3><h3 id="292">Function</h3><h4 id="293">Package: debugger</h4>
+
+<p id="294"><b>Arguments: </b><i>
+</i> &amp;optional <i>process</i><i>
+</i></p>
+
+<p id="295">
+Unwinds the stack of process <i>process</i> (the current
+process, which is the value of <a href="variables/system/s_current-process_s.htm"><code>*current-process*</code></a>, if unsupplied) to
+top-level. Returns <code>nil</code> and an error message
+string in the case of an unrecoverable error.
+</p>
+
+<hr>
+
+<a name="debug-continue-f"></a>
+<hr><h3 id="296"><a name="debug-continue-op-bookmarkxx"></a>debug-continue</h3><h3 id="297">Function</h3><h4 id="298">Package: debugger</h4>
+
+<p id="299"><b>Arguments: </b><i>
+</i> &amp;optional <i>process</i><i> </i> &amp;rest <i>args</i><i>
+</i></p>
+
+<p id="300">
+Continues from the most recent error (which must be continuable) of
+process <i>process</i> (the current process, which is the
+value of <a href="variables/system/s_current-process_s.htm"><code>*current-process*</code></a>, if unsupplied). Returns
+the values <code>nil</code> and an error message string if
+the error cannot be continued.
+</p>
+
+<hr>
+
+<a name="most-recent-error-string-f"></a>
+<hr><h3 id="301"><a name="most-recent-error-string-op-bookmarkxx"></a>most-recent-error-string</h3><h3 id="302">Function</h3><h4 id="303">Package: debugger</h4>
+
+<p id="304"><b>Arguments: </b><i>
+</i> &amp;optional <i>process</i><i>
+</i></p>
+
+<p id="305">
+Returns a string that corresponds to the message output
+by <b>error</b>. <i>process</i> is the process
+where the error occurred (the current process, which is the
+value of <a href="variables/system/s_current-process_s.htm"><code>*current-process*</code></a>, if unsupplied).
+</p>
+
+<hr>
+
+<a name="most-recent-continuable-error-string-f"></a>
+<hr><h3 id="306"><a name="most-recent-continuable-error-string-op-bookmarkxx"></a>most-recent-continuable-error-string</h3><h3 id="307">Function</h3><h4 id="308">Package: debugger</h4>
+
+<p id="309"><b>Arguments: </b><i>
+</i> &amp;optional <i>process</i><i>
+</i></p>
+
+<p id="310">
+returns the message that was generated from the
+<i>continue-format-string</i> to <b>cerror</b> argument
+(if any). <i>process</i> is the process
+where the error occurred (the current process, which is the
+value of <a href="variables/system/s_current-process_s.htm"><code>*current-process*</code></a>, if unsupplied).
+</p>
+
+<hr>
+
+<a name="error-continuable-p-f"></a>
+<hr><h3 id="311"><a name="error-continuable-p-op-bookmarkxx"></a>error-continuable-p</h3><h3 id="312">Function</h3><h4 id="313">Package: debugger</h4>
+
+<p id="314"><b>Arguments: </b><i>
+</i> &amp;optional <i>process</i><i>
+</i></p>
+
+
+<p id="315">
+Returns non-<code>nil</code> if and only if there is a
+"most recent error", and it is continuable. This function could be
+defined like this:
+</p>
+<pre id="316">
+(defun error-continuable-p () 
+   (most-recent-continuable-error-string))
+</pre>
+
+<p id="317">
+<i>process</i> is the process
+where the error occurred (the current process, which is the
+value of <a href="variables/system/s_current-process_s.htm"><code>*current-process*</code></a>, if unsupplied).
+</p>
+<hr>
+
+
+<a name="read-eval-in-context-print-loop-f"></a>
+<hr><h3 id="318"><a name="read-eval-in-context-print-loop-op-bookmarkxx"></a>read-eval-in-context-print-loop</h3><h3 id="319">Function</h3><h4 id="320">Package: debugger</h4>
+
+<p id="321"><b>Arguments: </b><i>
+</i></p>
+
+<p id="322">
+Similar to <b>excl::read-eval-print-loop</b>, this function evaluates with
+respect to an environment. The environment is set separately via the
+<a href="#set-context-f">set-context</a> function.
+</p>
+
+<hr>
+
+
+<a name="frame-function-f"></a>
+<hr><h3 id="323"><a name="frame-function-op-bookmarkxx"></a>frame-function</h3><h3 id="324">Function</h3><h4 id="325">Package: debugger</h4>
+
+<p id="326"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+<p id="327">
+Returns the function object associated with frame
+<i>frame-descriptor</i>.
+</p>
+
+<p id="328">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+<hr>
+
+<a name="frame-expression-f"></a>
+<hr><h3 id="329"><a name="frame-expression-op-bookmarkxx"></a>frame-expression</h3><h3 id="330">Function</h3><h4 id="331">Package: debugger</h4>
+
+<p id="332"><b>Arguments: </b><i>
+frame-descriptor </i>&amp;key <i>function</i><i>
+</i></p>
+<p id="333">
+Returns a form that attempts to reproduce the call to frame
+<i>frame-descriptor</i>, if possible. Some of the elements of the form
+may contain unknowns if argument saving is turned off. If
+<i>function</i> is true, then a funcall-style form is
+returned, using the actual function object instead of trying to use
+its name in a normal lisp function call.
+</p>
+
+<p id="334">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+<hr>
+
+<a name="output-frame-f"></a>
+<hr><h3 id="335"><a name="output-frame-op-bookmarkxx"></a>output-frame</h3><h3 id="336">Function</h3><h4 id="337">Package: debugger</h4>
+
+
+
+<p id="338"><b>Arguments: </b><i>
+dest frame-descriptor </i> &amp;optional <i>mode func-style output-function</i><i>
+</i></p>
+
+
+<p id="339">
+The return value is undefined; this function is called for its side
+effects. Prints a description of frame <i>frame-descriptor</i> in the
+desired mode to the stream <i>dest</i>.
+<i>dest</i> is a stream suitable as the :stream argument
+to <a href="../ansicl/dictentr/writepri.htm"><b>write</b></a>. 
+</p>
+<p id="340">
+<i>mode</i> may be :brief,
+:moderate, or :verbose (see <a href="debugging.htm#brief-moderate-verbose-2">:brief, :moderate, and :verbose modes
+of :zoom</a> in <a href="debugging.htm">debugging.htm</a>).
+</p>
+<p id="341">
+If
+<i>output-function</i> is supplied, it must be a
+function of two arguments; the object that is being written, and the
+destination. The <i>output-function</i> is used only
+for brief or moderate modes; it is not used for verbose mode.
+</p>
+<p id="342">
+If <i>func-style</i> is non-<code>nil</code>, then the function object is used instead of the
+name of the function.
+</p>
+
+<p id="343">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+
+<hr>
+
+
+
+<hr><h2 id="344"><a name="debugger-api-env-objects-2">2.9 Environment objects</a></h2>
+
+
+<p id="345">
+Where environment structs are returned by dynamic interface functions,
+the bindings shown are the current value of the bindings established
+by the frame which was passed in as an argument. An environment struct
+contains all necessary information to identify these bindings,
+possibly including CLtL2-style augmentable environment objects. An
+environment struct is denoted by <i>environment</i> in the
+descriptions below.
+</p>
+
+<a name="eval-form-in-context-f"></a>
+<hr><h3 id="346"><a name="eval-form-in-context-op-bookmarkxx"></a>eval-form-in-context</h3><h3 id="347">Function</h3><h4 id="348">Package: debugger</h4>
+
+<p id="349"><b>Arguments: </b><i>
+form </i> &amp;optional <i>environment</i><i> 
+</i></p>
+
+<p id="350">
+Evaluates <i>form</i> from within the context of
+environment <i>environment</i>. 
+</p>
+<p id="351">
+If the environment struct includes
+a compiled function's frame, then the compiled environment includes
+bindings for any variables whose names can be determined from local
+name info, or else dummy names are generated to identify each variable
+in the compiled function. An attempt is made to match the variable
+names within a compiled function to the names given to those variables
+by the disassembler.
+</p>
+<p id="352">
+If the environment struct contains an interpreted environment, then
+its bindings are used as well. If the form performs a <b>setf</b> or
+<b>setq</b>, the environment is changed if possible to reflect the
+<b>setf</b> or <b>setq</b>. 
+</p>
+<p id="353">
+After the form is evaluated, the environments are restored, and the
+value returned from the form is returned.
+</p>
+
+<hr>
+
+
+<a name="environment-of-frame-f"></a>
+<hr><h3 id="354"><a name="environment-of-frame-op-bookmarkxx"></a>environment-of-frame</h3><h3 id="355">Function</h3><h4 id="356">Package: debugger</h4>
+
+<p id="357"><b>Arguments: </b><i>
+frame-descriptor
+</i></p>
+
+<p id="358">
+Returns an environment struct as seen for frame reference
+<i>frame-descriptor</i>.
+</p>
+
+<p id="359">
+If <i>frame-descriptor</i> points to an invalid frame,
+this function signals an error. You can check whether a frame is valid
+with <a href="#frame-reference-p-f">frame-reference-p</a>.
+</p>
+
+
+<hr>
+
+
+
+
+
+<a name="environment-p-f"></a>
+<hr><h3 id="360"><a name="environment-p-op-bookmarkxx"></a>environment-p</h3><h3 id="361">Function</h3><h4 id="362">Package: debugger</h4>
+
+<p id="363"><b>Arguments: </b><i>
+environment
+</i></p>
+
+
+<p id="364">
+Returns a non-<code>nil</code> value if and only if
+<i>environment</i> is an environment struct.
+</p>
+
+<hr>
+
+<a name="set-context-f"></a>
+<hr><h3 id="365"><a name="set-context-op-bookmarkxx"></a>set-context</h3><h3 id="366">Function</h3><h4 id="367">Package: debugger</h4>
+
+<p id="368"><b>Arguments: </b><i>
+environment
+</i></p>
+
+
+<p id="369">
+Set the context for <a href="#read-eval-in-context-print-loop-f">read-eval-in-context-print-loop</a>.
+<i>environment</i> must be an environment struct. See
+<a href="#get-context-f">get-context</a>.
+</p>
+
+<hr>
+
+<a name="get-context-f"></a>
+<hr><h3 id="370"><a name="get-context-op-bookmarkxx"></a>get-context</h3><h3 id="371">Function</h3><h4 id="372">Package: debugger</h4>
+
+<p id="373"><b>Arguments: </b><i>
+environment
+</i></p>
+
+
+<p id="374">
+Get the context for <a href="#read-eval-in-context-print-loop-f">read-eval-in-context-print-loop</a>.
+<i>environment</i> must be an environment struct. See
+<a href="#get-context-f">set-context</a>.
+</p>
+
+<hr>
+
+
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/debugger-api.htm">9.0 version</a></td></tr></table></html>

@@ -1,0 +1,122 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>check-box</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/check-box.htm">9.0 version</a></td></tr></table><h2 id="2">check-box</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of the check-box control.
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+Instance of the check-box class. This is a standard check-box
+control. A check-box is a control which permits two of three states
+(depending on the value of the <a href="../../operators/cg/t/three-state.htm"><b>three-state</b></a> property).
+</p>
+<p id="7">
+A two-state
+check-box is either toggled on or off by clicking it. When it is on,
+the <a href="../../operators/cg/v/value.htm"><b>value</b></a> field
+of the dialog item is set to <code>t</code> and the box is filled
+with a check mark. When it is off, the <a href="../../operators/cg/v/value.htm"><b>value</b></a> field of the dialog item is
+set to <code>nil</code> and the box is blank.
+</p>
+<p id="8">
+A three-state check-box will show a third grayed-out state when its
+<a href="../../operators/cg/v/value.htm"><b>value</b></a> is
+<code>:gray</code>.  This intermediate state is typically used
+either to indicate that a true-or-false value is unknown or
+undetermined, or that some but not all of a set of subchoices are
+selected.  Clicking on or otherwise selecting the check-box will cycle
+its value between <code>nil</code>, <code>t</code>, and <code>:gray</code> (in that order). The
+value can also be <code>:except-interactively</code>, which
+allows <code>:gray</code> to be specified programmatically but
+not by clicking it or by pressing the spacebar when it has the
+keyboard focus.
+</p>
+<p id="9">
+You can have as many check-boxes on a dialog as you wish.  Each one
+works independently of the others; that is, they aren't defined in groups
+via the :cluster property as radio-buttons are.
+</p>
+<p id="10">
+The <a href="../../operators/cg/t/title.htm"><b>title</b></a> field
+of the dialog item is used as the label of the check-box, and is
+displayed immediately to the right of the check-box itself. The title
+will wrap or not as the <a href="../../operators/cg/w/wrapping.htm"><b>wrapping</b></a> property is true or
+<code>nil</code>.
+</p>
+<h3 id="11">
+Adding a check-box control to your form
+</h3>
+<p id="12">
+Click the check-box tool on the Component toolbar. Move the mouse
+cursor to the part of the form where you want to place the control,
+and click again. The control will appear with colored resizing
+handles.
+</p>
+<h3 id="13">
+Resizing and moving the control
+</h3>
+<p id="14">
+Controls can only be resized and moved on forms during the design
+stage; the size and location of everything is fixed on a running form.
+</p>
+<p id="15">
+Resize the control by clicking the mouse cursor and dragging one of
+the handles to the new size-point. Release the mouse key when you are
+satisfied with the new size. Note: resizing the check-box control
+changes the size of the bounding-box, but not the size of the actual
+check-box inside. Resize the label for the box by changing the
+<a href="../../operators/cg/f/font.htm"><b>font</b></a> property.
+</p>
+<p id="16">
+Move the control by clicking anywhere on it except a resizing handle
+and dragging it to a new location on the form. Release the mouse key
+when you are ready to place the control.
+</p>
+<h3 id="17">
+Creating an instance of a check-box control
+</h3>
+<p id="18">
+This call to <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>
+returns an instance of a check-box. Properties can be initialization
+keyword arguments (the keyword has the same name as the property, with
+a prepended colon, e.g. :left for <a href="../../operators/cg/l/left.htm"><b>left</b></a>). Additional arguments could be
+provided. Their absence indicates the default value will be used.
+</p>
+<pre id="19">
+(make-instance 'check-box
+                :font
+                 (make-font-ex nil "MS Sans Serif" 11 nil)
+                :left 242
+                :three-state nil ;; a two-state check-box
+                                 ;; specify t for a three-state
+                                 ;; check-box. Note that the three-state
+                                 ;; property cannot be changed after
+                                 ;; a check box is created.
+                :name :check-box-1
+                :title "Check Box"
+                :top 180)
+</pre>
+<p id="20">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="21">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="22"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/check-box.htm">9.0 version</a></td></tr></table></body></html>

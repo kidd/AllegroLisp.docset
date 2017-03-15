@@ -1,0 +1,195 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>fill-texture</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/fill-texture.htm">9.0 version</a></td></tr></table><h2 id="2">fill-texture</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+
+<p id="4">
+Returns (or sets with <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>) the <a href="../f/fill-texture.htm"><b>fill-texture</b></a> of a stream.  The
+<a href="../f/fill-texture.htm"><b>fill-texture</b></a> is
+used by drawing functions that fill an area of a stream (as opposed to
+drawing lines), and may be used to fill with a pattern rather than
+with a solid color. The pattern will
+automatically be clipped at the edge of the area being filled, even if
+it is irregularly shaped. Functions that use the <a href="../f/fill-texture.htm"><b>fill-texture</b></a> of a stream include
+<a href="../f/fill-box.htm"><b>fill-box</b></a>, <a href="../f/fill-polygon.htm"><b>fill-polygon</b></a>, <a href="../f/fill-circle.htm"><b>fill-circle</b></a>, <a href="../f/fill-circle-sector.htm"><b>fill-circle-sector</b></a>,
+<a href="../f/fill-ellipse.htm"><b>fill-ellipse</b></a>,
+<a href="../f/fill-ellipse-sector.htm"><b>fill-ellipse-sector</b></a>, <a href="../f/fill-rounded-box.htm"><b>fill-rounded-box</b></a>, and
+<a href="../f/flood-fill.htm"><b>flood-fill</b></a>.
+</p>
+<p id="5">
+The value should be any Common Graphics pixmap (see <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a>) or
+one of the special symbols discussed further below.  
+(For backward
+compatibility, the value may alternately be a texture, though it will
+draw correctly only if its width is a multiple of 32.)
+</p>
+<p id="6">
+The default value is the keyword <code>:solid</code>, which
+effectively means that the stream does not have a fill texture, and so
+the filling functions will simply draw in the current <a href="../f/foreground-color.htm"><b>foreground-color</b></a> of the
+stream.
+</p>
+<p id="7">
+If the value is a pixmap, then it behaves differently depending on
+whether it is monochrome.  If the pixmap's <a href="../b/bits-per-pixel.htm"><b>bits-per-pixel</b></a> property is 1
+(indicating a monochrome pixmap), then the filling functions will draw
+the pixmap in the stream's current <a href="../f/foreground-color.htm"><b>foreground-color</b></a> wherever the
+pixmap has a "1" pixel, and in the stream's current <a href="../b/background-color.htm"><b>background-color</b></a> wherever it has a
+"0" pixel.  Otherwise the pixmap will be drawn in its own colors, as
+with <a href="../c/copy-to-stream.htm"><b>copy-to-stream</b></a>.
+</p>
+<p id="8">
+As an alternative to specifying a custom pixmap, any of several
+special built-in fill-textures may be used by specifying a particular
+keyword symbol rather than a pixmap. These symbols include
+<code>:12%foreground</code>, <code>:25%foreground</code>,
+<code>:37%foreground</code>, <code>:50%foreground</code>,
+<code>:62%foreground</code>, <code>:75%foreground</code>,
+and <code>:87%foreground</code>.  These fill-textures draw a
+pattern consisting of the indicated portion of pixels being drawn in
+the stream's current <a href="../f/foreground-color.htm"><b>foreground-color</b></a>, with the
+remaining pixels being drawn in the <a href="../b/background-color.htm"><b>background-color</b></a>.  The <a href="../f/foreground-color.htm"><b>foreground-color</b></a> pixels
+are intermingled amongst the <a href="../b/background-color.htm"><b>background-color</b></a> pixels as evenly
+as possible, to "dither" the two colors.  For example, if a stream's
+current <a href="../b/background-color.htm"><b>background-color</b></a> is <a href="../../../variables/cg/yellow.htm"><code>yellow</code></a>, its <a href="../f/foreground-color.htm"><b>foreground-color</b></a> is
+<a href="../../../variables/cg/dark-red.htm"><code>dark-red</code></a>,
+and its <a href="../f/fill-texture.htm"><b>fill-texture</b></a> is the symbol
+<code>:25%foreground</code>, then filling functions will draw
+three-quarters of the pixels in the filled area as yellow, with
+one-quarter of the pixels sprinkled throughout as red.
+</p>
+<p id="9">
+A second set of special <a href="../f/fill-texture.htm"><b>fill-texture</b></a> symbols draw parallel
+straight lines in the <a href="../f/foreground-color.htm"><b>foreground-color</b></a> of a stream, with
+the remaining pixels in the <a href="../b/background-color.htm"><b>background-color</b></a>.  These values are
+<code>:horizontal</code>, <code>:vertical</code>,
+<code>:left-diagonal</code> (drawing lines from upper-right to
+lower-left), and :right-diagonal (drawing lines from upper-left to
+lower-right).
+</p>
+
+<h3 id="10">Examples</h3>
+
+<pre id="11">
+;; This example uses the built-in :left-diagonal fill-texture.
+(let* ((frame (make-window :filler :class 'bitmap-window
+                           :interior (make-box 100 100 300 300)))
+       (drawing-pane (frame-child frame)))
+  (setf (foreground-color drawing-pane) red)
+  (setf (background-color drawing-pane) yellow)
+  (setf (fill-texture drawing-pane) :left-diagonal)
+  (fill-ellipse drawing-pane (make-position 100 100) 80 50 0)
+  (draw-ellipse drawing-pane (make-position 100 100) 80 50 0))
+                
+;; This example uses a multicolor pixmap.
+(let* ((frame (make-window :filler :class 'bitmap-window
+                :interior (make-box 100 100 300 300)))
+       (drawing-pane (frame-child frame)))
+  (setf (fill-texture drawing-pane)(find-pixmap :melvin))
+  (fill-ellipse drawing-pane (make-position 100 100) 80 50 0)
+  (draw-ellipse drawing-pane (make-position 100 100) 80 50 0))
+
+;; This example uses a monochrome pixmap.
+(let* ((frame (make-window :filler :class 'bitmap-window
+                :interior (make-box 100 100 300 300)))
+       (drawing-pane (frame-child frame)))
+  (setf (foreground-color drawing-pane) dark-blue)
+  (setf (background-color drawing-pane) cyan)
+  (setf (fill-texture drawing-pane)
+        (make-instance 'pixmap
+           :bits-per-pixel 1
+           :contents '(#*000111100000
+                       #*001000010000
+                       #*010000001000
+                       #*100000000111
+                       #*010000001000
+                       #*001000010000)))
+  (fill-ellipse drawing-pane (make-position 100 100) 80 50 0)
+  (draw-ellipse drawing-pane (make-position 100 100) 80 50 0))
+
+
+#|
+
+These are used as the bar-fill-textures
+property in the chart-widget example in the 
+<a href="../../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator Dialog</a>.
+
+These pixmaps specify their own colors, unlike the 1-bit-per-pixel
+pixmap above that uses the window's current <a href="../f/foreground-color.htm"><b>foreground-color</b></a> and <a href="../b/background-color.htm"><b>background-color</b></a>.  You might want to
+use the actual :contents values shown here (or variations of them)
+with other colors that you prefer.
+
+|#
+
+(make-instance 'pixmap
+  :name :diagonals
+  :bits-per-pixel 8
+  :colors (vector light-green dark-green)
+  :contents '((1 0 0 0 0 1)
+              (0 0 0 0 1 1)
+              (0 0 0 1 1 0)
+              (0 0 1 1 0 0)
+              (0 1 1 0 0 0)
+              (1 1 0 0 0 0)))
+
+(make-instance 'pixmap
+  :name :dots
+  :bits-per-pixel 8
+  :colors (vector light-yellow red)
+  :contents '((0 0 0 1 0 0 0 0)
+              (0 0 0 0 0 0 0 1)
+              (0 1 0 0 0 0 0 0)
+              (0 0 0 0 0 1 0 0)))
+
+(make-instance 'pixmap
+  :name :spots
+  :bits-per-pixel 8
+  :colors (vector cyan dark-blue)
+  :contents '((1 0 0 0 0 0 0 1 1 1)
+              (0 0 0 1 1 0 0 0 1 1)
+              (0 0 1 1 1 1 0 0 0 0)
+              (0 0 1 1 1 1 0 0 0 0)
+              (0 0 1 1 1 1 0 0 1 1)
+              (1 0 0 1 1 0 0 1 1 1)))
+
+(make-instance 'pixmap
+  :name :hexagons
+  :bits-per-pixel 8
+  :colors (vector cyan dark-blue)
+  :contents '((0 0 0 1 1 1 1 0 0 0 0 0)
+              (0 0 1 0 0 0 0 1 0 0 0 0)
+              (0 1 0 0 0 0 0 0 1 0 0 0)
+              (1 0 0 0 0 0 0 0 0 1 1 1)
+              (0 1 0 0 0 0 0 0 1 0 0 0)
+              (0 0 1 0 0 0 0 1 0 0 0 0)))
+
+(make-instance 'pixmap
+  :name :squares
+  :bits-per-pixel 8
+  :colors (vector yellow dark-yellow)
+  :contents '((1 0 0 0 0 0)
+              (1 0 0 0 0 0)
+              (1 0 0 0 0 0)
+              (1 0 0 0 0 0)
+              (1 0 0 0 0 0)
+              (1 1 1 1 1 1)))
+
+(make-instance 'pixmap
+  :name :eksuz
+  :bits-per-pixel 8
+  :colors (vector light-gray red)
+  :contents '((1 0 0 0 0 0 1)
+              (0 1 0 0 0 1 0)
+              (0 0 1 0 1 1 0)
+              (0 0 0 1 0 0 0)
+              (0 0 1 0 1 0 0)
+              (0 1 0 0 0 1 0)
+              (1 0 0 0 0 0 1)))
+
+
+</pre>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/fill-texture.htm">9.0 version</a></td></tr></table></body></html>

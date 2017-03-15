@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>show-tooltip</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/show-tooltip.htm">9.0 version</a></td></tr></table><h2 id="2">show-tooltip</h2>
+
+<p id="3"><b>Arguments: </b><i>
+widget
+</i></p>
+
+<p id="4">
+This generic function is called internally to show the tooltip of a
+control. This function is not normally called by an application, but
+wrapper methods may be added to act when a tooltip is invoked
+after the mouse pauses over a control. This may be useful, for
+example, for displaying some other form of help (such as a status-bar
+message) after the mouse has paused over a control.
+</p>
+<p id="5">
+Note that this generic function is called even if the <a href="../s/show-tooltips.htm"><b>show-tooltips</b></a>
+configuration option has been turned off. This allows showing some
+custom form of help for a control without using tooltips, which may be
+handy if tooltips are considered more annoying than a status-bar
+message, for example.
+</p>
+<p id="6">
+See also <a href="../h/hide-tooltip.htm"><b>hide-tooltip</b></a> and <a href="../t/tooltip-delay.htm"><b>tooltip-delay</b></a>.
+</p>
+<h4 id="7">Example</h4>
+
+<p id="8">
+Here is an example method that could be added to cause dialog-item
+help-strings to be displayed in the status-bars of their parent
+windows (or other ancestor windows) whenever the mouse cursor pauses
+over any dialog-item. See <a href="../h/help-string.htm"><b>help-string</b></a>.
+</p>
+<pre id="9">
+(defmethod show-tooltip :after ((widget dialog-item))
+  (let* ((help-string (help-string widget)))
+    (when help-string
+      (window-message (parent widget) "~a" help-string))))
+</pre>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/show-tooltip.htm">9.0 version</a></td></tr></table></body></html>

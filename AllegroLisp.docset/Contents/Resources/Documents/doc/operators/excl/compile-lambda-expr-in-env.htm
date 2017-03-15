@@ -1,0 +1,33 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>compile-lambda-expr-in-env</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/compile-lambda-expr-in-env.htm">9.0 version</a></td></tr></table><h2 id="2">compile-lambda-expr-in-env</h2>
+
+<p id="3"><b>Arguments: </b><i>
+lambda env
+</i></p>
+
+<p id="4">
+<a href="compile-lambda-expr-in-env.htm"><b>compile-lambda-expr-in-env</b></a>
+is like <a href="../../../ansicl/dictentr/compile.htm"><b>compile</b></a> but compiles
+its argument lambda expression in the specified environment and
+returns a compiled function object. <b><i>lambda</i></b>
+must be a lambda expression. <b><i>env</i></b> must be
+an environment object such as returned by <a href="../system/make-compilation-unit-environment.htm"><b>make-compilation-unit-environment</b></a>
+or <a href="../system/augment-environment.htm"><b>augment-environment</b></a>.
+</p>
+<p id="5">
+CL semantics are preserved during compilation, except that
+declarations such as <b>optimize</b> are not processed by the
+interpreter and therefore cannot be retrieved from the
+environment. The optimization settings seen by <a href="../../../ansicl/dictentr/compile.htm"><b>compile</b></a> will be that in the global environment.
+</p>
+<p id="6">
+This function is used by <a href="ensuring-compiled-body.htm"><b>ensuring-compiled-body</b></a>. That macro is more
+suitable for user code than this rather low-level function.
+</p>
+<p id="7">
+See <a href="../../compiling.htm#compiling-ind-forms-1">Compiling individual forms or groups of
+forms</a> in <a href="../../compiling.htm">compiling.htm</a>.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/compile-lambda-expr-in-env.htm">9.0 version</a></td></tr></table></body></html>

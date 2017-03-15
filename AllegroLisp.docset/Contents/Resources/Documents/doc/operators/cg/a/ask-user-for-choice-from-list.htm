@@ -1,0 +1,130 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ask-user-for-choice-from-list</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-choice-from-list.htm">9.0 version</a></td></tr></table><h2 id="2">ask-user-for-choice-from-list</h2>
+
+<p id="3"><b>Arguments: </b><i>
+title choice-list </i>&amp;key <i>stream initial-value allow-multiple simple-click-toggle</i> (<i>on-print</i> (quote princ-to-string))<i> on-change topmost width height dialog-exterior-box</i><i>
+</i></p>
+
+<p id="4">
+Displays a modal dialog with title <i>title</i> offering
+the choices in <i>choice-list</i> along with OK and
+Cancel buttons. Two values are returned: the value or list of values
+(if <i>allow-multiple</i> is true) chosen and <code>t</code> if the OK button is clicked; <code>nil</code> and <code>nil</code> if the Cancel
+button is clicked. (The second returned value allows the program to
+distinguish between the user selecting the value <code>nil</code> and canceling the dialog.)
+</p>
+<p id="5">
+The keyword arguments are:
+</p>
+<ul>
+<li id="6">
+<b><i>stream</i></b>: this keyword argument specifies
+the owner of the dialog.  It defaults to the stream returned by
+<a href="../s/selected-window-or-screen.htm"><b>selected-window-or-screen</b></a>.
+</li>
+<li id="7">
+
+<b><i>initial-value</i></b>: specifies the value or
+values (if any) that should already be selected when the dialog
+appears, typically as a suggested default choice. The value may be
+either an element of <i>choice-list</i> or else <code>nil</code> to select no value.  If
+<i>allow-multiple</i> is true, then the value may
+alternately be a list containing any subset of the
+<i>choice-list</i> elements. If the argument is not
+specified (as opposed to specifying <code>nil</code>),
+then the first choice in <i>choice-list</i> will be
+selected.
+
+</li>
+<li id="8">
+<b><i>allow-multiple</i></b>: if true, the first
+returned value is a list and the user may choose more than one value
+(with the shift or control keys in the typical Windows manner).
+</li>
+<li id="9">
+<b><i>simple-click-toggle</i></b> has an effect only if
+<i>allow-multiple</i> is true. In
+that case, if <i>simple-click-toggle</i> is
+true, then the user does not need to hold down
+the control key while clicking in order to toggle individual
+choices. Note, however, that using this feature also disables the
+ability to choose a whole range of choices with a shift-click. When
+this argument is <code>nil</code> (the default),
+Control-click toggles individual choices; Shift-click selects
+everything between the thing clicked on and a chosen item above,
+inclusive; and a click chooses an item and unchooses anything else
+selected, all of which is standard Windows behavior.
+</li>
+<li id="10">
+<b><i>on-print</i></b>: if specified, the value should
+be a function of one argument that returns a string. The strings
+resulting from applying the function to each element of the list will
+be used to print the elements of <i>choice-list</i> in
+the dialog. The value can be a function name or a function
+object. (See the similar <a href="../o/on-print.htm"><b>on-print</b></a> event handler for dialogs, whose value
+must be the name of a function of one argument that returns a string.)
+The default value is <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a>. Here is an example, where the
+<i>choice-list</i> contains integers and they are
+incremented by 1 before being displayed:
+<pre id="11">
+(ask-user-for-choice-from-list "X" (list 4 5 6) 
+                               :on-print 
+                                #'(lamdba (x) 
+                                          (format nil "~D" (+ 1 x))))
+</pre>
+</li>
+<li id="12">
+<b><i>on-change</i></b>: the value may be either <code>nil</code> or a function or function name. If
+true, it is used as the <a href="../o/on-change.htm"><b>on-change</b></a> event handler for the
+item-list of the <a href="../a/ask-user-for-choice-from-list.htm"><b>ask-user-for-choice-from-list</b></a>
+dialog. The function will therefore be called as the user highlights
+each choice in the dialog. This may be handy for showing a help
+message for each choice. The function should take the three arguments
+widget, new-value, and old-value (as usual with an <a href="../o/on-change.htm"><b>on-change</b></a> handler), and should
+always return true (since returning <code>nil</code> would prevent the user from successfully
+selecting a choice). The default value of
+<i>on-change</i> is <code>nil</code>, which
+causes an internal on-change handler to be used.
+</li>
+<li id="13">
+<b><i>topmost</i></b>: when true, the utility dialog
+invoked by this function will be topmost while it is present. A
+topmost window is one that remains on top of all other non-topmost
+windows, even those in other applications. This feature is
+particularly useful for modal dialogs that need to alert the user even
+if they have switched to another application.
+</li>
+<li id="14">
+<b><i>width</i></b> and
+<b><i>height</i></b>: these arguments determine the
+width and height of the dialog displayed. The positioning of the
+dialog is determined, then, by <a href="../p/position-utility-dialog.htm"><b>position-utility-dialog</b></a>.
+<i>width</i> and <i>height</i> should not
+be specified if <i>dialog-exterior-box</i> is specified,
+but use of <i>dialog-exterior-box</i> is deprecated in
+favor of <i>width</i> and <i>height</i>.
+</li>
+<li id="15">
+<b><i>dialog-exterior-box</i></b>: if specified, should
+be a box (see <a href="../m/make-box.htm"><b>make-box</b></a>). The dialog will be the
+size of the box but the location will be specified by <a href="../p/position-utility-dialog.htm"><b>position-utility-dialog</b></a>
+(the top and left of the box are ignored). Again, use of this argument
+is deprecated in favor of the <i>width</i> and
+<i>height</i> arguments described just above. No value
+should be specified for this argument if values are specified for
+<i>width</i> and <i>height</i> (which
+override this argument).
+</li>
+</ul>
+<p id="16">
+An alternative way to ask the user for a choice from a list,
+especially if the list of choices is small, is to call <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a>, <a href="../p/pop-up-lettered-menu.htm"><b>pop-up-lettered-menu</b></a>, or
+<a href="../p/pop-up-shortcut-menu.htm"><b>pop-up-shortcut-menu</b></a>. For four
+choices or fewer, <a href="../a/ask-user-for-choice.htm"><b>ask-user-for-choice</b></a> may be used.
+See also <a href="../y/yes-no-or-cancel-list.htm"><b>yes-no-or-cancel-list</b></a>.
+</p>
+
+
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-choice-from-list.htm">9.0 version</a></td></tr></table></body></html>

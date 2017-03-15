@@ -1,0 +1,74 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>connect</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: dbi</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dbi/connect.htm">9.0 version</a></td></tr></table><h2 id="2">connect</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>data-source-name user password prompt hwnd width external-format connect-string non-blocking</i><i>
+</i></p>
+
+
+
+<p id="4">
+This function establishes a connection to the database denoted by
+<i>data-source-name</i> (a string)
+and returns a database object.
+</p>
+
+<p id="5">
+See <a href="../../aodbc.htm">aodbc.htm</a> for a description of how data source
+names are defined. ODBC has two functions to establish a connection -
+one expects all the information to make the connection to be passed to
+the function and the other is willing to look for that information and
+possibly prompt for it. If the value of prompt is true (which it is by
+default) then the <a href="connect.htm"><b>connect</b></a> function will use
+the ODBC function that prompts for data (on Windows) or looks in the
+<i>.odbc.ini</i> file (on Unix). 
+</p>
+<p id="6">
+The kind of information that ODBC will often need to make a connection
+is the user name and password. On Windows if a prompting dialog box
+must be put up, it will be made the child window of
+<i>hwnd</i>, if it is true. If
+<i>hwnd</i> is <code>nil</code> then the
+prompt windows will be at top level. If the connection cannot be made,
+an error is signaled. <i>width</i> is the default size
+for character buffers used in retrieving character-valued fields
+returned by an <strong>sql</strong> statement. If
+<i>width</i> is not specified it defaults to 1024.
+</p>
+<p id="7">
+The <i>external-format</i> keyword argument specifies
+the external format to be used when storing characters in the
+database. If not specified the value of <a href="../../variables/dbi/s_default-odbc-external-format_s.htm"><code>*default-odbc-external-format*</code></a> is
+used.
+</p>
+<p id="8">
+The <i>connect-string</i> keyword argument allows
+specifying the precise connection string to be passed to the ODBC
+library function to connect to a database. If a value is specified for
+<i>connect-string</i>, then the values of
+<i>data-source-name</i>, <i>user</i> and
+<i>password</i> are ignored.
+</p>
+<p id="9">
+The format of a connection string is described in ODBC documentation.
+At the time of writing, a concise description was available at <a href="http://msdn.microsoft.com/en-us/library/ms715433(VS.85).aspx">http://msdn.microsoft.com/en-us/library/ms715433(VS.85).aspx</a>.
+</p>
+<p id="10">
+The <i>non-blocking</i> keyword argument, if true,
+causes Lisp to never block other threads from running when making a
+call to the odbc libraries. The default is true. Note that
+non-blocking mode can slow down the operation of the interface. The
+<i>non-blocking</i> argument sets the non-blocking flag
+inside the database object returned by <a href="connect.htm"><b>connect</b></a>. You can change the non-blocking
+behavior with the function <a href="db-non-blocking.htm"><b>db-non-blocking</b></a>, with the form
+<code>(setf (db-non-blocking db-object) new-value)</code>
+</p>
+
+<p id="11">
+See <a href="../../aodbc.htm">aodbc.htm</a> for more information on
+Allegro ODBC.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/dbi/connect.htm">9.0 version</a></td></tr></table></body></html>

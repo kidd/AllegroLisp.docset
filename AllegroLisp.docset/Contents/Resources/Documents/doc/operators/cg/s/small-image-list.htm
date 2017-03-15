@@ -1,0 +1,75 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>small-image-list</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/small-image-list.htm">9.0 version</a></td></tr></table><h2 id="2">small-image-list</h2>
+
+<p id="3"><b>Arguments: </b><i>
+list-view
+</i></p>
+
+<p id="4">
+An <a href="../../../classes/cg/image-list.htm"><code>image-list</code></a>
+instance that contains the pixmaps to display in this list-view when
+its <a href="../l/layout-style.htm"><b>layout-style</b></a>
+is either <code>:small-icon</code>, <code>:list</code>, or
+<code>:report</code>. May also be <code>nil</code>
+(the default) to display no icons in these layout styles.
+</p>
+<p id="5">
+As a shortcut, this property may alternately be specified as a list of
+pixmap names such as would be passed as the :pixmap-names initarg when
+calling <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> on the
+<a href="../../../classes/cg/image-list.htm"><code>image-list</code></a>
+class. This requires that the pixmaps have been cached already, such
+as by calling <a href="../l/load-pixmap.htm"><b>load-pixmap</b></a> followed by <a href="../c/cache-pixmap.htm"><b>cache-pixmap</b></a>. In this
+case, an image-list instance will be created with the specified
+pixmaps, and that image-list will then be the value of this
+property. This is handy when specifying an image-list interactively in
+the inspector while building a form for a dialog. On the other hand,
+specifying an actual image-list programmatically allows for a single
+image-list to be shared among multiple list-view controls to save
+memory or Windows resources.
+</p>
+<p id="6">
+A small-image-list typically contains pixmaps that are 16 by 16 pixels
+in size. They can be other sizes, but may get clipped if larger due to
+the limited space that is reserved for the icons.
+</p>
+<p id="7">
+The icons will appear only if one or more of the <a href="../../../classes/cg/list-view-item.htm"><code>list-view-item</code></a>s of the list-view
+have non-<code>nil</code> values for
+their <a href="../i/icon-index.htm"><b>icon-index</b></a>
+property.
+</p>
+<p id="8">
+Here are three alternative ways of specifying the cached pixmaps named
+<code>:default-opened</code>
+and <code>:default-closed</code> as the small icons of
+a <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a>
+control:
+</p>
+<pre id="9">
+(setf (small-image-list my-list-view)
+      (make-instance 'image-list
+        :pixmaps (list (find-pixmap :default-opened)
+                       (find-pixmap :default-closed))))
+(small-image-list my-list-view) ==&gt; #&lt;image-list :image-list-1 ...&gt;
+
+(setf (small-image-list my-list-view)
+      (make-instance 'image-list
+        :pixmap-names '(:default-opened :default-closed)))
+(small-image-list my-list-view) ==&gt; #&lt;image-list :image-list-2 ...&gt;
+
+(setf (small-image-list my-list-view)
+      '(:default-opened :default-closed))
+(small-image-list my-list-view) ==&gt; #&lt;image-list :image-list-3 ...&gt;
+</pre>
+
+<p id="10">
+See <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a>.
+</p>
+
+
+
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/small-image-list.htm">9.0 version</a></td></tr></table></body></html>

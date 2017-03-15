@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>radial-line-box-intersection</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/radial-line-box-intersection.htm">9.0 version</a></td></tr></table><h2 id="2">radial-line-box-intersection</h2>
+
+<p id="3"><b>Arguments: </b><i>
+point
+box </i> &amp;optional <i>pos-to-return</i><i> </i>&amp;key <i>margin</i><i>
+</i></p>
+
+<p id="4">
+Returns the point on the edge of a <b><i>box</i></b>
+where it is crossed by a line that passes through the center of the
+box and through an arbitrary
+<b><i>point</i></b>. Returns <code>nil</code>
+if the box center and the arbitrary point are the same.
+</p>
+<p id="5">
+The first argument is a position object for the arbitrary point, and
+the second argument is a box object. Returns a position object or
+<code>nil</code>.
+</p>
+<p id="6">
+If <b><i>pos-to-return</i></b>
+is <code>nil</code> or unspecified, then a new position
+object is created and returned. Otherwise
+<i>pos-to-return</i> should be a position object, which
+will be modified and returned.
+</p>
+<p id="7">
+The <b><i>margin</i></b> argument is somewhat
+obscure. If specified, it should be a real number indicating a
+distance. If the real intersection point is less than this distance
+from a corner of the box, then the returned point will be adjusted so
+that it is this distance from the corner.  (This is used by one
+application to avoid drawing a connecting line to a rounded corner of
+a rounded box.) If you specify a value for margin, you must also
+specify a value for the <i>pos-to-return</i> optional
+argument. Specify <code>nil</code> if you do not want to
+specify a position.
+</p>
+<p id="8">
+As usual, position and box objects should contain integers.  See
+<a href="../m/make-position.htm"><b>make-position</b></a>
+and <a href="../m/make-box.htm"><b>make-box</b></a>. See also
+<a href="../r/radial-line-box-intersection-x-y.htm"><b>radial-line-box-intersection-x-y</b></a> and
+<a href="../r/radial-line-circle-intersection.htm"><b>radial-line-circle-intersection</b></a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/radial-line-box-intersection.htm">9.0 version</a></td></tr></table></body></html>

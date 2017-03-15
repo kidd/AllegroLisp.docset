@@ -1,0 +1,81 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>range</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/range.htm">9.0 version</a></td></tr></table><h2 id="2">range</h2>
+
+<p id="3"><b>Arguments: </b><i>
+standard-object
+</i></p>
+
+<p id="4">
+Returns the value of the <a href="../r/range.htm"><b>range</b></a> property of a dialog-item,
+which indicates the set of valid values from which the end user may
+interactively choose.  The <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of this function may be used
+to replace the range of a dialog-item, at which time the dialog-item
+will be redrawn automatically if needed to display the new range.
+</p>
+<p id="5">
+A variety of dialog-items (widgets) have a range property, though the
+meaning varies depending on the type of widget.  Among them are
+<a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a>,
+<a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>,
+and <a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a>. More specific
+information may be found on the documentation pages for each widget
+class.
+</p>
+<p id="6">
+Most widgets that use a range use one of two basic types:
+</p>
+<ol>
+<li id="7">
+A list of discreet choices, where the value of the widget is one or
+more of these choices. <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>, <a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a>,
+<a href="../../../classes/cg/outline.htm"><code>outline</code></a>, and
+<a href="../../../classes/cg/dropping-outline.htm"><code>dropping-outline</code></a>,
+for example, use this type of range.
+</li>
+<li id="8">
+A list of two numbers (a minimum value followed by a maximum value)
+indicating a continuous range of choices, where the value of the
+widget is a number within this range (including the boundary values).
+<a href="../../../classes/cg/vertical-scroll-bar.htm"><code>vertical-scroll-bar</code></a>, <a href="../../../classes/cg/horizontal-scroll-bar.htm"><code>horizontal-scroll-bar</code></a>,
+and <a href="../../../classes/cg/trackbar.htm"><code>trackbar</code></a>
+widgets are among those that use this type of range.
+</li>
+</ol>
+<p id="9">
+When the range is a list of discreet choices, some widget classes use
+a list of arbitrary objects that can serve directly as the value of
+the widget, while other widget classes use a list of more specialized
+objects that encapsulate the values.  The classes <a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a>, <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>, and
+<a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a> are
+of the first type.  On the other hand, an <a href="../../../classes/cg/outline.htm"><code>outline</code></a> uses a range where each
+member is an <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a> object, a <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a>'s range
+contains <a href="../../../classes/cg/list-view-item.htm"><code>list-view-item</code></a>s, a <a href="../../../classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a>'s
+range contains <a href="../../../classes/cg/button-info.htm"><code>button-info</code></a>s, a <a href="../../../classes/cg/tab-control.htm"><code>tab-control</code></a>'s range
+contains <a href="../../../classes/cg/tab-info.htm"><code>tab-info</code></a>s, and a <a href="../../../classes/cg/header-control.htm"><code>header-control</code></a>'s range
+contains <a href="../../../classes/cg/header-info.htm"><code>header-info</code></a>s.
+</p>
+<p id="10">
+When a range contains specialized objects, then the values of these
+objects are used for the value of the widget itself, rather than using
+the range members directly for the widget value.  For example, while a
+<a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a> range would simply
+be the list of symbols <code>(:one :two :three)</code> to allow
+the value of the widget to be one of those three symbols, an <a href="../../../classes/cg/outline.htm"><code>outline</code></a> whose value
+may be one of those symbols would have a range whose members are
+<a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a>s,
+where the value of each <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a> is one of the symbols.
+</p>
+<p id="11">
+Sometimes the value of a widget that has a range is a single range
+value, and sometimes it is a list of zero or more range values.  For
+most widget classes this depends on the class; for example, the value
+of a <a href="../../../classes/cg/single-item-list.htm"><code>single-item-list</code></a> or <a href="../../../classes/cg/tab-control.htm"><code>tab-control</code></a> is always
+either a single value from the range or else <code>nil</code> if no choices are selected, while the value of a
+<a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a>, <a href="../../../classes/cg/list-view.htm"><code>list-view</code></a> , or <a href="../../../classes/cg/multi-picture-button.htm"><code>multi-picture-button</code></a>
+is always a list of zero or more range values.  For an <a href="../../../classes/cg/outline.htm"><code>outline</code></a>, on the
+other hand, whether the value is a list depends on whether the <a href="../m/multiple-selections.htm"><b>multiple-selections</b></a>
+property of the widget is turned on.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/r/range.htm">9.0 version</a></td></tr></table></body></html>

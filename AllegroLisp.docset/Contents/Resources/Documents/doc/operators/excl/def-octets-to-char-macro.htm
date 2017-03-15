@@ -1,0 +1,239 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-octets-to-char-macro</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-octets-to-char-macro.htm">9.0 version</a></td></tr></table><h2 id="2">def-octets-to-char-macro</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name arglist </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+<i>name</i> should be a symbol, arglist the macro
+lambda list <code>(state-loc &key get-next-octet
+octets-count-loc unget-octets external-format)</code> (this
+argument is present to make a <b>def-octets-to-char-macro</b> form
+similar to a <b>defmacro</b> form, the required argument may have any
+name of course.). <i>body</i> should be a list of forms.
+</p>
+
+<p id="5">
+<b>def-octets-to-char-macro</b> is just like <b>defmacro</b> except that
+<i>name</i> names an external-format, and the actual
+macro name (a gensym) for the macro being defined is stored in the
+external-format's octets-to-char-macro slot. Also, if no
+external-format with name <i>name</i> exists, then a new
+external-format with name <i>name</i> is created.
+</p>
+<p id="6">
+The macro being defined must accept one required argument (which we
+call <i>state-loc</i> but may, of course, have any
+name), and the following keyword arguments:
+</p>
+<ul>
+<li id="7">
+<i>get-next-octet</i>
+</li>
+<li id="8">
+<i>octets-count-loc</i>
+</li>
+<li id="9">
+<i>unget-octets</i>
+</li>
+<li id="10">
+<i>external-format</i> (see note)
+</li>
+</ul>
+
+<p id="11">
+<b>Note</b> <i>external-format</i> is used only if the
+external-format is a wrapper external-format
+(that is, a composing external-format).
+</p>
+<p id="12">
+The <i>state-loc</i> should be a place argument
+acceptable as the first argument to <b>setf</b>. It is used by the
+convertor for holding state information. The state should be immutable
+so it can be copied. In other words, one should not use a structure
+for a state and then change the state using <b>setf</b>.
+</p>
+<p id="13">
+The <i>get-next-octet</i> argument to the macro being
+defined is an expression that is invoked in the macro's expansion at
+the point or points where the translation procedure requests the next
+external element (octet) to be input.
+</p>
+<p id="14">
+The <i>octets-count-loc</i> argument should be a place
+argument acceptable as the first argument to <b>setf</b>.  It is set
+by the convertor to hold the number of octets consumed in order to
+create the character being returned. The octets-to-char caller must
+initialize this argument to 1 (the number one). Thus, if the
+get-next-octet routine is invoked exactly once by the octets-to-char
+macro, the <i>octets-count-loc</i> argument is left
+unaltered. If get-next-octets is invoked more than once,
+<i>octets-count-loc</i> must be incremented before each
+call to get-next-octets.
+</p>
+<p id="15">
+If the external-format convertor does not use all the octets retrieved
+by get-next-octet (ie, it was peeking ahead), then
+<i>octets-count-loc</i> must be decremented so that its
+value reflects the actual count of octets used.
+</p>
+<p id="16">
+In addition to decrementing the <i>octets-count-loc</i>
+when not all acquired octets are used, the
+<i>unget-octets</i> argument is also used to inform the
+octets-to-char caller to place the unused octets back into the
+sequence for future calls to
+octets-to-char. <i>unget-octets</i> is a single-argument
+expression that is invoked in the macro's expansion at the point or
+points where the translation procedure requests that recently received
+octets be "un-received". The argument to
+<i>unget-octets</i> is the count of the most recently
+received octets to be considered un-received.
+</p>
+<p id="17">
+If the external-format named by <i>name</i> is a wrapper
+external-format, then the <i>external-format</i>
+argument to the macro being defined is the name of the external-format
+being wrapped.
+</p>
+<p id="18">
+The defined macro returns a single value, a character. If an error
+occurs during the conversion, a condition object is returned instead
+of the values. It is intended that the macro not signal errors
+directly but that the caller of the chars-to-octets macro (where this
+macro definition is used) be responsible for signaling any errors.
+</p>
+<h3 id="19">
+Examples:
+</h3>
+<pre id="20">
+;; Defines an octets -&gt; char procedure for latin1 characters.
+;;
+;; Note: There's no change to octets-count-loc since it is initialized to 
+;; 1 (the number one) and that's as many octets as we take.
+;;
+(def-octets-to-char-macro :latin1-base (state-loc
+					&amp;key get-next-octet external-format
+					     octets-count-loc unget-octets)
+  (declare (ignore external-format state-loc octets-count-loc unget-octets))
+  `(code-char ,get-next-octet))
+
+
+;; Defines an octets -&gt; char procedure for utf8.
+;;
+(def-octets-to-char-macro :utf8-base (state-loc
+				      &amp;key get-next-octet external-format
+				           octets-count-loc unget-octets)
+  (declare (ignore external-format state-loc unget-octets))
+  (let ((code-var (gensym)))
+    `(let ((,code-var ,get-next-octet))
+       (if* (&lt; ,code-var #x7f)
+	  then (code-char ,code-var)
+	elseif (eql #xf0 (logand #xf0 ,code-var))
+	  then ;; 32-bit unicode value, which we don't support.
+	       (dotimes (i 3)
+		 (incf ,octets-count-loc)
+		 ,get-next-octet)
+	       #\?
+	elseif (eql #xe0 (logand #xe0 ,code-var))
+	  then (sys::fixnum-to-char
+		(logior (ash (logand #x0f ,code-var) 12)
+			(progn (incf ,octets-count-loc)
+			       (ash (logand #x3f ,get-next-octet) 6))
+			(progn (incf ,octets-count-loc)
+			       (logand #x3f ,get-next-octet))))
+	  else (sys::fixnum-to-char
+		(logior (ash (logand #x1f ,code-var) 6)
+			(progn (incf ,octets-count-loc)
+			       (logand #x3f ,get-next-octet))))))))
+
+;; Defines a wrapper external-format that looks for ASCII &lt;CR&gt; followed by
+;; &lt;LF&gt; to combine into #\newline.
+;;
+(def-octets-to-char-macro :crlf (state
+				 &amp;key get-next-octet external-format
+				 octets-count-loc unget-octets)
+  (let ((char1-var (gensym))		; first char.
+	(char2-var (gensym))		; second char.
+	(state0-var (gensym))		; original state.
+	(state1-var (gensym))		; after first char state.
+	(state2-var (gensym))		; after second char state.
+	(char1-size-var (gensym))	; first char size.
+	(char2-size-var (gensym)))	; second char size.
+    `(let* ((,state0-var ,state)
+	    (,state1-var ,state0-var))
+       (let ((,char1-var (octets-to-char ,external-format ,state1-var
+					 :octets-count-loc ,octets-count-loc
+					 :unget-octets ,unget-octets
+					 :get-next-octet ,get-next-octet
+					 ;; Pass eof through
+					 :oc-eof-macro nil)))
+	 (if* (eq #\return ,char1-var)
+	    then (let* ((,char1-size-var ,octets-count-loc)
+			(,state2-var ,state1-var)
+			(,char2-var
+			 (catch ':crlf-eof-catch-tag
+			   (incf ,octets-count-loc) ; pre-increment
+			   (octets-to-char
+			    ,external-format ,state2-var
+			    :octets-count-loc ,octets-count-loc
+			    :unget-octets ,unget-octets
+			    :get-next-octet ,get-next-octet
+			    :oc-eof-macro ((hard-eof)
+					   `(throw ':crlf-eof-catch-tag
+					      ,hard-eof))))))
+		   (declare (type adim ,char1-size-var))
+		   (if* (eq #\linefeed ,char2-var)
+		      then (unless (eq ,state2-var ,state0-var)
+			     (setf ,state ,state2-var))
+			   #\newline
+		    elseif ,char2-var
+		      then ;; char2 is a character.  Peel back to char1, which
+			   ;; is #\return.
+			   (let ((,char2-size-var (- ,octets-count-loc
+						     ,char1-size-var)))
+			     (declare (type adim ,char2-size-var))
+			     (,unget-octets ,char2-size-var)
+			     (decf ,octets-count-loc ,char2-size-var)
+			     (unless (eq ,state1-var ,state0-var)
+			       (setf ,state ,state1-var))
+			     #\return)
+		      else ;; char2 indicates soft eof.  Peel back everything
+			   ;; and pass on the soft eof.
+			   (,unget-octets ,octets-count-loc)
+			   (setf ,octets-count-loc 0)
+			   (oc-eof-macro nil)
+			   (error &quot;
+ The crlf external-format was not terminated by a call to oc-eof-macro&quot;)))
+	    else (unless (eq ,state1-var ,state0-var)
+		   (setf ,state ,state1-var))
+		 ,char1-var)))))
+
+;; The following uses the above defined wrapper external-format to create a
+;; octets -&gt; char transform of latin1 to crlf-latin1.
+;;
+;; Note: Using (compose-external-formats :crlf :latin1) achieves as one of its
+;; side-effects the same effect as evaluating the following:
+;;
+(def-octets-to-char-macro :crlf-latin1-base (char state
+                                             &amp;key get-next-octet
+					          external-format
+						  octets-count-loc
+						  unget-octets)
+  (declare (ignore external-format))
+  `(octets-to-char :crlf ,char ,state
+                   :get-next-octet ,get-next-octet
+		   :external-format :latin1-base))
+</pre>
+<p id="21">
+See also <a href="octets-to-char.htm"><b>octets-to-char</b></a>.
+</p>
+
+<p id="22">
+See <a href="../../iacl.htm">iacl.htm</a> for more information on international
+character support in Allegro CL.
+</p>
+
+<hr><p id="23"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/def-octets-to-char-macro.htm">9.0 version</a></td></tr></table></body></html>

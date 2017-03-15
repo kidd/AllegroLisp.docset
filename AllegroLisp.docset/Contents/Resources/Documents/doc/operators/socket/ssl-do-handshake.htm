@@ -1,0 +1,41 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ssl-do-handshake</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: socket</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/ssl-do-handshake.htm">9.0 version</a></td></tr></table><h2 id="2">ssl-do-handshake</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream
+</i></p>
+
+
+
+<p id="4">
+This function returns <code>t</code> but is called for its
+side effect, which is to initiate a handshake between SSL server and
+client streams.
+</p>
+<p id="5">
+<a href="make-ssl-server-stream.htm"><b>make-ssl-server-stream</b></a>
+and <a href="make-ssl-client-stream.htm"><b>make-ssl-client-stream</b></a> do not
+immediately initiate SSL handshake.  Instead, handshake is deferred
+until the first I/O is made on the stream.  If there are certificate
+verification or other errors during SSL handshake, the error will be
+generated during the I/O request that initiated handshake.
+</p>
+
+<p id="6">
+In some circumstances you may want to control when SSL starts.  The
+<a href="ssl-do-handshake.htm"><b>ssl-do-handshake</b></a>
+method initiates SSL handshake.  <i>stream</i> must be
+an SSL client or server stream (such as is created by <a href="make-ssl-server-stream.htm"><b>make-ssl-server-stream</b></a> and <a href="make-ssl-client-stream.htm"><b>make-ssl-client-stream</b></a>).
+</p>
+
+<p id="7">
+Peer certificate verification (if requested) occurs during SSL
+handshake.  If verification fails, an error will be generated.
+</p>
+
+<p id="8">
+See <a href="../../socket.htm">socket.htm</a>.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/socket/ssl-do-handshake.htm">9.0 version</a></td></tr></table></body></html>

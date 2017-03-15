@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>shift-outline-item</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/shift-outline-item.htm">9.0 version</a></td></tr></table><h2 id="2">shift-outline-item</h2>
+
+<p id="3"><b>Arguments: </b><i>
+outline outline-item-or-value direction
+</i></p>
+
+<p id="4">
+Shifts an <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a> on
+an <a href="../../../classes/cg/outline.htm"><code>outline</code></a> widget
+(specified by the <b><i>outline</i></b> argument) either
+vertically or horizontally relative to its neighboring items.
+Shifting vertically will change the position of the item among its
+sibling items, exchanging it with the item that's just above or below
+it.  Shifting horizontally will change the indentation of the item
+(when possible), which puts the item under a different parent item.
+</p>
+<p id="5">
+<b><i>outline-item-or-value</i></b> may be either an
+<a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a>, the value of
+an <a href="../../../classes/cg/outline-item.htm"><code>outline-item</code></a>,
+or <code>nil</code>.  When
+non-<code>nil</code>, the specified item is shifted.  When
+<code>nil</code>, the currently selected item is shifted,
+and if multiple items are selected (see <a href="../m/multiple-selections.htm"><b>multiple-selections</b></a>) then all of them will be
+shifted.  Nothing is done when this argument
+is <code>nil</code> and there are no selected items, or
+when the operation cannot be done (such as when attempting to shift an
+item rightward when it is the first item under its parent item).
+</p>
+<p id="6">
+The <b><i>direction</i></b> argument may be one of the
+keywords <code>:down</code>, <code>:up</code>, 
+<code>:right</code>,
+or <code>:left</code>.
+</p>
+<p id="7">
+See also <a href="../o/outline-items-reordered.htm"><b>outline-items-reordered</b></a>, <a href="../o/outline-item-added.htm"><b>outline-item-added</b></a>, and <a href="../o/outline-item-removed.htm"><b>outline-item-removed</b></a>.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/shift-outline-item.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>arglist</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/arglist.htm">9.0 version</a></td></tr></table><h2 id="2">arglist</h2>
+
+<p id="3"><b>Arguments: </b><i>
+function </i>&amp;environment <i>env</i><i>
+</i></p>
+
+<p id="4">
+Returns two values: if the the argument list of the operator
+(function, generic function, or macro) specified by the argument is
+known, it and <code>t</code> are returned. If the argument
+list is not known (that information can be discarded to save space),
+<code>nil</code> and <code>nil</code> are
+returned. 
+</p>
+
+<p id="5">
+If the <b><i>env</i></b> environment argument is
+supplied and non-<code>nil</code>, is must be an
+environment object as returned by <a href="../system/make-compilation-unit-environment.htm"><b>make-compilation-unit-environment</b></a>
+or <a href="../system/augment-environment.htm"><b>augment-environment</b></a>. This environment is
+used to find the current lexical definition of the function in place
+of the global definition.
+]</p>
+
+<p id="6">
+Note that some argument lists may be uninformative (perhaps
+simply &rest args) when a function does all argument processing
+within its body. Also, the compiler may have simplified the argument
+list for its purposes. This function is designed to assist only. The
+argument list returned, even when the second returned argument is
+<code>t</code>, may not accurately describe all valid
+lists of arguments that can be passed to the function. (For example,
+the <code>&allow-other-keys</code> lambda-list keyword is
+often dropped.)
+</p>
+<p id="7">
+See also the variable <a href="../../variables/excl/s_save-function-lambda-expression_s.htm"><code>*save-function-lambda-expression*</code></a>, which, when
+true, tells the compiler to save lambda expressions and make them
+available to the function <a href="../../../ansicl/dictentr/functio2.htm"><b>function-lambda-expression</b></a>.
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/arglist.htm">9.0 version</a></td></tr></table></body></html>

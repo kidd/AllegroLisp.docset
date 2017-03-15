@@ -1,0 +1,155 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>device-open</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-open.htm">9.0 version</a></td></tr></table><h2 id="2">device-open</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream slot-names initargs
+</i></p>
+
+<p id="4">
+<b>Number of required arguments changed in release 7.0</b>. In release
+6.2, this function had two required arguments,
+<i>simple-stream</i> and
+<i>options</i>. In 7.0, it has three. The
+<i>initargs</i> argument is essentially a new name for
+the old <i>options</i> argument. <a href="device-open.htm"><b>device-open</b></a> now is similar to <a href="../../../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a>.
+</p>
+<p id="5">
+This generic function makes the connection between the stream
+structure and the actual device being opened, if appropriate, and
+completes the initialization of the stream structure adequately enough
+to perform operations on the stream. See <a href="#do-for-string-streams">below</a> for <a href="device-open.htm"><b>device-open</b></a> on string-streams.
+</p>
+<p id="6">
+<a href="device-open.htm"><b>device-open</b></a> is called from an
+<code>:after</code> method on <a href="../../../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> after the CLOS stream is
+created and initialized. <a href="device-open.htm"><b>device-open</b></a> returns true if successful and
+<code>nil</code> otherwise. If unsuccessful, the <a href="../../../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> after method will
+call <a href="device-close.htm"><b>device-close</b></a> on the new
+stream with <code>:abort t</code>. Writers of methods on <a href="device-open.htm"><b>device-open</b></a> must be aware that if
+they <code>call-next-method</code> and that
+returns <code>nil</code>, it means that the next-method
+has failed. The primary method must either install all of the
+control-character processing tables, external-formats, and instance
+flags (see section <a href="../../streams.htm#control-chars-1">Control-character Processing</a>) or it
+must call the next more general primary method to do so, modifying the
+stream to specialize it after such installations, as
+desired. 
+</p>
+<p id="7">
+Allocation and/or installation of any buffers required for
+stream operation is also done by the <a href="device-open.htm"><b>device-open</b></a> method which is at an appropriate
+specialization level for use of that buffer. If resourcing of buffers
+is desired, they may be passed in through <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>/<a href="../../../ansicl/dictentr/reinitia.htm"><b>reinitialize-instance</b></a> arguments, or previously
+installed buffers may be reused.
+</p>
+<p id="8">
+The <a href="device-open.htm"><b>device-open</b></a> method must
+be prepared to recognize resource and change-class situations. If no
+filename is specified in the options list, and if no input-handle or
+output-handle is given, then the input-handle and output-handle slots
+should be examined; if non-<code>nil</code>, that means
+the stream is still open, and thus the operation being requested of
+<a href="device-open.htm"><b>device-open</b></a> is a
+change-class.  Also, a <a href="device-open.htm"><b>device-open</b></a> method need not allocate a buffer
+every time it is called, but may instead reuse a buffer it finds in a
+stream, if it does not become a security issue.
+</p>
+
+<p id="9">
+The <i>initargs</i> argument is a list of keyword/value
+pairs. It is restified list of the <i>initargs</i>
+argument to the <a href="../../../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> :after method (that list is
+passed to <a href="device-open.htm"><b>device-open</b></a>
+unchanged). Acceptable keywords include the keyword arguments to
+<a href="../../../ansicl/dictentr/open.htm"><b>cl:open</b></a> (the
+<i>filespec</i> required argument to <a href="../../../ansicl/dictentr/open.htm"><b>cl:open</b></a> is turned into a physical pathname and
+passed in the <i>options</i> list paired with the
+keyword <code>:filename</code>). The Allegro CL implementation
+of <a href="../../../ansicl/dictentr/open.htm"><b>cl:open</b></a> has been extended
+with additional named keyword arguments and also has
+<code>&allow-other-keys</code> so any keyword may appear as
+the identifier in the <i>options</i> list processed by
+<a href="device-open.htm"><b>device-open</b></a>. (See the
+discussion of the Allegro CL implementation of <a href="../../../ansicl/dictentr/open.htm"><b>cl:open</b></a> in <a href="../../implementation.htm#extensions-to-clfuns-one-2">Extensions to cl:make-package,
+cl:disassemble, cl:open, cl:apropos</a> in
+<a href="../../implementation.htm">implementation.htm</a>.)
+</p>
+<p id="10">
+Additional named keyword arguments include:
+</p>
+
+<ul>
+<li id="11">
+<code><b>:class</b></code>: the class argument can determine
+what class to make an instance of, in the same way as in
+gray-streams.
+</li>
+<li id="12">
+
+<code><b>:mapped</b></code>: if <code>:mapped t</code> is
+specified, and the file being opened is not a fifo or
+character-special file, then the file is opened using a <a href="../../classes/excl/mapped-file-simple-stream.htm"><code>mapped-file-simple-stream</code></a>.
+
+</li>
+<li id="13">
+<code><b>:fn-in</b></code> and
+<code><b>:fn-out</b></code>: these are preserved for
+compatibility, but are deprecated in favor of the better names,
+<code><b>:input-handle</b></code> and
+<code><b>:output-handle</b></code>.
+</li>
+<li id="14">
+<code><b>:input-handle</b></code> and
+<code><b>:output-handle</b></code>: these allow the
+specification of an already-opened "device", which can either be an
+open file descriptor or a stream. If either of these options are used,
+then <a href="../../../ansicl/dictentr/open.htm"><b>cl:open</b></a> should not be
+called, but instead <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> should be called with no
+<code>:filename</code> specified. If a handle is a stream, then
+the <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> call is said
+to encapsulate the stream; the result of the <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> call is the encapsulating stream,
+and the handle is the encapsulated stream (which itself may be an
+encapsulating stream).
+</li>
+</ul>
+<p id="15">
+The <i>slot-names</i> is provided to distinguish between
+calls to <a href="device-open.htm"><b>device-open</b></a> from a
+new stream (via <a href="../../../ansicl/dictentr/initiali.htm"><b>initialize-instance</b></a>), a reused stream from a
+resource (via <a href="../../../ansicl/dictentr/reinitia.htm"><b>reinitialize-instance</b></a>), or a changed class, and
+is precisely the same value that was given to the <a href="../../../ansicl/dictentr/shared-i.htm"><b>shared-initialize</b></a> which called <a href="device-open.htm"><b>device-open</b></a>.  In short, if
+<i>slot-names</i> is the value <code>t</code>, then the operation being performed is an <a href="../../../ansicl/dictentr/initiali.htm"><b>initialize-instance</b></a>; if
+<i>slot-names</i> is a non-<code>nil</code>
+list, then a <a href="../../../ansicl/dictentr/change-c.htm"><b>change-class</b></a> is
+occurring, and if it is <code>nil</code>, then either a
+<a href="../../../ansicl/dictentr/change-c.htm"><b>change-class</b></a> or a <a href="../../../ansicl/dictentr/reinitia.htm"><b>reinitialize-instance</b></a> is occurring.
+</p>
+<p id="16">
+Current unspecified <a href="device-open.htm"><b>device-open</b></a> methods exist on all existing leaf
+stream classes (ones with no defined subclasses). Device writers must
+determine whether it is appropriate to use the existing version, or to
+write one.
+</p>
+
+<h3 id="17">
+<a name="do-for-string-streams">device-open for string-streams</a>
+</h3>
+
+<p id="18">
+<a href="device-open.htm"><b>device-open</b></a> methods for
+string-streams should be :before methods. There is a default primary
+method that simply returns <code>t</code> if the
+string-stream has been opened properly and returns <code>nil</code> otherwise. Users should ensure that they do not
+overwrite more-specific :before methods (that is, write a :before
+method for your own subclass but not for classes you have do not defined).
+</p>
+
+<p id="19">
+See <a href="../../streams.htm">streams.htm</a> for information on the
+simple-streams implementation in Allegro CL. See particularly these
+sections in that document: <a href="../../streams.htm#tips-for-device-open-2">Device-open</a> and <a href="../../streams.htm#from-scratch-do-2">From-scratch
+device-open</a>.
+</p>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/device-open.htm">9.0 version</a></td></tr></table></body></html>

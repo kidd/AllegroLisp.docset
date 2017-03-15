@@ -1,0 +1,59 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>project-package-name</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/project-package-name.htm">9.0 version</a></td></tr></table><h2 id="2">project-package-name</h2>
+
+<p id="3"><b>Arguments: </b><i>
+project
+</i></p>
+
+<p id="4">
+The default method for this generic function returns a keyword symbol
+naming the default package that is used for source code that is
+auto-generated for the forms of a project. This package is used for
+all forms whose <a href="form-package-name.htm"><b>form-package-name</b></a> is <code>nil</code>, as it is by default; in other words, it is used
+for all forms that do not explicitly override this project-wide
+default. The value of this property for the current project is
+displayed on the <a href="../../ide-menus-and-dialogs/project-manager-dialog-options.htm">Options</a> tab of the
+<a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog. The setf of this function may be called to
+change the default package of the project.
+</p>
+<p id="5">
+When creating a new project, we strongly recommend that you decide on
+a package name for the project and specify it in the <a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> before creating forms or source code for the project
+(unless you're content with using the default cg-user package).  When
+changing the package later, it can be tedious to find all of the
+places where you may need to update package references in the
+project's source code, including the .bil files that are generated
+automatically for forms.
+</p>
+<p id="6">
+When running the complete application, either by using the <a href="../../ide-menus-and-dialogs/run-menu.htm#run-project">Run | Run
+Project</a> command or by using the <a href="../../ide-menus-and-dialogs/file-menu.htm#build-project-distribution">File | Build Project
+Distribution</a> command, the variable <a href="../../../ansicl/dictentr/package.htm"><code>*package*</code></a> will initially be set to the project's
+default package.  This is <b>not</b> done by the <a href="../../ide-menus-and-dialogs/run-menu.htm#run-form">Run | Run
+Form</a> command, though, because no new process is created for a
+running form.
+</p>
+<p id="7">
+The package must exist before <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'ing this value. The package is
+created automatically if needed when you enter a project package name
+on the <a href="../../ide-menus-and-dialogs/project-manager-dialog-options.htm">Options</a> tab of the
+<a href="../../ide-menus-and-dialogs/project-manager-dialog.htm">Project
+Manager</a> dialog. The next <a href="../../ide-menus-and-dialogs/file-menu.htm#save-all">File | Save All</a> command will
+then save the .lpr project definition file to contain a minimal
+defpackage form for the package to allow the .lpr file to load without
+error and to allow all of the project's source code files to be "in"
+the project's package, including any project file where you may have
+specified a more complete <a href="../../../ansicl/dictentr/defpacka.htm"><b>defpackage</b></a> form.
+</p>
+
+<p id="8">
+See <a href="form-package-name.htm"><b>form-package-name</b></a> for details on
+when and how the package is used. See also <a href="project-package.htm"><b>project-package</b></a>.
+</p>
+
+
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/project-package-name.htm">9.0 version</a></td></tr></table></body></html>

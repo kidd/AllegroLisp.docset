@@ -1,0 +1,139 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>hotspot</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Significantly revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/hotspot.htm">9.0 version</a></td></tr></table><h2 id="2">hotspot</h2>
+
+<p id="3">
+The class of a hotspot object. Hotspots are invisible regions on a
+window that can receive and respond to mouse events just as actual
+windows do. They can be used to overlay images drawn on a window in
+order to make the images behave as graphical objects without using a
+separate child window that would obscure overlapping images on the
+main window.
+</p>
+<p id="4">
+The <a href="../../operators/cg/m/mouse-in.htm"><b>mouse-in</b></a>,
+<a href="../../operators/cg/m/mouse-out.htm"><b>mouse-out</b></a>, and
+various mouse click methods such as <a href="../../operators/cg/m/mouse-left-down.htm"><b>mouse-left-down</b></a> are invoked for
+hotspot instances just as it is for windows. If you define mouse click
+methods for hotspots, the methods should return <code>nil</code> if you want the click to be further processed by
+the hotspot's parent window, or non-<code>nil</code> to
+prevent further processing of the click by the window.
+</p>
+
+<h3 id="5">
+General steps for using hotspots
+</h3>
+
+<ul>
+<li id="6">
+Define a subclass of <a href="basic-pane.htm"><code>basic-pane</code></a> (or one of its subclasses) that has
+<a href="hotspot-mixin.htm"><code>hotspot-mixin</code></a> as another
+superclass. (It is best to specify <a href="hotspot-mixin.htm"><code>hotspot-mixin</code></a> as the first superclass, so that
+its methods will take precedence over those of the parent window
+class.) Instances of this window class may contain hotspots.  For
+example: <code>(defclass my-hotspot-window (hotspot-mixin
+frame-window)())</code>
+</li>
+<li id="7">
+Define a subclass of the <a href="hotspot.htm"><code>hotspot</code></a> class so that you can specialize methods
+for your hotspots only.
+</li>
+<li id="8">
+Write methods that specialize on your hotspot subclass to control how
+your hotspots respond to the mouse.  Methods may be added to <a href="../../operators/cg/m/mouse-in.htm"><b>mouse-in</b></a>, <a href="../../operators/cg/m/mouse-out.htm"><b>mouse-out</b></a>, <a href="../../operators/cg/m/mouse-left-down.htm"><b>mouse-left-down</b></a>, <a href="../../operators/cg/m/mouse-left-up.htm"><b>mouse-left-up</b></a>, <a href="../../operators/cg/m/mouse-middle-down.htm"><b>mouse-middle-down</b></a>, <a href="../../operators/cg/m/mouse-middle-up.htm"><b>mouse-middle-up</b></a>, <a href="../../operators/cg/m/mouse-right-down.htm"><b>mouse-right-down</b></a>, <a href="../../operators/cg/m/mouse-right-up.htm"><b>mouse-right-up</b></a>, and/or <a href="../../operators/cg/m/mouse-double-click.htm"><b>mouse-double-click</b></a>.  (There are built-in <a href="../../operators/cg/m/mouse-in.htm"><b>mouse-in</b></a> and <a href="../../operators/cg/m/mouse-out.htm"><b>mouse-out</b></a> methods specializing on <a href="hotspot.htm"><code>hotspot</code></a> that call <a href="../../operators/cg/h/highlight-hotspot.htm"><b>highlight-hotspot</b></a>, so do not override these
+methods unless you want to bypass <a href="../../operators/cg/h/highlight-hotspot.htm"><b>highlight-hotspot</b></a>.)
+</li>
+<li id="9">
+Create a window for hotspots by calling <a href="../../operators/cg/m/make-window.htm"><b>make-window</b></a> on your <a href="hotspot-mixin.htm"><code>hotspot-mixin</code></a> subclass.  Create hotspot
+instances by calling <a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a> on your hotspot subclass, and add
+the instances to the window by calling <a href="../../operators/cg/a/add-hotspot.htm"><b>add-hotspot</b></a>.
+</li>
+</ul>
+<p id="10">
+A hotspot's <a href="../../operators/cg/h/highlight-style.htm"><b>highlight-style</b></a>
+may optionally be set to <code>:invert</code> or
+<code>:outline</code> to make the hotspot highlight itself
+whenever the mouse is inside its <a href="../../operators/cg/h/hotspot-region.htm"><b>hotspot-region</b></a>. If these two built-in highlight
+styles are not adequate, you can override the default <a href="../../operators/cg/h/highlight-hotspot.htm"><b>highlight-hotspot</b></a> method to highlight
+the hotspot however you like.
+</p>
+<p id="11">
+Other than highlighting themselves when under the mouse cursor,
+hotspots do not draw anything on their parent window.  Typically a
+hotspot covers the same region where something is drawn, allowing the
+user to click on that thing.  But since an application could draw any
+sort of graphic where the hotspot lies, the hotspot does not attempt
+to do this drawing itself; instead, the window's <a href="../../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a> method should draw the "real"
+object that the hotspot is making active. For a polygon hotspot, for
+example, the <a href="../../operators/cg/r/redisplay-window.htm"><b>redisplay-window</b></a>
+method could pass the same vector of positions to <a href="../../operators/cg/d/draw-polygon.htm"><b>draw-polygon</b></a> to draw the "real" polygon as the
+corresponding hotspot uses to define its <a href="../../operators/cg/h/hotspot-region.htm"><b>hotspot-region</b></a>.
+</p>
+<p id="12">
+Here are some other properties that hotspots can be given, either by
+passing the keyword initarg such as <code>:name</code> to
+<a href="../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>, or by calling
+the <a href="../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> function such as
+<a href="../../operators/cg/n/name.htm"><b>(setf name)</b></a> any
+time later.
+</p>
+<ul>
+<li id="13">
+<a href="../../operators/cg/n/name.htm"><b>name</b></a> - a symbol that allows
+you to identify a hotspot programmatically.
+</li>
+<li id="14">
+<a href="../../operators/cg/c/color.htm"><b>color</b></a> - the color in which to
+draw the hotspot's highlighting.
+</li>
+<li id="15">
+<a href="../../operators/cg/c/cursor.htm"><b>cursor</b></a> - the mouse cursor to
+use when the mouse is over the hotspot.
+</li>
+<li id="16">
+<a href="../../operators/cg/a/available.htm"><b>available</b></a> - whether the
+hotspot is currently active.  (Or call <a href="../../operators/cg/r/remove-hotspot.htm"><b>remove-hotspot</b></a> to remove the hotspot
+completely.)
+</li>
+
+<li id="17">
+
+<a href="../../operators/cg/h/help-string.htm"><b>help-string</b></a>: an arbitrary
+string to provide information about this hotspot to the user.
+
+</li>
+
+<li id="18">
+<a href="../../operators/cg/t/tooltip.htm"><b>tooltip</b></a>: a string to
+display in a small tooltip window whenver the mouse cursor hovers over
+the hotspot.
+</li>
+
+<li id="19">
+
+<a href="../../operators/cg/s/show-help-string-under-mouse.htm"><b>show-help-string-under-mouse</b></a>:
+whether to display the <a href="../../operators/cg/h/help-string.htm"><b>help-string</b></a> automatically when the mouse cursor
+is over the hotspot.
+
+</li>
+
+<li id="20">
+<a href="../../operators/cg/p/plist.htm"><b>plist</b></a> - a property list where
+arbitrary attributes of a hotspot could be hung.
+</li>
+</ul>
+<p id="21">
+The function <a href="../../operators/cg/h/hotspots.htm"><b>hotspots</b></a> returns
+a list of all of the hotspots that are currently on a window, and
+<a href="../../operators/cg/c/current-hotspot.htm"><b>current-hotspot</b></a> returns the
+one that is currently under the mouse, if any.  Calling <a href="../../operators/cg/p/parent.htm"><b>parent</b></a> on a hotspot returns the
+window that it is on, if any.
+</p>
+<p id="22">
+The IDE's <a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator
+Dialog</a> includes a complete example of using hotspots. Look
+for <b>Hotspots: mouse-active highlighting regions</b>.
+</p>
+
+
+<hr><p id="23"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had significant revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Significantly revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/hotspot.htm">9.0 version</a></td></tr></table></body></html>

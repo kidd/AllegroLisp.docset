@@ -1,0 +1,185 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>list-view</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/list-view.htm">9.0 version</a></td></tr></table><h2 id="2">list-view</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of the list-view control. 
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+The list-view control displays a table of textual information. It may
+include a row of buttons along the top that serve as column headers
+and which may be clicked in order to sort the rows of the list-view by
+the values that appear in any column. The column headers may also be
+stretched to change the width of individual columns.
+</p>
+
+<p id="7">
+The <a href="../../operators/cg/r/range.htm"><b>range</b></a>
+property of a list-view is a list of <a href="list-view-item.htm"><code>list-view-item</code></a> instances, each of
+which represents one row of data. The <a href="../../operators/cg/c/columns.htm"><b>columns</b></a> property contains a list of
+list-view-column instances, each of which represents one column of
+data and its header. Each list-view-item has a <a href="../../operators/cg/v/value-plist.htm"><b>value-plist</b></a> property
+that contains a value for each column of that row --- this value-plist
+is of the form (column-name value column-name value ...).
+</p>
+<p id="8">
+The list-view control supports icons and alternate layout styles.
+(The alternate layout styles are supported on the Windows platform
+only.) Refer to the documentation for the following symbols for more
+information: <a href="image-list.htm"><code>image-list</code></a>, <a href="../../operators/cg/l/large-image-list.htm"><b>large-image-list</b></a>, <a href="../../operators/cg/s/small-image-list.htm"><b>small-image-list</b></a>, <a href="../../operators/cg/s/state-image-list.htm"><b>state-image-list</b></a>, <a href="../../operators/cg/i/icon-index.htm"><b>icon-index</b></a>, <a href="../../operators/cg/s/state-icon-index.htm"><b>state-icon-index</b></a>, <a href="../../operators/cg/l/layout-style.htm"><b>layout-style</b></a>, <a href="../../operators/cg/a/alignment.htm"><b>alignment</b></a>, <a href="../../operators/cg/a/auto-arrange.htm"><b>auto-arrange</b></a>, <a href="../../operators/cg/a/arrange-icons.htm"><b>arrange-icons</b></a>, <a href="../../operators/cg/l/list-view-item-position.htm"><b>list-view-item-position</b></a>, <a href="../../operators/cg/o/open-image-list.htm"><b>open-image-list</b></a>, <a href="../../operators/cg/c/close-image-list.htm"><b>close-image-list</b></a>, <a href="../../operators/cg/i/image-list-open-p.htm"><b>image-list-open-p</b></a>, and
+<a href="../../operators/cg/s/share-image-lists.htm"><b>share-image-lists</b></a>. On Windows
+only, see <a href="../../operators/cg/d/draggable-headers.htm"><b>draggable-headers</b></a>,
+<a href="../../operators/cg/f/full-row-select.htm"><b>full-row-select</b></a>, and
+<a href="../../operators/cg/s/show-grid-lines.htm"><b>show-grid-lines</b></a>.
+</p>
+
+<h3 id="9">
+Check boxes
+</h3>
+<p id="10">
+On Windows, check boxes are supported for list-views. See
+<a href="../../operators/cg/s/show-check-boxes.htm"><b>show-check-boxes</b></a>, <a href="../../operators/cg/c/checked.htm"><b>checked</b></a>, and <a href="../../operators/cg/o/on-check.htm"><b>on-check</b></a>.
+</p>
+
+
+<p id="11">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+<h2 id="12">
+Example
+</h2>
+
+<p id="13">
+Here is an example that shows how to create and modify a list-view
+widget programmatically. It creates a list-view with some initial
+items and displays it on a parent dialog, then adds a few more items
+and modifies the value of one of them.
+</p>
+
+<pre id="14">
+(let* ((list-view
+        
+        ;; Make a list-view widget.
+        (make-instance 'list-view
+          
+          ;; Where to place the list-view in its parent dialog.
+          :left 20 :top 20 :width 300 :height 200
+          
+          ;; The initial columns of the list-view.
+          :columns (list
+                    (make-instance 'list-view-column
+                      :name :flower
+                      :title &quot;Flower&quot;
+                      :justification :left
+                      :width 144
+                      :on-sort-predicate 'string&lt;)
+                    (make-instance 'list-view-column
+                      :name :value
+                      :title &quot;Value&quot;
+                      :justification :center
+                      :width 60
+                      :on-sort-predicate '&lt;)
+                    (make-instance 'list-view-column
+                      :name :rating
+                      :title &quot;Rating&quot;
+                      :width 80))
+          
+          ;; The initial rows of the list-view.
+          :range (list
+                  (make-instance 'list-view-item
+                    :name :azalea
+                    
+                    ;; The value to display in each column
+                    ;; for this row.
+                    :value-plist
+                    `(:flower &quot;Azalea&quot; :value 3700 :rating :low))
+                  
+                  (make-instance 'list-view-item
+                    :name :dieffenbachia
+                    :value-plist
+                    `(:flower &quot;Dieffenbachia&quot; :value 23 :rating :high))
+                  (make-instance 'list-view-item
+                    :name :philodendron
+                    :icon-index 1
+                    :value-plist
+                    `(:flower &quot;Philodendron&quot; :value 870 :rating :low))
+                  (make-instance 'list-view-item
+                    :name :spider-plant
+                    :icon-index 1
+                    :value-plist
+                    `(:flower &quot;Spider Plant&quot; :value 9 :rating :medium)))
+          
+          ;; This row that will initially be selected.
+          :value (list :dieffenbachia)
+          
+          ;; The set of icons that can be displayed at the left
+          ;; of the rows.  The icon-index of each list-view-item
+          ;; is an index into this set of pixmaps.
+          ;; The :pixmap-names argument refers to pixmaps
+          ;; that can be found from their names because
+          ;; cache-pixmap was called on the pixmaps.
+          :small-image-list (make-instance 'image-list
+                              :name :sample-small
+                              :pixmap-names
+                              (list :default-closed-with-mask
+                                    :default-leaf-with-mask))
+          
+          ;; The list-view will initially be sorted by this column.
+          :sort-column :flower))
+       
+       ;; Make a parent dialog and put the list-view widget on it.
+       (dialog (make-window :list-view-example
+                 :class 'dialog
+                 :interior (make-box-relative 200 200 340 240)
+                 :dialog-items (list list-view))))
+  (select-window dialog)
+  
+  ;; After the dialog has appeared, add a few more rows
+  ;; one at a time.
+  (dotimes (j 3)
+    (sleep 1)
+    (let* ((title (format nil &quot;~:(~r~)&quot; (1+ j))))
+      (add-item list-view
+                (make-instance 'list-view-item
+                  :name (intern title :keyword)
+                  :icon-index 0
+                  :value-plist `(:flower ,title
+                                 :value ,(* 10 (1+ j))
+                                 :rating :medium)))))
+  
+  ;; Increase the value of the spider plant, and then select it.
+  (sleep 1)
+  (let* ((item (find-item list-view :spider-plant))
+         (plist (value-plist item)))
+    (incf (getf plist :value) 300)
+    (setf (value-plist item) plist))
+  (sleep 1)
+  (setf (value list-view)(list :spider-plant))
+
+  ;; Sort by the flower column again after adding the new items.
+  (sleep 1)
+  (setf (sort-column list-view) :flower)
+  
+  ;; Return the dialog.
+  dialog)
+</pre>
+
+
+
+
+<p id="15">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="16"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/list-view.htm">9.0 version</a></td></tr></table></body></html>

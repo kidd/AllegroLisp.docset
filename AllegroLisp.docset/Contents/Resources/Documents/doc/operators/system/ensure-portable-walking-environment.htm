@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ensure-portable-walking-environment</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/ensure-portable-walking-environment.htm">9.0 version</a></td></tr></table><h2 id="2">ensure-portable-walking-environment</h2>
+
+<p id="3"><b>Arguments: </b><i>
+environment
+</i></p>
+
+<p id="4">
+This function returns an environment suitable for portable code walkers to
+use entirely within the ANSI Specification of Common Lisp.
+</p>
+<p id="5">
+Normally a <code>:compiler</code> environment will expand
+compiler-macros (though a <code>:compilation</code> environment
+will not do so, as per spec).  The compiler does macroexpansions with
+a <code>:compiler</code> environment, so that the macroexpansion
+process can be a part of the compilation process, and so that
+compiler-savvy compiler-macros and macros can gain insights into the
+compiler's inner workings.  Code walkers are themselves macros or
+compiler-macros at their top level (since it is only these two
+entities that can get access to environments), so these
+macros/compiler-macros must each make the decision as to whether they
+will handle a walk portably or non-portably.  A non-portable walk will
+include possible compiler-macro expansions and stops at special forms
+(see the documentation for the Allegro CL implementation of <a href="../../../ansicl/dictentr/macroex0.htm"><b>macroexpand</b></a> and <a href="../../../ansicl/dictentr/macroex0.htm"><b>macroexpand-1</b></a> in <a href="../../implementation.htm#macroexpand-2">cl:macroexpand and
+cl:macroexpand</a> in <a href="../../implementation.htm">implementation.htm</a>).
+But if the walker wants to operate portably, without expansion of
+compiler-macros and with macroexpansion of special forms, then this
+function must be called and the result used as the environment for the
+walk.
+</p>
+<p id="6">
+This function will always return an environment. If the
+<i>environment</i> argument is <code>nil</code>, then a new, empty
+<code>:interpreter</code> environment will be returned. If the
+<i>environment</i> argument is a
+<code>:compiler</code> environment, then it will be augmented
+once with no new information, and the result will be changed to a
+<code>:compilation</code> environment and returned.  All other
+environment arguments wil be returned unchanged.
+</p>
+
+<p id="7">
+See <a href="../../environments.htm">environments.htm</a> for more information on
+environments.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/system/ensure-portable-walking-environment.htm">9.0 version</a></td></tr></table></body></html>

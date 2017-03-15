@@ -1,0 +1,64 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>show-call-graph</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: prof</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/show-call-graph.htm">9.0 version</a></td></tr></table><h2 id="2">show-call-graph</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>name stream current-profile verbose</i><i>
+</i></p>
+
+<p id="4">This function prints a call-graph for the runtime analyzer data collected
+to the stream specified by the 
+<i>stream</i> keyword argument. The
+default value of the :stream argument is *standard-output*.</p>
+
+<p id="5">The <i>name</i> keyword argument, if provided, specifies the
+function for which information is requested. If the 
+<i>name</i>
+keyword argument is not specified or is specified 
+<code>nil</code>, information on
+all functions will be printed. The value of the 
+<i>name</i> keyword
+argument should be a symbol (that is the argument must evaluate to a
+symbol) or a compiled function object if you want information on a
+Lisp function. The value should be a string if you want information on
+a C function or a Lisp runtime system function.</p>
+
+<p id="6">The <i>current-profile</i>
+keyword argument specifies the profile
+data to be displayed. If no value is specified, data from the last-run
+profile will be displayed. If a value is specified, it must be a
+profile saved with 
+<a href="save-current-profile.htm"><b>save-current-profile</b></a>, in which
+case data from that profile will be displayed.</p>
+
+<p id="7">The <i>verbose</i> 
+keyword argument controls whether or not
+messages about the progress of the analysis are printed to
+*standard-output*. The messages will be printed if the value is
+true and they will not be printed 
+if the value is 
+<code>nil</code>. The value
+defaults to 
+<code>nil</code>. (Note that in the default, 
+both the messages and the
+result are printed to *standard-output* so if you rebind
+*standard-output* to be a stream open to a file, the messages will be
+printed to the file as well.)</p>
+
+<p id="8">
+This function returns no value.
+</p>
+
+<p id="9">
+If the runtime analyzer is still running when this function is called,
+the runtime analyzer will be stopped, then analysis and display of the
+results will occur. The status of that profile (as returned by <a href="profiler-status.htm"><b>profiler-status</b></a>) will then be
+<code>:analyzed</code>.
+</p>
+
+<p id="10">
+See <a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a> for general information on
+the runtime analyzer. 
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/show-call-graph.htm">9.0 version</a></td></tr></table></body></html>

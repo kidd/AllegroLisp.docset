@@ -1,0 +1,143 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>gesture-event</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table><h2 id="2">gesture-event</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window target gesture x y distance beginning ending inertia
+</i></p>
+
+<p id="4">
+This generic function is called one or more times for any touchscreen
+gesture on a window, unless <a href="../r/register-touch-window.htm"><b>register-touch-window</b></a> has been called to switch
+that window to the touch interface (in which case <a href="../t/touch-event.htm"><b>touch-event</b></a> will be called instead). This
+function will be called once for each different position of one or
+more fingers during the gesture. This is the somewhat higher-level
+interface that figures out which type of gesture is being done for
+you, though only five standard gestures are supported.
+</p>
+<p id="5">
+An application can supply methods for this generic function to handle
+gestures.  If a method handles a gesture, it should return true.
+Otherwise it should return <code>nil</code> to pass the
+event up to the parent window if any, or else to perform the default
+behavior that's built into Windows.  The default method
+on <a href="../../../classes/cg/basic-pane.htm"><code>basic-pane</code></a> does nothing
+and returns <code>nil</code>.
+</p>
+<p id="6">
+<b><i>window</i></b> is the window to which Windows is
+sending an event, while <b><i>target</i></b> is the
+window where the current gesture began (even if the user has dragged
+out of that window). Initially these will be the same window. But if
+the method returns <code>nil</code> and there is a parent
+window, then <a href="../g/gesture-event.htm"><b>gesture-event</b></a>
+will be called again where <i>window</i> is the parent
+window while <i>target</i> is still the window where the
+gesture began.  Similarly, if the method for that window
+returns <code>nil</code> then <a href="../g/gesture-event.htm"><b>gesture-event</b></a> will be called yet again where
+<i>window</i> is the grandparent window (if there is
+one), while <i>target</i> is still the same target
+window.
+</p>
+<p id="7">
+This design could be used, for example, by defining a method that
+specializes the <i>window</i> parameter on a dialog
+subclass. If the user touches a widget on that dialog and drags
+across the dialog, then each position during the drag would first call
+<a href="../g/gesture-event.htm"><b>gesture-event</b></a>
+with <i>window</i> and <i>target</i> being
+the widget-window, in which case the default method will
+return <code>nil</code>, causing <a href="../g/gesture-event.htm"><b>gesture-event</b></a> to be called again
+where <i>window</i> is the dialog. You could then
+handle the gesture in your method that specializes on the dialog, even
+though the user intially touched a child widget.
+</p>
+<p id="8">
+<b><i>x</i></b> and <b><i>y</i></b> are
+the coordinates of the current center position of the one or more
+fingers that are currently on the screen, measured in pixels.  These
+are stream coordinates of <i>window</i>, which means
+relative to the upper left corner of the canvas that is being scrolled
+in <i>window</i> if it scrolls, or else relative to the
+upper left of the interior of <i>window</i>.
+</p>
+<p id="9">
+<b><i>gesture</i></b> is a keyword that indicates which
+of the several standard high-level gestures is being performed.  This
+is one
+of <code>:pan</code>, 
+<code>:zoom</code>, <code>:rotate</code>,
+<code>:two-finger-tap</code>,
+or <code>:press-and-tap</code>.  Here are their meanings:
+</p>
+<ul>
+<li id="10">
+<code>:pan</code> - one or two fingers are being dragged,
+typically to scroll the window
+</li>
+<li id="11">
+<code>:zoom</code> - two fingers are either moving closer to
+each other or farther apart (a pinch or a spread)
+</li>
+<li id="12">
+<code>:rotate</code> - two fingers are moving in a circular
+manner around a central point
+</li>
+<li id="13">
+<code>:two-finger-tap</code> - two fingers touched the screen
+and were removed without dragging
+</li>
+<li id="14">
+<code>:press-and-tap</code> - one finger touched the screen and
+then another touched the screen while the first was still down
+</li>
+</ul>
+<p id="15">
+<b><i>distance</i></b> is the distance between the two
+fingers, measured in pixels.  This will be zero if only one finger is
+touching the screen.  For a <code>:rotate</code> gesture, this
+is instead an angle measured in radians, referring to the angle of a
+line that goes through both finger positions.
+</p>
+<p id="16">
+<b><i>beginning</i></b> is true if this is the first
+call to <a href="../g/gesture-event.htm"><b>gesture-event</b></a> for this
+gesture, and <code>nil</code> otherwise.  The first call
+is made for the first finger that touches the screen, though only
+after a partial drag indicates which type of gesture is being
+performed.
+</p>
+<p id="17">
+<b><i>ending</i></b> is true if this is the last call to
+<a href="../g/gesture-event.htm"><b>gesture-event</b></a> for this
+gesture, and <code>nil</code> otherwise.  The last call is
+made when the last finger stops touching the screen (or the last
+inertia event comes in after all fingers have left the screen).
+</p>
+<p id="18">
+<b><i>inertia</i></b> is true if this call results from
+inertia after all fingers have left the screen,
+and <code>nil</code> otherwise. This applies only to the
+<code>:pan</code> gesture, and will always
+be <code>nil</code> for other
+gestures. If <i>inertia</i> is enabled for this window
+(see <a href="../c/configure-gestures.htm"><b>configure-gestures</b></a>), and
+all fingers leave the screen during a drag, then calls will continue
+to be made to <a href="../g/gesture-event.htm"><b>gesture-event</b></a>
+for a brief period, as if the user had continued to drag until
+gradually coming to a halt.  An application typically can simply
+ignore the fact that no fingers are still on the screen and scroll the
+window according to the changing x and y values as usual, and then the
+scrolling will come to a gradual halt after the user makes a fling
+gesture.
+</p>
+
+<p id="19">
+See also the <a href="../../../classes/cg/touch-point.htm"><code>touch-point</code></a>
+class and <a href="../../../cgide.htm#touch-gesture-1">About Touch
+Gesture Support in Common Graphics on Windows</a>
+in <a href="../../../cgide.htm">cgide.htm</a>, where there is a
+complete example.
+</p>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.0 release.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">This page is new in 10.0.</a></small></td></tr></table></body></html>

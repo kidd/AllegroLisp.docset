@@ -1,0 +1,45 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>subclass-widget</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/subclass-widget.htm">9.0 version</a></td></tr></table><h2 id="2">subclass-widget</h2>
+
+<p id="3"><b>Arguments: </b><i>
+dialog-item
+</i></p>
+
+<p id="4">
+<b>Use of this function is deprecated</b>.  Common Graphics now always
+internally calls this function on all Microsoft widgets, and so there
+is never a need for an application to call it.  Calling this function
+will now simply do nothing.
+</p>
+
+<p id="5">
+Performs what might be called "MS subclassing" on the <a href="../w/window.htm"><b>window</b></a> of
+<i>dialog-item</i>. This has nothing to do with CLOS
+classes, but rather causes lisp to intercept all low-level messages
+that are sent to widget windows and are normally handled within the
+Windows operating system where these widgets are implemented. All
+low-level Windows events for dialog-item will be passed to the
+pc:control-procedure generic function. In addition, the keypress and
+mouse-click events will call an event method for the dialog-item's
+window and that event.
+</p>
+<p id="6">
+You need to call <a href="../s/subclass-widget.htm"><b>subclass-widget</b></a> only if you want to
+handle these low-level Windows events that are usually handled by
+MS-Windows internally. For example, when a user types a new value into
+an (single-line) <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> widget, you normally
+know only what the new string and the old string are; if you want to
+know what actual key was pressed, then you will need to call <a href="../s/subclass-widget.htm"><b>subclass-widget</b></a> and then
+write an event method on the window to handle the keypress event. Or
+you may want to intercept a mouse click on a widget even when its
+<a href="../v/value.htm"><b>value</b></a> is not
+changed by the click.
+</p>
+<p id="7">
+If <a href="../s/subclass-widget.htm"><b>subclass-widget</b></a> is called on a
+widget that is already subclassed, no action is taken and <code>nil</code> is returned, otherwise <code>t</code>
+is returned.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/s/subclass-widget.htm">9.0 version</a></td></tr></table></body></html>

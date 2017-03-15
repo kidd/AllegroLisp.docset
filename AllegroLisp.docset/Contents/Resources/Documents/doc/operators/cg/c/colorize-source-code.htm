@@ -1,0 +1,98 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>colorize-source-code</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/colorize-source-code.htm">9.0 version</a></td></tr></table><h2 id="2">colorize-source-code</h2>
+
+<p id="3"><b>Arguments: </b><i>
+lisp-edit-pane 
+</i>&amp;key <i>entire-buffer levels skip-preroll skip-invalidation from-position</i><i>
+</i></p>
+
+<p id="4">
+Colorizes some or all of the text in a <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a>.  This is intended for use with
+Common Lisp source code, and results with other sorts of text would be
+rather arbitrary. The purpose is to visually distinguish various
+elements of source code so that programmers may more easily spot what
+they are looking for, and also to make typos more apparent.  This
+function is used (optionally) by the IDE editor, and an application
+that handles source code could call this function as well.
+</p>
+<p id="5">
+This function may be called explicitly, and is also called
+automatically if either of the configuration options <a href="../c/colorize-on-load-file.htm"><b>colorize-on-load-file</b></a> or <a href="../c/colorize-on-typing.htm"><b>colorize-on-typing</b></a> are enabled.  Other
+configuration options control what types of elements are colorized and
+which color to use for each type; these options are:
+</p>
+<ul>
+<li id="6">
+<a href="../c/color-for-comments.htm"><b>color-for-comments</b></a>
+</li>
+<li id="7">
+<a href="../c/color-for-strings.htm"><b>color-for-strings</b></a>
+</li>
+<li id="8">
+<a href="../c/color-for-characters.htm"><b>color-for-characters</b></a>
+</li>
+<li id="9">
+<a href="../c/color-for-global-variables.htm"><b>color-for-global-variables</b></a>
+</li>
+<li id="10">
+<a href="../c/color-for-external-cl-symbols.htm"><b>color-for-external-cl-symbols</b></a>
+</li>
+<li id="11">
+<a href="../c/color-for-external-allegro-symbols.htm"><b>color-for-external-allegro-symbols</b></a>
+</li>
+<li id="12">
+<a href="../c/color-for-external-cg-symbols.htm"><b>color-for-external-cg-symbols</b></a>
+</li>
+<li id="13">
+<a href="../c/color-for-user-functions.htm"><b>color-for-user-functions</b></a>
+</li>
+</ul>
+<p id="14">
+The IDE never saves colorization into the file that is written from an
+editor buffer.
+</p>
+<p id="15">
+<i>lisp-edit-pane</i> should be the <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> to colorize.
+</p>
+<p id="16">
+If <i>entire-buffer</i> and <i>levels</i>
+are both <code>nil</code> (as they are by default), then
+the top-level definition that surrounds the current text cursor
+position (or <i>from-position</i> if specified) is
+colorized. If <i>entire-buffer</i> is true, then all of
+the text in the lisp-edit-pane is colorized.  Otherwise, if
+<i>levels</i> is true then it should be a positive
+integer that indicates how many s-expressions outward to colorize
+backward from the current text cursor position (or
+<i>from-position</i> if specified).  For example, if
+<i>levels</i> is 2 (and
+<i>entire-buffer</i> and
+<i>from-position</i> are <code>nil</code>),
+then the colorization will be done from the beginning of the
+s-expression that surrounds the s-expression that surrounds the
+current text cursor position, to the current text cursor position.
+</p>
+<p id="17">
+<i>skip-preroll</i> is used internally and is not
+intended for use by applications.
+</p>
+<p id="18">
+If <i>skip-invalidation</i> is <code>nil</code>, as it is by default, then the part of the
+lisp-edit-pane that may have changed is invalidated at the end so that
+it is redrawn to reveal any new colors.  If it is true then no
+invaildation is done.  Generally, true should be specified only if you
+know that the window will be redrawn later by some other means; this
+may avoid flashing caused by multiple redisplays, since the text
+control may redraw itself immediately when invalidated rather than
+waiting until no more events are queued as most windows do.
+</p>
+<p id="19">
+If <i>from-position</i> is <code>nil</code>,
+as it is by default, then the colorization is based on the current
+text cursor position.  Otherwise it should be a character index (a
+non-negative integer) indicating the position on which to base the
+colorization.
+</p>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/colorize-source-code.htm">9.0 version</a></td></tr></table></body></html>

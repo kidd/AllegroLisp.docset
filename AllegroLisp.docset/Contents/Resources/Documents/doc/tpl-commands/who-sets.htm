@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>:who-sets</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Top-level Command</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/who-sets.htm">9.0 version</a></td></tr></table><h2 id="2">:who-sets</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name
+</i>&amp;key <i>inverse in-files in-functions</i><i>
+</i></p>
+
+<p id="4">This is the top-level command equivalent of <a href="../operators/xref/who-sets.htm"><b>who-sets</b></a>.
+</p>
+
+<p id="5">When the value of the <i>inverse</i> argument is <code>nil</code>
+(the default), this command prints information in the database about
+those functions which set the global variable identified by
+<i>name</i>. When the value of the <i>inverse</i> argument is
+true, this command prints information on the global variables set by
+the function identified by <i>name</i>.</p>
+
+<p id="6">When <i>inverse</i> is <code>nil</code>, <i>name</i> can be any
+lisp object but only global variables make sense as the value (no
+cross reference information is gathered for other types of Lisp
+objects). When <i>inverse</i> is true, <i>name</i> must be a
+function name (either a symbol or a list of the type described in the
+discussion of function specs in <a href="../implementation.htm">implementation.htm</a>).</p>
+
+<p id="7">The <i>in-functions</i> and <i>in-files</i> keyword arguments
+can be used to restrict the search to particular functions (for
+<i>in-functions</i>) or functions defined in particular files (for
+<i>in-files</i>). The default value for each argument is
+<code>nil</code>, which calls for an unrestricted search. When
+<i>inverse</i> is <code>nil</code> (so a list of functions is
+printed by this function) a true value for
+<i>in-functions</i> or <i>in-files</i> should be a list of
+function names or file names (respectively) and the information
+printed will be the intersection of the functions found in the
+database and the functions in the list or defined in files in the list
+(respectively). Note that source file information must have been
+recorded for the files in the <i>in-files</i> list. When
+<i>inverse</i> is true (so this function is printing the list of
+global variables set by the function identified by <i>name</i>), the
+list that is the value of <i>in-functions</i> should be a list of
+global variables and only those found in the database and in the list
+will be printed.</p>
+
+<p id="8">See <a href="../top-level.htm">top-level.htm</a> for more information on
+top-level commands. See <a href="../cross-reference.htm">cross-reference.htm</a> for
+information on the cross reference utility.</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/tpl-commands/who-sets.htm">9.0 version</a></td></tr></table></body></html>

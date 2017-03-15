@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rpc-do-invoke</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-do-invoke.htm">9.0 version</a></td></tr></table><h2 id="2">rpc-do-invoke</h2>
+
+<p id="3"><b>Arguments: </b><i>
+port op args
+</i></p>
+
+<p id="4">
+This function is called each time a remote call, sent with <a href="rcall.htm"><b>rcall</b></a> or <a href="rpc-invoke.htm"><b>rpc-invoke</b></a>, is
+executed at the receiving end.
+</p>
+<p id="5">
+The default method simply calls apply to apply the
+<i>op</i> argument to the argument list
+<i>args</i> (note that <i>args</i> is a
+single argument, not an &rest).
+</p>
+<p id="6">
+We provide a method that implements the behavior of the <a href="../../classes/rpc/with-rpc-port-enabler.htm"><code>with-rpc-port-enabler</code></a> mixin
+class.  An application can define methods on subclasses of <a href="../../classes/rpc/rpc-port.htm"><code>rpc-port</code></a> to control access to
+called functions in other ways.
+</p>
+<h3 id="7">Around Method: (with-rpc-port-enabler t t)</h3>
+<p id="8">
+This method signals an error unless the port has been enabled with an
+<code>:enable-client</code> request with an appropriate
+passcode.
+</p>
+<p id="9">
+This is an <code>:around</code> method to ensure that the method
+body is called before any primary methods, regardless of the class
+precedence list.  The application may define a primary method to add
+other filtering algorithms.
+</p>
+
+<p id="10">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-do-invoke.htm">9.0 version</a></td></tr></table></body></html>

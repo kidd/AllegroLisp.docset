@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>without-on-change</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/without-on-change.htm">9.0 version</a></td></tr></table><h2 id="2">without-on-change</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(</i> &amp;rest <i>widgets</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+This macro is useful for suppressing the usual running of the <a href="../o/on-change.htm"><b>on-change</b></a> code of one or
+more widgets while a body of application code is executed.
+</p>
+<p id="5">
+Evaluates <i>body</i> while the value of the <a href="../o/on-change.htm"><b>on-change</b></a> event handler
+property for each dialog-item in <i>widgets</i> is
+temporarily set to <code>nil</code>.  Returns whatever the
+last form in <i>body</i> returns.
+</p>
+<p id="6">
+The original value of each <a href="../o/on-change.htm"><b>on-change</b></a> event handler is restored
+when <i>body</i> completes. An <a href="../../../../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a> ensures this restoration
+in case of a break or a throw in <i>body</i>.
+</p>
+<p id="7">
+Each value in the <i>widgets</i> list should be an
+expression that evaluates to either a dialog-item instance or to
+<code>nil</code>.  When <code>nil</code>,
+nothing is done for that member of the list.
+</p>
+
+<h3 id="8">
+Examples of the calling format
+</h3>
+
+<pre id="9">
+(without-on-change (widget1)
+  (do-something)
+  (do-something-else))
+
+(without-on-change ((find-component :widget1 my-dialog))
+  (do-something))
+
+(without-on-change (widget1 widget2
+                    (find-component :widget3 my-dialog)
+                    (find-component :widget4 my-dialog))
+  (do-something))
+</pre>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/w/without-on-change.htm">9.0 version</a></td></tr></table></body></html>

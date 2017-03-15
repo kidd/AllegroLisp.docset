@@ -1,0 +1,184 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>virtual-key-down</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/v/virtual-key-down.htm">9.0 version</a></td></tr></table><h2 id="2">virtual-key-down</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window buttons key-code
+</i></p>
+
+<p id="4">
+This generic function is called when the user presses a keyboard key
+down.  An application may add methods to this generic function to
+respond to keyboard events in its windows.
+</p>
+<p id="5">
+<b><i>window</i></b> is the window that had the keyboard
+focus when the event occurred. The keyboard focus is usually indicated
+by some sort of highlighting.
+</p>
+<p id="6">
+<b><i>buttons</i></b> works as in <a href="../m/mouse-left-down.htm"><b>mouse-left-down</b></a>, that is it is an
+integer indicating which mouse buttons and shift keys were down when
+the event occurred.  The value is the result of
+applying <a href="../../../../ansicl/dictentr/logandlo.htm"><b>logior</b></a> to the values
+of the following bit-flag variables:
+</p>
+<ul>
+<li id="7">
+<a href="../../../variables/cg/left-mouse-button.htm"><code>left-mouse-button</code></a>
+</li>
+<li id="8">
+<a href="../../../variables/cg/middle-mouse-button.htm"><code>middle-mouse-button</code></a>
+</li>
+<li id="9">
+<a href="../../../variables/cg/right-mouse-button.htm"><code>right-mouse-button</code></a>
+</li>
+<li id="10">
+<a href="../../../variables/cg/first-x-button.htm"><code>first-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>)
+</li>
+<li id="11">
+<a href="../../../variables/cg/second-x-button.htm"><code>second-x-button</code></a>
+(see <a href="../../../variables/cg/s_ignore-mouse-x-buttons_s.htm"><code>*ignore-mouse-x-buttons*</code></a>),
+</li>
+<li id="12">
+<a href="../../../variables/cg/shift-key.htm"><code>shift-key</code></a>
+</li>
+<li id="13">
+<a href="../../../variables/cg/control-key.htm"><code>control-key</code></a>
+</li>
+<li id="14">
+<a href="../../../variables/cg/alt-key.htm"><code>alt-key</code></a>
+</li>
+</ul>
+<p id="15">
+In addition, if the key that was pressed was one of several "extended
+keys" then the <a href="../../../variables/cg/extended-key.htm"><code>extended-key</code></a> bit will be set. This
+is probably useful only when <i>key-code</i> is the
+value of <a href="../../../variables/cg/vk-control.htm"><code>vk-control</code></a> or <a href="../../../variables/cg/vk-alt.htm"><code>vk-alt</code></a> and an
+application needs to know whether the righthand or lefthand version of
+this key was pressed. For these keys, the <a href="../../../variables/cg/extended-key.htm"><code>extended-key</code></a> bit will be set
+for the righthand version only.
+</p>
+<p id="16">
+Other bits might be turned on as well, so functions such as <a href="../../../../ansicl/dictentr/logtest.htm"><b>logtest</b></a> should be used to
+determine whether a particular mouse button or shift key was down; for
+example,
+</p>
+<pre id="17">
+(logtest right-mouse-button buttons) 
+</pre>
+<p id="18">
+will return
+true if and only if the right mouse button was down.  For "down"
+events, the value includes the button or key being pressed now; for
+"up" events, the value does not include the button or key being
+released.
+</p>
+
+<p id="19">
+<i>key-code</i> is an integer representing the key that
+was pressed. For a letter key, the key code is the <a href="../../../../ansicl/dictentr/char-int.htm"><b>char-int</b></a> of the uppercase character
+shown on the key (and NOT the corresponding lowercase character).  For
+a numeral key, it is the <a href="../../../../ansicl/dictentr/char-int.htm"><b>char-int</b></a> of the numeral character.  For
+any other key, the key code is the value of the <code>vk-</code>
+constant for that key (see <a href="../../../variables/cg/key-names.htm"><code>key-names</code></a> for a list of
+<code>vk-</code> constants); for keys that show both a shifted
+character and an unshifted character, this constant will be named
+after the unshifted character.
+</p>
+<h2 id="20">
+Notes
+</h2>
+<p id="21">
+A note about <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> and <a href="../c/character-message.htm"><b>character-message</b></a>:
+</p>
+<p id="22">
+While a keypress will always cause <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> and <a href="../v/virtual-key-up.htm"><b>virtual-key-up</b></a> to be
+called, it will cause <a href="../c/character-message.htm"><b>character-message</b></a> to be called only
+under certain conditions. First, the keypress must indicate a
+graphical character. second, one of the following must be true:
+</p>
+<ol>
+<li id="23">
+The window in which the key was pressed is a <a href="../../../classes/cg/dialog-mixin.htm"><code>dialog-mixin</code></a> instance or a child or
+other descendant of a <a href="../../../classes/cg/dialog-mixin.htm"><code>dialog-mixin</code></a> instance; or
+</li>
+<li id="24">
+The default virtual-key-down method must run (since this method
+tells the operating system to generate a character message from the
+virtual-key-down message).
+</li>
+</ol>
+<p id="25">
+Therefore, if an application adds a virtual-key-down method for a
+window that is not on a dialog, and this method does not call
+(call-next-method) for a particular keypress, then the default
+virtual-key-down method is not called, and therefore <a href="../c/character-message.htm"><b>character-message</b></a> will not be
+called for that keypress.
+</p>
+<p id="26">
+See <a href="../../../cg/cg-events.htm">cg-events.htm</a> for information about
+event handling in Common Graphics.
+</p>
+
+
+
+<p id="27">
+The following is an example from <a href="../../../cg/cg-events.htm">cg-events.htm</a>
+repeated here:
+</p>
+
+<p id="28">
+Here's an example that handles the virtual-key-down event, since its
+arguments are a little tricky.  This code will create a window that
+will change its size when the user types control-L, control-semicolon,
+control-shift-L, or control-shift-semicolon.  The buttons argument is
+some subset of the values of the constants control-key, shift-key, and
+alt-key logior'ed together (each one is a bit flag).  The data
+argument is an integer for the key that was pressed, expressed either
+as the char-int of the character that is printed on the key or as the
+value of one of the "vk-..." constants that are the value of the
+constant <a href="../../../variables/cg/key-names.htm"><code>key-names</code></a>.
+</p>
+<pre id="29">
+(in-package :cg-user)
+
+(defclass my-window (frame-window)())
+
+(defmethod virtual-key-down ((window my-window) buttons data)
+   (case buttons
+     (#.control-key
+      (case data
+        (#.vk-semicolon
+         (incf (width window) 50))
+        (#.(char-int #\L)
+         (decf (width window) 50))
+        (t (call-next-method))))
+     (#.(logior control-key shift-key)
+      (case data
+        (#.vk-semicolon
+         (incf (height window) 50))
+        (#.(char-int #\L)
+         (decf (height window) 50))
+        (t (call-next-method))))
+     (t (call-next-method))))
+
+(make-window 'herbert :device 'my-window 
+             :parent (screen *system*))
+</pre>
+<p id="30">
+Note that if the example window above were created on
+(main-development-window <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>) instead of on the screen,
+then the virtual-key-down method would not get called for the defined
+keystrokes, because the keystrokes would be overridden by IDE menubar
+shortcuts.  In general, a menubar shortcut will override a <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method,
+and a custom virtual-key-down method will override a comtab binding
+(since comtab events are implemented as a virtual-key-down method on
+the general comtab-mixin class).
+</p>
+
+
+
+
+<hr><p id="31"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/v/virtual-key-down.htm">9.0 version</a></td></tr></table></body></html>

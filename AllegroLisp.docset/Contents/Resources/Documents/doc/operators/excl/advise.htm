@@ -1,0 +1,178 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>advise</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/advise.htm">9.0 version</a></td></tr></table><h2 id="2">advise</h2>
+
+<p id="3"><b>Arguments: </b><i>fspec class name position </i> &amp;rest <i>forms</i></p>
+
+<p id="4">
+Starting in Allegro CL release 6.0, the new fwrapper facility,
+described in <a href="../../fwrappers-and-advice.htm">fwrappers-and-advice.htm</a>, replaces the
+advice facility, and continued use of the advice facility is
+deprecated.
+</p>
+
+<p id="5">None of the arguments are evaluated. This macro advises the
+function <i>fspec</i> appropriately with code defined by
+the forms. </p>
+
+<p id="6"><i>fspec</i> specifies the function (or macro) to
+advise. This argument is normally a symbol but it can be any function
+name (see <a href="../../implementation.htm">implementation.htm</a>). See
+<a href="../../fwrappers-and-advice.htm">fwrappers-and-advice.htm</a> for information on
+advising macros. The information in the remainder of this definition
+relates to functions only. </p>
+
+<p id="7"><i>class</i> specifies the type of advice. The three
+choices are <code>:before</code>, <code>:around</code>, and
+<code>:after</code>. <code>:before</code> advice will be evaluated
+before the advised function is called; <code>:around</code> advice
+will be evaluated around the calling of the advised function (in the
+sense that the call to the function will be embedded within the
+<code>:around</code> code); <code>:after</code> advice will be
+evaluated after the advised function has been called. See below for
+more information on classes of advice.</p>
+
+<p id="8"><i>name</i> specifies the name of the advice. Its
+value may be <code>nil</code>, but it is convenient to refer to advice by
+name. Note that there can be only one piece of advice of each class
+with a given name. (But there may be as many as you like without a
+name, i.e.  with <code>nil</code> as the specified name.) If more advice is defined
+with the same name and class as existing advice, the new advice will
+replace the existing advice, thus taking its place. </p>
+
+<p id="9"><i>position</i> specifies the location of advice
+relative to other advice of the same class on the same function. The
+important point about this argument is that it is used only when the
+advice is first defined and is then forgotten. Therefore, the position
+is calculated with respect to already existing advice of the same
+class, whose positions are 0, 1, 2... regardless of the value of the
+<i>position</i> argument when they were defined. See 
+<a href="../../fwrappers-and-advice.htm">fwrappers-and-advice.htm</a> for examples that further
+explain this point. </p>
+
+<p id="10">There can be many pieces of advice of each class on a
+function. <i>position</i> specifies where the piece of
+advice currently being defined will go. <i>position</i>
+may be a non-negative integer, a name or <code>nil</code>. If it is a number, then the lower the number,
+the farther the advice will be from the actual evaluation of the forms
+defining the function itself. Thus for <code>:before</code> and
+<code>:around</code> advice, advice 0 will be run first, then 1,
+2, 3, and so on, while for <code>:after</code> advice, advice 0
+will be run last, preceded by 1, 2, 3, and so on. Say there are n
+pieces of advice of the class of the advice being defined. The
+existing advice is numbered 0, 1, 2, ..., <code>n-</code>1,
+inclusive. Then a position of 0 will result in the new advice being
+placed farther from the function call than all the rest of the advice,
+a position of <code>k</code> where <code>k</code> is
+between 1 and <code>n-1</code> will be placed farther then the
+<code>k</code>th piece of existing advice, and a position
+<code>n</code> or larger will be placed nearest the function
+call.
+</p>
+
+<p id="11">
+If <i>position</i> is <code>nil</code>, the
+advice is put farther from the function call then all
+currently-defined advice of the same class. If position is a name of
+existing advice, the advice will be placed next farther from the
+function call (before for <code>:before</code> and
+<code>:around</code>, after for <code>:after</code>) than
+the named advice. Note that if new advice has the same name and class
+as existing advice, it will replace the existing advice and take the
+position of the existing advice. In that case, the position argument
+will be ignored.
+</p>
+
+<p id="12">
+<i>forms</i> are the actual forms that will be
+evaluated. All advice on a function is combined in an enclosing
+<b>cl:prog</b>, so a return placed anywhere in any type of advice will
+cause the advised function to return with the values specified with
+the return, without any further advice code being evaluated and (if it
+has not already done so) without the advised function being
+evaluated. Syntactically, <code>:around</code> advice should be
+a single form. If multiple forms are specified, however, they are
+automatically wrapped in a <b>cl:progn</b>.  <b>Warning</b>:
+<i>forms</i> cannot be the single form <code>nil</code>. If you want the single form <code>nil</code> (in, for example, :around advice to not call the
+function and return <code>nil</code>), specify
+<code>(progn nil)</code> instead.
+</p>
+
+<h2 id="13">Advice of class :before </h2>
+
+<p id="14"><code>:before</code> advice will be evaluated before the function
+call. The argument list with which the function was called is
+available to <code>:before</code> advice. The argument list is stored
+as the value of the variable <code>excl:arglist</code> (this symbol
+also names a function which returns the arguments list of an
+operator). You may check the values in this list, change the values or
+replace the list altogether with a new list. (If you replace the list,
+be careful that it have the correct format for the function -- number
+and types of arguments in the list -- or you may get an error, or
+worse, a wrong result but no error.) <code>:before</code> advice is
+used only for its side effects. Any value returned by
+<code>:before</code> advice code is ignored. </p>
+
+<h2 id="15">Advice of class :around</h2>
+
+<p id="16">
+<code>:around</code> advice places the function call inside the
+code of the advice. The keyword <code>:do-it</code> signals where the
+function should be called within the advice code. When Lisp encounters
+the <code>:do-it</code>, it calls the next piece of
+<code>:around</code> advice, if there is more, or the function. When
+the function returns, the <code>:around</code> advice code continues
+execution. <code>:do-it</code> may appear several times in
+<code>:around</code> advice. Normally, it is placed in conditional
+code, as shown in this code fragment:
+</p>
+
+<pre id="17">
+(advise myfunction :around example nil
+  (... [do stuff before function call in :around advice code]
+   (if (zerop (car excl:arglist)) (+ 5 :do-it) (* 7 :do-it))
+   ... [do stuff after function call] ))
+</pre>
+
+<p id="18">
+In that case, the system will encounter one or the other
+<code>:do-it</code>, but not both. However, it is allowed to
+have several <code>:do-it</code>s all of which are evaluated. In
+that case, the succeeding <code>:around</code> advice and the
+advised function are evaluated more than
+once. <code>:after</code> advice is still evaluated only once,
+however. <code>:around</code> advice can work with
+<code>excl:arglist</code> before the
+<code>:do-it</code>. Since the advised function is run at the
+location specified by the <code>:do-it</code>, the values the
+function return are available to <code>:around</code> advice
+just like with any function call. The list bound to the variable
+<code>values</code> is not set up until after all
+<code>:around</code> advice is run, then
+<code>values</code> is bound to the list of values returned by
+the final piece of <code>:around</code> advice.  Note that if
+the function returns multiple values, these should be caught with
+<a href="../../../ansicl/dictentr/multiple.htm"><b>multiple-value-bind</b></a> or <a href="../../../ansicl/dictentr/multipl1.htm"><b>multiple-value-list</b></a> or some similar
+function if you are interested in the values beyond the first.
+</p>
+
+<h2 id="19">Advice of class :after</h2>
+
+<p id="20">advice is evaluated after the function has completed, but before
+control is passed back to whatever called the
+function. <code>:after</code> advice may examine and change the list
+of returned values from the last piece of <code>:around</code> advice
+(or the function, if there is no <code>:around</code> advice) stored
+in the variable <code>values</code>.  <code>:after</code> advice is
+used only for its side effects. Any value returned by the
+<code>:after</code> advice code is ignored. The list bound to
+<code>values</code> is returned from the now completed function
+call. </p>
+
+<p id="21">
+See also <a href="../../fwrappers-and-advice.htm">fwrappers-and-advice.htm</a> for general
+information on the new fwrapper facility and the older, now
+deprecated, advice facility in Allegro CL.
+</p>
+
+<hr><p id="22"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/advise.htm">9.0 version</a></td></tr></table></body></html>

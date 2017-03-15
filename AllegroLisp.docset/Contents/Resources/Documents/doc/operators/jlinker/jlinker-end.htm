@@ -1,0 +1,119 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>jlinker-end</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlinker-end.htm">9.0 version</a></td></tr></table><h2 id="2">jlinker-end</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>wait server lisp-file lisp-port verbose error-p preserve-client-calls</i><i>
+</i></p>
+
+
+
+
+<p id="4">
+This function ends a connection.
+</p>
+<p id="5">
+If <i>lisp-port</i> is non-<code>nil</code>,
+the <i>lisp-file</i> argument is ignored; the function
+attempts to stop advertising at the given port. If
+<i>port</i> is <code>nil</code> but 
+<i>lisp-file</i> is non-<code>nil</code>,
+then the function attempts to stop advertising at the port specified
+in the file. If the <i>wait</i> argument is <code>nil</code>, the function returns before the attempts are
+completed but the attempts continue.
+</p>
+<p id="6">
+If the <i>wait</i> argument is non-<code>nil</code> (the default) or if the
+<i>lisp-port</i> or <i>lisp-file</i>
+arguments are omitted, then this function attempts to close down a
+connection between Lisp and Java. If a graceful disconnect fails, the
+connection is aborted unilaterally. If the <i>wait</i>
+argument is <code>nil</code>, return while attempted
+disconnects are going on, otherwise return only when the connection is
+shut down completely.
+</p>
+<p id="7">
+It is important to call <a href="jlinker-end.htm"><b>jlinker-end</b></a> before calling
+<a href="jlinker-init.htm"><b>jlinker-init</b></a>
+again even if the connection appears to be broken already.
+</p>
+
+<p id="8">
+The following keyword arguments alter the behavior <a href="jlinker-end.htm"><b>jlinker-end</b></a>:
+</p>
+<ul>
+<li id="9">
+<code>verbose</code>: When <code>t</code>, emit
+status and warning messages.  The default is the value of <a href="../../variables/jlinker/s_jlinker-verbose_s.htm"><code>*jlinker-verbose*</code></a>.
+</li>
+<li id="10">
+<code>error-p</code>: this argument determines the behavior of
+<a href="jlinker-end.htm"><b>jlinker-end</b></a>
+when an error occurs. If the value of this argument is true, an error
+of type <a href="../../classes/jlinker/jlinker-error.htm"><code>jlinker-error</code></a> is signaled. If the
+value is <code>nil</code>, no error is signaled. This
+argument defaults to the value of <a href="../../variables/jlinker/s_jlinker-error-p_s.htm"><code>*jlinker-error-p*</code></a>.
+</li>
+
+<li id="11">
+<code>:preserve-client-calls</code>: this argument, if
+specified, overrides any setting of the same argument that was
+specified in the call to <a href="jlinker-init.htm"><b>jlinker-init</b></a>. Allowable values
+are <code>nil</code> (use pre-version 7.1 behavior -- any
+running client calls are killed), a positive integer (wait that number
+of seconds before killing remaining client calls), any other
+non-<code>nil</code> value (allow client calls to run to
+completion). See <a href="jlinker-init.htm"><b>jlinker-init</b></a> for more details.
+</li>
+
+</ul>
+
+<p id="12">
+<a href="jlinker-end.htm"><b>jlinker-end</b></a>
+returns one of the following values:
+</p>
+<ul>
+<li id="13">
+<code>:jlinker-end</code>: jlinker connection is properly shut
+down in response to this call
+</li>
+<li id="14">
+<code>:wait</code>: jlinker connection was shutdown in
+another process; this call was waiting for it to finish because
+<i>wait</i> is true
+</li>
+<li id="15">
+<code>:busy</code>: jlinker shutdown is in progress already in
+another process, return immediately because <i>wait</i>
+is <code>nil</code>
+</li>
+<li id="16">
+<code>nil</code>: immediate return because there is no
+jlinker connection at all
+</li>
+<li id="17">
+a port instance: <i>lisp-file</i> or
+<i>lisp-port</i> arguments non-<code>nil</code> but <i>wait</i> is <code>nil</code>
+</li>
+<li id="18">
+a list: <i>lisp-file</i> or
+<i>lisp-port</i> arguments non-<code>nil</code> and <i>error-p</i> is <code>nil</code> and an error occurred. The list contains
+information about the error. The value of <i>wait</i>
+does not affect this case.
+</li>
+<li id="19">
+[<a href="../../classes/jlinker/jlinker-error.htm"><code>jlinker-error</code></a> signaled so no
+value returned]: <i>lisp-file</i> or
+<i>lisp-port</i> arguments non-<code>nil</code> and <i>error-p</i> is true and an
+error occurred.  The value of <i>wait</i> does not
+affect this case.
+</li>
+</ul>
+
+
+<p id="20">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jlinker-end.htm">9.0 version</a></td></tr></table></body></html>

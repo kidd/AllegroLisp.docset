@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>clear-grid-section</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/clear-grid-section.htm">9.0 version</a></td></tr></table><h2 id="2">clear-grid-section</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-widget row-section column-section drawing-pane section-box
+</i></p>
+
+<p id="4">
+<a href="../c/clear-grid-section.htm"><b>clear-grid-section</b></a> is called
+internally whenever all or part of a grid-section (of a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>) is
+redisplayed. For efficiency, it is called a single time to draw the
+empty background of an entire section before <a href="../d/draw-cell.htm"><b>draw-cell</b></a> is called for each of the
+individual visible cells of the section. The default method simply
+calls <a href="../e/erase-contents-box.htm"><b>erase-contents-box</b></a> to clear the
+section.
+</p>
+<p id="5">
+An application should not call this function, but may add methods to
+override the default method if desired. One case where this may be
+useful is to reduce flashing that may occur for example if clicking
+and dragging in a cell produces an animation effect by repeatedly
+changing the domain value represented by the cell and invalidating the
+cell to redraw it at each stage. If the <a href="../d/draw-cell.htm"><b>draw-cell</b></a> methods for all of the
+cells in the grid-section are written to draw the entire contents of
+the cells, then <a href="../c/clear-grid-section.htm"><b>clear-grid-section</b></a> need not do
+anything and so a method that does nothing could be added to eliminate
+the flashing caused by the default method clearing the background.
+</p>
+<p id="6">
+The arguments are:
+</p>
+<ul>
+<li id="7">
+<i>grid-widget</i>: the grid-widget of which the
+grid-section is a part.
+</li>
+<li id="8">
+<i>row-section</i> and
+<i>column-section</i>: these define the intersection
+where the clearing is done.
+</li>
+<li id="9">
+<i>drawing-pane</i>: this is the child window on which
+drawing occurs.  When <a href="../c/clear-grid-section.htm"><b>clear-grid-section</b></a> is called, the
+background-color of the drawing-stream is set to the <a href="../b/background-color.htm"><b>background-color</b></a> of the
+grid-widget.
+</li>
+<li id="10">
+<i>section-box</i>: this is the box in the drawing-pane's
+stream coordinates that covers the section that should be cleared.
+</li>
+</ul>
+<p id="11">
+See also <a href="../d/draw-cell.htm"><b>draw-cell</b></a>, <a href="../d/draw-grid-section.htm"><b>draw-grid-section</b></a>, <a href="../d/draw-grid.htm"><b>draw-grid</b></a> and <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>.
+</p>
+
+
+
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/clear-grid-section.htm">9.0 version</a></td></tr></table></body></html>

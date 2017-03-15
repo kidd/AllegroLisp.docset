@@ -1,0 +1,33 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>dribble-bug</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/dribble-bug.htm">9.0 version</a></td></tr></table><h2 id="2">dribble-bug</h2>
+
+<p id="3"><b>Arguments: </b><i></i> &amp;optional <i>pathname</i></p>
+
+<p id="4">
+This function is an extension of the Common Lisp function <a href="../../../ansicl/dictentr/dribble.htm"><b>dribble</b></a>. <a href="dribble-bug.htm"><b>dribble-bug</b></a> called with the optional
+<i>pathname</i> argument calls <a href="print-system-state.htm"><b>print-system-state</b></a> to print an informational
+header at the top of the dribble file (and also calls the functions on
+the list which is the value of <a href="../../variables/excl/s_dribble-bug-hooks_s.htm"><code>*dribble-bug-hooks*</code></a>). The header will contain
+information on, among other things, the lisp-implementation-type,
+lisp-implementation-version, machine-type, machine-version,
+software-type, software-version, short-site-name, the value of <a href="../../../ansicl/dictentr/features.htm"><code>*features*</code></a>, and all loaded
+patches.
+</p>
+
+<p id="5">
+If the optional argument is not provided, dribbling to the file is
+stopped and the file is closed. Note that nested dribbles are not
+supported, either with this function or <a href="../../../ansicl/dictentr/dribble.htm"><b>dribble</b></a>. Dalling <a href="../../../ansicl/dictentr/dribble.htm"><b>dribble</b></a> or <a href="dribble-bug.htm"><b>dribble-bug</b></a> with
+a <i>pathname</i> argument while a dribble is in effect
+closes the current dribble before opening a new one.
+</p>
+
+<p id="6">
+See also 
+<a href="../../variables/excl/s_dribble-bug-hooks_s.htm"><code>*dribble-bug-hooks*</code></a>.
+</p>
+
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Minimal update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/dribble-bug.htm">9.0 version</a></td></tr></table></body></html>

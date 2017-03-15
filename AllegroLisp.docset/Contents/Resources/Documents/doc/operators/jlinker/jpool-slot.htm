@@ -1,0 +1,88 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>jpool-slot</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.jlinker</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jpool-slot.htm">9.0 version</a></td></tr></table><h2 id="2">jpool-slot</h2>
+
+<p id="3"><b>Arguments: </b><i>
+slot </i> &amp;optional <i>pool</i><i>
+</i></p>
+
+
+
+<p id="4">
+This function returns information about the current connection pool.
+</p>
+<p id="5">
+The <b><i>pool</i></b> argument is reserved for internal
+use and must not be specified.
+</p>
+<p id="6">
+The value returned depends on the <b><i>slot</i></b> argument:
+</p>
+<ul>
+<li id="7">
+<code>:state</code>: returns a keyword describing the state:
+<b><code>:ready</code></b> - the connection pool is ready and
+operational; <b><code>:delayed</code></b>
+- <code>:delay</code> was specified in the call
+to <a href="jlinker-init.htm"><b>jlinker-init</b></a> and
+<a href="jstart-connection-pool.htm"><b>jstart-connection-pool</b></a> has not yet been
+called; <b><code>:initializing</code></b> - the connection pool
+is under construction; <b><code>:jlinker-init</code></b> -
+jlinker-init is still running and in a partial state.
+</li>
+<li id="8">
+<code>:dynamic</code>: returns <code>t</code> if the
+connection pool is dynamic, i.e. the minimum and maximum port
+specifications are different. A connection pool manager thread is
+running in Lisp. Ports and server threads may come and
+go. Returns <code>nil</code> is the pool is static.
+</li>
+<li id="9">
+<code>:pool-ports-to-java</code>: returns the number of Lisp
+ports to Java in the connection pool. Does not include the initial
+port to Java.
+</li>
+<li id="10">
+<code>:pool-ports-to-lisp</code>: returns the number of Java
+ports to Lisp in the connection pool. Does not include the initial
+port to Lisp.
+</li>
+<li id="11">
+<code>:lisp-ports-to-java</code>: returns the total number of
+Lisp ports to Java.
+</li>
+<li id="12">
+<code>:java-ports-to-lisp</code>: returns the total number of
+Java portd to Lisp.
+</li>
+<li id="13">
+<code>:min-ports-to-java</code>: returns the minimum number of
+Lisp ports to Java in the effective connection pool specification.
+</li>
+<li id="14">
+<code>:max-ports-to-java</code>: returns the maximum number of
+Lisp ports to Java in the effective connection pool specification.
+</li>
+<li id="15">
+<code>:min-ports-to-lisp</code>: returns the minimum number of
+Java ports to Lisp in the effective connection pool specification.
+</li>
+<li id="16">
+<i>:max-ports-to-lisp</i>: returns the maximum number of
+Java ports to Lisp in the effective connection pool specification.
+</li>
+<li id="17">
+<code>:lisp-port-idle-time</code>: returns the idle time for Lisp
+ports to Java in the effective connection pool specification.
+</li>
+<li id="18">
+<code>:java-port-idle-time</code>: returns the idle time for Java
+ports to Lisp in the effective connection pool specification.
+</li>
+</ul>
+<p id="19">
+See <a href="../../jlinker.htm">jlinker.htm</a> for more information on the
+jLinker facility.
+</p>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/jlinker/jpool-slot.htm">9.0 version</a></td></tr></table></body></html>

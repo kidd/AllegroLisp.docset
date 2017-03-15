@@ -1,0 +1,101 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>find-window</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/find-window.htm">9.0 version</a></td></tr></table><h2 id="2">find-window</h2>
+
+
+
+<p id="3"><b>Arguments: </b><i>
+window-name </i> &amp;optional  (<i>parent-or-owner</i> (screen *system*))<i>
+</i>&amp;key <i>owned-p</i><i>
+</i></p>
+
+<p id="4">
+Returns the window whose name is <i>name</i> and whose
+parent or owner is <i>parent-or-owner</i> (which can be
+<code>nil</code> if there is no such window). The default
+value of <i>parent-or-owner</i> is the screen, and so
+this argument need not be passed in order to find any top-level window
+(since the parent of a top-level window is always the screen). The
+screen is the value returned by <code>(screen
+*system*)</code>. See <a href="../s/screen.htm"><b>screen</b></a> and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>.
+</p>
+<p id="5">
+<b><i>window-name</i></b>
+should be the symbol that was passed as the value of the
+<i>name</i> initarg to <a href="../m/make-window.htm"><b>make-window</b></a> (or passed to <a href="../n/name.htm"><b>(setf name)</b></a>
+to rename the window later). The
+<b><i>parent-or-owner</i></b> should either be the
+window or screen that was passed as the value of the
+<i>owner</i> argument to <a href="../m/make-window.htm"><b>make-window</b></a>, or alternately the
+screen in the case of an owned top-level window (whose owner is
+another window but whose parent is the screen).
+</p>
+
+<p id="6">
+If <b><i>owned-p</i></b> is <code>nil</code>
+(the default), then only child windows of
+<i>parent-or-owner</i> are searched.  If true, then only
+non-child owned windows of <i>parent-or-owner</i> are
+searched.  A true <i>owned-p</i> argument is useful only
+when <i>parent-or-owner</i> is a top-level window or the
+screen, because child windows cannot have non-child owned windows.  (A
+non-child owned window is created by passing the
+<i>child-p</i> initarg of <a href="../m/make-window.htm"><b>make-window</b></a> as <code>nil</code>,
+along with a top-level window for the <i>owner</i>
+argument.)
+</p>
+
+<p id="7">
+A more general function for finding objects from their names and
+ancestor objects is <a href="../f/find-named-object.htm"><b>find-named-object</b></a>.
+</p>
+
+
+<h3 id="8">
+A Warning About Form Windows in Projects
+</h3>
+<p id="9">
+It is dangerous to use <a href="../f/find-window.htm"><b>find-window</b></a> to find a top-level window that is
+designed interactively as a form window in a project in the IDE.
+(Though if the window is a child window at run time and you pass the
+optional <i>parent-or-owner</i> argument, then there is
+no problem.)
+</p>
+<p id="10">
+The reason is that a form window in a project and its running window
+have the same name, and <a href="../f/find-window.htm"><b>find-window</b></a> will return whichever one it happens
+to find first.  So when running a project in the
+IDE, <a href="../f/find-window.htm"><b>find-window</b></a> could return
+the form window, and if your code modifies that window then it could
+modify the form window itself and leave the project confused.
+</p>
+<p id="11">
+If your project uses the default <a href="../../ide/on-initialization.htm"><b>on-initialization</b></a> function, and therefore does
+not have an explicit call to make the main window, then it is best to
+use <a href="../f/find-application-window.htm"><b>find-application-window</b></a>
+rather than <a href="../f/find-window.htm"><b>find-window</b></a> to get
+a handle on the main window.  In other cases it is usually best to
+save the window that's returned when calling the function that creates
+the window.  (You can use <a href="../f/find-application-window.htm"><b>find-application-window</b></a> with other windows as
+well, though you may need to set things up with a call to
+<a href="../a/add-application-window.htm"><b>add-application-window</b></a> when
+creating the window.)
+</p>
+
+
+
+<h3 id="12">
+Compatibility note
+</h3>
+<p id="13">
+Prior to version 8.1, there was no
+<i>owned-p</i> argument and both child windows and
+non-child owned windows were always both searched.  This incompatible
+change was made for efficiency reasons.  If an application calls
+<a href="../f/find-window.htm"><b>find-window</b></a> to find a
+non-child owned window of a top-level window, it should now pass the
+new <i>owned-p</i> argument as true.
+</p>
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/f/find-window.htm">9.0 version</a></td></tr></table></body></html>

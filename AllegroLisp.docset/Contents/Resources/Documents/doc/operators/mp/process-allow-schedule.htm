@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>process-allow-schedule</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-allow-schedule.htm">9.0 version</a></td></tr></table><h2 id="2">process-allow-schedule</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;optional <i>process</i><i>
+</i></p>
+
+
+<p id="4">
+This function allows processes other than the running (and hence
+calling) process to run.  All other processes of equal or higher
+priority to the calling process will have a chance to run before the
+calling process is next run. This function is useful when a process
+seems to be using all available resources. For use in an SMP Lisp, see
+the notes below.
+</p>
+<p id="5">
+The optional <b><i>process</i></b> argument is ignored
+(in an earlier multiprocessing implementation, it specified the
+process to be run next). If you want a specific process to run next,
+you need to make sure it is the highest-priority process that is ready
+to run.
+</p>
+<h3 id="6">
+process-allow-schedule and SMP
+</h3>
+<p id="7">
+In an SMP Lisp on a machine with multiple cores, this function is less
+useful because multiple processes can run simultaneously. Even in an
+SMP lisp, there may be more Lisp processes than there are available
+cores. In this case <a href="process-allow-schedule.htm"><b>process-allow-schedule</b></a> calls the host
+OS's yield function, allowing OS to assign that core to another ready
+lisp thread.
+</p>
+
+<p id="8">
+Before SMP,  <a href="process-allow-schedule.htm"><b>process-allow-schedule</b></a> worked on the theory that an
+application might have specific points in its processing cycle
+that were better suited to allowing another process to run than
+the random point selected by the quantum timeout. Points where
+there was a minimum of temporary data that would clog the next gc,
+for example, or points where a minimum number of locks were held.
+</p>
+<p id="9">
+In SMP, to have a successful multi-threaded app that actually uses
+multiple cores, these sorts of considerations need to be part of the
+application design. Calling <a href="process-allow-schedule.htm"><b>process-allow-schedule</b></a> in such a
+situation is probably benign, and may in rare cases be a help, but
+will not usually solve any serious problems.
+</p>
+
+<p id="10">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-allow-schedule.htm">9.0 version</a></td></tr></table></body></html>

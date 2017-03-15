@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>process-interrupt</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-interrupt.htm">9.0 version</a></td></tr></table><h2 id="2">process-interrupt</h2>
+
+<p id="3"><b>Arguments: </b><i>
+process function </i> &amp;rest <i>args</i><i>
+</i></p>
+
+
+<p id="4">
+This function forces <i>process</i> to apply
+<i>function</i> to <i>args</i> when it
+next executes. When <i>function</i> returns, the
+original computation of <i>process</i> continues. If
+<i>process</i> is waiting when interrupted, it runs the
+interrupt function and then continues waiting. If
+<i>process</i> is not active,
+<strong>mp:process-interrupt</strong> makes it active for the
+interrupt function, then makes it inactive again. If additional
+interrupts are posted to a process when one is already posted, they
+are all run, but in undetermined order.
+</p>
+<p id="5">
+In order for <a href="process-interrupt.htm"><b>process-interrupt</b></a> to work as
+described, <i>function</i> must return normally. It
+cannot execute a non-local exit (via, for example, <a href="../../../ansicl/dictentr/throw.htm"><b>throw</b></a>). If <i>function</i> does
+exit in a non-local manner, <i>process</i> will not
+continue its computation.
+</p>
+<p id="6">
+Processing an interrupt function can be interrupted by additional
+process interrupts that occur before the current one has finished
+executing.
+</p>
+<p id="7">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-interrupt.htm">9.0 version</a></td></tr></table></body></html>

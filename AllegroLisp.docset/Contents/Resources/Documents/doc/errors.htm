@@ -1,0 +1,360 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Errors</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/errors.htm">9.0 version</a></td></tr></table><h1 id="2">Errors</h1><p id="3">This document contains the following sections:</p><a href="#errors-intro-1">1.0 Errors</a><br>&nbsp;&nbsp;&nbsp;<a href="#stream-error-2">1.1 More on cl:stream-error</a><br><a href="#common-errors-1">2.0 Some common errors</a><br>&nbsp;&nbsp;&nbsp;<a href="#unhandled-error-2">2.1 An unhandled error occurred during initialization: </a><br>&nbsp;&nbsp;&nbsp;<a href="#attempt-to-call-2">2.2 Attempt to call -name- which is defined as a macro</a><br>&nbsp;&nbsp;&nbsp;<a href="#gc-errors-2">2.3 Gc errors</a><br>&nbsp;&nbsp;&nbsp;<a href="#bus-errors-2">2.4 Bus errors and segmentation violations</a><br>&nbsp;&nbsp;&nbsp;<a href="#using-package-2">2.5 Using package [package] results in name conflicts...</a><br><a href="#sequence-type-errors-1">3.0 Type errors in sequence functions: fastseq and safeseq</a><br><hr><hr><h2 id="4"><a name="errors-intro-1">1.0 Errors</a></h2>
+
+<p id="5">Errors in Allegro CL are handled by the condition system as
+described in the ANSI spec.  Note too that some errors in Allegro CL
+are still classified as simple-errors when they should be classified
+otherwise.</p>
+
+<p id="6">The <a href="operators/excl/errorset.htm"><b>errorset</b></a> macro
+is preserved from earlier versions of Allegro CL although its
+functionality is completely superceded by the condition system. It is
+maintained for backward compatibility and its use in newly written
+code is not recommended.</p>
+
+<p id="7">Here is the condition type hierarchy. Allegro CL has some
+additional error types defined. They are marked with an *. The ones
+with links are further described. You can get the condition object
+associated with an error with the top-level command <a href="tpl-commands/error.htm"><b>:error</b></a>, which, besides
+printing the error message sets the value of * to the condition
+object.</p>
+
+<pre id="8">
+  <a href="../ansicl/dictentr/conditio.htm"><code>condition</code></a>
+  advance-warning *
+  input-edit *
+  ics-dependent-classa *
+  ics-dependent-classb *
+  compiler-note *
+  <a href="../ansicl/dictentr/serious-.htm"><code>serious-condition</code></a>
+    <a href="../ansicl/dictentr/storage-.htm"><code>storage-condition</code></a>
+    <a href="../ansicl/dictentr/error.htm"><code>error</code></a>
+      <a href="../ansicl/dictentr/type-err.htm"><code>type-error</code></a>
+        <a href="classes/excl/case-failure.htm"><code>case-failure</code></a> *
+        <a href="../ansicl/dictentr/simple-t.htm"><code>simple-type-error</code></a>
+      <a href="#stream-error-2">stream-error</a>
+        <a href="classes/excl/stream-closed-error.htm"><code>stream-closed-error</code></a> *
+        <a href="../ansicl/dictentr/end-of-f.htm"><code>end-of-file</code></a>
+        <a href="../ansicl/dictentr/reader-e.htm"><code>reader-error</code></a> (also subclass of parse-error)
+        <a href="classes/excl/socket-error.htm"><code>socket-error</code></a> *
+        <a href="classes/excl/errno-stream-error.htm"><code>errno-stream-error</code></a> *
+      <a href="../ansicl/dictentr/parse-er.htm"><code>parse-error</code></a>
+        <a href="../ansicl/dictentr/reader-e.htm"><code>reader-error</code></a> (also subclass of stream-error)
+      <a href="classes/excl/operating-system-signal.htm"><code>operating-system-signal</code></a> *
+        <a href="classes/excl/synchronous-operating-system-signal.htm"><code>synchronous-operating-system-signal</code></a> *
+        <a href="classes/excl/asynchronous-operating-system-signal.htm"><code>asynchronous-operating-system-signal</code></a> *
+          <a href="classes/excl/interrupt-signal.htm"><code>interrupt-signal</code></a> *
+      <a href="../ansicl/dictentr/package0.htm"><code>package-error</code></a>
+        <a href="classes/excl/package-locked-error.htm"><code>package-locked-error</code></a> *
+      <a href="../ansicl/dictentr/file-err.htm"><code>file-error</code></a>
+        <a href="classes/excl/file-does-not-exist-error.htm"><code>file-does-not-exist-error</code></a> *
+          <a href="classes/excl/autoload-file-does-not-exist-error.htm"><code>autoload-file-does-not-exist-error</code></a> *
+      <a href="../ansicl/dictentr/cell-err.htm"><code>cell-error</code></a>
+        <a href="../ansicl/dictentr/unbound0.htm"><code>unbound-slot</code></a>
+        <a href="../ansicl/dictentr/undefine.htm"><code>undefined-function</code></a>
+        <a href="../ansicl/dictentr/unbound-.htm"><code>unbound-variable</code></a>
+      <a href="../ansicl/dictentr/print-no.htm"><code>print-not-readable</code></a>
+      <a href="../ansicl/dictentr/arithmet.htm"><code>arithmetic-error</code></a>
+        <a href="../ansicl/dictentr/floatin1.htm"><code>floating-point-inexact</code></a>
+        <a href="../ansicl/dictentr/floatin2.htm"><code>floating-point-invalid-operation</code></a>
+        <a href="../ansicl/dictentr/floating.htm"><code>floating-point-underflow</code></a> [see note after table]
+        <a href="../ansicl/dictentr/floatin0.htm"><code>floating-point-overflow</code></a>
+        <a href="../ansicl/dictentr/division.htm"><code>division-by-zero</code></a>
+      <a href="classes/excl/compiler-not-available-error.htm"><code>compiler-not-available-error</code></a> *
+      <a href="../ansicl/dictentr/program-.htm"><code>program-error</code></a>
+      <a href="../ansicl/dictentr/control-.htm"><code>control-error</code></a>
+      <a href="../ansicl/dictentr/simple-e.htm"><code>simple-error</code></a>
+      <a href="classes/excl/socket-error.htm"><code>socket-error</code></a> *
+      <a href="classes/excl/syscall-error.htm"><code>syscall-error</code></a> *
+      <a href="classes/excl/winapi-error.htm"><code>winapi-error</code></a> *
+  <a href="classes/excl/simple-break.htm"><code>simple-break</code></a>
+    <a href="classes/excl/break-condition.htm"><code>break-condition</code></a> *
+  <a href="../ansicl/dictentr/warning.htm"><code>warning</code></a>
+    <a href="classes/excl/compiler-not-available-warning.htm"><code>compiler-not-available-warning</code></a> *
+    <a href="classes/excl/incompatible-conformance-change-warning.htm"><code>incompatible-conformance-change-warning</code></a> *
+    <a href="../ansicl/dictentr/simple-w.htm"><code>simple-warning</code></a>
+    <a href="../ansicl/dictentr/style-wa.htm"><code>style-warning</code></a>
+      <a href="classes/excl/ineffective-declaration-warning.htm"><code>ineffective-declaration-warning</code></a> *
+      <a href="classes/excl/compiler-undefined-functions-called-warning.htm"><code>compiler-undefined-functions-called-warning</code></a> *
+      <a href="classes/excl/compiler-no-in-package-warning.htm"><code>compiler-no-in-package-warning</code></a> *
+      <a href="classes/excl/compiler-unreachable-code-warning.htm"><code>compiler-unreachable-code-warning</code></a> *
+      <a href="classes/excl/compiler-inconsistent-name-usage-warning.htm"><code>compiler-inconsistent-name-usage-warning</code></a> *
+  <a href="../ansicl/dictentr/simple-c.htm"><code>simple-condition</code></a>
+    <a href="../ansicl/dictentr/simple-t.htm"><code>simple-type-error</code></a>
+    <a href="../ansicl/dictentr/simple-e.htm"><code>simple-error</code></a>
+    <a href="classes/excl/simple-break.htm"><code>simple-break</code></a> *
+    <a href="../ansicl/dictentr/simple-w.htm"><code>simple-warning</code></a>
+</pre>
+
+<h3 id="9">Table Notes</h3>
+
+<p id="10">
+<code>floating-point-underflow</code> is not usually signaled
+because most operating systems silently replace an underflow with zero
+without further action.
+</p>
+
+<hr><h2 id="11"><a name="stream-error-2">1.1 More on cl:stream-error</a></h2>
+
+<p id="12">
+The <a href="../ansicl/dictentr/stream-e.htm"><code>stream-error</code></a>
+class, as implemented in Allegro CL, has these slots:
+</p>
+<ul>
+<li id="13"><code>stream</code>: the stream which got the error. This is
+the standard CL slot and is accessed by <a href="../ansicl/dictentr/stream-0.htm"><b>stream-error-stream</b></a>.
+</li>
+<li id="14"><code>action</code>: the action that was being attempted at
+the time of the error, accessed by <a href="operators/excl/stream-error-action.htm"><b>stream-error-action</b></a>.
+</li>
+<li id="15"><code>code</code>: the errno code returned from the system,
+nil if none. Accessed by <a href="operators/excl/stream-error-code.htm"><b>stream-error-code</b></a>.
+</li>
+<li id="16"><code>identifier</code>: symbolic identification of the
+code, or nil if unknown.  Accessed by <a href="operators/excl/stream-error-identifier.htm"><b>stream-error-identifier</b></a>.
+</li>
+</ul>
+<p id="17">
+With the new stream-error conditions and slots, Allegro CL classifies
+stream error situations when possible, relying on a catch-all
+condition to hold errno returns that could not be classified. A user
+might want to do <a href="../ansicl/dictentr/handler0.htm"><b>handler-bind</b></a>s
+on the condition subclasses, or on the stream-error condition and then
+test the identifier slot. All stream conditions have such an
+identifier slot, but some conditions (especially the catch-all <a href="classes/excl/errno-stream-error.htm"><code>errno-stream-error</code></a>
+condition) may not fill it in.
+</p>
+<p id="18">
+In particular, when a system operation returns an errno value, it is
+looked up to see if it is a socket-error, and if so, a <a href="classes/excl/socket-error.htm"><code>socket-error</code></a> condition is
+created. It is intended then that other errno classifications will be
+tried. If no classification can be made, then an <a href="classes/excl/errno-stream-error.htm"><code>errno-stream-error</code></a> condition is
+created. Its identifier slot is set to <code>:unknown</code>,
+but an attempt is made to find out from the operating system what the
+string for such an error is, and that is stored into the condition in
+the string slot, for easier human identification.
+</p>
+
+
+
+
+<hr><hr><h2 id="19"><a name="common-errors-1">2.0 Some common errors</a></h2>
+
+<p id="20">We list here some common error messages. This list is by no means
+exhaustive and we only give a brief description of the likely
+cause. Error messages start with <em>Error:</em>, but we leave that
+out here. Names (of functions, symbols, etc.) that appear in error
+messages are replaced with <em>[name]</em> or some other generic
+placeholder.</p>
+
+<hr><h2 id="21"><a name="unhandled-error-2">2.1 An unhandled error occurred during initialization: </a></h2>
+
+<p id="22">This is printed when an error occurs while Lisp was running
+through its startup procedure. <em>[message]</em> is the error
+message generated by the actual error.  The startup fails as a result
+of the error. Assuming the startup procedure has not been changed,
+these cannot be the cause of this error: </p>
+
+<ul>
+  <li id="23">Reading an initialization <em>(.clinit.cl</em>, <em>clinit.cl</em> or the <em>sys:siteinit.cl</em>)
+    file. If an error reading one of these files is encountered, the error is reported and
+    further reading of the file is aborted, but otherwise the error is ignored.</li>
+  <li id="24">Inability to find a loaded <em>.so</em>/<em>.sl</em>/<em>.dll</em> file. A warning but
+    no error is signaled if the file cannot be found. Note that an error might be caused if a
+    foreign function whose code resides in the missing <em>.so</em> file is called during
+    startup.</li>
+  <li id="25">A problem with <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a>
+    or <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>.
+    These functions are called outside the handler which prints the <em>An unhandled error ...</em>
+    message.</li>
+</ul>
+
+<p id="26">These may be the cause: </p>
+
+<ul>
+  <li id="27">An error evaluating a <code>-e [form]</code> command-line argument. Try to start
+    without the <code>-e</code> arguments.</li>
+  <li id="28">An error performing the <a href="variables/excl/s_restart-actions_s.htm"><code>*restart-actions*</code></a>.
+    Try to start with the following on the command line (it suppresses any restart actions).
+    Be sure to wrap the parentheses with ' marks or other shell-specific quotation-like marks.
+    <code>-e (setq excl:*restart-actions* nil)</code></li>
+  <li id="29">An error evaluating the form that is the value of the ACL_STARTUP_HOOK environment
+    variable. Try restarting after <strong>unsetenv</strong>'ing that variable.</li>
+</ul>
+
+
+
+<hr><h2 id="30"><a name="attempt-to-call-2">2.2 Attempt to call -name- which is defined as a macro</a></h2>
+
+<p id="31">Code calling <em>[name]</em> was compiled before
+<em>[name]</em> was defined as a macro is the cause.</p>
+
+<pre id="32">
+user(1): (defun foo () (bar) 10)
+foo
+user(2): (compile *)
+Warning: While compiling these undefined functions were referenced: bar.
+foo
+nil
+nil
+user(3): (defmacro bar nil nil)
+bar
+user(4): (foo)
+Error: Attempt to call bar which is defined as a macro.
+   [condition type: undefined-function]
+[1] user(5): 
+</pre>
+
+<p id="33">
+The example above shows the definitions typed to the top-level, but
+this error is most commonly caused when files are compiled in the
+wrong order.
+</p>
+
+
+
+<hr><h2 id="34"><a name="gc-errors-2">2.3 Gc errors</a></h2>
+
+<p id="35">See <a href="gc.htm#gc-errors-1">gc errors</a> in 
+<a href="gc.htm">gc.htm</a> where these errors are discussed.</p>
+
+
+
+<hr><h2 id="36"><a name="bus-errors-2">2.4 Bus errors and segmentation violations</a></h2>
+
+<p id="37">
+Bus errors and segmentation violations are standard OS errors. They
+are not specific to Lisp. Typically, a bus error is caused by an
+attempt to write to read-only memory while a segmentation violation is
+an attempt to access memory that does not exist. You may see them
+signaled in Lisp, usually when an error is signaled from code compiled
+at high speed and low safety (so standard Lisp error checkers are not
+used). If you see such an error, try recompiling code at higher safety
+and lower speed (in particular, make <a href="variables/compiler/trust-declarations-switch.htm"><code>trust-declarations-switch</code></a>
+return <code>nil</code>) and see whether the error
+persists. </p>
+
+
+
+<hr><h2 id="38"><a name="using-package-2">2.5 Using package [package] results in name conflicts...</a></h2>
+
+<p id="39">
+Suppose you try to call a function in a currently-unused package but
+forget the package qualifier. For example, suppose you called <a href="operators/mp/process-run-function.htm"><b>process-run-function</b></a>
+without the <code>mp:</code> and the multiprocessing package is not
+used. You get an error about <strong>process-run-function</strong> not
+having a function definition (as expected). Then you use the
+multiprocessing package by evaluating <code>(use-package
+:mp)</code>. The following error will be signaled:
+</p>
+<pre id="40">
+Error: Using package `MULTIPROCESSING' results in name conflicts for these
+symbols: PROCESS-RUN-FUNCTION [condition type: PACKAGE-ERROR] 
+Restart actions (select using :continue): 
+  0: Unintern the conflicting symbols from the `COMMON-LISP-USER' package.
+  [...]
+</pre>
+<p id="41">
+In order for <code>process-run-function</code> typed without
+a package qualifier to be <a href="operators/mp/process-run-function.htm"><b>mp:process-run-function</b></a>, enter
+</p>
+
+<pre id="42">
+:continue 0
+</pre>
+
+<p id="43">
+See the top-level command <a href="tpl-commands/continue.htm"><b>:continue</b></a>.
+</p>
+<p id="44">
+Note that in earlier (than 6.1) releases of Allegro CL, the error
+message was:
+</p>
+<pre id="45">
+Error: Using package `MULTIPROCESSING' results in name conflicts for these
+symbols: PROCESS-RUN-FUNCTION [condition type: PACKAGE-ERROR] 
+Restart actions (select using :continue): 
+  0: Unintern the conflicting symbols in the `MULTIPROCESSING' package.
+  [...]
+</pre>
+
+<p id="46">
+Most users found that description of what happens when
+<code>:continue 0</code> is entered confusing, and were unable
+to tell from the message what action would produce the desired
+result. The action is still <code>:continue 0</code>. It is
+hoped the revised message makes that more clear.
+</p>
+
+
+
+<hr><hr><h2 id="47"><a name="sequence-type-errors-1">3.0 Type errors in sequence functions: fastseq and safeseq</a></h2>
+
+<p id="48">
+Many Common Lisp sequence function are sensitive to the type of their
+arguments. Consider the following incorrect forms:
+</p>
+<pre id="49">
+(make-list nil)  ;; argument should be an integer. NIL is illegal
+(elt #(1 2 3) nil) ;; second argument should be an integer. 
+                   ;; NIL is illegal
+(mapcar #'alpha-char-p "N ")  ;; second argument should be a list
+                              ;; not a string
+</pre>
+
+<p id="50">
+In each case, the argument given is wrong, but not unreasonable, and a
+programmer could carelessly but understandably make the errors shown
+(indeed, all these errors come from our support files). But note they
+reached our support files because the result (in earlier releases of
+Allegro CL) of evaluating the erroneous form was more serious than
+expected: rather than simply signaling an error, Lisp would in some
+cases enter an infinite loop and have to be interrupted.
+</p>
+<p id="51">
+In safe code, sequence functions such as the ones above should check
+that their arguments are of the correct type and signal a type error
+if they are not. But there is always a price to pay for argument
+checking: it consumes machine cycles in every call to a function in
+order to weed out erroneous code. 
+</p>
+<p id="52">
+Allegro CL has two sequence function modules:
+<code>:safeseq</code> and <code>:fastseq</code>. Either
+two can be <a href="../ansicl/dictentr/provider.htm"><b>require</b></a>'d at any time, and they
+each cancel the effect of the other. These modules hold the safe or
+fast run-time definitions of several problematic sequence functions
+that are hard to decide how to balance between safety and speed.
+</p>
+<p id="53">
+Thus, to use safe sequence functions, evaluate at any time:
+</p>
+<pre id="54">
+(require :safeseq)
+</pre>
+<p id="55">
+And to use fast (but without argument checking) sequence functions,
+evaluate at any time:
+</p>
+<pre id="56">
+(require :fastseq)
+</pre>
+<p id="57">
+It should be noted that functions in the <code>:safeseq</code>
+module are not better per se than those in
+<code>:fastseq</code>, and for correct code each module's
+functions operate correctly. Rather, the functions in
+<code>:safeseq</code> behave better with improper arguments.
+</p>
+<p id="58">
+The current list of functions which are affected by these modules
+include (but are not limited to, possibly by indirection): <a href="../ansicl/dictentr/elt.htm"><b>elt</b></a>, <a href="../ansicl/dictentr/length.htm"><b>length</b></a>, <a href="../ansicl/dictentr/make-lis.htm"><b>make-list</b></a>, <a href="../ansicl/dictentr/mapcmapc.htm"><b>mapc</b></a>, <a href="../ansicl/dictentr/mapcmapc.htm"><b>mapcar</b></a>, <a href="../ansicl/dictentr/mapcmapc.htm"><b>mapcon</b></a>, <a href="../ansicl/dictentr/mapcmapc.htm"><b>mapl</b></a>, <a href="../ansicl/dictentr/butlastn.htm"><b>butlast</b></a>, and <a href="../ansicl/dictentr/butlastn.htm"><b>nbutlast</b></a>.
+</p>
+<p id="59">
+In development images, the module loaded by default in
+<code>:safeseq</code>. In production images (when the
+<i>runtime</i> argument to <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> is non-<code>nil</code>), the default is <code>:fastseq</code>.
+</p>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/errors.htm">9.0 version</a></td></tr></table></html>

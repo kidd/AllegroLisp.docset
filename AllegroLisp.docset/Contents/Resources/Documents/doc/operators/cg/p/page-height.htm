@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>page-height</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/page-height.htm">9.0 version</a></td></tr></table><h2 id="2">page-height</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream </i> &amp;optional  (<i>stream-units-p</i> t)<i>
+</i></p>
+
+<p id="4">
+Returns the <a href="../p/page-height.htm"><b>page-height</b></a> attribute of
+<i>stream</i>. <i>stream</i> should be a
+<a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>. The
+value may be set at creation time by passing the
+<i>page-height</i> initarg, or any time later by calling
+<a href="../p/page-height.htm"><b>(setf
+page-height)</b></a> or <a href="../s/set-page-size.htm"><b>set-page-size</b></a>.
+</p>
+<p id="5">
+If <i>stream-units-p</i> is true
+the value is in stream units; otherwise it is in line-heights. See
+<a href="../../../cg/cg-coordinates.htm">cg-coordinates.htm</a>.
+</p>
+<p id="6">
+The value is always an integer, rounded if necessary when
+<i>stream-units-p</i> is <code>nil</code>. <a href="../p/page-height.htm"><b>page-height</b></a> is the height of what
+might be called the canvas of the window, only a portion of which may
+be visible. If you add vertical scrollbars to a window whose <a href="../p/page-height.htm"><b>page-height</b></a> is greater
+than its <a href="../i/interior-height.htm"><b>interior-height</b></a>, the range of the
+scrollbars is the <a href="../p/page-height.htm"><b>page-height</b></a> and you can scroll the
+visible portion of the window up and down over that page height.
+</p>
+<p id="7">
+The function <a href="../p/page-height.htm"><b>page-height</b></a> always returns a
+number, which is either the value returned by <a href="../e/explicit-page-height.htm"><b>explicit-page-height</b></a> if it returns
+a number, or else the number returned by <a href="../d/default-page-height.htm"><b>default-page-height</b></a>. The function
+(setf page-height) may be passed either an explicit page-height number
+or else <code>nil</code> to make page-height default
+according to the <a href="../d/default-page-height.htm"><b>default-page-height</b></a> method for the
+window.
+</p>
+<p id="8">
+Note that the <a href="../p/page-height.htm"><b>page-height</b></a> property uses <a href="../e/explicit-page-height.htm"><b>explicit-page-height</b></a> as
+its reader function. This means that a page-height property in the
+IDE's inspector will be <code>nil</code> unless a
+page-height has been explicitly assigned. The writer function is still
+(setf page-height), and so a page-height property may be changed in
+the inspector either to an explicit number or to <code>nil</code>.
+</p>
+<p id="9">
+If <i>stream</i> is an instance of the <a href="../../../classes/cg/drawable.htm"><code>drawable</code></a> control, this
+function returns (or sets with setf) the height of the entire "canvas"
+that may be scrolled onto the drawable. Typically used only when the
+vertical scrollbar is enabled.
+</p>
+<p id="10">
+See also <a href="../p/page-width.htm"><b>page-width</b></a> and
+<a href="../s/set-page-size.htm"><b>set-page-size</b></a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/page-height.htm">9.0 version</a></td></tr></table></body></html>

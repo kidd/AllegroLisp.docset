@@ -1,0 +1,132 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*restart-init-function*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_restart-init-function_s.htm">9.0 version</a></td></tr></table><h2 id="2">*restart-init-function*</h2>
+
+<p id="3">The value of this variable should be a function name or function
+object (suitable as the first argument to <strong>funcall</strong>) or
+<code>nil</code>. The function should take no
+arguments. It is called as the last startup action before either a
+standard Lisp listener is started or <a href="s_restart-app-function_s.htm"><code>*restart-app-function*</code></a> is called. This
+variable is never modified or set by any Allegro CL facility. Since
+the value of this variable is passed to <a href="../../../ansicl/dictentr/funcall.htm"><b>funcall</b></a>, if the value is <code>nil</code>, no action is taken. </p>
+
+<p id="4">
+As an example of its use, consider the following code, suitable for
+placement in a user's <i>.clinit.cl</i> file. It defines the function
+<strong>start-composer-from-clinit-file</strong>, which, if called in
+the <i>.clinit.cl</i> file, causes Allegro Composer to be started.  It
+is reprinted here to illustrate how <a href="s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> might be modified
+in a <i>.clinit.cl</i> file in a way that preserves
+any functionality expressed by the current value of the variable and
+is further careful to reset the variable appropriately after Allegro
+Composer is started -- thus preventing a dumped image from trying to
+start Allegro Composer twice. (Evaluating (composer:start-composer) in
+<i>.clinit.cl</i>
+works but causes annoying bogus warnings to be printed.)</p>
+
+<pre id="5">
+;; Description: Facilitate Composer startup from .clinit.cl file
+;;
+ 
+(defun start-composer-from-clinit-file ()
+  (let ((initial-restart-init-function *restart-init-function*))
+    (cond (initial-restart-init-function
+      (setf *restart-init-function*
+            #'(lambda ()
+               (composer:start-composer)
+               (setf *restart-init-function* initial-restart-init-function)
+               (funcall initial-restart-init-function))))
+     (t (setf *restart-init-function*
+              #'(lambda ()
+                (composer:start-composer)
+                (setf *restart-init-function* nil)))))))
+</pre>
+
+<h3 id="6">Special note concerning the IDE and Projects on Windows</h3>
+
+<p id="7">
+This note applies to users of the Integrated Development
+Environment (IDE) with Allegro CL on Windows.
+</p>
+
+<p id="8">
+<a href="s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> is
+set in IDE images to the function that starts the IDE. It is also used
+by an application developed using the project system. In such an
+application, the value of <a href="s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> is set to
+<strong>cg::do-default-restart</strong>.  That function initializes
+Common Graphics, and calls the project
+<strong>on-initialization</strong> function (displayed in the Project
+manager Options tab as the <em>Init Function</em>). The
+<strong>on-initialization</strong> function should do whatever
+application initializations are necessary and should return the main
+window of the application. The main window is the one that the user
+closes in order to exit the application.
+</p>
+
+<p id="9">
+When the window returned by the <strong>on-initialization</strong>
+function is closed, the application will exit. If something other than
+a window is returned by the <strong>on-initialization</strong>
+function, the application exits immediately.</p>
+
+<p id="10">
+So, programmers using the project system should not set a value for
+<a href="s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> and they
+should do all initializations associated with the application in the
+on-initialization function. Note that Common Graphics-related code
+cannot be evaluated earlier in the startup procedure because Common
+Graphics will not yet be initialized.</p>
+
+
+<h3 id="11">
+Special note about the value when calling build-lisp-image or
+generate-application
+</h3>
+
+<p id="12">
+<b>Warning:</b> the functions <a href="../../operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> and <a href="../../operators/excl/generate-application.htm"><b>generate-application</b></a> both accept a
+<code>:restart-init-function</code> keyword argument whose value
+defaults to the value of this variable. However, the only valid values
+for that argument are a symbol or a list (typically a lambda expression
+defining an anonymous function). If the value of this variable is a
+function object, and the <code>:restart-init-function</code>
+argument is not specified, the call to <a href="../../operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or <a href="../../operators/excl/generate-application.htm"><b>generate-application</b></a> will fail. Thus, this
+will fail:
+</p>
+<pre id="13">
+(setq *restart-init-function* #'(lambda () (do-my-startup))
+(build-lisp-image "myimage.dxl")
+</pre>
+<p id="14">
+and this will succeed:
+</p>
+<pre id="15">
+(setq *restart-init-function* '(lambda () (do-my-startup))
+(build-lisp-image "myimage.dxl")
+</pre>
+
+<p id="16">
+If you are building an image with <a href="../../operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> or
+<a href="../../operators/excl/generate-application.htm"><b>generate-application</b></a> which
+will not include Common Graphics from a Lisp which is using Common
+Graphics or the IDE, the value of this variable is likely not
+appropriate as the value of
+the <code>:restart-init-function</code> argument. In that case,
+be sure to supply the <code>:restart-init-function</code>
+argument and specify it as <code>nil</code> or as some
+symbol or list of your own creation. Otherwise, the argument will
+inherit the current value which may cause the build to fail or startup
+to fail or to be different than what is desired.
+</p>
+
+<h3 id="17">References</h3>
+
+<p id="18">
+See <a href="../../startup.htm">startup.htm</a>, particularly sections <a href="../../startup.htm#start-up-description-1">What Lisp does when it
+starts up</a> and <a href="../../startup.htm#init-files-1">Initialization and the sys:siteinit.cl and
+[.]clinit.cl files</a>, for information on initialization
+functions.
+</p>
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/excl/s_restart-init-function_s.htm">9.0 version</a></td></tr></table></body></html>

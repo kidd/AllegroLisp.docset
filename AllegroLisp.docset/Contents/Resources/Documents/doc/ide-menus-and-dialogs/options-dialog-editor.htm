@@ -1,0 +1,120 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>options-dialog-editor</title><link rel="stylesheet" href="../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>IDE Dialog Tab</b></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/options-dialog-editor.htm">9.0 version</a></td></tr></table><h2 id="2">Editor tab on Options dialog</h2>
+
+
+<p id="3"><img src="../pictures/options-ed.jpg"></p>
+<p id="4">
+This tab of the <a href="options-dialog.htm">Options</a> dialog displays options associated
+with editing.
+</p>
+<ul>
+<li id="5">
+<b>Mode</b>: the current <a href="../operators/cg/c/comtab.htm"><b>comtab</b></a> used in the system.  See
+<a href="../operators/ide/editor-mode.htm"><b>editor-mode</b></a>.
+</li>
+<li id="6">
+<b>Reindenter</b>: choose the style in which Lisp code is rearranged
+when <a href="edit-menu.htm#reindent">Edit | Reindent</a> is clicked. The choices are
+<b>Reindent</b> and <b>Pretty Print</b>. <b>Reindent</b> simply
+reindents each line appropriately while <b>Pretty Print</b> may move
+things from one line to another to produce a more pleasing final
+result (just as the function <a href="../../ansicl/dictentr/writepri.htm"><b>pprint</b></a> does).  See <a href="../operators/ide/pretty-printer.htm"><b>pretty-printer</b></a>.
+</li>
+<li id="7">
+<b>Comment Indent</b>: the indentation of comments when the comment
+gesture, Control-;, in the host and emacs comtabs, which inserts a
+semi-colon after the number of spaces specified by this value. See
+<a href="../operators/ide/comment-indent.htm"><b>comment-indent</b></a>.
+</li>
+
+<li id="8">
+<b>String Search Padding</b>: the number of additional lines of text
+to scroll into view for context around a string match. See
+<a href="../operators/ide/editor-string-search-lines-of-padding.htm"><b>editor-string-search-lines-of-padding</b></a>.
+</li>
+
+<li id="9">
+<b>Conserve indentation</b>: if checked, the <a href="../operators/cg/c/conserve-indentation.htm"><b>conserve-indentation</b></a> property will
+be true. If unchecked, it will be <code>nil</code>. This property controls indentation of Lisp
+code in Editor buffers.
+</li>
+<li id="10">
+<b>Incremental Search</b>: sets the value of the <a href="../operators/ide/incremental-search.htm"><b>incremental-search</b></a>
+configuration property. If true (checked), emacs-like text searching
+in text windows is used, displaying a small window (like the emacs
+minibuffer). As you type characters, they appear in the small window
+and corresponding characters in the text window are highlighted. If
+false (unchecked), searching is done with a Find dialog.
+</li>
+<li id="11">
+<b>Find Again After Replace</b>: if checked, whenever the user does a
+replace operation in the in-lisp editor, the cursor will immediately
+be moved to the next occurrence of the find string (if there is one).
+See <a href="../operators/ide/find-again-after-replace.htm"><b>find-again-after-replace</b></a>.
+</li>
+<li id="12">
+<b>Open Files in Gnu Emacs</b>: If checked and the Emacs-Lisp interface is
+running, files will be opened in an Emacs buffer rather than in the
+Editor Workbook. See also <a href="../operators/ide/open-files-in-gnu-emacs.htm"><b>open-files-in-gnu-emacs</b></a>.
+</li>
+
+<li id="13">
+<b>Handle Multiple Package In Buffer</b>: if checked, then commands
+such as <a href="tools-menu.htm#incremental-compile">Tools | Incremental Compile</a> will
+read source code in the correct package even when the editor buffer
+contains multiple <a href="../../ansicl/dictentr/in-packa.htm"><b>in-package</b></a>
+forms for different packages. This takes somewhat more
+time. See <a href="../operators/ide/handle-multiple-packages-in-buffer.htm"><b>handle-multiple-packages-in-buffer</b></a>.
+</li>
+
+<li id="14">
+<b>Parenthesis Matching</b>: unless :off is selected, as you type a
+closing parenthesis, the corresponding open parenthesis is indicated
+in the manner chosen. Clicking on the Color bar displays a color
+choice dialog allowing you to specify the color of the indicator.
+</li>
+
+<li id="15">
+<b>External Format for Saved Files</b>: This drop-down box allows
+choosing a value for the Common Graphics configuration option
+<a href="../operators/cg/e/external-format-for-saved-files.htm"><b>cg:external-format-for-saved-files</b></a>, which in the
+IDE determines (on the Windows platform only) the character encoding
+of new files that are created in the IDE's source code editor.  See
+<a href="../operators/cg/e/external-format-for-saved-files.htm"><b>external-format-for-saved-files</b></a> for more
+information.
+</li>
+<li id="16">
+<b>Write BOM to UTF8 Files</b>: Toggles the value of the
+<a href="../operators/cg/w/write-bom-to-utf8-files.htm"><b>cg:write-bom-to-utf8-files</b></a>
+option, which determines (on the Windows platform only)
+whether a file that is saved in UTF8 format will contain UTF8 byte
+order marker (BOM) bytes at the beginning.  If you turn this off
+because other software stumbles over those bytes when reading the
+file, then you probably want to turn on <b>Load UTF8 If No BOM</b>
+below, or else the editor would not correctly reload non-ASCII
+characters that it saved.
+</li>
+<li id="17">
+<b>Load UTF8 If No BOM</b>: Toggles the value of the
+<a href="../operators/cg/l/load-utf8-if-no-bom.htm"><b>cg:load-utf8-if-no-bom</b></a> option,
+which determines (on the Windows platform only) whether loading a file
+that has no byte order marker (BOM) will assume that the file is in
+UTF8 format rather than the default external-format.
+</li>
+<li id="18">
+<b>Auto Font Changing</b>: Toggles the value of the
+<a href="../operators/ide/ide-auto-font-changing.htm"><b>ide:ide-auto-font-changing</b></a>
+option, which determines (on the Windows platform only) whether each
+editor pane and listener pane that is created will be given the
+<a href="../operators/cg/a/automatic-font-changing.htm"><b>cg:automatic-font-changing</b></a>
+property for automatically changing the font when needed to properly
+display characters that are added to the pane.
+</li>
+
+</ul>
+
+
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/ide-menus-and-dialogs/options-dialog-editor.htm">9.0 version</a></td></tr></table></body></html>

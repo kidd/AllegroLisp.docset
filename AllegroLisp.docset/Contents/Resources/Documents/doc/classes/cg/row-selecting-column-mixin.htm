@@ -1,0 +1,84 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>row-selecting-column-mixin</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/row-selecting-column-mixin.htm">9.0 version</a></td></tr></table><h2 id="2">row-selecting-column-mixin</h2>
+
+<p id="3">
+A <a href="grid-column.htm"><code>grid-column</code></a>
+that is an instance of this class allows the user to select and/or
+move <a href="grid-row.htm"><code>grid-row</code></a>s
+by clicking the cells where they cross the <a href="grid-column.htm"><code>grid-column</code></a>.  The <a href="../../operators/cg/s/selectable.htm"><b>selectable</b></a> property of a row must
+also be true before the row may be interactively selected, and the
+<a href="../../operators/cg/m/movable.htm"><b>movable</b></a> property
+of a row must also be true before the row may be interactively moved.
+In other words, a row may be interactively selected at a particular
+cell if the row is a <a href="../../operators/cg/s/selectable.htm"><b>selectable</b></a> one and the column at
+that cell is an instance of <a href="row-selecting-column-mixin.htm"><code>row-selecting-column-mixin</code></a>; and
+(likewise) a row may be interactively moved (among the rows in its
+<a href="grid-row-section.htm"><code>grid-row-section</code></a>)
+at a particular cell if the row is a <a href="../../operators/cg/m/movable.htm"><b>movable</b></a> one and the column at that
+cell is an instance of <a href="row-selecting-column-mixin.htm"><code>row-selecting-column-mixin</code></a>.
+</p>
+<p id="4">
+This feature is typically used only in a <a href="grid-column.htm"><code>grid-column</code></a> that serves as a set of
+row headers, so that the special row-selecting and/or -moving behavior
+does not override other <a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a> behavior in the body of
+the <a href="grid-widget.htm"><code>grid-widget</code></a>.  Nevertheless, it may
+sometimes be desirable to use this class for multiple columns of a
+grid.
+</p>
+<p id="5">
+The user uses this feature by moving the mouse cursor into a cell in a
+<a href="../../operators/cg/s/selectable.htm"><b>selectable</b></a> or
+<a href="../../operators/cg/m/movable.htm"><b>movable</b></a>
+&nbsp; <a href="grid-row.htm"><code>grid-row</code></a> where it crosses a
+row-selecting-column-mixin column.  The user may click and drag
+vertically in this cell to reposition the <a href="grid-row.htm"><code>grid-row</code></a>, or click and release
+without moving the mouse more than <a href="../../variables/cg/s_start-drag-slack_s.htm"><code>*start-drag-slack*</code></a> pixels to toggle
+the <a href="../../operators/cg/s/selected.htm"><b>selected</b></a>
+property of the row.  When the mouse button is released after a drag,
+the row is positioned among the rows in its <a href="grid-row-section.htm"><code>grid-row-section</code></a> so that it is just
+below all of the rows whose vertical centers are above the final
+vertical center of the drag box (this should be intuitive).  A drag
+may be canceled either by pressing the Escape key before releasing the
+mouse button or by releasing the mouse button while the drag box is
+positioned where the row would snap back to where it was already.
+</p>
+<p id="6">
+An individual selectable <a href="grid-row.htm"><code>grid-row</code></a> may be added to the
+current set of selected rows in its <a href="grid-row-section.htm"><code>grid-row-section</code></a> by holding down the
+control key while clicking the row; if the row is already selected,
+then this deselects the row instead.  If the shift key is held down
+while clicking a <a href="../../operators/cg/s/selectable.htm"><b>selectable</b></a> row, then the range of
+rows that just encompasses all of the rows that were already selected
+plus the row that was clicked are then left in a selected state
+(regardless of their <a href="../../operators/cg/s/selected.htm"><b>selected</b></a> state beforehand).
+</p>
+<p id="7">
+This class must be mixed with <a href="grid-column.htm"><code>grid-column</code></a> (or one of its subclasses)
+to make an instantiable class.  It is best to specify such mixin
+classes ahead of the <a href="grid-column.htm"><code>grid-column</code></a> class in the list of superclasses for
+a new class, so that the small amount of special behavior from the
+mixin class will override the more general behavior of the <a href="grid-column.htm"><code>grid-column</code></a> class.  For
+example:
+</p>
+<pre id="8">
+(defclass my-row-selecting-column (row-selecting-column-mixin grid-column)())
+</pre>
+<p id="9">
+The above default mouse click behavior may be overridden by custom
+<a href="../../operators/cg/c/cell-click.htm"><b>cell-click</b></a>
+methods.
+</p>
+<p id="10">
+For an example of <a href="row-selecting-column-mixin.htm"><code>row-selecting-column-mixin</code></a>, see the
+<a href="../../ide-menus-and-dialogs/navigator-dialog.htm">Navigator
+dialog</a> example (on the Examples tab) entitled "Grid-Widget: a
+basic replicated editable-text column". See also the class <a href="row-header-column.htm"><code>row-header-column</code></a>,
+which combines this class with <a href="row-sizing-column-mixin.htm"><code>row-sizing-column-mixin</code></a> and <a href="grid-column.htm"><code>grid-column</code></a> for use as
+a typical column of row headers.
+</p>
+<p id="11">
+See also <a href="../../operators/cg/s/slide-subsection.htm"><b>slide-subsection</b></a>.
+</p>
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/row-selecting-column-mixin.htm">9.0 version</a></td></tr></table></body></html>

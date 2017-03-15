@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>border-color</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/border-color.htm">9.0 version</a></td></tr></table><h2 id="2">border-color</h2>
+
+<p id="3"><b>Arguments: </b><i>
+grid-object
+</i></p>
+
+<p id="4">
+Returns the color that will be used to draw border lines in a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>, <a href="../../../classes/cg/grid-section.htm"><code>grid-section</code></a>, <a href="../../../classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a>, <a href="../../../classes/cg/chart-legend.htm"><code>chart-legend</code></a>, or <a href="../../../classes/cg/lamp.htm"><code>lamp</code></a>. The value may be set at
+creation time by passing the <i>border-color</i>
+initarg, or any time later by calling <a href="../b/border-color.htm"><b>(setf border-color)</b></a>.
+</p>
+<h2 id="5">
+Border-color for a grid-widget or grid section
+</h2>
+<p id="6">
+Specifies the color in which to draw a border line along the right
+side of a <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a> or
+<a href="../../../classes/cg/grid-column-section.htm"><code>grid-column-section</code></a>, or
+along the bottom of a <a href="../../../classes/cg/grid-row.htm"><code>grid-row</code></a> or <a href="../../../classes/cg/grid-row-section.htm"><code>grid-row-section</code></a>, or around an entire <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>.
+</p>
+<p id="7">
+The value may be either an RGB color object (as returned by <a href="../m/make-rgb.htm"><b>make-rgb</b></a> or <a href="../a/ask-user-for-color.htm"><b>ask-user-for-color</b></a>), or a symbol whose global
+value is an RGB object, or nil to use a default color. The value may
+also be <code>t</code> to to use the <a href="../s/system-edge-shadow-color.htm"><b>system-edge-shadow-color</b></a>. The default is <code>t</code> for a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> and <code>nil</code> for
+the others.
+</p>
+<p id="8">
+When <code>nil</code>, <a href="../e/effective-border-color.htm"><b>effective-border-color</b></a> will find the default
+color to use (except for a <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a>, where <code>nil</code>
+will use <a href="../../../variables/cg/black.htm"><code>black</code></a>).
+</p>
+
+<h2 id="9">
+Border-color in a scrolling-static-text
+</h2>
+<p id="10">
+The value may be <code>nil</code> to draw no border at
+all, or an RGB color object (see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>) to draw a border in that color, or
+<code>t</code> to draw a border in the <a href="../s/system-edge-shadow-color.htm"><b>system-edge-shadow-color</b></a>. The default is <code>nil</code>.  See also <a href="../d/draw-focus.htm"><b>draw-focus</b></a>.
+</p>
+<h2 id="11">
+Border-color in a chart-legend of a chart-widget
+</h2>
+<p id="12">
+Returns the value of the <a href="../b/border-color.htm"><b>border-color</b></a> property of
+a <a href="../../../classes/cg/chart-legend.htm"><code>chart-legend</code></a>. The value
+may be set at creation time by passing
+the <code>border-color</code> initarg, or any
+time later by calling <a href="../b/border-color.htm"><b>(setf border-color)</b></a>.
+</p>
+<p id="13">
+The color that is used to draw the rectangular border around the
+<a href="../../../classes/cg/chart-legend.htm"><code>chart-legend</code></a> of a
+<a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a>. The value
+should be an RGB object (see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>). The default value is the value
+of <a href="../../../variables/cg/gray.htm"><code>gray</code></a>.
+</p>
+<p id="14">
+This property is used only when the <a href="../d/draw-legend.htm"><b>draw-legend</b></a> and <a href="../d/draw-legend-border.htm"><b>draw-legend-border</b></a> properties of the
+<a href="../../../classes/cg/chart-legend.htm"><code>chart-legend</code></a> are both true.
+</p>
+<h2 id="15">
+Border-color in a lamp widget
+</h2>
+
+<p id="16">
+Specifies the color of the lines that are drawn for the perimeter of
+each lamp image, as opposed to the <a href="../o/on-color.htm"><b>on-color</b></a> and <a href="../o/off-color.htm"><b>off-color</b></a> that are used to fill the image. (A
+border is never drawn around the entire widget.) The default is the
+value of the constant <a href="../../../variables/cg/black.htm"><code>black</code></a>.
+</p>
+
+
+<hr><p id="17"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/b/border-color.htm">9.0 version</a></td></tr></table></body></html>

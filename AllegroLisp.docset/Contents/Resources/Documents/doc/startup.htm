@@ -1,0 +1,3071 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Allegro CL Startup</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/startup.htm">9.0 version</a></td></tr></table><h1 id="2">Allegro CL Startup</h1><p id="3">This document contains the following sections:</p><a href="#allegro-directory-1">1.0 The Allegro directory</a><br><a href="#executable-names-1">2.0 Allegro CL Executables: alisp, alisp8, mlisp, mlisp8, allegro, allegro-ansi, allegro-express</a><br><a href="#license-file-1">3.0 The Allegro CL license file</a><br><a href="#starting-acl-1">4.0 Starting Allegro CL</a><br>&nbsp;&nbsp;&nbsp;<a href="#starting-unix-2">4.1 Starting on UNIX machines</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#starting-unix-script-3">4.1.1 Starting on UNIX using a shell script</a><br>&nbsp;&nbsp;&nbsp;<a href="#starting-windows-2">4.2 Starting on Windows machines</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#build-exe-3">4.2.1 Starting Allegro CL on Windows as a Console App</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#bat-file-3">4.2.2 Starting on Windows using bat files</a><br>&nbsp;&nbsp;&nbsp;<a href="#executable-image-etc-files-2">4.3 The executable, the image, and additional files</a><br>&nbsp;&nbsp;&nbsp;<a href="#executable-image-names-2">4.4 The executable and image names</a><br>&nbsp;&nbsp;&nbsp;<a href="#argument-defaults-2">4.5 Argument defaults </a><br><a href="#command-line-args-1">5.0 Command line arguments</a><br><a href="#acl-startup-files-1">6.0 Files Lisp must find to start up and files it may need later</a><br>&nbsp;&nbsp;&nbsp;<a href="#files-lisp-needs-one-2">6.1 Files Lisp needs to start up 1: .so (or dll) files built with image</a><br>&nbsp;&nbsp;&nbsp;<a href="#files-lisp-needs-two-2">6.2 Files Lisp needs to start up 2: the Allegro directory</a><br><a href="#startup-message-1">7.0 The start-up message</a><br>&nbsp;&nbsp;&nbsp;<a href="#other-messages-2">7.1 Other messages like Xlib: extension RANDR missing</a><br><a href="#acl-as-emacs-subprocess-1">8.0 Running Lisp as a subprocess of Emacs</a><br>&nbsp;&nbsp;&nbsp;<a href="#lisp-as-subprocess-of-emacs-2">8.1 Starting Lisp as a subprocess of Emacs the first time</a><br>&nbsp;&nbsp;&nbsp;<a href="#lisp-within-emacs-second-time-2">8.2 Starting Lisp within Emacs after the first time</a><br>&nbsp;&nbsp;&nbsp;<a href="#emacs-lisp-doesnt-start-2">8.3 What if the Emacs-Lisp interface does not start?</a><br>&nbsp;&nbsp;&nbsp;<a href="#using-ide-with-emacs-2">8.4 Using the IDE with Emacs</a><br><a href="#starting-from-shell-1">9.0 Starting Lisp from a shell</a><br><a href="#start-up-problems-1">10.0 Start-up problems</a><br><a href="#exit-lisp-1">11.0 How to exit Lisp</a><br>&nbsp;&nbsp;&nbsp;<a href="#exit-for-sure-2">11.1 How to exit for sure</a><br><a href="#start-up-description-1">12.0 What Lisp does when it starts up</a><br><a href="#init-files-1">13.0 Initialization and the sys:siteinit.cl and [.]clinit.cl files</a><br>&nbsp;&nbsp;&nbsp;<a href="#errors-in-init-file-2">13.1 Errors in an initialization file</a><br>&nbsp;&nbsp;&nbsp;<a href="#no-tpl-commands-in-init-file-2">13.2 No top-level commands in initialization files</a><br>&nbsp;&nbsp;&nbsp;<a href="#cannot-set-variables-bound-by-load-2">13.3 Cannot (effectively) set a variable bound by load</a><br>&nbsp;&nbsp;&nbsp;<a href="#starting-composer-from-init-file-2">13.4 Starting Allegro Composer from .clinit.cl</a><br><a href="#setting-globals-1">14.0 Setting global variables in initialization files</a><br>&nbsp;&nbsp;&nbsp;<a href="#bindings-defined-2">14.1 Where are the bindings defined?</a><br>&nbsp;&nbsp;&nbsp;<a href="#bindings-specific-values-2">14.2 Many bindings are to specific values, not to the variables' actual values</a><br>&nbsp;&nbsp;&nbsp;<a href="#how-to-set-values-2">14.3 How to set the value so a listener sees it?</a><br>&nbsp;&nbsp;&nbsp;<a href="#sample-init-file-2">14.4 A sample initialization file</a><br><a href="#after-startup-1">15.0 After Lisp starts up</a><br>&nbsp;&nbsp;&nbsp;<a href="#initial-prompt-2">15.1 The initial prompt</a><br>&nbsp;&nbsp;&nbsp;<a href="#errors-running-acl-2">15.2 Errors</a><br>&nbsp;&nbsp;&nbsp;<a href="#system-hangs-2">15.3 What if the system seems to hang (as if it is in an infinite loop)?</a><br>&nbsp;&nbsp;&nbsp;<a href="#enough-cc-s-2">15.4 Enough C-c's (on Unix) will always interrupt</a><br>&nbsp;&nbsp;&nbsp;<a href="#allegro-icon-2">15.5 The Allegro Icon on the system tray will interrupt on Windows</a><br>&nbsp;&nbsp;&nbsp;<a href="#help-while-running-2">15.6 Help while running Lisp</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#initial-package-2">15.6.1 The package on startup</a><br><a href="#files-looked-for-at-startup-1">16.0 Files that may be looked for on startup and after startup</a><br><hr><hr><h2 id="4"><a name="allegro-directory-1">1.0 The Allegro directory</a></h2>
+
+<p id="5">The <i>Allegro directory</i> is the directory where Allegro CL was
+installed. In it is the executable (see
+<a href="#executable-names-1">Section 2.0 Allegro CL Executables: alisp, alisp8, mlisp, mlisp8, allegro, allegro-ansi, allegro-express</a> below for executable
+names) and one or more standard images (with extension <i>dxl</i> and
+names the same as the executable names) and other files and
+subdirectories which may be needed to run Allegro CL. If you follow
+the standard installation procedure, the Allegro directory on Windows
+machines is <i>C:\Program Files\aclNN</i> (where NN is the version number with the dots removed -- like 81, 82, 90) and on Unix is
+<i>/usr/local/aclNN</i>.</p>
+
+
+<p id="6">
+Starting in version 9.0, Allegro CL is distributed in two forms: the
+SMP version and the non-SMP version. Each has its own directory and
+can be considered a separate distribution, just like Allegro CL 8.2
+and Allegro CL 9.0 are separate distributions. <i>Allegro
+directory</i> refers to the non-SMP directory when you are using the
+non-SMP version and the SMP directory when you are using the SMP
+version.
+</p>
+
+
+
+
+<hr><hr><h2 id="7"><a name="executable-names-1">2.0 Allegro CL Executables: alisp, alisp8, mlisp, mlisp8, allegro, allegro-ansi, allegro-express</a></h2>
+
+<p id="8">
+Allegro CL comes in at least four
+varieties, depending on the internal representation of strings and
+characters (whether 16 or 8 bits per character), and the case mode
+(whether ANSI or modern). Therefore, your distibution will have at
+least the following executables and corresponding image (<i>dxl</i>)
+files. Note too that on Windows, the executable files have extension
+<i>.exe</i>, while on Unix, the executables have no extension.
+</p>
+<p id="9">
+<b>Note for Express edition users</b>: On
+UNIX platforms, only one executable/image is supplied. On all UNIX
+platforms it is
+<i>alisp</i>/<i>alisp.dxl</i> (ANSI supporting international
+characters). A <i>readme</i> in the Allegro directory
+tells you how to build other types of images (but only 16-bit images
+can be built). On Windows, none of the four executables/images listed
+next are supplied. Only
+<i>allegro-express.exe</i>/<i>allegro-express.dxl</i>, described after the
+bulleted list.
+</p>
+<ul>
+<li id="10"><i>mlisp</i> (<i>mlisp.exe</i> on Windows): Common Lisp, modern
+mode (case sensitive lower, supports international 16-bit characters).
+Some Allegro CL-based products work better in this mode, AllegroServe
+and Allegro ORBLink being two.</li> <li id="11"><i>mlisp8</i>
+(<i>mlisp8.exe</i> on Windows): Common Lisp, modern mode (case
+sensitive lower, uses 8-bit characters and cannot support
+international character sets).</li> <li id="12"><i>alisp</i> (<i>alisp.exe</i>
+on Windows): Common Lisp, ANSI mode (case insensitive upper, supports
+international 16-bit characters).  Not all Allegro CL-based products
+work well in this mode -- modern languages such as C, C++, and XML are
+case sensitive, and supporting interfaces to these languages in a case
+insensitive Lisp is difficult. This is a copy of <i>mlisp</i>
+(<i>mlisp.exe</i> on Windows), renamed simply to start the image of
+the same name (and extension dxl).
+</li>
+<li id="13"><i>alisp8</i> (<i>alisp8.exe</i> on Windows): Common Lisp, ANSI
+mode (case insensitive upper, uses 8-bit characters and cannot support
+international character sets). This is a copy of 
+<i>mlisp8</i> (<i>mlisp8.exe</i> on Windows), renamed simply to start the
+image of the same name (and extension dxl).
+</li>
+</ul>
+
+
+<p id="14">
+On Windows and on Linux using Intel x86 processors, there are two
+additional executables: <i>allegro.exe</i> and
+<i>allegro-ansi.exe</i>. Both are copies of
+<i>mlisp.exe</i>, and so support 16-bit characters. They
+are associated with images (same name, extension
+<i>dxl</i>) that include the Common Graphics/IDE code
+and, when invoked, start the IDE
+automatically. <b>Allegro Express
+users</b>: only one executable/image is supplied: <i>allegro-express.exe</i>/<i>allegro-express.dxl</i>, equivalent to
+<i>allegro-ansi.exe</i>/<i>allegro-ansi.dxl</i> (ANSI with the IDE
+supporting international characters). A
+<i>readme.txt</i> in the Allegro directory tells you how
+to build other types of images.) See <a href="cgide.htm#allegro-8bit-2">How to create an 8-bit image which starts the
+IDE</a> in <a href="cgide.htm">cgide.htm</a> for information on
+building an 8-bit image that includes the IDE and invokes it on
+startup.
+</p>
+<p id="15">
+Allegro CL has always supported modern (case-sensitive, lowercase
+preferred) mode, but, starting with release 6.0, a modern image and
+executable are supplied. We believe the benefits of using modern mode
+outweigh the slight inconveniences of porting case-insensitive code to
+it.
+</p>
+<p id="16">
+Allegro CL has also for some time supported international character
+sets, but with a special, add-on version called International Allegro
+CL. Starting in release 6.0, standard Allegro CL supports 16-bit
+characters (and strings) and does not support 8-bit
+characters. Because of automatic compatibility routines when loading
+text files, most users who do not use international character sets
+will not notice the change. However, some may (for example, users with
+applications that manipulate very large ASCII strings) and those users
+may wish to use the 8-bit versions. Note that a fasl file containing a
+string constant compiled in the standard (16-bit) Lisp cannot be
+loaded into the 8-bit version, but fasl files with string constants
+compiled in the 8-bit version can be loaded into the standard version.
+</p>
+<p id="17">
+Because of the multiplicity of executable names, we will refer to the
+executable as <i>mlisp</i> in the document unless there is some reason
+to refer to a different version.
+</p>
+
+
+
+<hr><hr><h2 id="18"><a name="license-file-1">3.0 The Allegro CL license file</a></h2>
+
+<p id="19">
+Allegro CL uses a license file, <i>devel.lic</i> in the
+Allegro directory. This file <i>must</i> be present and have proper
+contents in order for Allegro CL to start. If the file is not present
+or does not have the proper contents, Lisp fails to start with a
+message like the following example from the Windows version, which
+appears in a pop-up dialog. On UNIX, the message (with a different
+path) appears in a shell window or in an Emacs buffer.
+</p>
+<pre id="20">
+Missing or invalid license file (C:\Program Files\ACL81\devel.lic).
+Lisp cannot start up.
+</pre>
+<p id="21">
+Note that the name of the license must be
+<i>devel.lic</i>. A valid file with a different name
+will not work (but the fix is easy -- copy that file to
+<i>devel.lic</i> in the Allegro directory).
+</p>
+<p id="22">
+This license file is not included on the distribution CD (or as part
+of the Express download). As described in
+<a href="installation.htm">installation.htm</a>, information on obtaining license
+files is sent to Professional and Enterprise
+customers. Express users obtain a license
+file by following the instructions on the Franz Inc. website
+(franz.com). If you do not have a license file or your license
+file is not valid, please contact Franz Inc. See <a href="introduction.htm#where-to-send-bugs-2">Where to report
+bugs and send questions</a> in
+<a href="introduction.htm">introduction.htm</a>.
+</p>
+<p id="23">
+Along with allowing Allegro CL to start up, the license indicates
+which add-on products and utilities are licensed, and prevents access
+to unlicensed products and utilities. If you believe you are licensed
+for a product or utility but the license file prevents you from using
+it, again, contact Franz Inc. See <a href="introduction.htm#where-to-send-bugs-2">Where to report bugs and send
+questions</a> in <a href="introduction.htm">introduction.htm</a>.
+</p>
+<p id="24">
+Here is what a license file looks like. It is a text file, but some of
+the text (the actual license parts) is encrypted. This is a bogus
+file, of course, with the encrypted portions much modified (and much
+shortened). We provide it so you can see what a license file looks
+like. This license file is used internally at Franz Inc. (as it
+says). It also has an expiration
+date. Express versions will have an
+expiration date. Licensed versions (that is, to paying customers) have
+no expiration date.
+</p>
+<pre id="25">
+;; This file contains the licenses necessary to
+;; execute Allegro CL and add-on products.  Preceding
+;; each license there is a comment describing the
+;; contents of the encrypted block of text.  Included
+;; in the encrypted text is information identifying
+;; the licensee. 
+;; 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ACL version: ...
+;; ACL type: enterprise
+;; Architecture: ...
+;; Licensed to: ...
+;; Expiration date: 2001-11-15 00:00:00
+;; Features: partners runtime generate-application
+;;   aodbc enterprise-ssl enterprise-jlinker
+(:lisp "...base64 text...")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ACL version: ...
+;; Architecture: ...
+;; Licensed to: ...
+;; Expiration date: 2001-11-15 00:00:00
+(:dynamic-runtime "...base64 text...")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ACL version: ...
+;; Architecture: ...
+;; Licensed to: ....
+;; Expiration date: 2002-11-15 00:00:00
+(:clim"...base64 text...")
+
+;; END OF FILE
+
+</pre>
+
+<hr><hr><h2 id="26"><a name="starting-acl-1">4.0 Starting Allegro CL</a></h2>
+
+<hr><h2 id="27"><a name="starting-unix-2">4.1 Starting on UNIX machines</a></h2>
+
+<p id="28">
+The recommended way to start Lisp on UNIX machines is as a
+subprocess of Emacs (Xemacs or GNU Emacs). However, Lisp may be
+started from a shell. The disadvantage of starting Lisp from a shell
+is that the editing and other features of the Emacs-Lisp interface are
+not available. If you use Allegro Composer, you must run Lisp as a
+subprocess of Emacs.
+</p>
+
+<p id="29">
+The command for starting in a shell (assuming the Allegro directory is
+in your PATH) is as follows. Note the -I argument, if specified, must
+be first.
+</p>
+
+<pre id="30">
+&gt; mlisp [-I &lt;image path and name&gt;.dxl] [other args]
+</pre>
+
+<p id="31">
+See <a href="#command-line-args-1">Section 5.0 Command line arguments</a> for
+information on starting under emacs and for information on
+command-line arguments including the -I argument. See
+<a href="#executable-names-1">Section 2.0 Allegro CL Executables: alisp, alisp8, mlisp, mlisp8, allegro, allegro-ansi, allegro-express</a> for the names of
+executables other than <i>mlisp</i>.
+</p>
+
+<hr><h2 id="32"><a name="starting-unix-script-3">4.1.1 Starting on UNIX using a shell script</a></h2>
+
+
+
+
+
+<p id="33">
+Shell scripts only work on UNIX (not on Windows). See
+<a href="#bat-file-3">Section 4.2.2 Starting on Windows using bat files</a> for information on starting
+on Windows using a bat file.
+</p>
+
+<p id="34">
+The UNIX hack of having a file that starts with
+</p>
+<pre id="35">
+    #! &lt;program&gt; &lt;args&gt;
+</pre>
+<p id="36">
+works with Allegro CL on some UNIX platforms (it does not work on
+HP-UX or FreeBSD -- see <a href="#hp-fbsd-note">HP and FreeBSD note
+below</a>). Here is the form:
+</p>
+<pre id="37">
+    #! &lt;lisp-executable&gt; { -#D | -#C | #T | -#! }
+</pre>
+<p id="38">
+Where:
+</p>
+<ul>
+<li id="39">
+&lt;lisp-executable&gt; is the name of the Allegro CL executable file.
+Note: &lt;lisp-executable&gt; cannot itself be a shell script: it must
+be one of the actual executable files, such as
+<i>mlisp</i>.
+<p id="40">
+Further, on most platforms, the executable should be in a
+directory which is in the PATH environment variable (despite the fact
+that the full pathname of the file is specified in the script). 
+</p>
+<p id="41">
+The reason the directory needs to be in PATH is that the Allegro CL
+executable needs to find itself on startup (to do things like finding
+its symbol table). However, most versions of UNIX seem to discard the
+directory information in the script after finding the specified
+executable, so Lisp itself has only the executable's filename to use
+to find itself. (If the executable's location is in PATH, it is able
+to find itself.) Note that certain versions of UNIX, such as Linux
+with kernels greater than 2.4 and Solaris do keep the specified
+executable's location information and on those platforms, it does not
+seem to be necessary to have the location included in PATH.
+</p>
+<p id="42">
+Initialization files are never read when Lisp is started with a
+script. So Lisp is started as if the command-line argument
+<b>--qq</b> was specified. See
+<a href="#command-line-args-1">Section 5.0 Command line arguments</a> for information on
+command-line arguments.
+</p>
+</li>
+<li id="43">
+<code>-#D</code> is used for debugging (a backtrace is
+printed when an error occurs).
+</li>
+<li id="44">
+<code>-#C</code> is used to have
+the script compiled.
+</li>
+<li id="45">
+<code>-#T</code> is like <code>-#C</code>, in that the
+script is compiled, but the compiled script is placed in
+<i>/tmp</i> rather than the directory containing the
+script, and so the user need not have write permission in that
+directory.
+</li>
+<li id="46">
+<code>-#!</code> just loads the script.
+</li>
+</ul>
+
+<p id="47">
+Scripts run using #! that signal an error will exit with a non-zero exit
+status.
+</p>
+
+<p id="48">
+Here's an example. Put this in a file <i>hello_world.cl</i>.
+We assume PATH includes <i>/usr/local/acl81/</i>:
+</p>
+<pre id="49">
+#! /usr/local/acl81/mlisp -#!
+(format t "Hello World!~%")
+</pre>
+<p id="50">
+Then,
+</p>
+<pre id="51">
+% chmod 755 hello_world.cl
+% ./hello_world.cl
+Hello World!
+% 
+</pre>
+
+<p id="52">
+Because different versions of UNIX handle shell scripts like these
+differently, this method of starting Allegro CL may not work (it is
+known not to work on HP-UX and FreeBSD, as noted below). Please test
+the simple example before trying a more complex one.
+</p>
+
+<h3 id="53">
+fasl files can be appended to scripts
+</h3>
+
+<p id="54">
+The following transcript show this capability.
+</p>
+
+<pre id="55">
+gemini% cat foo.cl
+(in-package :user)
+
+(format t &quot;foo!~%&quot;)
+gemini% mlisp-7.0
+International Allegro CL [master]
+7.0 [Linux (x86)] (Apr 23, 2004 22:46)
+Copyright (C) 1985-2004, Franz Inc., Berkeley, CA, USA.  All Rights Reserved.
+
+;; Optimization settings: safety 1, space 1, speed 1, debug 2.
+;; For a complete description of all compiler switches given the current
+;; optimization settings evaluate (explain-compiler-settings).
+;;---
+;; Current reader case mode: :case-sensitive-lower
+cl-user(1): :cf foo.cl
+;;; Compiling file foo.cl
+;;; Writing fasl file foo.fasl
+;;; Fasl write complete
+cl-user(2): :exit
+; Exiting
+gemini% echo '#! usr/local/acl/7.0/mlisp -#!' &gt; foo.sh
+gemini% cat foo.fasl  &gt;&gt; foo.sh
+gemini% chmod 755 foo.sh
+gemini% ./foo.sh
+foo!
+gemini% 
+</pre>
+
+<h3 id="56"><a name="hp-fbsd-note"></a>HP and FreeBSD Note</h3>
+
+<p id="57">
+When running a shell script on HP-UX,
+<code>argv[0]</code> is not the Lisp specified in the script,
+but is the script file specified on the command-line. Thus, HP-UX is
+preserving the original name as the value of
+<code>argv[0]</code>. Other UNIX systems set
+<code>argv[0]</code> to the interpreter given in the script.
+</p>
+<p id="58">
+Because of this difference, the example in this section will not work
+on HP-UX platforms.
+</p>
+<p id="59">
+The script also does not work on FreeBSD, which includes
+'./hello_world.cl' as an (unknown) command-line argument.
+</p>
+
+
+
+
+
+<hr><h2 id="60"><a name="starting-windows-2">4.2 Starting on Windows machines</a></h2>
+
+<p id="61">
+A typical way to run on Windows is with the Integrated Development
+Environment (IDE). The IDE is discussed in
+<a href="cgide.htm">cgide.htm</a>. Particularly see the section <a href="cgide.htm#startup-1">About IDE startup</a> for
+information about IDE startup. Information is provided there about the
+startup steps and about the IDE-specific files that are read on
+startip (in addition to the .clinit.cl and siteinit.cl files common to
+all Allegro CL images -- see <a href="#init-files-1">Section 13.0 Initialization and the sys:siteinit.cl and [.]clinit.cl files</a>).
+</p>
+<p id="62">
+The rest of this section discusses general issues of starting on
+Windows and starting without the IDE.
+</p>
+<p id="63">
+There is an Allegro 
+
+
+
+ menu item on the Windows Start menu (under
+Programs). Choosing it displays a submenu, whose items include Modern
+ACL images and ANSI ACL Images. These two display submenus with
+various choices, the first submenu of modern (case-sensitive) images
+and the second of ANSI (case-insensitive) images. On each, the item
+`Allegro CL (w IDE)' starts Allegro CL with the IDE and starts the IDE
+automatically.
+</p>
+<p id="64">
+To start using Emacs, see
+<a href="#acl-as-emacs-subprocess-1">Section 8.0 Running Lisp as a subprocess of Emacs</a>.  See
+<a href="#command-line-args-1">Section 5.0 Command line arguments</a> for information on
+command-line arguments, including the -I argument (which specifies the
+image to use). See <a href="#executable-names-1">Section 2.0 Allegro CL Executables: alisp, alisp8, mlisp, mlisp8, allegro, allegro-ansi, allegro-express</a>
+for the names of executables other than <i>mlisp.exe</i>.
+</p>
+
+<p id="65">
+If you want to start without using a menu item, you can
+choose Run from the start menu, then specify the executable file,
+image file, and any additional needed or desired arguments (described in
+<a href="#command-line-args-1">Section 5.0 Command line arguments</a>), like this:
+</p>
+
+<pre id="66">
+&gt; &lt;Allegro directory&gt;\mlisp.exe [-I &lt;image path and name&gt;.dxl]
+[other args]
+</pre>
+
+
+<hr><h2 id="67"><a name="build-exe-3">4.2.1 Starting Allegro CL on Windows as a Console App</a></h2>
+
+<p id="68">
+You can start Allegro CL on Windows as a Console Application by using
+the executable <i>build.exe</i> rather than
+<i>mlisp.exe</i>. <i>build.exe</i> is a
+WIN32 console application, whereas <i>mlisp.exe</i> is a
+WIN32 Windows application. If you want to run a command-line oriented
+version of Allegro CL, use <i>build.exe</i>.
+</p>
+<p id="69">
+Note that there are issues with multiprocessing and
+<i>build.exe</i>.  <i>build.exe</i>
+sometimes cannot tell if input is available or if a process that is
+waiting on input should wake up. For this reason, we recommend you do
+not use <i>build.exe</i> with multiprocessing applications.
+</p>
+<p id="70">
+Note further that <i>build.exe</i> does not accept the
+arguments that begin with +. Command-line arguments are described in
+<a href="#command-line-args-1">Section 5.0 Command line arguments</a>.
+</p>
+
+
+
+
+<hr><h2 id="71"><a name="bat-file-3">4.2.2 Starting on Windows using bat files</a></h2>
+
+<p id="72">
+Suppose you want to create a quick application where Lisp is started,
+executes a number of forms, and then exits. This can be done by
+creating an application (see <a href="delivery.htm">delivery.htm</a> or
+<a href="building-images.htm">building-images.htm</a>), but that is time-consuming
+and involves additional machinery that makes it not quick enough. You
+can tell potential users to start Lisp and then load a particular
+file, but users like simplicity. On UNIX, you can use a shell script
+(see <a href="#starting-unix-script-3">Section 4.1.1 Starting on UNIX using a shell script</a> but shell
+scripts do not work on Windows.
+</p>
+<p id="73">
+A new facility on Windows allows using a Windows bat file to contain
+Lisp forms, so the bat file will start Lisp, execute the forms, and
+exit. The command-line arguments <b>--bat</b> and <b>--bat-pause</b>
+tell Lisp that it is being executed in a bat file (they are ignored on
+UNIX which does not support bat files). <b>--bat</b> executes the code
+in the bat file and exits. <b>--bat-pause</b> executes the code and
+then pauses until a user action such as hitting the Enter key (thus
+allowing the user to examine information displayed in some fashion).
+</p>
+<p id="74">
+You do not specify either of those arguments to a command line typed
+directly to a command prompt, to the dialog displayed by <b>Start |
+Run</b>, or in the command executed by a shortcut. (Doing so is not
+illegal, it just serves no practical purpose.) Instead, the arguments
+are used in the call invoking Lisp in the bat file. The arguments tell
+Lisp to expect additional forms (which are specified later in the bat
+file) and to exit immediately (<b>--bat</b>) or pause before exiting
+(<b>--bat-pause</b>).
+</p>
+<p id="75">
+The function <a href="operators/excl/lisp-to-bat-file.htm"><b>lisp-to-bat-file</b></a> creates a bat file from a
+Lisp source file and arguments which specify the executable, the image
+file, and other details. You should use this function to create the
+bat file. The function works on all platforms even though the bat file
+will only work on Windows. See the description of <a href="operators/excl/lisp-to-bat-file.htm"><b>lisp-to-bat-file</b></a> for further details and a
+link to an example.
+</p>
+
+<h4 id="76">
+Calling Lisp in a bat file is a feature added after the initial 8.0 release
+</h4>
+<p id="77">
+The bat file facility
+was implemented by a patch released approximately 1/17/2006. You must
+have that patch to use this feature.
+</p>
+
+
+
+
+
+
+
+<hr><h2 id="78"><a name="executable-image-etc-files-2">4.3 The executable, the image, and additional files</a></h2>
+
+<p id="79">Allegro CL requires at least two files: an executable, typical
+extension exe, and an image file, typical extension <em>dxl</em>. The
+executable is small and can be used with any dxl file (from the same
+release and on the same platform). The <em>dxl</em> file is typically
+much larger and contains information on the Lisp environment. (Note
+that in earlier releases on Unix, the image file was executable.)</p>
+
+<p id="80">You run the executable specifying a <em>dxl</em> file as an
+argument (identified by the -I flag). If no <em>dxl</em> file is
+specified, the executable looks for a <em>dxl</em> file in the same
+directory as the executable (typically, the Allegro directory) and
+with the same name. Therefore, if the executable is
+<em>/usr/acl81/mlisp</em> and no <em>dxl</em> file is specified,
+<em>/usr/acl81/mlisp.dxl</em> will be looked for and used if it is
+present. If it is not present, the startup will fail (and a -I
+argument must be specified in that case).</p>
+
+
+
+<hr><h2 id="81"><a name="executable-image-names-2">4.4 The executable and image names</a></h2>
+
+<p id="82">See <a href="#executable-names-1">Section 2.0 Allegro CL Executables: alisp, alisp8, mlisp, mlisp8, allegro, allegro-ansi, allegro-express</a> for the names
+of all executables supplied with Allegro CL.  
+The name of the standard
+executable is <em>mlisp</em> on Unix and <em>mlisp.exe</em> on Windows
+(<i>alisp</i> for express on UNIX and <i>allegro-express.exe</i> for
+Express on Windows). Any executable can be copied to have any other
+name and doing so is useful if you want it automatically associated
+with an image file with that name. You should leave the executable in
+the Allegro directory (where it was installed) because its
+location serves as a pointer to the locations of files needed during
+execution.</p>
+
+<p id="83">The location of the executable is set when the software is
+installed. Typically, your system administrator will know where
+Allegro CL was installed (if you did not install the software
+yourself). The image files have extensions <em>dxl</em>. One or more
+are supplied with the distribution and are in the same directory as
+the executable. Images can also be created with <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> and <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>. Their location and name
+depends on the arguments specified to those functions. It is not
+necessary for the executable and the image to be in the same
+directory. The -I command-line argument specifies the image file
+to use and its value can contain directory information as well as the
+name of the image file.</p>
+
+<p id="84">In this manual, we typically assume that the name of the Allegro CL
+executable is <em>mlisp</em> or <i>mlisp.exe</i>, as the example is on
+Unix or on Windows, and the image <i>mlisp.dxl</i> or, on Windows when
+using the IDE, <em>allegro.dxl</em> or
+<i>allegro-ansi.dxl</i>. When the platform is not
+explicit, either <em>mlisp</em> or <em>mlisp.exe</em> may be mentioned
+and readers should mentally add or remove <em>.exe</em> as they are
+working on Windows or on Unix. We also assume that the executable is
+located in a directory that is in your PATH environment variable (that
+means the image can be started by typing the image name without its
+path).  You, of course, should use the executable name actually used
+on your system and should include its path or not as appropriate.</p>
+
+
+
+<hr><h2 id="85"><a name="argument-defaults-2">4.5 Argument defaults </a></h2>
+
+<p id="86">
+Values for command line arguments can be specified as a
+resource. On Unix, this is done with the file <i>lisprc</i> in the
+same directory as the executable. On Windows, the arguments are stored
+in the executable. This feature is designed for applications. Using
+resources is discouraged for general use.
+</p>
+
+<p id="87">
+It has significant limitations; in particular, the arguments
+specified in the resource are concatenated with those specified
+directly on the command-line with the resource arguments first. That
+is, the resource + arguments (Windows only) are processed, then the
+command-line + (Windows only) arguments, then the resource -
+arguments, and finally the command-line - arguments. Since the
+first -I argument encountered is used and others are ignored, you
+cannot override the resource -I argument if one is
+specified. (Actually, on Unix, you can move the <i>lisprc</i> file but
+on Windows, there is no such workaround.) </p>
+
+<p id="88">
+It is because of these limitations that using resources is discouraged
+for general use.  We mention them here because if resources are used,
+users may not get the behavior they expect and may not easily figure
+out why. Resources are described in the document
+<a href="delivery.htm">delivery.htm</a>, in the section on <a href="delivery.htm#resources-2">Resources</a>. See that
+document for information on determining whether resources are being
+used and for information on specifying them for applications.
+</p>
+
+
+
+<hr><hr><h2 id="89"><a name="command-line-args-1">5.0 Command line arguments</a></h2>
+
+<p id="90">
+A command line argument is specified after the executable name when
+starting Lisp from a UNIX shell, in response to a question when
+starting Lisp as a subprocess of Emacs, and in the Run dialog when
+starting under Windows. You may specify any of the predefined
+arguments described next and any other arguments you want. 
+</p>
+<p id="91">
+The arguments specified may affect the startup procedure but in any
+case, all specified arguments are available when the image is running
+using operators like the following:
+</p>
+<ul>
+<li id="92">
+<a href="operators/system/command-line-arguments.htm"><b>command-line-arguments</b></a>:
+returns a list of command-line arguments.
+</li>
+<li id="93">
+<a href="operators/system/command-line-argument.htm"><b>command-line-argument</b></a>:
+returns a specific command-line argument.
+</li>
+<li id="94">
+<a href="operators/system/command-line-argument-count.htm"><b>command-line-argument-count</b></a>:
+returns the number of command-line argument.
+</li>
+<li id="95">
+<a href="operators/system/with-command-line-arguments.htm"><b>with-command-line-arguments</b></a>: this macro
+binds variables to the values of specific command-line arguments
+during the execution of the macro body.
+</li>
+</ul>
+
+<p id="96">
+It is not necessary to specify any arguments when running Allegro CL
+so long as the dxl file has the same name and is in the same directory
+as the executable file or has its name and location stored in the
+executable file. If the dxl file has a different name or is in a
+different directory and is not specified in the executable file, it
+must be identified by a -I argument.
+</p>
+
+<p id="97">Command-line arguments are prefixed with a plus (+) or a minus
+(-). Those prefixed with a plus (+) are for Windows only. Those
+prefixed with a minus (-) are for all platforms.</p>
+
+<p id="98">The general form for command line arguments on Windows is (it
+should be all on one line but we have broken the line for ease of
+reading). Note the -I argument, if specified, must be first among all
+arguments starting with a -.
+</p>
+
+<pre id="99">
+mlisp.exe [<em>acl-arguments</em> starting with +] [-I <em>dxl-file</em>]
+              [other <em>acl-arguments</em> starting with -] 
+              [-- <em>application-arguments</em>]
+</pre>
+
+<p id="100">We
+have displayed the -I argument separately from the other - arguments
+because of its special importance.</p>
+
+<p id="101">On UNIX, the general form of the command-line, shown here when
+starting from a shell, is</p>
+
+<pre id="102">
+% mlisp [-:] [-I <em>dxl-file</em>] [<em>acl-arguments</em> starting with -] 
+       [-- <em>application-arguments</em>]
+</pre>
+
+<p id="103">
+-: (controlling how the Allegro CL shared object file is to be looked
+for) must be specified first, if supplied. When starting in Emacs, you
+are asked for a `Lisp Image (dxl) file' and also for `Image arguments
+(separated by spaces)'. The image (value of the <b>-I</b> argument)
+should be specified to the first question and any remaining
+command-line arguments in answer to the second. </p>
+
+<p id="104"><i>acl-arguments</i> affect how Lisp is
+run. <i>application-arguments</i> have no direct effect on Lisp but
+are available once Lisp starts up. A double minus (`--') separates the
+<em>acl-arguments</em> from the
+<em>application-arguments</em>. Everything before the double minus is
+interpreted as an <em>acl-argument</em>; everything after is
+interpreted as an <em>application-argument</em>.  Therefore, the same
+value can appear in either place (or in both places) without
+ambiguity. If an argument before the -- is unrecognized by Allegro CL,
+a warning is printed. </p>
+
+<p id="105">
+<em>application-arguments</em> (and <em>acl-arguments</em> as well)
+are available after Lisp starts up with the function <a href="operators/system/command-line-arguments.htm"><b>command-line-arguments</b></a> and its relatives. We
+will not say more about <em>application-arguments</em> here. See the
+discussion of command-line arguments in <a href="os-interface.htm#command-line-arguments-1">Accessing
+command-line arguments</a> in
+<a href="os-interface.htm">os-interface.htm</a>. See also <a href="operators/system/with-command-line-arguments.htm"><b>with-command-line-arguments</b></a>, which is a
+macro that can be used to process command-line arguments (and can be
+useful for processing application command-line arguments).
+</p>
+
+<p id="106">
+Now to <em>acl-arguments</em>. The following tables show the arguments
+and describe their effects. The first table describes the arguments
+starting with a <b>+</b>, which apply to Windows only. The second
+table applies to all platforms. Note that (on Windows) arguments
+starting with a <b>+</b> must precede all arguments starting with
+a <b>-</b>.
+</p>
+
+<a name="windows-comlineargs"></a>
+
+<h2 id="107">
+Command line arguments starting with a + [Windows only]
+</h2>
+
+<p id="108">
+Allegro CL on Windows run without arguments beginning with a <b>+</b>
+starts with a console window (minimized when the IDE is started,
+otherwise visible); an icon in the system tray; the property that a
+non-zero exit status causes the console window to remain; with a close
+button on the console window; and with titles, filenames, and icon and
+menu item labels that are variants
+of <i>Lisp</i>, <i>ACL</i>, <i>Allegro CL</i>, etc. The following
+arguments can modify all of those things.
+</p>
+
+<table BORDER="1" CELLSPACING="1">
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><p id="109" ALIGN="CENTER">Argument</p></td>
+    <td WIDTH="60%" VALIGN="TOP"><p id="110" ALIGN="CENTER">Effect</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+c</td>
+    <td WIDTH="84%" VALIGN="TOP">Start Allegro CL without a console window. 
+    (Normally, there is a
+    console window to read/write standard I/O. 
+    If you close the console window, the Lisp will
+    be killed.) Note that there will not be an icon in the system tray
+    regardless of whether +R or +RR are specified when there is no
+    console. (Having the console minimized with +cm, non-activated with
+    +cn, or hidden with +cx does not affect whether there is a system
+    tray icon.)
+  </td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+cm</td>
+    <td WIDTH="84%" VALIGN="TOP">Start the console window in a minimized state. </td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+cn</td>
+    <td WIDTH="84%" VALIGN="TOP">Start the console window, but don't activate the console
+    window. This allows Lisp to be started so as to not interfere with the currently selected
+    window. </td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+cx</td>
+    <td WIDTH="84%" VALIGN="TOP">Start the console in a hidden state. Double-clicking on the
+    tray icon will make the console visible. See also the right-click menu on the tray icon.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+cc</td>
+    <td WIDTH="84%" VALIGN="TOP">Causes any earlier +c, +cm, +cn, or +cx argument, including
+    those specified as a resource, to be ignored. 
+    (The purpose of this argument is to overide
+    such arguments specified as resources, see the section on
+    <a href="delivery.htm#resources-2">Resources</a> in
+    <a href="delivery.htm">delivery.htm</a>.) 
+    Any of +c, +cm, +cn, or +cx can be specified and will be effective after
+    +cc.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+p</td>
+    <td WIDTH="84%" VALIGN="TOP">Preserve the console window when Lisp
+    exits with a non-zero exit status. If Allegro CL is exiting
+    unexpectedly you can use this switch to keep the window around to
+    find out what it printed before it died. This is the opposite of
+    the +M argument. The console acts as if this switch is supplied if
+    neither of +p or +M are supplied. <b>+p +M</b> is the same as
+    <b>+p</b>. <b>+p +P +M</b> is the same as <b>+M</b>. <b>+p +P</b>
+    (but not <b>+M</b>) is the same as neither supplied, that is
+    console stays when exit status is non-zero.</td>
+  </tr>
+<tr>
+<td WIDTH="16%" VALIGN="TOP">+P</td>
+<td WIDTH="84%" VALIGN="TOP">If +p (described just above) is present,
++P undoes its effect. (+p may be present is the command-line resource
+for the executable. +P allows cancelling the +p in such a case.) You
+must also supply +M is you want the console to exit when the exit
+status is non-zero.
+</td>
+</tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+R</td>
+    <td WIDTH="84%" VALIGN="TOP">Don't put the Allegro CL icon in the tray.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+RR</td>
+    <td WIDTH="84%" VALIGN="TOP">Do put the Allegro CL icon in the tray. This
+    argument is useful when +R (described just above) is in a resource
+    command line and you wish to override it. It is not necessary to specify
+    this argument unless +R is specified in a resource.
+    See <a href="delivery.htm#resources-2">Resources</a> in
+    <a href="delivery.htm">delivery.htm</a>. Note that specifying +c results in no
+    icon in the system tray regardless of whether this argument is specifed.
+  </td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+s <em>scriptfile</em></td>
+    <td WIDTH="84%" VALIGN="TOP">Standard input is initially bound to 
+    this file. When the file
+    is completely read, standard input reverts to the console window, 
+    if there is one. (This argument is also accepted on UNIX, where
+    it is interpreted as -s, described in the next table, thus allowing
+    uniform scripts for Windows and UNIX.)</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+M</td>
+    <td WIDTH="84%" VALIGN="TOP">When this argument is present the console window does not
+    need to be closed manually when Lisp exits with a non-zero exit status. This is the
+    opposite of the +p argument.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+m</td>
+    <td WIDTH="84%" VALIGN="TOP">When this argument is present, Lisp
+    starts the lisp up in a minimized state.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+d <em>dll-name</em></td>
+    <td WIDTH="84%" VALIGN="TOP">Use the given Allegro CL dll instead of the default <i>acl&lt;version&gt;.dll</i>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+t <em>title</em></td>
+    <td WIDTH="84%" VALIGN="TOP">Sets the title of the console to <i>title</i>.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+B</td>
+    <td WIDTH="84%" VALIGN="TOP">Use no splash screen (a window that appears very quickly to
+    let you know that Lisp is starting and disappears when startup is complete). </td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+b <em>text</em></td>
+    <td WIDTH="84%" VALIGN="TOP">Make the splash screen display <i>text</i> instead of the
+    default bitmap. <i>text</i> just appears in a gray box.</td>
+  </tr>
+<tr>
+<td WIDTH="16%" VALIGN="TOP">+Bt</td>
+<td WIDTH="84%" VALIGN="TOP">
+Display the splash screen for three seconds as the Lisp
+application is starting up.
+The splash screen is stored in the image file. See the description of 
+<a href="operators/system/set-splash-bitmap.htm"><b>set-splash-bitmap</b></a>.</td>
+</tr>
+<tr>
+<td WIDTH="16%" VALIGN="TOP">+Bp</td>
+<td WIDTH="84%" VALIGN="TOP">
+Display the splash screen indefinitely, until either the user clicks
+on it or the application closes it programmatically by using one of
+the Common Graphics functions <a href="operators/cg/k/kill-splash-screen.htm"><b>kill-splash-screen</b></a> or <a href="operators/cg/k/kill-splash-screen-when-ready.htm"><b>kill-splash-screen-when-ready</b></a>. The splash screen
+is stored in the image file. See the description of <a href="operators/system/set-splash-bitmap.htm"><b>set-splash-bitmap</b></a>.</td>
+</tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+N appname</td>
+    <td WIDTH="84%" VALIGN="TOP">Change the name of the application from
+    Lisp to <i>appname</i> in items in the system tray menu, so the items
+    will be <b>Interrupt appname</b> and <b>Exit appname</b> rather than
+    <b>Interrupt Lisp</b> and <b>Exit Lisp</b>.
+   </td>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+Cx</td>
+    <td WIDTH="84%" VALIGN="TOP">Disable the Close button on the
+    Console Window. This argument and +Tx (below) make it difficult
+    for users to close the running Lisp application accidentally.
+    This is useful for applications that are NT services running in
+    the background performing some useful task (e.g. providing an
+    NFS server).</td>
+  </tr>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+Tx</td>
+    <td WIDTH="84%" VALIGN="TOP">Disable the &quot;Exit Lisp&quot; menu item on the 
+    system tray menu. This argument and +Cx (above) make it difficult
+    for users to close the running Lisp application accidentally.
+    This is useful for applications that are NT services running in
+    the background performing some useful task (e.g. providing an
+    NFS server). If an application name other than Lisp was specified by
+    the +N argument, the diabled item will say &quot;Exit &lt;appname&gt;&quot;.</td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+Ti</td>
+    <td WIDTH="84%" VALIGN="TOP">Remove the &quot;Interrupt Lisp&quot; menu item
+    on the system tray menu. (The item says &quot;Interrupt &lt;appname&gt;&quot; if an
+    application name other than Lisp is specified with the +N argument.)</td>
+  </tr>
+<tr>
+<td WIDTH="16%" VALIGN="TOP">+&lt;number&gt;</td>
+<td WIDTH="84%" VALIGN="TOP">Specify with <i>number</i>
+the maximum size in bytes of the console
+edit control (i.e. the amount of text that can appear in the console).
+For example, the value <code>+35000</code>
+would specify 35000 bytes.
+The default size 100,000 on Windows.
+The size can be specified. 
+It must be at least 1000 but should be
+substantially higher in most situations. On platforms where
+the size can be specified, it can be changed after startup with
+<a href="operators/excl/console-control.htm"><b>console-control</b></a>.</td>
+</tr>
+
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+left lpos, +top tpos</td>
+    <td WIDTH="84%" VALIGN="TOP">position the
+    console window at left position <i>lpos</i> and top position
+    <i>tpos</i></td>
+  </tr>
+  <tr>
+    <td WIDTH="16%" VALIGN="TOP">+width w, +height h</td>
+    <td WIDTH="84%" VALIGN="TOP">make the console
+    window <i>w</i> wide and <i>h</i> high
+  </td>
+  </tr>
+
+</table>
+
+<h2 id="111">
+Command line arguments starting with a - [All platforms]
+</h2>
+
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8">
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><p id="112" ALIGN="CENTER">Argument</p></td>
+    <td WIDTH="60%" VALIGN="TOP"><p id="113" ALIGN="CENTER">Effect</p></td>
+    <td WIDTH="13%" VALIGN="TOP"><p id="114" ALIGN="CENTER">See notes</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-:</code></td>
+    <td WIDTH="60%" VALIGN="TOP"><p id="115">UNIX only. Causes the Lisp shared 
+    library (<strong>libacl<em>&lt;version&gt;</em>.so</strong>
+    or <strong>libacl<em>&lt;version&gt;</em>.sl</strong>) to be 
+    searched for in a
+    system-dependent way. On Solaris 2 this means using 
+    the environment variable <strong>LD_LIBRARY_PATH</strong>;
+    other systems might use other ways.</p>
+    <p id="116">This argument must precede all others.
+    (This argument is processed by the executable 
+    before the image file is loaded.)</p></td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>-I </code><code><i>image-file</i></code></td>
+<td WIDTH="60%" VALIGN="TOP">
+<p id="117">
+Specifies the image file to use. If this argument is specified, it
+must be the first of all arguments starting with a -.  The image must
+have been created with <a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> or its relative <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> (or <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>).
+</p>
+<p id="118">
+The filename of the image file <strong><em>must</em></strong> have an
+extension (the standard extension is <em>dxl</em> but any extension
+will do).  If the extension is <em>dxl</em>, the image can be
+specified without <em>.dxl</em>, so these are equivalent:</p>
+<p id="119"><code>mlisp -I foo.dxl</code></p>
+<p id="120"><code>mlisp -I foo</code></p>
+<p id="121">If the extension is something other than <em>dxl</em>, 
+it must be specified:</p>
+<p id="122"><code>mlisp -I foo.xxx</code></p>
+<p id="123"><strong>mlisp.exe</strong> (Windows) or 
+<strong>mlisp</strong> (Unix) handles the -I
+command line argument specially: if 
+<strong>mlisp.exe/mlisp</strong> is started without an
+image file (i.e., no -I argument), then it will 
+first look for an image file with the name
+of the executable and the type <em>dxl</em> in 
+the current directory, then in the same
+directory as the executable file. (On Windows, 
+these two directories are often the same
+but need not be, particularly if you are starting 
+from a DOS prompt. On Unix, the current
+directory is the result of <strong>pwd</strong> 
+typed to the prompt used to start Allegro
+CL.)</p>
+<p id="124">That is, if you start <em>c:\x\y\z\mlisp.exe</em> 
+it will look for the image file <em>c:\x\y\z\mlisp.dxl</em>.
+If it fails to find that image file it will prompt for 
+an image file. Note: you can change
+the name of <strong>mlisp.exe/mlisp</strong> if you are 
+delivering an application. If you
+change <strong>mlisp.exe/mlisp</strong> to 
+<em>myapp.exe/myapp</em> then when <em>myapp.exe/myapp</em>
+starts it will look for <em>myapp.dxl</em>.</p>
+<p id="125">If more than one -I argument is specified, 
+the first (leftmost) is used and the
+remainder are ignored. (This means that if a -I 
+argument is specified as a resource,
+it cannot be overridden. See the section on
+<a href="delivery.htm#resources-2">Resources</a> in
+<a href="delivery.htm">delivery.htm</a> for
+information on resources.)</p>
+</td>
+<td WIDTH="13%" VALIGN="TOP"> </td>
+</tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>-q</code></td>
+<td WIDTH="60%" VALIGN="TOP"><p id="126">Read working directory <em>.clinit.cl</em> 
+or <em>clinit.cl</em>
+and s<em>ys:siteinit.cl</em>, but do not read <em>~/.clinit.cl</em> 
+or <em>~/clinit.cl</em>
+unless <em>~</em> is also the working directory. On Unix, 
+the working directory is
+specified to Emacs, or, the current directory if starting 
+in a shell. On Windows, the
+current directory is usually the directory containing 
+the executable (.exe) file that is
+invoked, but may be something different, such as a
+directory specified in <em>Start In</em>
+field of a shortcut. 
+</p>
+<p id="127">
+On Unix ~ refers to the user's 
+home directory. 
+</p>
+<p id="128">
+On Windows, the home directory is HOMEDRIVE/HOMEPATH (i.e. the
+concatenation of the value of the HOMEDRIVE environment variable, the
+string "/", and the value of the HOMEPATH environment variable). The
+value of the HOME environment variable is used if HOMEDRIVE/HOMEPATH
+is not set. C:\\ is used if HOMEDRIVE/HOMEPATH and HOME are not set.
+(Until an 8.0 and 7.0 update, HOMEDRIVE/HOMEPATH was not used. It was
+added to make Allegro CL consistent with other standard Windows
+applications.)
+</p>
+<p id="129"><em>sys:siteinit.cl</em> is 
+hardwired in the system. The actual names
+of the other initialization files are in a list 
+which is the value of 
+<a href="variables/excl/s_init-file-names_s.htm"><code>*init-file-names*</code></a>, whose
+initial value is (.clinit.cl clinit.cl) -- that is clinit.cl 
+with and without a
+leading dot.</p>
+<p id="130">Do not also specify <b>--qq</b>.</p></td>
+<td WIDTH="13%" VALIGN="TOP"> </td>
+</tr>
+
+
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>--qq</code></td>
+    <td WIDTH="60%" VALIGN="TOP">Do not read <em>sys:siteinit.cl</em> 
+    or any initialization
+    file. Do not also specify -q.</td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-C </code><code><i>file</i></code></td>
+    <td WIDTH="60%" VALIGN="TOP">evaluates <code>(compile-file 
+    </code><code><em>file</em></code><code>)</code></td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-d </code><code><i>file</i></code></td>
+    <td WIDTH="60%" VALIGN="TOP">Causes dribbling to <i>file</i>.</td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-H </code></td>
+    <td WIDTH="60%" VALIGN="TOP">This argument is no longer supported.
+    In previous releases, it tried to set the Allegro directory
+    location (the translation of the <em>sys</em> logical host, the
+    location where Lisp library files will be looked for), but this
+    did not work consistently. <code>(translate-logical-pathname
+    "sys:")</code> is the directory where the executable called to
+    start Lisp is located.</td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>--kill</code></td>
+    <td WIDTH="60%" VALIGN="TOP"><p id="131">Evaluates (exit 0). That is, 
+    Lisp exits. Presumably you have
+    other arguments which do things (like -C compiling a file) 
+    earlier in the list of
+    command line arguments. Thus</p>
+    <p id="132">mlisp.exe -C foo.cl --kill</p>
+    <p id="133">will start Allegro CL, compile <em>foo.cl</em>, and exit.</p></td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-L <i>file</i></code></td>
+    <td WIDTH="60%" VALIGN="TOP">Evaluates (load (string <i>file</i>)). 
+    Only one file per
+    -L argument but as many -L arguments as desired can be 
+    specified. The -L
+    arguments are processed from left to right.</td>
+    <td WIDTH="13%" VALIGN="TOP">1, 3</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>--locale <i>locale-name</i></code></td>
+    <td WIDTH="60%" VALIGN="TOP">Sets the initial locale (the initial value
+    of <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a>) to the locale 
+    named by <i>locale-name</i>, which
+    must be the name of a locale available on the machine. See <a href="iacl.htm#initial-locale-2">The initial locale when 
+    Allegro CL starts up</a> and <a href="iacl.htm#locales-1">External formats and locales</a>, 
+    both in
+    <a href="iacl.htm">iacl.htm</a> for details.</td>
+    <td WIDTH="13%" VALIGN="TOP">1, 3</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-Q</code></td>
+    <td WIDTH="60%" VALIGN="TOP">Currently unused.
+    In 5.0.1 and earlier, this argument suppressed printing
+    the name of the image and library file but now those
+    filenames are not printed in any case. This argument is kept for 
+    backward compatibility.</td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-s</code></td>
+    <td WIDTH="60%" VALIGN="TOP">[UNIX only] A UNIX version of
+    the +s argument for Windows described above. When specified with a file
+    as an argument, cause the forms in file to be read, evaluated and 
+    their results printed. Unlike +s Windows, -s does not have to be 
+    before any arguments that start with `-'.  If the file specified
+    does not have an (exit 0) at the end, <code>-s file </code><code>--kill</code>
+    is a good way to make the Lisp exit.
+    <p id="134">
+    This argument is superior to using a UNIX pipe because it allows
+    interactive debugging of the Lisp process, which cannot be done 
+    when a pipe is used.
+    </p>
+    <p id="135">
+    You can use +s instead of -s (+s will be interpreted on UNIX as -s). This
+    means you do not have to conditionalize between Windows and UNIX.
+    </p>
+  </td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-W</code></td>
+    <td WIDTH="60%" VALIGN="TOP">Evaluates 
+    <code>(setq *break-on-warnings* t)</code></td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>-e <i>form</i></code></td>
+<td WIDTH="60%" VALIGN="TOP">Evaluates <i>form</i>.
+
+
+
+Please see <a href="#spec-ee-note">Further
+description of the -e and --ee command-line arguments</a> below.
+
+</td>
+<td WIDTH="13%" VALIGN="TOP">1, 2, 3
+</td>
+</tr>
+
+
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>--ee <i>form</i></code></td> <td WIDTH="60%" VALIGN="TOP">Evaluates <i>form</i> after replacing escaped
+characters represented as %hh when hh is a hex number. The character
+whose code is hh is used. Please see <a href="#spec-ee-note">Further
+description of the -e and --ee command-line arguments</a> below.
+</td>
+<td WIDTH="13%" VALIGN="TOP">1, 2, 3</td>
+</tr>
+
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>--batch</code></td>
+<td WIDTH="60%" VALIGN="TOP">Run in batch mode: input comes 
+from standard input, exit when
+an EOF is read. Exit on any unhandled error (but print a backtrace 
+to *error-output* if
+--backtrace-on-error
+also specified).</td>
+<td WIDTH="13%" VALIGN="TOP">4</td>
+</tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>--backtrace-on-error</code></td>
+<td WIDTH="60%" VALIGN="TOP">Print a complete backtrace (as 
+printed by <a href="tpl-commands/zoom.htm"><b>:zoom</b></a> 
+:all t :count t) whenever an error
+occurs.</td>
+<td WIDTH="13%" VALIGN="TOP">6</td>
+</tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>---compat-crlf</code></td>
+    <td WIDTH="60%" VALIGN="TOP">When specified, #\return #\linefeed
+    translates to '13 10' (as it did in release 5.0.1) instead of
+    '13 13 10' (as it does now without this option).
+    See <a href="iacl.htm#newline-1">#\newline Discussion</a> in
+    <a href="iacl.htm">iacl.htm</a> for details. Only users with
+    code from Allegro CL 5.0/5.0.1 for Windows should even consider
+    using this option, and most of those do not need it.</td>
+    <td WIDTH="13%" VALIGN="TOP">5</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-!</code></td>
+    <td WIDTH="60%" VALIGN="TOP">Please see 
+    <a href="#specnote-in-3.0">Special Note on the -!
+    command-line argument</a> below. This argument 
+    should only be used in unusual debugging
+    situations and should never be used in ordinary situations.</td>
+    <td WIDTH="13%" VALIGN="TOP"> </td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><code>-project</code> 
+    &nbsp;<i>project-lpr-file</i></td>
+    <td WIDTH="60%" VALIGN="TOP">[Windows when running the 
+    Integrated Development Environment only] have the project specified by
+    the indicated project <i>.lpr</i> file be the current
+    project when the IDE is started. See <a href="cgide.htm#startup-1">About IDE startup</a> 
+    in <a href="cgide.htm">cgide.htm</a>.</td>
+    <td WIDTH="13%" VALIGN="TOP">5</td>
+  </tr>
+
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>--bat</code>
+&nbsp;<i>file</i>
+</td> 
+<td WIDTH="60%" VALIGN="TOP">
+[Windows only, ignored on UNIX]. If you wish Lisp to be called within
+a <b>bat</b> file, the call to Lisp within that file should have this
+argument (or <b>--bat-pause</b>, described next). You do not specify
+this argument when starting Lisp directly (by, e.g., typing a command
+line in the dialog displayed by <b>Start | Run</b> or as the command
+executed by a shortcut. See <a href="#bat-file-3">Section 4.2.2 Starting on Windows using bat files</a>
+for more information. See also <a href="operators/excl/lisp-to-bat-file.htm"><b>lisp-to-bat-file</b></a>. This command-line argument
+was implemented by a patch released approximately 1/17/2006. You must
+have that patch to use this feature.
+</td>
+<td WIDTH="13%" VALIGN="TOP">
+</td>
+</tr>
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code>--bat-pause</code> 
+&nbsp;<i>file</i></td>
+<td WIDTH="60%" VALIGN="TOP">
+[Windows only, ignored on UNIX]. If you wish Lisp to be called within
+a <b>bat</b> file, the call to Lisp within that file should have this
+argument (or <b>--bat</b>, described above). When this argument is
+used, the Lisp pauses after the code in the bat file is executed
+(until user-action like hitting Enter). You do not specify this
+argument when starting Lisp directly (by, e.g., typing a command line
+in the dialog displayed by <b>Start | Run</b> or as the command
+executed by a shortcut. See <a href="#bat-file-3">Section 4.2.2 Starting on Windows using bat files</a>
+for more information. See also <a href="operators/excl/lisp-to-bat-file.htm"><b>lisp-to-bat-file</b></a>. This command-line argument
+was implemented by a patch released approximately 1/17/2006. You must
+have that patch to use this feature.
+</td>
+<td WIDTH="13%" VALIGN="TOP">
+</td>
+</tr>
+
+
+<tr>
+<td WIDTH="27%" VALIGN="TOP"><code> --debug-startup</code>
+</td> 
+<td WIDTH="60%" VALIGN="TOP">
+If specified, errors in code run by -L, -e, --ee and init file
+processing will not be handled automatically. Instead (unless --batch
+is also specified) will result in the debugger being called. (In
+general, you should restart Lisp after you have finished debugging.)
+</td>
+<td WIDTH="13%" VALIGN="TOP">
+</td>
+</tr>
+
+</table>
+</div>
+
+<h3 id="136">Table notes:</h3>
+
+<ol>
+<li id="137">
+All arguments, including <b>-e form</b>, <b>--ee form</b>, and <b>-L
+file</b>, are read and processed in order. Reading of one
+-e/--ee form can depend on previous forms having been evaluated and
+previous -L files having been loaded. For example, if the package
+<code>mypack</code> is defined in <i>file.fasl</i>, the
+following will not fail:
+<pre id="138">
+-L file.fasl -e (mypack::myfun)
+</pre>
+<p id="139">because the <code>mypack</code> package has been defined 
+when the reader encounters <strong>mypack::myfun</strong>
+(since <em>file.fasl</em> has been loaded).
+</p>
+</li>
+<li id="140">
+  Some global variables are not set as expected at the time arguments
+  are processed. For example, <a href="../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a> is set to the (read-only)
+  system readtable. You can modify such values but it requires extra
+  work. See <a href="implementation.htm#readtable-2">The
+  standard readtable is read-only, affect on with-standard-io-syntax
+  and modifying the readtable in init files and with -e</a>
+  in <a href="implementation.htm">implementation.htm</a>, where it shows how to
+  modify <a href="../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a> in an init file using a
+  method that also applies also to -e, -ee, and -L.
+</li>
+<li id="141">
+When Lisp is started as a subprocess of Emacs, the system adds the
+arguments <code>-e (start-emacs-lisp-interface t)</code> as the
+first arguments after the image name. Your own <b>-e/--ee</b>
+arguments are not affected by this since multiple -e's are permitted,
+but the emacs-supplied arguments will appear along with the image name
+under the `command' column in the information printed by the Unix
+<b>ps</b> command.
+</li>
+
+<li id="142">
+It may not be possible to recover from an error signaled during the
+evaluation of a -e form or the loading of a -L file (indeed, Lisp may
+exit without giving you the opportunity to recover). Even if you are
+presented with a prompt to type to, many top-level commands may not be
+available. Restarting the image with the form corrected is the
+recommended action.
+</li>
+<li id="143">
+When running in batch mode, if an error occurs, Lisp exits with error
+code 1. If an EOF is encountered, Lisp exits with error code 0.
+</li>
+<li id="144">
+This argument
+(--backtrace-on-error)
+is designed for use with --batch. It
+can be used with a non-batch image, but a backtrace is printed
+whenever an error occurs and most users find this annoying. A
+backtrace can be printed. The file <em>&lt;allegro
+directory&gt;/src/autozoom.cl</em> defines a macro
+<b>with-autozoom-and-exit</b> which can be wrapped around code where
+programmers want to force a backtrace (and the backtrace can be
+directed to any stream, not just <a href="../ansicl/dictentr/debug-io.htm"><code>*error-output*</code></a>). That macro is much
+more appropriate for non-batch programs.
+</li>
+</ol>
+
+
+
+
+<h4 id="145">
+<a name="spec-ee-note"></a>Further description of the -e and --ee command-line arguments
+</h4>
+
+<blockquote>
+
+
+<p id="146">
+Both <b>-e</b> and <b>--ee</b>
+take a form as a companion argument, The problem with the -e argument
+is that certain characters, such as the space charcater, might be part
+of the form or it might be a delimiter indicating the start of a new
+command-line argument. The system has difficulty distinguishing those
+cases.
+</p>
+<p id="147">
+The traditional way to get around that problem is to escape such
+characters, typically with a \ (backslash), or to wrap the companion
+argument is single or double quotes. Suppose, for example, you want to
+evaluate the form <code>(setq foo 10)</code> at startup. In
+answer to the 'Image arguments' question asked by
+<b>fi:common-lisp</b> (the Emacs function to start Allegro CL),
+you could put:
+</p>
+<pre id="148">
+  -e (setq\ foo\ 10)
+</pre>
+<p id="149">
+And starting Lisp as a shell prompt, you might do
+</p>
+<pre id="150">
+% mlisp -e '(setq foo 10)'
+</pre>
+<p id="151">
+These solutions generally work, but the escaping becomes more
+complicated with more complex forms. Further, when writing shell
+scripts to start Allegro CL, the shell processing may undo the escapes
+at the wrong time so when the argument is actually read, the
+characters that need escapes no longer have them.
+</p>
+<p id="152">
+The <b>--ee</b> argument is designed to get around that problem. When a
+<b>--ee form</b> argument
+is processed, the companion argument is scanned for character triplets
+of the form <b>%hh</b>, when <b>hh</b> is a pair of Hex numbers
+(0-9abcdef). Every <b>%hh</b> triplet is replaced by the character
+whose <b>char-code</b> is <b>hh</b>. Then the companion argument is
+processed.
+</p>
+<p id="153">
+Frequently used codes include:
+</p>
+<ul>
+<li id="154">
+#\( -- code %28
+</li>
+<li id="155">
+#\) -- code %29
+</li>
+<li id="156">
+#\: -- code %3a
+</li>
+<li id="157">
+#\space -- code %20
+</li>
+<li id="158">
+#\% -- code %25
+</li>
+</ul>
+<p id="159">
+The (setq foo 10) argument could then be passed
+</p>
+
+
+<pre id="160">
+--ee %28setq%20foo%2010%29
+</pre>
+<p id="161">
+or
+</p>
+<pre id="162">
+% mlisp --ee '%28setq%20foo%2010%29'
+</pre>
+
+<p id="163">
+Thus the notation allows Lisp forms to be passed as a single OS token
+unaffected by command line parsing or substitutions.
+</p>
+<p id="164">
+The function <a href="operators/excl/make-escaped-string.htm"><b>make-escaped-string</b></a> takes a Lisp form (as a
+string) and returns a properly converted string where the characters
+that need to be escaped are replaced with the appropriate %hh triple.
+</p>
+<p id="165">
+Note that only characters with <b>char-code</b>s less that 256 can be
+represented.
+</p>
+
+</blockquote>
+
+<h4 id="166">
+<a name="specnote-in-3.0"></a>Special note on the -! command-line argument
+</h4>
+
+<blockquote>
+<p id="167">If this argument is specified, it must appear
+<em><strong>first</strong></em> among the command-line arguments. This
+argument is typically used when using a C-based debugger like
+<strong>gdb</strong>. It should never be used in ordinary
+circumstances because it causes certain kinds of error which are
+typically not fatal to become fatal errors.</p>
+
+<p id="168">The -! command-line argument is designed to assist in using an
+external debugger. The primary effect of this switch is to prevent
+lisp from catching illegal memory references and turning them into
+calls to the segmentation violation handler. Because these bad
+references are not caught, the exception generated by the operating
+system will be passed to whatever program is controlling lisp (usually
+a C Debugger). Note that if there is no program controlling Lisp, then
+the operating system will put up a dialog box announcing the exception
+and Lisp will not be able to continue. A secondary effect is to
+start up in a more verbose mode.</p>
+</blockquote>
+
+<hr><hr><h2 id="169"><a name="acl-startup-files-1">6.0 Files Lisp must find to start up and files it may need later</a></h2>
+
+<p id="170">
+The next series of headings describe files Lisp needs to start
+up. A complete list of such files can be found in
+<a href="#files-looked-for-at-startup-1">Section 16.0 Files that may be looked for on startup and after startup</a>
+below. Here we give an abbreviated description directed at users who
+are running standard installed images or images dumped with standard
+installed images but run in situ (i.e. the dumped image is not moved
+to another machine). Programmers who do intend to move dumped images
+to different machines (or who are trying to start such an image but
+having difficulty) and application programmers wishing to deliver an
+application should refer to 
+<a href="#files-looked-for-at-startup-1">Section 16.0 Files that may be looked for on startup and after startup</a> or to
+<a href="delivery.htm">delivery.htm</a>.
+</p>
+
+<hr><h2 id="171"><a name="files-lisp-needs-one-2">6.1 Files Lisp needs to start up 1: .so (or dll) files built with image</a></h2>
+
+<p id="172">Like any UNIX or Windows program, Lisp may have shared object
+(<em>.so</em> or <em>.sl</em> files on Unix, <em>.dll</em> files on
+Windows) files mapped into the image at build time.  This is done with
+the <em>user-shared-libraries</em> argument to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>.</p>
+
+<p id="173">On Unix, these files are looked for in the Allegro directory, the
+directory where the executable file is located (unless a -H
+command-line argument specifies another location). </p>
+
+<p id="174">On Windows, the following method is used:</p>
+
+<blockquote>
+  <blockquote>
+    <p id="175">With both implicit and explicit linking, Windows first searches
+    the set of pre-installed DLLs such as the performance library
+    (KERNEL32.DLL) and the security library (USER32.DLL). Windows then
+    searches for the DLLs in the following sequence:</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <blockquote>
+    <ol>
+      <li id="176">The directory where the executable module for the current process is located. (this is
+        the likely location and corresponds to Unix behavior.)</li>
+      <li id="177">The current directory.</li>
+      <li id="178">The Windows system directory. The GetSystemDirectory function retrieves the path of this
+        directory. </li>
+      <li id="179">The Windows directory. The GetWindowsDirectory function retrieves the path of this
+        directory. </li>
+      <li id="180">The directories listed in the PATH environment variable. </li>
+    </ol>
+  </blockquote>
+</ol>
+
+<blockquote>
+  <blockquote>
+    <p id="181">Note that the LIBPATH environment variable is not used.</p>
+  </blockquote>
+</blockquote>
+
+
+
+<hr><h2 id="182"><a name="files-lisp-needs-two-2">6.2 Files Lisp needs to start up 2: the Allegro directory</a></h2>
+
+<p id="183">The Allegro directory is a directory that contains files Lisp may
+need to start up and while it is running. Because it needs files like
+the <em>.pll</em> file, Lisp may fail on startup if it cannot find
+this directory. The Allegro directory also refers to the directory
+where Allegro CL was installed off the CD. We used the same name
+because they are typically the same directory.</p>
+
+<p id="184">The <em>.pll</em> filename is stored in the image, either as just a
+filename, just a filename and type, or a filename (with or without a
+type) with directory information. If directory information is
+supplied, the pll file is looked for in that location only (using
+default type pll if no type is specified), relative to the current
+directory if the directory information is relative. No other location
+is searched in that case. If the pll file information in the image
+file is just a filename or filename and type, it is searched for in
+the current directory and then in the Allegro directory, and then, on
+Windows only, in the Windows systems directory. See <a href="operators/excl/pll-file.htm"><b>pll-file</b></a>.</p>
+
+<p id="185">Unless the -H command-line argument is specified, the Allegro
+directory is assumed to be the directory containing the executable
+(the file, initially <em>mlisp.exe</em> on Windows and <em>mlisp</em> on
+Unix). Files that may be needed for running may be in that directory
+or in the <em>code/</em> subdirectory. If -H is specified, the
+files must be in the directory specified. The structure of that
+directory should mimic the structure of the Allegro directory (that
+is, it should have a <em>code/</em> subdirectory and files should be
+placed in the same relative locations as they are in the Allegro
+directory.</p>
+
+<p id="186">(In the 4.3.x releases on Unix, this directory was found using an
+environment variable named ALLEGRO_CL_HOME. That was necessary because
+the image file was executable and could be located anywhere, including
+a user's home directory. Now that the image is separate from the
+executable, the location of the executable can serve as a reference
+point for finding other needed files. The image can still be anywhere,
+including users' home directories. Earlier releases on Windows such as
+3.0.x always used the separate executable and image model and always
+used the executable location to find needed files.)</p>
+
+<p id="187">Once Lisp finds the Allegro directory, it sets the translation of
+the logical host <em>sys</em>
+(i.e <code>(translate-logical-pathname "sys:")</code>) to be
+that directory. That directory contains most of the files Lisp needs
+to start up. It may happen that the directory identified as the
+Allegro directory exists but is incorrect (that is, does not actually
+contain the files Lisp needs). Lisp will fail to start if it needs
+a <em>.pll</em> file but cannot find it in the current directory or
+identified Allegro directory. Other missing files may cause problems
+as well, but Lisp usually gets some way into the startup
+process. Dealing with an existing but misidentified Allegro directory
+is much like dealing with a non-existent one: find where the Allegro
+directory really is and communicate this information to Lisp.</p>
+
+
+
+<hr><hr><h2 id="188"><a name="startup-message-1">7.0 The start-up message</a></h2>
+
+<p id="189">When Lisp starts up, it prints
+the banner, which looks something like (this example is from a
+Sun):</p>
+
+<pre id="190">
+International Allegro CL [enterprise]
+8.1 [Linux (x86)] (Jul 18, 2007 13:20)
+Copyright (C) 1985-2007, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
+</pre>
+
+<p id="191">The exact version number, the machine type, and the date and time
+will all likely differ in your Lisp.</p>
+
+<p id="192">
+Then (technically as part of the banner) information on who this version of Allegro CL
+is licensed to is printed.
+</p>
+
+<p id="193">
+The <em>sys:siteinit.cl</em> and the initialization files
+<em>(.clinit.cl</em> or <em>clinit.cl</em>) are read next (see
+<a href="#init-files-1">below</a>) and then the
+Emacs-Lisp interface is started (if Lisp was started as a subprocess
+of Emacs). Then the start-up message is printed. The default start-up
+message says (the actual <code>Current reader case mode</code>
+type depends on the type of image, this example is from a modern
+image):
+</p>
+
+<pre id="194">
+;; Optimization settings: safety 1, space 1, speed 1, debug 2
+;; For a complete description of all compiler switches given the
+;; current optimization settings evaluate (EXPLAIN-COMPILER-SETTINGS).
+;; --
+;; Current reader case mode: :case-sensitive-lower
+</pre>
+
+<p id="195">(The number of lines may differ.) </p>
+
+<p id="196">Start-up messages are printed by the generic function <a href="operators/excl/print-startup-info.htm"><b>print-startup-info</b></a>. Exactly what is
+printed is controlled by the variable <a href="variables/excl/s_print-startup-message_s.htm"><code>*print-startup-message*</code></a>.
+</p>
+
+<hr><h2 id="197"><a name="other-messages-2">7.1 Other messages like Xlib: extension RANDR missing</a></h2>
+
+<p id="198">
+Sometimes other messages appear at startup. One example is
+</p>
+
+<pre id="199">
+Xlib: extension "RANDR" missing on display [display:0.0]
+</pre>
+
+<p id="200">
+This particular message is printed by Xlib (not by Allegro CL). Xlib
+has noticed that some library is missing some functionality, but that
+functionality is not needed by Allegro CL. The message can be
+ignored. Allegro CL has no effective control over the printing of the
+message.
+</p>
+
+
+
+<hr><hr><h2 id="201"><a name="acl-as-emacs-subprocess-1">8.0 Running Lisp as a subprocess of Emacs</a></h2>
+
+<p id="202">
+Your Emacs should have loaded all the Emacs-Lisp interface
+definitions.  See <a href="eli.htm#dot-emacs-2">What
+should be in your .emacs file</a> in <a href="eli.htm">eli.htm</a>
+for details.
+</p>
+<p id="203">
+If you are using the Integrated Development Environment on Windows,
+see <a href="#using-ide-with-emacs-2">Section 8.4 Using the IDE with Emacs</a>
+below. Otherwise, see
+<a href="#lisp-as-subprocess-of-emacs-2">Section 8.1 Starting Lisp as a subprocess of Emacs the first time</a> just
+below.
+</p>
+
+<hr><h2 id="204"><a name="lisp-as-subprocess-of-emacs-2">8.1 Starting Lisp as a subprocess of Emacs the first time</a></h2>
+
+<p id="205">This is the standard way to start a Lisp image. When an image is
+started in this way, all of the Emacs-Lisp interface will be
+available, making it easier to use Lisp. The Emacs-Lisp interface is
+documented in <a href="eli.htm">eli.htm</a>.</p>
+
+<p id="206">
+Allegro CL works with Xemacs or GNU Emacs. To avoid repetition, we
+simply say Emacs to refer to either product. The Release Notes may
+contain the exact version numbers and other information about these
+products.
+</p>
+
+<p id="207">To start Allegro CL within Emacs, enter the following:</p>
+
+<pre id="208">
+M-x fi:common-lisp
+</pre>
+
+<p id="209">(M-x means depress the `x' key while the Meta key is down or press
+the Escape key and then press the x key.) Emacs will ask 6
+questions:</p>
+
+
+<ol>
+<li id="210">
+<strong>Buffer</strong>: what the buffer in which Lisp will run should
+be named. The default is the value of the Emacs variable
+<code>fi:common-lisp-buffer-name</code>, whose value is
+typically *common-lisp*.
+</li>
+<li id="211">
+<strong>Host</strong>: the name of the machine where Lisp will
+run. The default is the value of the Emacs variable
+<code>fi:common-lisp-host</code>.
+</li>
+<li id="212">
+<strong>Process directory</strong>: the directory in which to run Lisp
+(if you were running from the shell, this is the directory in which
+Lisp is started). The default is the value of the Lisp variable
+<code>fi:common-lisp-directory</code>. This directory will be the one
+returned by <a href="operators/excl/current-directory.htm"><b>current-directory</b></a> and the initial
+value of <a href="../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> after Lisp starts.
+</li>
+<li id="213">
+<strong>Executable Image Name</strong>: the name of the Lisp
+executable. This is a small file. Its name has no extension on UNIX and
+has extension (type) <i>exe</i> on Windows.
+Various executable files are shipped with the Allegro CL distribution.
+The file itself is not typically created or modified at customer sites.
+<p id="214">
+There are two distinct executable files and often several copies of
+each. One executable file uses 16-bit characters (copies are named,
+for example, <i>mlisp/mlisp.exe</i> and
+<i>alisp/alisp.exe</i>). The other uses 8-bit characters
+(copies are named, for example, <i>mlisp8/mlisp8.exe</i>
+and <i>alisp8/alisp8.exe</i>). On Windows and Linux on
+Intel x86 processors, there is also <i>allegro.exe</i>
+and <i>allegro-ansi.exe</i>. The filename is used to
+determine the image name (so <i>mlisp/mlisp.exe</i>
+looks for the image file <i>mlisp.dxl</i>, and so on).
+</p>
+<p id="215">
+The default is the value
+of the Emacs variable
+<code>fi:common-lisp-image-name</code>. (The name is historic:
+in earlier versions the executable file and the image file were the
+same.  Now they are different. The variable
+<code>fi:common-lisp-image-file</code> has the image file as its
+value.)
+</p>
+</li>
+<li id="216">
+<strong>Image</strong>: the name of the Lisp image (.dxl) file.  The
+default is the value of the Emacs variable
+<code>fi:common-lisp-image-file</code>. (Note that, for historic
+reasons, the emacs variable
+<code>fi:common-lisp-image-name</code> names the executable
+file.)  If this argument is not specified, its value is assumed to be
+the file in the same directory as the executable image name with the
+same name but with extension .dxl. Thus, if Executable Image Name is
+<i>mlisp</i>, the file <i>mlisp.dxl</i>
+in the same directory of <i>mlisp</i> will be looked for if
+this argument is unspecified.
+</li>
+<li id="217">
+<strong>Image arguments</strong>: the command line arguments described
+above. Since they are separated by spaces, you must use appropriate
+quotation marks or backslashes if your arguments contains spaces (it
+may take several tries to get it right). The default is the value of
+the Emacs variable
+<code>fi:common-lisp-image-arguments</code>. Enter nothing if
+you want no arguments.
+</li>
+</ol>
+
+<p id="218">
+All questions are asked in the Emacs minibuffer. Once you have
+answered all the questions, Lisp is started according to your
+specifications.
+</p>
+<p id="219">
+You can write your own Emacs function to call fi:common-lisp with your
+desired values (and thus avoid having to input values). See <a href="eli.htm#funs-and-vars-for-interacting-2">Functions and
+variables for Interacting with a CL subprocess</a> in
+<a href="eli.htm">eli.htm</a> for examples of such functions.
+</p>
+<p id="220">
+<strong>Warning</strong>: you must exit Lisp before quitting Emacs or
+killing the Common Lisp buffer. Doing either without exiting Lisp may
+leave the Lisp process running. Starting Lisp again from within Emacs
+after you have killed a *common-lisp* buffer without exiting from Lisp
+may result in Emacs being connected to the wrong running image.
+</p>
+
+
+
+<hr><h2 id="221"><a name="lisp-within-emacs-second-time-2">8.2 Starting Lisp within Emacs after the first time</a></h2>
+
+<p id="222">Emacs remembers your answers to the questions asked by
+fi:common-lisp so if you evaluate fi:common-lisp again (after killing
+off the first Lisp image for whatever reason), Emacs will use the old
+answers without asking again. If you want the questions asked again
+(because, e.g. you want to run on a different host or with different
+initial arguments), use the universal argument (typically C-u) before
+M-x fi:common-lisp. Thus:</p>
+
+<pre id="223">
+C-u M-x fi:common-lisp
+</pre>
+
+<p id="224">
+The defaults will be your previous set of answers. 
+</p>
+
+<p id="225"><strong>Warning</strong>: if the cursor is at the end of the
+*common-lisp* buffer and superkeys are enabled, C-u will be
+interpreted as `delete back to the last CL prompt' rather than as
+universal argument. If Lisp is not running in the buffer and you enter
+C-u at the end of the buffer, Emacs will print </p>
+
+<pre id="226">
+Wrong type of argument: processp, nil
+</pre>
+
+<p id="227">in the minibuffer. To get C-u interpreted as universal argument in
+this case, go up a line (with previous-line, typically C-p) where C-u
+will then be interpreted as universal argument:</p>
+
+<pre id="228">
+C-p C-u M-x fi:common-lisp
+</pre>
+
+
+
+<hr><h2 id="229"><a name="emacs-lisp-doesnt-start-2">8.3 What if the Emacs-Lisp interface does not start?</a></h2>
+
+<p id="230">When Lisp is started with Emacs, the Emacs-Lisp interface should start up
+automatically. The system will print:</p>
+
+<pre id="231">
+;; Starting socket daemon and emacs-lisp interface...
+</pre>
+
+<p id="232">in the *common-lisp* buffer and </p>
+
+<pre id="233">
+Trying to start connection...done
+</pre>
+
+<p id="234">in the minibuffer. If both these appear, the connection has been
+started. If they do not appear or if the `done' does not appear, the
+interface may not have started. If the Emacs-Lisp interface does not
+start-up, you can start it up by evaluating the form:</p>
+
+<pre id="235">
+(<a href="operators/excl/start-emacs-lisp-interface.htm"><b>start-emacs-lisp-interface</b></a>)
+</pre>
+
+<p id="236">It is not an error to call this function when the interface has in
+fact started. If you do so, however, something similar to the
+following will appear in the Lisp listener:</p>
+
+<pre id="237">
+^A1026 771990 :upper NIL 1^A
+</pre>
+
+<p id="238">(You will likely see different numbers and perhaps :lower rather
+than :upper. This message can be ignored.)</p>
+
+
+
+<hr><h2 id="239"><a name="using-ide-with-emacs-2">8.4 Using the IDE with Emacs</a></h2>
+
+<p id="240">Windows only. The Integrated Development Environment (IDE) is a
+collection of graphical tools for building a graphical interface to an
+application developed in Allegro CL. It provides editors and editing
+capability. However, users familiar with Emacs may prefer to use
+Emacs.</p>
+
+<p id="241">The complication of using the IDE and Emacs is that all evaluation
+of IDE-related code that receives events (mouse input of any sort and
+keyboard input to a dialog) must be done by the IDE. This is because
+all IDE-related events must happen within the IDE thread (see the
+document <a href="multiprocessing.htm">multiprocessing.htm</a>). Emacs
+runs in a separate thread. IDE-associated events cannot be initiated
+by the Emacs thread (it is an error to do so). Thus, function
+definitions etc. can be done within emacs. But code that displays
+dialogs and handles events must be run within the IDE thread using IDE
+tools.</p>
+
+<p id="242">
+When using the IDE, specify <i>allegro.dxl</i> or
+<i>allegro-ansi.dxl</i> as the Image file.
+</p>
+
+
+
+<hr><hr><h2 id="243"><a name="starting-from-shell-1">9.0 Starting Lisp from a shell</a></h2>
+
+<p id="244">You can start Lisp from a shell prompt or a DOS prompt. Assuming on
+UNIX the name of the Lisp executable is <em>mlisp</em> and that the
+image is located in a directory specified in the PATH environment
+variable, the following will start Lisp (the command is all on one
+line; we break it for readability and indicate the break with a
+\):</p>
+
+<pre id="245">
+% mlisp [-I &lt;image&gt;.dxl] [acl-arguments starting with -] \
+  [-- user-supplied-arguments]
+</pre>
+
+<p id="246">Assuming on Windows the name of the Lisp executable is
+<em>mlisp.exe</em> and that the image is located in a directory
+specified in the PATH environment variable, the following will start
+Lisp (the command is all on one line - we break it for
+readability and indicate the break with a \):</p>
+
+<pre id="247">
+% mlisp.exe [-I &lt;image&gt;.dxl] [acl-arguments starting with -] \
+  [-- user-supplied-arguments]
+</pre>
+
+<p id="248">If <em>mlisp/mlisp.exe</em> is not in your PATH, you can specify the
+full path in order to start Lisp. </p>
+
+<p id="249">A Lisp started from a shell on UNIX will not benefit from the
+Emacs-Lisp interface and many features of Allegro Composer will not
+work.</p>
+
+<hr><hr><h2 id="250"><a name="start-up-problems-1">10.0 Start-up problems</a></h2>
+
+<p id="251">
+Generally, there are not many problems with start-up. If there is
+insufficient swap space to run Lisp, a message saying so will be
+printed and Lisp will not start.  Insufficient swap space may be a
+temporary problem but if you often are prevented from starting for
+that reason, you should consider increasing the swap space on your
+machine (see the operating system's System Administration manual for
+information on increasing swap space).
+</p>
+
+<p id="252">
+Most errors during startup cause Lisp to fail (it prints the error
+message). The exceptions include errors during the loading of an
+initialization file and failure to find a loaded .so file. Those
+errors produce warnings but do not prevent the startup procedure from
+continuing. Other errors cause failure. Usually, the cause is
+something added to the startup procedure (perhaps by a -e command line
+argument or an item on <a href="variables/excl/s_restart-actions_s.htm"><code>*restart-actions*</code></a>). The recommended action is
+to try to start again without the -e arguments or to use -e arguments to
+set the value of <a href="variables/excl/s_restart-actions_s.htm"><code>*restart-actions*</code></a> to <code>nil</code> (perhaps first making it the value of another
+variable which can be examined after startup succeeds).
+</p>
+
+<p id="253">Other potential problems include the following: </p>
+
+<ul>
+  <li id="254">The Emacs-Lisp interface does not start. 
+  See the information under the heading 
+  <a href="#emacs-lisp-doesnt-start-2">Section 8.3 What if the Emacs-Lisp interface does not start?</a> above.</li>
+</ul>
+
+<ul>
+  <li id="255">The Allegro directory location cannot be found or necessary files cannot be found.
+    Finding the Allegro directory is rarely a problem since it is typically the same directory
+    as the executable (.exe) file. (The -H command-line argument can be used to specify a
+    different location and startup may fail if that location does not exist, however.) Lisp
+    may also fail to start because needed files are not in the Allegro directory. </li>
+  <li id="256"><strong>Lisp fails on startup (HP only</strong>). Are you running a version for HP-UX
+    10.20 on an HP-UX 11.x machine? See the HP-specific information in 
+    <a href="release-notes.htm">release-notes.htm</a> for information on this.</li>
+</ul>
+
+<hr><hr><h2 id="257"><a name="exit-lisp-1">11.0 How to exit Lisp</a></h2> 
+
+<p id="258">
+The ANSI spec is silent on the question of how to exit
+Lisp. Allegro CL has several commands which will cause a Lisp session
+to terminate. The expression 
+</p>
+
+<pre id="259">
+(<a href="operators/excl/exit.htm"><b>exit</b></a>)
+</pre>
+
+<p id="260">will cause the current Lisp image to exit. </p>
+
+<p id="261">
+One can also exit Lisp directly from the top level, using the
+top-level command <a href="tpl-commands/exit.htm"><b>:exit</b></a>,
+documented in <a href="top-level.htm">top-level.htm</a>. These operators behave
+somewhat differently according to whether the Lisp is running
+multiprocessing or not. If there are multiple processes running, the
+user may be concerned that these processes exit cleanly (with windows
+cleaned up, for example).
+</p>
+
+<p id="262">
+The functions used for exiting have options which allow for clean
+exits in each process, but the user should be aware that if some
+problem occurs, user intervention may be necessary to correct it, and
+it may take some time for the problem to manifest itself. You may have
+to respond to questions (about, for example, whether certain processes
+should indeed be killed) before exiting completes. If you are running
+on Windows using the IDE (see <a href="cgide.htm">cgide.htm</a>), you will
+usually have to confirm the exit by clicking <b>Yes</b> on a modal
+dialog asking if you really want to exit Lisp, and, often, also
+indicate whether unsaved files should be saved.
+</p>
+
+<p id="263">
+The top level command may not exit if there are other processes
+running, and the function <a href="operators/excl/exit.htm"><b>exit</b></a> called without arguments will try to
+clean up all processes that are running. Users using multiprocessing
+should read the description of the <a href="operators/excl/exit.htm"><b>exit</b></a> function.  (The Emacs-Lisp interface uses
+multiprocessing. However, processes created by that interface, or by
+Allegro Composer, are generally well-behaved with respect to exit
+behavior. Problems typically arise with user-created processes.)
+</p>
+
+<hr><h2 id="264"><a name="exit-for-sure-2">11.1 How to exit for sure</a></h2>
+
+<p id="265">
+If a simple call to (<a href="operators/excl/exit.htm"><b>exit</b></a>) does not cause Lisp to exit (typically
+because of problems with multiple processes), try the following
+form:
+</p>
+
+<pre id="266">
+(excl:exit 0 :no-unwind t :quiet t)
+</pre>
+
+<p id="267">
+The <i>no-unwind</i> argument, when <code>t</code>, tells Lisp to try to exit without unwinding
+<a href="../ansicl/dictentr/unwind-p.htm"><b>unwind-protect</b></a>'ed
+forms. The <i>quiet</i> argument suppresses output
+(which might cause a problem in an
+Emacs <code>*background-interaction*</code> buffer).
+</p>
+
+<p id="268">
+The exit code (first argument) 0 is important, at least on Windows. A
+non-zero exit code may keep the Lisp console on Windows from
+exiting. See <a href="operators/excl/exit.htm"><b>exit</b></a> for
+more information.
+</p>
+
+
+
+<hr><hr><h2 id="269"><a name="start-up-description-1">12.0 What Lisp does when it starts up</a></h2>
+
+<p id="270">In this section, we describe the Allegro CL startup
+procedure. While this is usually of academic interest only, if the
+startup does not go as expected, the reason may be that things are
+done in a different order than you expect. See the file
+<i>src/aclstart.cl</i> (in the Allegro directory), which
+contains the source to the startup code. </p>
+
+<ol>
+<li id="271">
+<strong>The initial value of <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> is set</strong>. (See <a href="iacl.htm#initial-locale-2">The initial locale when Allegro
+CL starts up</a> in <a href="iacl.htm">iacl.htm</a> for
+details. Note that the <code>--locale</code> command-line
+argument is not examined until command-line processing is done several
+steps down.)
+</li>
+<li id="272">
+<strong>All logical pathnames translations are flushed</strong>. 
+The translations may have been defined in the parent image (particularly 
+if the image was created with 
+<a href="operators/excl/dumplisp.htm"><b>dumplisp</b></a> after the 
+initial build). They are flushed because there is no guarantee 
+that they are valid. The image will find translations anew by looking 
+in the files in the list returned by 
+<a href="operators/excl/logical-pathname-translations-database-pathnames.htm"><b>logical-pathname-translations-database-pathnames</b></a>.
+sys:hosts.cl is on that list. sys: itself translates to the Allegro directory.
+</li>
+<li id="273">
+On Windows NT/2000, the affinity (number of physical processors to be used)
+is set to 1. See <a href="operators/system/processor-affinity-mask.htm"><b>processor-affinity-mask</b></a>.
+</li>
+<li id="274">
+<strong>The standard streams are bound</strong>. The standard streams
+are *terminal-io*, *standard-input*, *standard-output*,
+*error-output*, *trace-output*, *query-io*, and *debug-io*. They
+are bound to <a href="variables/excl/s_initial-terminal-io_s.htm"><code>*initial-terminal-io*</code></a>.
+</li>
+<li id="275">
+<strong>The Allegro CL banner is printed</strong>. (It is a
+violation of the license agreement to suppress the printing of the
+Allegro CL banner except under certain conditions. Contact your
+Franz Inc. account manager if this is an issue.)
+</li>
+<li id="276">
+<strong>Loaded .so (.sl, .dll) files are
+reloaded</strong>. Shared object files are mapped into a running
+image, not built into the executable image. therefore, all such
+files must be reloaded on startup. Under certain circumstances,
+the image may not be able to find these files. If it cannot find a
+.so file, a warning is printed but no error is signaled. If Lisp
+gets to the first prompt without error, the missing .so file can
+usually be loaded at that time.
+</li> 
+<li id="277">
+<strong>Command-line
+arguments are processed</strong>. All -e and -L arguments are
+processed, in order, at this time. (A -e argument specifies a
+form to evaluate. A -L argument specifies a file to
+load.)
+</li> 
+<li id="278">
+<strong>Initialization files are
+read</strong>. The files are <em>sys:siteinit.cl</em>, the two
+user initialization files. Whether the files are read and exactly
+which files are read depends on the value of <a href="variables/excl/s_read-init-files_s.htm"><code>*read-init-files*</code></a> and the
+command-line arguments. If any initialization files are read,
+<em>sys:siteinit.cl</em> is read first. If both user
+initialization files are read, the one in the home directory is
+read first. Errors that occur reading the files are ignored. If an
+error occurs in a file, the remainder of the file is ignored. User
+initialization files are named by the variable <a href="variables/excl/s_init-file-names_s.htm"><code>*init-file-names*</code></a>.  The
+initial value of this variable is the list (.clinit.cl
+clinit.cl). Whatever the value, only one file (the first found
+processing the list in order) is read from any location.
+</li>
+<li id="279">
+<strong>The startup messages are printed</strong>. The
+function <a href="operators/excl/print-startup-info.htm"><b>print-startup-info</b></a> is called to print the
+message.
+</li> 
+<li id="280">
+<strong>Restart actions are
+performed</strong>. The functions on the <a href="variables/excl/s_restart-actions_s.htm"><code>*restart-actions*</code></a> list are called.
+</li>
+
+<li id="281">
+<strong>ACL_STARTUP_HOOK is examined</strong>. The environment
+variable ACL_STARTUP_HOOK is polled. If set, its value is read by
+read-from-string and the result is evaluated. This is a
+last-chance backdoor into the startup process.
+</li>
+<li id="282">
+<strong>The restart init function is called</strong>. If
+<a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> is non-nil, its
+value is assumed to be a function of no arguments and it is
+funcall'ed.
+</li>
+<li id="283">
+<strong>The Lisp listener is started or the
+restart-app function is called</strong>. The following form is
+executed:
+</li>
+</ol>
+
+<pre id="284">
+(tpl:start-interactive-top-level s
+       (or *restart-app-function*
+           #'tpl:top-level-read-eval-print-loop)
+        nil)
+</pre>
+
+<blockquote>
+  <p id="285">If <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a> is
+  true, its value is assumed to be a function of
+  no arguments which is started within a <a href="operators/tpl/start-interactive-top-level.htm"><b>tpl:start-interactive-top-level</b></a> form
+  (which sets up bindings for global variables). It is assumed to
+  provide the application top-level if there is one or do whatever the
+  application does without user interaction. It should not
+  return. </p> 
+  <p id="286">If <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a> is <code>nil</code>, <a href="operators/tpl/top-level-read-eval-print-loop.htm"><b>tpl:top-level-read-eval-print-loop</b></a> is
+  called. It starts a Lisp listener (the Initial Lisp Listener) and
+  presents the user with a prompt.</p>
+</blockquote>
+
+<p id="287">One thing we want to emphasize by detailing the startup sequence is
+that because of the order, certain things cannot affect other
+things. Trivially, a command-line argument can affect whether and
+which init files are read but an init file cannot affect command-line
+processing. Note the following about the startup procedure: </p>
+
+<ul>
+  <li id="288">The source code for the startup procedure is in <em>&lt;Allegro
+    directory&gt;/src/aclstart.cl</em>. That file can be examined for more details of starting
+    up.</li>
+  <li id="289">The steps 2-11 are run within a handler-case form. If an unhandled error occurs during
+    startup, a message is printed and Lisp exits. The acts of reading the init files and
+    reloading loaded .so files are protected against errors so problems there do not cause
+    unhandled errors.</li>
+  <li id="290">Step 11 provides a backdoor hook into Lisp via an environment variable. In some cases,
+    this hook can be used to force a startup which is failing. If, for example, <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>
+    is causing problems, but init files are not read and command-line arguments are ignored
+    (two other ways to affect startup), starting Lisp in an environment where ACL_STARTUP_HOOK
+    is "(setq *restart-app-function* nil)", Lisp will start a Lisp listener
+    instead of calling <a href="variables/excl/s_restart-app-function_s.htm"><code>*restart-app-function*</code></a>.
+    We strongly advise against setting this environment variable except in an emergency.</li>
+</ul>
+
+<hr><hr><h2 id="291"><a name="init-files-1">13.0 Initialization and the sys:siteinit.cl and [.]clinit.cl files</a></h2>
+
+<p id="292">When Allegro CL is first invoked it may look for and load if
+present several initialization files. The variable <a href="variables/excl/s_read-init-files_s.htm"><code>*read-init-files*</code></a> controls
+whether the files are looked for at all and the command-line arguments
+<b>-q</b> and <b>--qq</b> also
+control which or whether init files are read. The files are: </p>
+
+<ul>
+  <li id="293"><em>sys:siteinit.cl</em>. The <em>sys:</em> component names the system directory, which
+    is interpreted by Allegro CL to be the Allegro directory. If any initialization files are
+    read, this one is read first.</li>
+</ul>
+
+<ul>
+<li id="294">
+~/<i>.clinit.cl</i> or<em> ~/clinit.cl</em> (that is, with and 
+without a leading dot).
+On Unix, ~ is the current user's home directory. 
+<p id="295">
+On Windows, the home directory (the translation of ~) is
+HOMEDRIVE/HOMEPATH (i.e. the concatenation of the value of the
+HOMEDRIVE environment variable, the string "/", and the value of the
+HOMEPATH environment variable). The value of the HOME environment
+variable is used if HOMEDRIVE/HOMEPATH is not set. C:\\ is used if
+HOMEDRIVE/HOMEPATH and HOME are not set.  (Until an 8.0 and 7.0 update,
+HOMEDRIVE/HOMEPATH was not used. It was added to make Allegro CL
+consistent with other standard Windows applications.)
+</p>
+</li>
+  <li id="296"><em>&lt;current-directory&gt;/.clinit.cl</em> or 
+    <em>&lt;current-directory&gt;/clinit.cl</em>
+    (unless the <em>&lt;current directory&gt;</em> is ~ and 
+    <em>~/.clinit.cl</em> or <em>~/clinit.cl</em>
+    has been loaded). On Unix, the current directory is the working 
+    directory where Lisp is
+    started. On Windows, the current directory is usually the 
+    directory containing the
+    executable (.exe) file that is invoked, but may be something 
+    different, such as a
+    directory specified in <em>Start In</em> field of a shortcut. The first named file found
+    is the only one read (that is, only one of <em>clinit.cl </em>and <em>.clinit.cl</em> will
+    be read even if both are present).</li>
+</ul>
+
+<p id="297">The value of the variable <a href="variables/excl/s_init-file-names_s.htm"><code>*init-file-names*</code></a> is a list of strings naming
+the initialization files to look for (other than
+<em>sys:siteinit.cl</em>). Its initial value is
+(".clinit.cl" "clinit.cl"). We use a name with and
+a name without a leading dot because of the difference between
+handling of initial dots on Unix and on Windows. (On Unix, a leading
+dot means do not normally include the file in a file listing. On
+Windows, a leading dot is just confusing.) In a directory, the files
+are looked for in the order they appear in the list and the first one
+found (and only that one) is read.</p>
+
+<p id="298">Any valid Lisp form may be present in an initialization
+file. Initialization files are often used to customize your Lisp
+environment, by, for example, loading files or changing reader
+syntax. Loading of initialization files can be suppressed with an
+argument on the command line that initiates Lisp. If -q is specified
+on the command line, the<i> [.]clinit.cl</i> in your home directory
+will not be read (unless that is also the current directory). When -q
+is specified, the <em>sys:siteinit.cl</em> file and the
+<em>[.]clinit.cl</em> file in the current directory (even if it is
+also your home directory) are looked for and loaded if present.</p>
+
+<p id="299">If <b>--qq</b> is specified on
+the command line, no initialization file will be read. </p>
+
+<h3 id="300">
+Note of files read when starting the IDE
+</h3>
+
+<p id="301">
+When starting the IDE on Windows or UNIX, additional files are read at
+startup, including a file names <b>startup.cl</b>. See <a href="cgide.htm#startup-1">About IDE startup</a> in
+<a href="cgide.htm">cgide.htm</a> for details.
+</p>
+
+<hr><h2 id="302"><a name="errors-in-init-file-2">13.1 Errors in an initialization file</a></h2>
+
+<p id="303">Note that an error in an initialization file will not cause Lisp to
+enter a break loop, although an error message will be printed. If you
+wish to debug an initialization file, load it explicitly, using the
+<b>--qq</b> argument if necessary to
+suppress its initial loading.  As a simple example, consider a<i>
+[.]clinit.cl</i> file containing the forms: </p>
+
+<pre id="304">
+(setq xx (firt '(1 2 3 4)))
+      (setq yy 5) 
+</pre>
+
+<p id="305">In the first form, <code>firt</code> is a misprint for the
+Common Lisp function <code>first</code>. When Lisp is initialized and the
+.clinit.cl file is read, messages similar to the following are
+printed: </p>
+
+<pre id="306">
+Error: attempt to call `firt' which is an undefined function.
+      Error loading #p"/h/dm/.clinit.cl" 
+</pre>
+
+<p id="307">Lisp does not enter a break level upon errors in a
+<i>[.]clinit.cl</i> file. Instead it aborts further processing of the
+file. (Thus yy will be unbound.) The command </p>
+
+<pre id="308">
+:ld .clinit.cl 
+</pre>
+
+<p id="309">will, on the other hand, generate a continuable error allowing the
+user to correct the bad function name. </p>
+
+
+
+<hr><h2 id="310"><a name="no-tpl-commands-in-init-file-2">13.2 No top-level commands in initialization files</a></h2>
+
+<p id="311">Top-level commands (prefixed by the top-level command character)
+cannot be used from within the initialization file, or any other
+file. They may only be typed to the top level. <a href="operators/tpl/do-command.htm"><b>tpl:do-command</b></a> does provide a functional
+equivalent of a top-level command (see the description in 
+<a href="top-level.htm">top-level.htm</a>). Note, however, that the
+information necessary to successfully perform certain commands (such
+as :zoom) is not available when the initialization files are loaded
+and so the call may fail, in some cases with a recursive
+(i.e. non-recoverable) error.</p>
+
+
+
+<hr><h2 id="312"><a name="cannot-set-variables-bound-by-load-2">13.3 Cannot (effectively) set a variable bound by load</a></h2>
+
+<p id="313">Note that certain global variables are bound when load is loading a
+file. Therefore, setting those variables in an initialization file
+will not have the desired effect. (See also the discussion of setting
+global values in initialization files below). The following table
+shows what variables are bound by load:</p>
+<div align="left">
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="528">
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><p id="314" ALIGN="CENTER">Variable</p></td>
+    <td WIDTH="50%" VALIGN="TOP"><p id="315" ALIGN="CENTER">Bound to</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/package.htm"><code>*package*</code></a></td> <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/package.htm"><code>*package*</code></a></td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP"><a href="../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a></td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="variables/excl/s_source-pathname_s.htm"><code>*source-pathname*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP">name of file being loaded</td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="variables/excl/s_redefinition-warnings_s.htm"><code>*redefinition-warnings*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP">*redefinition-warnings*</td>
+  </tr>
+  <tr>
+    <td WIDTH="50%" VALIGN="TOP"><a href="variables/excl/s_libfasl_s.htm"><code>*libfasl*</code></a></td>
+    <td WIDTH="50%" VALIGN="TOP">value of <em>libfasl</em> keyword argument to <a href="../ansicl/dictentr/load.htm"><b>load</b></a>,
+    if specified, or *libfasl*</td>
+  </tr>
+</table>
+</div>
+
+
+
+<hr><h2 id="316"><a name="starting-composer-from-init-file-2">13.4 Starting Allegro Composer from .clinit.cl</a></h2>
+
+<p id="317">UNIX only. Simply putting (composer:start-composer) in your
+<em>.clinit.cl</em> file works but has the annoying side effect of
+printing several lines of bogus warnings. Better is to use the
+following code. </p>
+
+<pre id="318">
+(defun start-composer-from-clinit-file ()
+  (let ((initial-restart-init-function *restart-init-function*))
+    (cond (initial-restart-init-function
+            (setf *restart-init-function*
+                  #'(lambda ()
+                      (composer:start-composer)
+                      (setf *restart-init-function* 
+                            initial-restart-init-function)
+                      (funcall initial-restart-init-function))))
+           (t
+             (setf *restart-init-function*
+                   #'(lambda ()
+                       (composer:start-composer)
+                       (setf *restart-init-function* nil)))))))
+
+(start-composer-from-clinit-file)
+</pre>
+
+
+
+
+<hr><hr><h2 id="319"><a name="setting-globals-1">14.0 Setting global variables in initialization files</a></h2> 
+
+<p id="320">Allegro CL starts a Lisp listener by binding many standard Common
+Lisp special variables and also many Allegro-CL-specific special
+variables to appropriate values. The listener runs within the scope of
+these bindings. Allegro CL does this because it implements a
+multiprocessing extension. The bindings permit one process to set a
+special without another process being affected. (For example, if a
+process doing output sets *print-base* to 8 in order to print out
+octal numbers, the Lisp listener, running concurrently and trying to
+print the integer nine, will print 9 rather than 11.) Even if you are
+running Lisp without initiating multiprocessing, the Listener runs
+within the scope of the bindings.</p>
+
+<hr><h2 id="321"><a name="bindings-defined-2">14.1 Where are the bindings defined?</a></h2>
+
+<p id="322">
+A Lisp listener gets its bindings from three alists: <a href="variables/excl/s_required-thread-bindings_s.htm"><code>*required-thread-bindings*</code></a>,
+<a href="variables/excl/s_required-top-level-bindings_s.htm"><code>*required-top-level-bindings*</code></a>
+and <a href="variables/tpl/s_default-lisp-listener-bindings_s.htm"><code>*default-lisp-listener-bindings*</code></a>.  
+</p>
+<p id="323">
+<a href="variables/excl/s_required-thread-bindings_s.htm"><code>*required-thread-bindings*</code></a> is not relevant to
+this discussion unless its initial value is changed, since the only
+entry involving an exported symbol is (*readtable* . *readtable*),
+binding the value of *readtable* to its global value. And then
+*readtable* is again bound by the <a href="variables/excl/s_required-top-level-bindings_s.htm"><code>*required-top-level-bindings*</code></a> alist. So we
+will just discuss the remaining two alists.
+</p>
+<p id="324">
+Here
+are a few lines from each alist:
+</p>
+
+<pre id="325">
+;; From excl:*required-top-level-bindings* (a few values only)
+(*PRINT-LENGTH*) (*PRINT-LEVEL*) (*PRINT-RADIX*) (*PRINT-BASE* . 10)
+(*PRINT-PRETTY* . T) (*PRINT-ESCAPE* . T) (*READTABLE* COPY-READTABLE NIL)
+
+;; From tpl:*default-lisp-listener-bindings* (a few values only)
+(TOP-LEVEL:*AUTO-ZOOM* . TOP-LEVEL:*AUTO-ZOOM*)
+(TOP-LEVEL::*LAST-FILE-COMPILED* . TOP-LEVEL::*LAST-FILE-COMPILED*)
+</pre>
+
+
+
+<hr><h2 id="326"><a name="bindings-specific-values-2">14.2 Many bindings are to specific values, not to the variables' actual values</a></h2>
+
+<p id="327">Notice that most of the entries in <a href="variables/excl/s_required-top-level-bindings_s.htm"><code>*required-top-level-bindings*</code></a> associate a
+variable with a specific value such as t (the value associated with
+*print-pretty* and *print-escape*) or 10 (the value associated with
+*print-base*) or nil (the value associated with *print-length*,
+*print-level*, and *print-radix* -- the <code>nil</code>
+isn't printed because in an alist, (*print-escape* . nil) and
+(*print-escape*) are the same thing). The only pair shown which does
+not use a specific value is <code>(*READTABLE* COPY-READTABLE
+NIL)</code>, which says make the value of <a href="../ansicl/dictentr/readtabl.htm"><code>*readtable*</code></a> a copy of the initial readtable. If
+you look at the entire list you will see further entries that are
+associated with the value of a variable or a more complex form to
+evaluate (as with *readtable*). Most of the entries in
+<a href="variables/tpl/s_default-lisp-listener-bindings_s.htm"><code>*default-lisp-listener-bindings*</code></a>
+associate variables with values of variables, but notice many of them
+are unexported.
+</p>
+
+<p id="328">
+The variables associated with specific values will be bound to
+those values when a Lisp listener is started regardless of the actual
+value of the variable at the time the binding is done. This means that
+setting (with <a href="../ansicl/dictentr/setfpset.htm"><b>setf</b></a> or <a href="../ansicl/dictentr/setq.htm"><b>setq</b></a>) the value of such a variable in
+an initialization file (or anywhere prior to a Lisp listener being
+started) cannot affect the binding in effect within the listener. To
+be concrete, suppose the following form is in your <em>.clinit.cl</em>
+file and that file is read on Lisp startup:</p>
+
+<pre id="329">
+(setq *print-length* 20)
+</pre>
+
+<p id="330">If you evaluate <code>*print-length*</code> in the listener that
+appears after startup, you get:</p>
+
+<pre id="331">
+USER(1): *print-length*
+NIL
+</pre>
+
+<p id="332">Why? Because the listener sets the binding of
+<code>*print-length*</code> to <code>nil</code>, as called
+for in <a href="variables/excl/s_required-top-level-bindings_s.htm"><code>*required-top-level-bindings*</code></a>. The value set
+in the initialization file is ignored. </p>
+
+
+
+<hr><h2 id="333"><a name="how-to-set-values-2">14.3 How to set the value so a listener sees it?</a></h2>
+
+<p id="334">You change the alist from which the bindings are drawn so that the
+binding is made to the value you want. (You could also remove the
+entry from the alist so that the value is not bound when a listener is
+started, but that is not recommended.) The macro <a href="operators/tpl/setq-default.htm"><b>tpl:setq-default</b></a> is designed to do
+exactly that. The form</p>
+
+<pre id="335">
+(tpl:setq-default *print-length* 20)
+</pre>
+
+<p id="336">does the following: </p>
+
+<ul>
+  <li id="337">It sees whether <code>*print-length*</code> is a key in 
+      the alist which is the value of
+      <a href="variables/excl/s_required-top-level-bindings_s.htm"><code>*required-top-level-bindings*</code></a>.
+      If it is, it replaces the value of the pair with 
+      <code>(sys:global-symbol-value
+      '*print-length*)</code>. If it does not appear as the 
+      key in either list, it adds 
+
+<pre id="338">
+(*print-length* . (sys:global-symbol-value '*print-length*)) 
+</pre>
+    
+
+  <p id="339">to the <a href="variables/excl/s_required-top-level-bindings_s.htm"><code>*required-top-level-bindings*</code></a> alist.</p>
+  </li>
+
+
+  <li id="340">It sets the global symbol value of <code>*print-length*</code> to 20 as if with the form
+
+<pre id="341">
+(setf (sys:global-symbol-value '*print-length*) 20)
+</pre>
+</li>
+</ul>
+
+<p id="342">Now, when a Listener is started, <code>*print-length*</code> will
+be bound to <code>(sys:global-symbol-value '*print-length*)</code>,
+which, if the global symbol value has not been subsequently changed,
+is 20. So, the form</p>
+
+<pre id="343">
+(tpl:setq-default *print-length* 20)
+</pre>
+
+<p id="344">should go in the initialization file instead of <code>(setq
+*print-length* 20)</code>.</p>
+
+
+
+<hr><h2 id="345"><a name="sample-init-file-2">14.4 A sample initialization file</a></h2>
+
+<p id="346">If a file <em>.clinit.cl</em> or <em>clinit.cl</em> exists in the
+user's home directory (C:\ on Windows) or in the working directory
+(the Allegro directory on Windows), it is loaded when Lisp starts up
+(the first one found and only the first one found is loaded from any
+directory). This provides a method for customizing your Lisp
+environment. The sample initialization file below sets several
+top-level variables. There is a sample .clinit.cl file in the
+distribution at <em>[Allegro
+directory]/misc/dot-clinit.cl</em>.</p>
+
+<p id="347">A <em>sys:siteinit.cl</em> file (which will be read by every Lisp
+image at your site) will typically not have this level of
+customization. However, the form (using <a href="operators/tpl/setq-default.htm"><b>tpl:setq-default</b></a>, e.g.) is similar.</p>
+
+<pre id="348">
+;;;
+;;; This file contains examples of user
+;;; customizations which can be done via a 
+;;; $HOMEDRIVE/$HOMEPATH/.clinit.cl or C:\clinit.cl.
+ 
+(format *terminal-io* "~%; Loading home ~a~@[.~a~] file.~%"
+       (pathname-name *load-pathname*)
+       (pathname-type *load-pathname*))
+ 
+;;; Set a few top-level variables.
+(tpl:setq-default top-level:*history* 50)
+(tpl:setq-default top-level:*print-length* 20)
+(tpl:setq-default top-level:*print-level* 5)
+(tpl:setq-default top-level:*zoom-print-level* 3)
+(tpl:setq-default top-level:*zoom-print-length* 3)
+(tpl:setq-default top-level:*exit-on-eof* t)
+ 
+;;; Display 10 frames on :zoom,
+(tpl:setq-default top-level:*zoom-display* 10)
+;;; and don't print anything but the current frame on 
+;;; :dn, :up and :find
+(tpl:setq-default top-level:*auto-zoom* :current)
+ 
+;;; Have the garbage collector print interesting stats.
+(setf (sys:gsgc-switch :print) t)
+(setf (sys:gsgc-switch :stats) t)
+ 
+;;; To have all advice automatically compiled.
+(tpl:setq-default *compile-advice* t)
+ 
+;;; Have packages print with their shortest nickname
+;;; instead of the package name.
+(tpl:setq-default *print-nickname* t)
+ 
+;;; Allow concise printing of shared structure.
+(tpl:setq-default *print-circle* t)
+ 
+;;; Only print "Compiling" messages for files, not for individual functions,
+;;; unless there is a warning or error.
+(tpl:setq-default *compile-verbose* t)
+(tpl:setq-default *compile-print* nil)
+ 
+;;; Set up a top-level alias.
+(top-level:alias ("shell" 1 :case-sensitive) (&rest args)
+   "`:sh args' will execute the shell command in `args'"
+   (let ((cmd
+       (apply #'concatenate 'simple-string
+             (mapcar
+#'(lambda (x)
+                        (concatenate
+'simple-string
+                          (write-to-string
+x :escape nil) ""))
+                     args))))
+  (prin1 (shell cmd))))
+ 
+;;; The following makes the source file recording 
+;;; facility compare only the names of pathnames, for
+;;; the purposes of determining when a redefinition
+;;; warning should be issued.
+(push #'(lambda (old new fspec type)
+        (string= (pathname-name old)
+(pathname-name new)))
+     *redefinition-pathname-comparison-hook*)
+ 
+;;; Use the Composer package if it is available.
+(eval-when (eval compile load)
+(when (find-package :wt)
+  (use-package :wt)))
+</pre>
+
+
+
+
+<hr><hr><h2 id="349"><a name="after-startup-1">15.0 After Lisp starts up</a></h2>
+
+<hr><h2 id="350"><a name="initial-prompt-2">15.1 The initial prompt</a></h2>
+
+<p id="351">
+After the initial messages are printed (and the Emacs-Lisp
+interface is started, if appropriate), the first prompt is
+printed. Unless you have changed the prompt, it will look like:
+</p>
+
+<pre id="352">
+cl-user(1):
+</pre>
+
+<p id="353">
+Here, cl-user specifies the common-lisp-user (nicknamed user)
+package (Lisp starts in that package) and the 1 indicates the command
+number. You can now type forms to Lisp. Note: this is the modern mode prompt.
+The ANSI mode prompt is CL-USER(1):.</p>
+
+
+
+
+
+<hr><h2 id="354"><a name="errors-running-acl-2">15.2 Errors</a></h2>
+
+<p id="355">In the course of running Allegro CL, you may make an error. If
+Allegro CL detects an error, it will go into a break loop. The prompt
+will indicate a break loop by a number in brackets preceding the
+prompt. The following script shows what happens when an error is
+signaled:</p>
+
+<pre id="356">
+user(2): (car '(1 2))
+1
+user(3): (car 1)
+Error: Attempt to take the car of 1 which is not a cons.
+[condition type: simple-error]
+[1]user(4): (car 2)
+ 
+Error: Attempt to take the car of 2 which is not a cons.
+[condition type: simple-error]
+[2] user(5): 
+</pre>
+
+<p id="357">See <a href="top-level.htm">top-level.htm</a> for more information on the prompt and
+break levels.</p>
+
+
+
+<hr><h2 id="358"><a name="system-hangs-2">15.3 What if the system seems to hang (as if it is in an infinite loop)?</a></h2>
+
+<p id="359">
+For interrupting on UNIX, see <a href="#enough-cc-s-2">here</a>, for interrupting on Windows,
+see <a href="#allegro-icon-2">here</a>.
+</p>
+
+<p id="360">
+At times, the system may seem to `hang', that is make no response
+to what you have typed and seem to be doing nothing. This may be
+normal, since some commands take a long time to execute, or it may
+indicate that the system has gone into some loop or received improper
+input. </p>
+
+<p id="361">If you are running in a shell, a common cause is unclosed
+parentheses in the input line. Try adding some closing parentheses and
+see if that helps -- too many right parentheses will signal a warning
+but not an error. (If you are running under Emacs, it should be clear
+that parentheses are missing because the cursor will be indented since
+Emacs expects more information.)</p>
+
+<p id="362">If too few right parentheses is not the problem, try to regain
+control by hitting the Unix interrupt character (user-settable but
+typically C-c in the shell and C-c C-c in Emacs). Entering this
+character sends signal #2 (SIGINT) to the Lisp process. Allegro CL
+checks for a keyboard interrupt at almost every function call and at
+least once in each iteration of a loop compiled at proper safety, and
+this method will typically work.  However, it will not work in two
+cases: (1) when Lisp is executing foreign code (if the infinite loop
+is in C or FORTRAN code loading into Lisp) and (2) when Lisp is
+executing a function compiled so that interrupt checks are suppressed
+(it is possible to set the compiler options so that this check is not
+made in user defined compiled functions, 
+see <a href="compiling.htm">compiling.htm</a>). 
+</p>
+
+
+
+<hr><h2 id="363"><a name="enough-cc-s-2">15.4 Enough C-c's (on Unix) will always interrupt</a></h2>
+
+<p id="364">Often, a Control-C will interrupt on Unix (C-c C-c if using
+Emacs). If a single Control-C does not work, after 5 SIGINTs (C-c in a
+shell, C-q C-c when running Lisp under Emacs) will cause Lisp to be
+interrupted with a non-continuable error (a single SIGINT triggers a
+continuable error).</p>
+
+<p id="365">Note we say `C-q C-c' when in the Emacs-Lisp interface. Typically,
+C-c C-c sends a SIGINT to Lisp when running in Emacs. However, that
+sends it through the interface, and the interface will not process
+things while Lisp is in an infinite loop. C-q C-c cause the SIGINT to
+go directly to Lisp.</p>
+
+<p id="366">Warnings will be printed after 3 and 4 interrupts have been
+received, telling you that 2 more (after 3) or 1 more (after 4) will
+cause Lisp to signal a non-continuable error.</p>
+
+<p id="367">Lisp can do this because in fact, SIGINTs are recorded whenever
+they occur, but Lisp does not do anything until an appropriate moment
+(typically, at the beginning of a function call, unless the function
+was compiled in such a way as to suppress that check).  If 5 SIGINTs
+are recorded without being handled, Lisp will now interrupt for
+sure. It does not matter when these SIGINTs happen (in foreign or Lisp
+code compiled in any fashion) except garbage collections will not be
+interrupted. </p>
+
+<p id="368">We chose five because users often enter several interrupts to
+interrupt a program, and we did not want normal behavior to trigger a
+non-continuable error. With the warnings mentioned above, we do not
+believe that users will unintentionally enter five interrupts without
+really wanting to break into the Lisp process.</p>
+
+<p id="369">Users should be warned that it is possible for an interrupt
+generated by 5 SIGINTs to leave the stack in a corrupted state. When
+you break into Lisp in this fashion, you should immediately enter :pop
+or :reset to try to clear the stack. In some cases, Lisp may not be
+able to recover. (Almost all those cases happen when foreign code is
+called with the <em>call-direct</em> argument to <a href="operators/ff/def-foreign-call.htm"><b>def-foreign-call</b></a> -- see 
+<a href="foreign-functions.htm">foreign-functions.htm</a>. Please note
+that some Franz code, particularly CLIM code, calls foreign code using
+<em>call-direct</em>. We have done several things to ensure Lisp is
+not corrupted even when the break occurs in a <em>call-direct</em>,
+but failure is a possibility.) However, it is likely that you will be
+able to recover (and recovery was typically not possible in earlier
+versions when an infinite loop was entered).</p>
+
+<p id="370">Users have tried (with more or less success) to break into Lisp
+from another shell by sending a Signal 4 or Signal 11 to the Lisp
+process. This can still be done (with the same success rate) but note
+that only SIGINTs (Signal 2) are recorded as counting to the 5
+necessary to break for sure.</p>
+
+
+
+<hr><h2 id="371"><a name="allegro-icon-2">15.5 The Allegro Icon on the system tray will interrupt on Windows</a></h2>
+
+<p id="372">The Break/Pause key will interrupt on Windows when the system is
+checking for events.  However, when Break/Pause does not work, look
+for the Allegro icon (a bust of Franz Liszt, after whom the company
+Franz Inc. was named), which appears in the system tray (at the lower
+right) of the Windows screen. Right clicking on this icon will display
+a menu which includes the command Interrupt Lisp. Choosing that
+command will usually cause an error to be signaled within Lisp which
+will return control to the user. Note that there is a small
+possibility that the interrupt will occur at a time when an interrupt
+cannot be processed and Lisp may fail.</p>
+
+<p id="373">It is usually possible to interrupt from the Console window (where
+you typically have a prompt that is responsive). The same menu over
+the Allegro icon on the system tray has a command to display the
+console if it is not already visible.</p>
+
+
+
+<hr><h2 id="374"><a name="help-while-running-2">15.6 Help while running Lisp</a></h2>
+
+<p id="375">There are a number of facilities to assist you while you are
+running Lisp. Some of them are listed in this section. </p>
+
+<p id="376">Some useful Common Lisp functions include <a href="../ansicl/dictentr/aproposa.htm"><b>apropos</b></a> and <a href="../ansicl/dictentr/describe.htm"><b>describe</b></a>. <b>apropos</b> takes a
+case-sensitive string (or a symbol whose print name will be used as
+the string) and an optional package as arguments and returns all
+symbols whose names contain the string. Thus, if you can't quite
+remember a function name, but are sure of part of it, call
+<b>apropos</b> with the part you are sure of. We recommend using the
+package argument, for without it apropos may return many symbols
+internal to the system or the compiler package which clutter up the
+output. </p>
+
+<p id="377"><a href="../ansicl/dictentr/describe.htm"><b>describe</b></a> takes a Lisp
+object as an argument. It is especially useful when given a
+symbol. Included in the information it provides about the symbol are
+whether it has a function binding (with the formal argument list if it
+does), its package, whether it is internal or external in that
+package, whether it is bound, and its value if it is bound. </p>
+
+<p id="378">The function <a href="operators/excl/arglist.htm"><b>arglist</b></a>
+provides the argument list of functions and macros. </p>
+
+<p id="379">The top-level commands are listed when you enter the command
+<b>:help</b> with no arguments. All top-level commands are listed,
+with short descriptions. A longer description of a command is printed
+when you enter :help with a command name as an argument. </p>
+
+<p id="380">The function <a href="operators/excl/print-startup-info.htm"><b>print-startup-info</b></a> (as its name implies) is
+used for printing information when Lisp starts up. However, the
+information can be useful at times other than start up. The function
+uses the current values of variables, compiler optimization qualities,
+etc. to generate its message.  Evaluating the following form will
+cause all available information to be printed:</p>
+
+<pre id="381">
+(excl:print-startup-info t nil)
+</pre>
+
+
+
+
+<hr><h2 id="382"><a name="initial-package-2">15.6.1 The package on startup</a></h2>
+
+<p id="383">
+By default, the initial package on startup is common-graphics-user
+(nicknamed cg-user) when using the IDE and common-lisp-user (nicknamed
+cl-user) when not using the IDE. The current package is displayed in
+the prompt.
+</p>
+<p id="384">
+Getting a different package on startup is not as easy as you might
+thing. You cannot change packages in a file (since <a href="../ansicl/dictentr/package.htm"><code>*package*</code></a> is bound during file
+loading) so you cannot use an init file (see
+<a href="#init-files-1">Section 13.0 Initialization and the sys:siteinit.cl and [.]clinit.cl files</a>) and the <b>-e</b>
+command-line argument is processed too early to be effective.
+</p>
+<p id="385">
+Instead, you have to modify the <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> appropriately. How to
+do it is described in <a href="delivery.htm#initial-package-2">Specifying the initial value of
+*package*</a> in
+<a href="delivery.htm">delivery.htm</a>. <a href="delivery.htm">delivery.htm</a>
+discusses writing your own application (where you control the values
+of the various global variables). The following code in your
+.clinit.cl file (see <a href="#init-files-1">Section 13.0 Initialization and the sys:siteinit.cl and [.]clinit.cl files</a>) will
+modify the <a href="variables/excl/s_restart-init-function_s.htm"><code>*restart-init-function*</code></a> while preserving
+whatever else it does:
+</p>
+<pre id="386">
+;;---------
+
+
+(defun set-init-pack-from-clinit-file ()
+  (let ((initial-restart-init-function *restart-init-function*))
+    (cond (initial-restart-init-function
+	   (setf *restart-init-function*
+	     #'(lambda ()
+		 (tpl:setq-default *package* (find-package :my-package))
+		 (rplacd (assoc 'tpl::*saved-package*
+				tpl:*default-lisp-listener-bindings*)
+			 'common-lisp:*package*)
+		 (setf *restart-init-function* 
+		   initial-restart-init-function)
+		 (funcall initial-restart-init-function))))
+	  (t
+	   (setf *restart-init-function*
+	     #'(lambda ()
+		   (tpl:setq-default *package* (find-package :my-package))
+		 (rplacd (assoc 'tpl::*saved-package*
+				tpl:*default-lisp-listener-bindings*)
+			 'common-lisp:*package*)
+		 (setf *restart-init-function* nil)))))))
+
+(set-init-pack-from-clinit-file)
+
+;;----------
+</pre>
+
+
+
+
+
+<hr><hr><h2 id="387"><a name="files-looked-for-at-startup-1">16.0 Files that may be looked for on startup and after startup</a></h2>
+
+<p id="388">The following two tables list files that may be looked for when
+Allegro CL starts up and immediately afterwards. </p>
+
+<p id="389">Table 1 lists the files that Lisp may need to start up at
+all. Failure to find one will result in a message from the operating
+system or the executable itself explaining the failure. No recovery is
+possible.</p>
+
+<p id="390">Table 2 lists other files that Lisp may need during or after
+startup. Failure to find these files may cause a Lisp warning or
+error. Failure to find a file in some cases causes Lisp to exit.</p>
+
+<p id="391">We distinguish between system files, application files, and user
+files. System files are supplied as part of Allegro CL, the operating
+system, or other system components such as the window system;
+application files are those loaded into Lisp by the application
+programmer prior to the creation of the executable image; user files
+are additional runtime files belonging to the current user and
+referenced after the executable image is invoked.</p>
+
+<p id="392">Certain of the files in Table 1 are looked for in the Allegro
+directory location.</p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="612">
+  <tr>
+    <td VALIGN="TOP" COLSPAN="3"><p id="393" ALIGN="CENTER">Table 1: Files required for Lisp to
+    start up</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP"><p id="394" ALIGN="CENTER">File type</p></td>
+    <td WIDTH="45%" VALIGN="TOP"><p id="395" ALIGN="CENTER">When file is required</p></td>
+    <td WIDTH="29%" VALIGN="TOP"><p id="396" ALIGN="CENTER">Where file is looked for</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP">Application loaded .so/.sl/.dll files </td>
+    <td WIDTH="45%" VALIGN="TOP">When specified to :user-shared-libraries 
+    (argument to 
+    <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>)</td>
+    <td WIDTH="29%" VALIGN="TOP">Allegro directory, i.e. 
+    directory where executable (exe) file
+    is located or 
+    see <a href="#files-lisp-needs-one-2">Section 6.1 Files Lisp needs to start up 1: .so (or dll) files built with image</a></td>
+  </tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP">.pll file (always a single file, e.g. acl.pll)</td>
+    <td WIDTH="45%" VALIGN="TOP">Image built with :pll-file non-nil.</td>
+    <td WIDTH="29%" VALIGN="TOP">Allegro directory location</td>
+  </tr>
+  <tr>
+    <td WIDTH="25%" VALIGN="TOP">Bundle file (typically files.bu or files.ebu)</td>
+    <td WIDTH="45%" VALIGN="TOP">Executable built as Presto image</td>
+    <td WIDTH="29%" VALIGN="TOP">Allegro directory location</td>
+  </tr>
+</table>
+
+<p id="397">After all the needed files in the above table are found, the
+logical pathname translations for SYS: are established to refer to the
+Allegro directory. The ALLEGRO_CL_HOME environment variable, used in
+release 4.3 to find files, is no longer used to locate files. </p>
+
+<table BORDER="1" CELLSPACING="1" CELLPADDING="8" WIDTH="609">
+  <tr>
+    <td VALIGN="TOP" COLSPAN="3"><p id="398" ALIGN="CENTER">Table 2: Files looked for during or
+    after Lisp starts up</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><p id="399" ALIGN="CENTER">File</p></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="400" ALIGN="CENTER">When file is needed</p></td>
+    <td WIDTH="30%" VALIGN="TOP"><p id="401" ALIGN="CENTER">Comments</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP">The bundle file (typically sys:files.bu or sys:files.ebu)</td>
+    <td WIDTH="43%" VALIGN="TOP">File needs to be autoloaded (because of a form in init file
+    or restart function or because of system actions such as starting Lisp/Emacs interface)</td>
+    <td WIDTH="30%" VALIGN="TOP">None</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><p id="402">System fasl files, e.g.</p>
+    <p id="403">sys:;code;loop.fasl </p></td>
+    <td WIDTH="43%" VALIGN="TOP">As above for <i>fasl</i> files not in bundle.</td>
+    <td WIDTH="30%" VALIGN="TOP">Some system fasls are not included in the bundle file, and
+    patched autoload fasl files supersede files in the bundle.</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP">Loaded system .so files, e.g. 
+    <i>sys:gc-cursor.so</i></td>
+    <td WIDTH="43%" VALIGN="TOP">Look in sys:.</td>
+    <td WIDTH="30%" VALIGN="TOP">None</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP">Loaded application .so files</td>
+    <td WIDTH="43%" VALIGN="TOP">Found using LD_LIBRARY_PATH or equivalent.</td>
+    <td WIDTH="30%" VALIGN="TOP">None</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><p id="404"><em>[user-homedir]/.clinit.cl</em></p>
+    <p id="405"><em>[user-homedir]/clinit.cl</em></p></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="406">Loaded during initialization unless: (1) -q or 
+    --qq specified on command line; (2) image created with :read-init-file (argument to
+    dumplisp) nil; or (3) Specified restart function does not return.</p>
+    <p id="407">The homedir on Windows
+    is C:\.</p></td>
+    <td WIDTH="30%" VALIGN="TOP">None</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><em>sys:;siteinit.cl</em></td>
+    <td WIDTH="43%" VALIGN="TOP">Loaded during initialization unless (1) <a href="variables/excl/s_read-init-files_s.htm"><code>*read-init-files*</code></a> is <code>nil</code>,
+    or (2) --qq command-line argument specified</td>
+    <td WIDTH="30%" VALIGN="TOP">None</td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><p id="408"><em>[current-dir]/.clinit.cl</em></p>
+    <p id="409"><em>[current-dir]/clinit.cl</em></p></td>
+    <td WIDTH="43%" VALIGN="TOP"><p id="410">Loaded during initialization unless: (1) 
+  --qq specified on
+    command line; (2) <a href="variables/excl/s_read-init-files_s.htm"><code>*read-init-files*</code></a>
+    is <code>nil</code> or <code>:nohome</code>, or (3) specified restart function does not
+    return.</p>
+    <p id="411">The current directory on Windows (on startup) is the directory containing the
+    executable (usually mlisp.exe) file.</p></td>
+    <td WIDTH="30%" VALIGN="TOP">The names are specified in the list which is the value of <a href="variables/excl/s_init-file-names_s.htm"><code>*init-file-names*</code></a>, whose
+    initial value is <code>(.clinit.cl clinit.cl)</code>. 
+    If that variable is nil, no file will be looked for. 
+    <p id="412">Only one file, the first one found looking in the order they appear in the list, will
+    be loaded. If both <em>.clinit.cl</em> and <em>clinit.cl</em> are in a directory, only .<em>clinit.cl</em>
+    will be loaded (assuming <a href="variables/excl/s_init-file-names_s.htm"><code>*init-file-names*</code></a>
+    has its initial value).</p></td>
+  </tr>
+  <tr>
+    <td WIDTH="27%" VALIGN="TOP"><i>sys:;hosts.cl</i></td>
+    <td WIDTH="43%" VALIGN="TOP">load-logical-pathname-translations is called.</td>
+    <td WIDTH="30%" VALIGN="TOP">Will also look in files returned by <a href="operators/excl/logical-pathname-translations-database-pathnames.htm"><b>logical-pathname-translations-database-pathnames</b></a>.
+    See the description of that function for details.</td>
+  </tr>
+  
+</table>
+
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had minimal revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s"> Moderate update since the initial 10.0 release.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/startup.htm">9.0 version</a></td></tr></table></html>

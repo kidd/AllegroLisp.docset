@@ -1,0 +1,52 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>delete-letter</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.post-office</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/delete-letter.htm">9.0 version</a></td></tr></table><h2 id="2">delete-letter</h2>
+
+<p id="3"><b>Arguments: </b><i>mailbox messages
+</i>&amp;key <i>expunge uid</i><i>
+</i></p>
+
+<h3 id="4">
+When mailbox is a connection to an imap server
+</h3>
+<p id="5">
+When using an <strong>imap</strong> server,
+<i>mailbox</i> is the mailbox object returned by <a href="make-imap-connection.htm"><b>make-imap-connection</b></a>.
+This function marks the <i>messages</i> for deletion and
+then removes them permanently (using <a href="expunge-mailbox.htm"><b>expunge-mailbox</b></a>) if
+<i>expunge</i> is true. <i>expunge</i>
+defaults to true. If <i>uid</i> is true then the message
+numbers are unique ids instead of message sequence numbers.
+</p>
+<h3 id="6">
+When mailbox is a connection to a pop server
+</h3>
+<p id="7">
+When using a <strong>pop</strong> server, only the
+<i>mailbox</i> and <i>messages</i>
+arguments are used. This function marks the specified
+<i>messages</i> for deletion.
+<i>mailbox</i> is the mailbox object returned by <a href="make-pop-connection.htm"><b>make-pop-connection</b></a>. The
+messages are only marked for deletion. They are not removed until a
+<a href="close-connection.htm"><b>close-connection</b></a>
+is done. If the connection to the <strong>pop</strong> server is
+broken before a <a href="close-connection.htm"><b>close-connection</b></a> is done, the
+messages will <strong>not</strong> be deleted and they will no longer
+be marked for deletion either.
+</p>
+<p id="8">
+<i>messages</i> can either be a message number, a list
+of the form <strong>(:seq N M)</strong> meaning messages
+<strong>N</strong> through <strong>M</strong> or it can be a list of
+message numbers and/or <strong>:seq</strong> specifiers. The messages
+in a mailbox are numbered starting with one. Marking a message for
+deletion does not affect the numbering of other messages in the
+mailbox.
+</p>
+
+
+<p id="9">
+See <a href="../../imap.htm">imap.htm</a> for more information.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/post-office/delete-letter.htm">9.0 version</a></td></tr></table></body></html>

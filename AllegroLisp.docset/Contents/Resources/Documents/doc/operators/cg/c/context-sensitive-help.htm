@@ -1,0 +1,77 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>context-sensitive-help</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/context-sensitive-help.htm">9.0 version</a></td></tr></table><h2 id="2">context-sensitive-help</h2>
+
+<p id="3"><b>Arguments: </b><i>
+owner-window dialog-item-or-window
+</i></p>
+
+<p id="4">
+This generic function is called whenever the user presses the F1 key,
+typically to receive context-sensitive help. It is also called if the
+user clicks the question mark button on the title-bar of a window that
+has been given the <a href="../h/help-button.htm"><b>help-button</b></a> property, and then
+clicks a dialog-item or child window in the window that has the
+question mark button. An application can add <a href="../c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> methods in
+order to handle these gestures and present help to the user.
+</p>
+<p id="5">
+The built-in Common Graphics methods do nothing, though the <a href="../../../ide-menus-and-dialogs/tools-menu.htm#options">Tools |
+Options</a> dialog in the IDE has the <a href="../h/help-button.htm"><b>help-button</b></a> property and implements
+a <a href="../c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> method to
+show HTML help on the configuration option represented by the selected
+widget.
+</p>
+<p id="6">
+When F1 is pressed, <i>owner-window</i> will be the
+owner window or screen of the window that currently has the keyboard
+focus.  If the focus is in a dialog-item's <a href="../../../classes/cg/widget-window.htm"><code>widget-window</code></a> or <a href="../../../classes/cg/lisp-widget-window.htm"><code>lisp-widget-window</code></a>, then
+<i>dialog-item-or-window</i> will be that dialog-item
+object (rather than its window); otherwise
+<i>dialog-item-or-window</i> will be the actual child
+window that has the keyboard focus.
+</p>
+<p id="7">
+When the question mark button is used instead,
+<i>owner-window</i> will be the owner window or screen
+of the dialog-item or child window on which the user clicks.  If the
+user clicks on a dialog-item of the window that has the question mark
+button, then <i>dialog-item-or-window</i> will be that
+dialog-item object (rather than its window); otherwise
+<i>dialog-item-or-window</i> will be the actual child
+window that the user clicks.  (After clicking the question mark
+button, if the user then clicks somewhere other than on a dialog-item
+or child window of the window that has the question mark button, or
+presses the Escape key, then the operation is cancelled and <a href="../c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> is
+not called.)
+</p>
+<p id="8">
+The <i>owner-window</i> is intended to be useful for
+specialization, so that the individual dialog-items or child windows
+do not all need to be subclassed.
+</p>
+<p id="9">
+If the F1 key is also handled as an <a href="../e/event-synonym.htm"><b>event-synonym</b></a> of a menu-item, or is
+handled by a <a href="../v/virtual-key-down.htm"><b>virtual-key-down</b></a> method, or is a
+global keyboard accelerator (see <a href="../a/add-global-keyboard-accelerator.htm"><b>add-global-keyboard-accelerator</b></a>),
+then that behavior is done in addition to <a href="../c/context-sensitive-help.htm"><b>context-sensitive-help</b></a> being
+called, rather than one overriding the other.
+</p>
+<p id="10">
+Due to operating system design, it is unfortunately not possible to
+tell which action the user performed (either pressing F1 or using the
+question mark button).
+</p>
+<p id="11">
+Also due to operating system design, it is not possible to use the
+<a href="../h/help-button.htm"><b>help-button</b></a>
+property along with the <a href="../m/minimize-button.htm"><b>minimize-button</b></a> or <a href="../m/maximize-button.htm"><b>maximize-button</b></a> property;
+if both are specified or defaulted, the window will show the help
+button but will not be given the minimize or maximize buttons.
+</p>
+<p id="12">
+See <a href="../../../cg/cg-application-help.htm">cg-application-help.htm</a> for various
+ways of displaying help in an application.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/c/context-sensitive-help.htm">9.0 version</a></td></tr></table></body></html>

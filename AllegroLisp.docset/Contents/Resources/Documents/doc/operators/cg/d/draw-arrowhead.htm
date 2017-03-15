@@ -1,0 +1,119 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>draw-arrowhead</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-arrowhead.htm">9.0 version</a></td></tr></table><h2 id="2">draw-arrowhead</h2>
+
+<p id="3"><b>Arguments: </b><i>
+stream from-pos to-pos </i>&amp;key  (<i>length</i> 20) (<i>width</i> 10)<i> fill</i><i>
+</i></p>
+
+<p id="4">
+<a href="../d/draw-arrowhead.htm"><b>draw-arrowhead</b></a>
+draws a simple arrowhead at <i>to-pos</i> for a line
+that was drawn between <i>from-pos</i> and
+<i>to-pos</i>. 
+</p>
+
+<p id="5">
+The returned values indicate the point on the line at the base of the
+arrowhead. This could be used to draw the associated line so that it
+ends at this point instead of at the tip of the arrowhead, in order to
+leave a sharper tip when the line is thick. There are two returned
+values, for the x and y coordinates or the point.
+</p>
+<p id="6">
+While you can draw the line first and then draw arrowheads at one or
+both ends, you can also draw the arrowheads first, capturning the base
+coordinates and then draw the line with one end the base coordinates
+and thus ensure the tip of the arrowhead is sharp.
+</p>
+
+<p id="7">
+The arguments are:
+</p>
+<ul>
+<li id="8">
+<i>stream</i>: the window or other graphical stream on
+which to draw the arrowhead. <i>stream</i> should be a
+<a href="../../../classes/cg/cg-stream.htm"><code>cg-stream</code></a>.
+</li>
+<li id="9">
+<i>from-pos</i>: a position object (see <a href="../m/make-position.htm"><b>make-position</b></a>) indicating
+the "other" end of a line that was drawn, so that the arrow will be
+drawn at the proper angle.
+</li>
+<li id="10">
+<i>to-pos</i>: a position object (see <a href="../m/make-position.htm"><b>make-position</b></a>) indicating the tip
+of the arrowhead.
+</li>
+<li id="11">
+<i>length</i>: the length of the arrowhead in stream
+units (which are usually pixels). The default is 20.
+</li>
+<li id="12">
+<i>width</i>: the width of the arrowhead at its base in
+stream units. The default is 10.
+</li>
+<li id="13">
+<i>fill</i>: either <code>nil</code>,
+<code>t</code>, an RGB color object (see <a href="../m/make-rgb.htm"><b>make-rgb</b></a>), or an HLS color (see
+<a href="../m/make-hls.htm"><b>make-hls</b></a>). This
+argument indicates how the arrow is to be filled.
+<p id="14">
+If the value is <code>nil</code> (the default), the arrow
+is filled in the current <a href="../b/background-color.htm"><b>background-color</b></a> of the stream.
+This creates the effect of a hollow arrow (with the background color
+showing through the arrowhead), though in fact the interior is still
+filled in order to cover over the end of the actual line that was
+drawn beforehand.
+</p>
+<p id="15">
+If the value is <code>t</code>, then the arrow is filled
+with the current <a href="../f/foreground-color.htm"><b>foreground-color</b></a> of the stream,
+which is the color that is always used to draw the border of the
+arrowhead; this creates a solid arrow.
+</p>
+<p id="16">
+If the value is an RGB or HLS color
+object, then the arrowhead is filled with that color. This option may
+be used to fill the arrowhead with a different color than is used for
+the border of the arrowhead.
+</p>
+</li>
+</ul>
+
+<h3 id="17">Example</h3>
+<p id="18">
+Here is an example function that draws arrows at various angles.
+</p>
+<pre id="19">
+(defun test-arrowheads (&key (length 20)(width 10))
+  (let* ((window (make-window :arrows
+                   :class 'bitmap-window
+                   :title "Arrowheads"
+                   :interior (make-box 200 200 600 600)
+                   :scrollbars nil))
+         (pane (frame-child window))
+         (center #.(make-position 200 200))
+         coord side)
+    (with-positions (pos1)
+      (dotimes (j 9)
+        (setq coord (+ 200 (* 40 (- j 4))))
+        (dolist (fill (list nil t))
+          (setq side (if fill 360 40))
+          (nmake-position pos1 side coord)
+          (draw-line pane center pos1)
+          (draw-arrowhead pane center pos1 :fill fill
+                          :length length :width width)
+          (nmake-position pos1 coord side)
+          (draw-line pane center pos1)
+          (draw-arrowhead pane center pos1 :fill fill
+                          :length length :width width))))))
+
+</pre>
+
+<p id="20">
+See also <a href="../../../cg/cg-drawing.htm">cg-drawing.htm</a>.
+</p>
+
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/draw-arrowhead.htm">9.0 version</a></td></tr></table></body></html>

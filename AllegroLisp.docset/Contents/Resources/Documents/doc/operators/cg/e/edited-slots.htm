@@ -1,0 +1,506 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>edited-slots</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/edited-slots.htm">9.0 version</a></td></tr></table><h2 id="2">edited-slots</h2>
+
+<p id="3"><b>Arguments: </b><i>
+class-grid-or-object-editor
+</i></p>
+
+<p id="4">
+Returns the edited-slots property value of an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> dialog or <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> widget. The value may be set when
+creating either of those interface objects by passing the
+<i>edited-slots</i> initarg, or anytime later by calling
+<a href="../e/edited-slots.htm"><b>(setf
+edited-slots)</b></a>.
+</p>
+<p id="5">
+An edited-slots value is a high-level specification that tells an
+<a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> or <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> which slots of its
+edited-class it should edit, and how it should edit each of those
+slots.  When the <a href="../e/edited-slots.htm"><b>edited-slots</b></a>
+property is set, an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will create or update its widgets
+as needed for editing those slots as specified, or a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will create or update
+its grid columns.
+</p>
+<p id="6">
+When creating an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> dialog as a form window in an IDE
+project, or when creating a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> on a form, the edited-slots value can
+be specified interactively using the IDE's <a href="../../../ide-menus-and-dialogs/class-interface-editor-dialog.htm">Class Interface Editor</a>
+dialog.  Otherwise the expression must be specified programmatically
+using the options documented here.  For an extended example of
+specifying an <a href="../e/edited-slots.htm"><b>edited-slots</b></a>
+expression programmatically,
+see <a href="../../../cg/cg-object-editor-and-class-grid.htm">Creating an
+Object-Editor Dialog or Class-Grid Programmatically</a>.
+</p>
+<p id="7">
+Here is small sample edited-slots value:
+</p>
+
+<pre id="8">
+((last-name
+  :edited-type (:variable-char)
+  :width 120)
+ (date-of-birth
+  :edited-type (:date :yyyy/mm/dd))
+ (favorite-color
+  :edited-type (:single-choice (:red :green :blue :yellow))
+  :on-print capitalize-object
+  :label "Fave Color")
+ (best-friend
+  :edited-type (:class-instance patient)
+  :width 140)
+ ((best-friend date-of-birth)
+  :label "Best Friend's Birth Date"
+  :edited-type (:date :yyyy/mm/dd)))
+</pre>
+
+<p id="9">
+An <a href="../e/edited-slots.htm"><b>edited-slots</b></a> value is a
+list where each element of the list describes how to edit a particular
+slot.  We'll call these elements <i><b>slot entries</b></i> here. A
+slot entry is a list where the first element is a <i>slot
+reference</i>, and the rest of the list is an <i><b>options
+plist</b></i>.
+</p>
+<p id="10">
+A slot reference is either a slot name or a list of slot names.  When
+it is a slot name, it should be the name of a slot of the edited-class
+of the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> or
+<a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>. In that case,
+the widget or grid column that is created will directly access that
+slot of the displayed instances.  When it is a list of slot names,
+then the widget or grid column will indirectly access a slot of some
+other object; see Editing Slots Indirectly below.
+</p>
+<p id="11">
+An options plist consists of alternating option keywords and option
+values that determine how the generated user interface will edit a
+particular slot.  A special option is the
+<code>:edited-type</code> option that determines the type of
+widget that will be used and such things as what choices it might
+offer.  Other options are generally geared toward the look and feel.
+</p>
+
+<h2 id="12">
+The :edited-type Option
+</h2>
+
+<p id="13">
+An <code>:edited-type</code> value is a list where the first
+element is a keyword that indicates which basic type of editing to
+use, such as <code>:variable-char</code> or
+<code>:class-instance</code>.  The rest of the list contains
+zero, one, or two parameters, depending on the basic type.  Here is a
+list of all of the basic editing types, their meanings, and what else
+should be in the list for each type.
+</p>
+
+<ul>
+<li id="14">
+
+<b><code>:static-text</code></b> - The value is displayed as a single
+line of text of any length, and the user cannot modify the value.
+There are no parameters. An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-static-text-column.htm"><code>class-grid-static-text-column</code></a> with its <a href="../s/single-line.htm"><b>single-line</b></a> property set to true. If
+the slot value is not a string, then <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a> is used to produce a string.
+
+</li>
+<li id="15">
+
+<b><code>:static-text-multi-line</code></b> - the value is displayed as
+multiple lines of text of any length, and the user cannot modify the
+value. There are no parameters.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/scrolling-static-text.htm"><code>scrolling-static-text</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-static-text-column.htm"><code>class-grid-static-text-column</code></a> with
+its <a href="../s/single-line.htm"><b>single-line</b></a> property set
+to <code>nil</code>.  If the slot value is not a string,
+then <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a> is used
+to produce a string.
+
+</li>
+<li id="16">
+
+<b><code>:variable-char</code></b> - the value is displayed as a single
+line of text of any length, and the user can modify the value.  There
+are no parameters.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use an <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-editable-text-column.htm"><code>class-grid-editable-text-column</code></a>.
+
+</li>
+<li id="17">
+
+<b><code>:variable-char-multi-line</code></b> - the value is displayed
+as multiple lines of text of any length, and the user can modify the
+value. There are no parameters.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/multi-line-editable-text.htm"><code>multi-line-editable-text</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-editable-text-column.htm"><code>class-grid-editable-text-column</code></a>.
+
+</li>
+<li id="18">
+
+<b><code>:fixed-char</code></b> - the value is displayed as a single
+line of text of a specific length, and the user can modify the value.
+There is one parameter, which is the length of the string.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use an <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> widget with a <a href="../t/template-string.htm"><b>template-string</b></a>, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-editable-text-column.htm"><code>class-grid-editable-text-column</code></a>
+with a <a href="../t/template-string.htm"><b>template-string</b></a>.  The
+<code>:horizontal-justification</code> option defaults to
+<code>:left</code>.
+
+</li>
+<li id="19">
+
+<b><code>:fixed-numeric</code></b> - the value is displayed as a single
+line of text of a specific length, and the user can modify the value.
+The user can enter only numerals, or a plus or minus character if the
+<code>:template-allows-sign</code> option is true and there are
+no non-space characters to the left of the current position.  There
+are two parameters, the first being the number of digits before the
+decimal point, and the second being the number of digits after the
+decimal point.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use an <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> widget with a <a href="../t/template-string.htm"><b>template-string</b></a>, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-numeric-editable-text-column.htm"><code>class-grid-numeric-editable-text-column</code></a> with a
+<a href="../t/template-string.htm"><b>template-string</b></a>.  The
+<code>:horizontal-justification</code> option defaults to
+<code>:right</code>.
+
+</li>
+<li id="20">
+
+<b><code>:date</code></b> - the value is displayed as a single line of
+text of a specific length, and the user can modify the value.  There
+is one parameter, which is a keyword indicating the format of the date
+string; possible values currently are <code>:yyyy/mm/dd</code>,
+<code>:mm/dd/yyyy</code>, <code>:mm/dd/yy</code>,
+<code>:dd/mm/yyyy</code>, and <code>:dd/mm/yy</code>.  The
+user can enter only numerals.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use an <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> widget with a <a href="../t/template-string.htm"><b>template-string</b></a>, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-editable-text-column.htm"><code>class-grid-editable-text-column</code></a> with a <a href="../t/template-string.htm"><b>template-string</b></a>. The
+<code>:horizontal-justification</code> option defaults to
+<code>:left</code>.
+
+</li>
+<li id="21">
+
+<b><code>:boolean</code></b> - the value is displayed as <code>nil</code> or true (which is anything other than <code>nil</code>), and the user can toggle the value between
+<code>nil</code> and <code>t</code>.  There
+are no parameters.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/check-box.htm"><code>check-box</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-check-box-column.htm"><code>class-grid-check-box-column</code></a>.
+
+</li>
+<li id="22">
+
+<b><code>:single-choice</code></b> - the value is displayed as a single
+line of text, with a dropping list of choices from which the user can
+select a single choice.  There is a single parameter, which is the
+list of choices.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-combo-box-column.htm"><code>class-grid-combo-box-column</code></a>.
+
+</li>
+<li id="23">
+
+<b><code>:multiple-choice</code></b> - the value is displayed as
+selected items in a list of all choices. There is a single parameter,
+which is the list of choices.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/multi-item-list.htm"><code>multi-item-list</code></a> with the <a href="../s/simple-click-toggle.htm"><b>simple-click-toggle</b></a> property set to true.  This
+option is not implemented in a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>.
+
+</li>
+<li id="24">
+
+<b><code>:pixmap</code></b> - the value is displayed as a pixmap that
+represents an associated slot value.  The user can modify the value by
+clicking the widget or grid cell, or by pressing the spacebar when the
+widget or grid cell has the keyboard focus.  This action changes the
+pixmap to the next choice (cycling through all choices repeatedly as
+needed) and sets up the associated user value to be written to the
+slot (if confirmed, as usual).  There may be either one or two
+parameters.  The first parameter is an association list that maps
+arbitrary slot values to pixmaps.  The first element of each alist
+entry is an arbitrary slot value, and the second is the name of a
+pixmap that has been cached by calling <a href="../c/cache-pixmap.htm"><b>cache-pixmap</b></a>.  If the current slot value is not
+in the alist, then no pixmap is drawn (the widget or grid cell will be
+blank).  A pixmap value may be <code>nil</code> to not
+draw a pixmap but still allow the user to set the slot to the
+associated value by cycling to it as usual with the mouse or spacebar.
+The (optional) second parameter may be <code>nil</code> or
+true, indicating whether the pixmap should stretch to fill the
+available space in the widget or grid cell; it defaults to <code>nil</code> to draw the pixmap at its normal size.
+
+</li>
+<li id="25">
+
+<b><code>:static-pixmap</code></b> - like <code>:pixmap</code>,
+except that the user cannot modify the value interactively.  Clicking
+the pixmap or pressing the spacebar will have no effect.
+
+</li>
+<li id="26">
+
+<b><code>:class-instance</code></b> - the value is expected to
+be a class instance, and is displayed as a single line of text, with a
+dropping list of choices from which the user can select a single
+choice.  There is one parameter, which is the name of the class of
+which the slot holds an instance.  A separate
+<code>:edited-instances</code> option may be a list of instances
+to offer as choices.  The <a href="../p/primary-name-slot.htm"><b>primary-name-slot</b></a> and/or <a href="../s/secondary-name-slot.htm"><b>secondary-name-slot</b></a> of the class (if any) will
+be used to find the string to display for each instance; otherwise the
+class's <a href="../../../../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method
+will be used.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-combo-box-column.htm"><code>class-grid-combo-box-column</code></a>.
+
+</li>
+<li id="27">
+
+<b><code>:static-class-instance</code></b> - the value is
+expected to be a class instance, and is displayed as a single line of
+text, and the user cannot modify the value.  There is one parameter,
+which is the name of the class of which the slot holds an instance.
+The <a href="../p/primary-name-slot.htm"><b>primary-name-slot</b></a> and/or
+<a href="../s/secondary-name-slot.htm"><b>secondary-name-slot</b></a> of the
+class (if any) will be used to find the string to display for each
+instance; otherwise the class's <a href="../../../../ansicl/dictentr/print-ob.htm"><b>print-object</b></a> method will be used.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/static-text.htm"><code>static-text</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> will use a <a href="../../../classes/cg/class-grid-static-text-column.htm"><code>class-grid-static-text-column</code></a>.
+
+</li>
+<li id="28">
+
+<b><code>:table-of-class-instances</code></b> - the value is expected
+to be a list of class instances of a single class, and is displayed as
+a table.  There is one parameter, which is the name of the class of
+the instances.  A nested <code>:edited-slots</code> option
+should be passed to specify the columns of the table.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> will use a <a href="../../../classes/cg/slot-editing-class-grid.htm"><code>slot-editing-class-grid</code></a>.  This
+option is not implemented in a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>.  The user can edit the instances in
+the <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> as with any
+<a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>, so static types
+should be used for the columns if you don't want the end user to be
+able to edit the instances indirectly in this table.
+
+</li>
+<li id="29">
+
+<b><code>:lisp-type</code></b> - the value is displayed as a single
+line of text that is printed via <a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a>.  The user can modify the text,
+which is then read with the lisp reader to return a lisp object to
+return to the slot.  There is one parameter, which is the lisp type of
+the values; it may be any lisp type, though only some types of lisp
+values may be saved in an AllegroCache database.  An <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> uses a <a href="../../../classes/cg/lisp-text.htm"><code>lisp-text</code></a> widget, and a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> uses a <a href="../../../classes/cg/class-grid-lisp-text-column.htm"><code>class-grid-lisp-text-column</code></a>.
+
+</li>
+</ul>
+
+<h2 id="30">
+Other Options
+</h2>
+
+<p id="31">
+Here are the options other than the special
+<code>:edited-type</code> option documented just above.
+</p>
+
+<ul>
+<li id="32">
+
+<b><code>:label</code></b> - a string to display beside a widget in an
+<a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> or in a
+column header of a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>.  If <code>nil</code> or
+unspecified, defaults to the name of the edited slot with dashes
+converted to spaces and then each word capitalized.
+
+</li>
+<li id="33">
+
+<b><code>:width</code></b> - the width of the widget or grid-column,
+measured in pixels.  If <code>nil</code> or unspecified, a
+default value will be used.  For the fixed-length types, a default
+width is computed that fits the number of characters in the
+template-string.  For the pixmap types, the default is 32.  For the
+<code>:table-of-class-instances</code> type, the default is the
+entire interior width of the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>, minus the outer margins and any
+room taken up by the table's helper buttons.  For all other types, the
+default is the <a href="../l/layout-widget-width.htm"><b>layout-widget-width</b></a> of the <a href="../l/layout-spacing.htm"><b>layout-spacing</b></a> of an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>, or the <a href="../d/default-column-width.htm"><b>default-column-width</b></a> of a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>.
+
+</li>
+<li id="34">
+
+<b><code>:height</code></b> - the height of the widget, measured in
+pixels.  Not applicable to <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>, where the <a href="../b/body-row-height.htm"><b>body-row-height</b></a> of the class-grid is always
+used.  If <code>nil</code> or unspecified, a default value
+will be used.  For a multi-line widget, the default is the <a href="../l/layout-multi-line-widget-height.htm"><b>layout-multi-line-widget-height</b></a> of the
+<a href="../l/layout-spacing.htm"><b>layout-spacing</b></a> of the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>.  For a single-line
+widget, the default is the <a href="../l/layout-single-line-widget-height.htm"><b>layout-single-line-widget-height</b></a> of the <a href="../l/layout-spacing.htm"><b>layout-spacing</b></a> of the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> if that is
+non-<code>nil</code>, and otherwise a height that fits the
+widget's font.  For a type that is implemented as a <a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a>, the standard combo-box
+height will be used (with a dropping list that's 200 pixels tall).
+For the pixmap types, the default is 32.  For the
+<code>:table-of-class-instances-type</code>, the default is the
+<a href="../l/layout-table-height.htm"><b>layout-table-height</b></a> of the
+<a href="../l/layout-spacing.htm"><b>layout-spacing</b></a> of the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>.
+
+</li>
+<li id="35">
+
+<b><code>:width-in-chars</code></b> - the width of the widget or
+grid-column, measured in "m" characters.  When true, this option takes
+precedence over the <code>:width</code> option.
+
+</li>
+<li id="36">
+
+<b><code>:font</code></b> - the font to use in the widget or
+grid-column.  If <code>nil</code> or unspecified, then a
+default font is used according to the
+<code>:fixed-width-font</code> option.
+
+</li>
+<li id="37">
+
+<b><code>:fixed-width-font</code></b> - used only when the
+<code>:font</code> option is <code>nil</code> or
+unspecified.  A boolean value indicating whether the default font that
+is used has fixed-width characters.  If this option is specified as
+true, then the global Common Graphics <a href="../f/fixed-font.htm"><b>fixed-font</b></a> is used.  If this option is specified
+as <code>nil</code>, then the global Common
+Graphics <a href="../p/proportional-font.htm"><b>proportional-font</b></a> is
+used.  If this option is not specified, then fixed-font is used for
+the
+<code>:fixed-char</code>, <code>:fixed-numeric</code>, and
+<code>:date</code> types and otherwise proportional-font is
+used.
+
+</li>
+<li id="38">
+
+<b><code>:help-string</code></b> - a string to display when the mouse
+cursor is over the widget.  This string will be displayed in the
+status-bar of the nearest ancestor window that has a status-bar, if
+any.  If <code>nil</code> or unspecified, then no string
+is displayed.
+
+</li>
+<li id="39">
+
+<b><code>:on-print</code></b> - a function that converts a user value
+into a string to display.  Its single argument should be the user
+value, and it should return the string to display.  If <code>nil</code> or unspecified, this effectively defaults to
+<a href="../../../../ansicl/dictentr/write-to.htm"><b>princ-to-string</b></a> for values
+that are not strings already.
+
+</li>
+<li id="40">
+
+<b><code>:horizontal-justification</code></b> - one of the values
+<code>:left</code>, <code>:center</code>, or
+<code>:right</code>.  If unspecified, defaults to
+<code>:right</code> for the <code>:fixed-numeric</code>
+type and otherwise to <code>:left</code>.  Applicable to the
+types <code>:static-text</code>,
+<code>:scrolling-static-text</code>,
+<code>:variable-char</code>,
+<code>:variable-char-multi-line</code>,
+<code>:fixed-char</code>, <code>:fixed-numeric</code>,
+<code>:date</code>, <code>:static-class-instance</code>,
+and <code>:lisp-type</code>.
+
+</li>
+<li id="41">
+
+<b><code>:vertical-justification</code></b> - one of the values
+<code>:top</code>, <code>:center</code>, or
+<code>:bottom</code>.  If unspecified, defaults to
+<code>:center</code>.  Applicable to all types in a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>, for positioning within
+a grid cell.  Not applicable to <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>.
+
+</li>
+
+<li id="42">
+<b><code>:resizable</code></b>: a boolean value indicating
+whether the user can change the width of the <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a> column by dragging the right edge of
+its header cell. Not applicable to <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>. If unspecified, the default
+is <code>t</code>.
+</li>
+<li id="43">
+<b><code>:proportional</code></b>: a boolean value indicating
+whether the <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>
+column's width will be adjusted proportionally when the width of the
+class-grid itself changes. Not applicable to <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>. If unspecified, the default is
+<code>nil</code>.
+</li>
+
+<li id="44">
+
+<b><code>:sortable</code></b> - a boolean value indicating whether the
+user can sort a <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>
+by the grid column for this slot.  Not applicable to <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>.  If unspecified, the
+default is <code>nil</code>.
+
+</li>
+<li id="45">
+
+<b><code>:edited-instances</code></b> - a list of instances that are
+offered as choices for the <code>:class-instance</code> type.
+When unspecified, all class instances will be displayed if the class is
+persistent, and otherwise it is an error (because all instances cannot
+be found).  This option is not allowed on a form window in a project,
+because the instances cannot be saved in the generated code to create
+the running window.
+
+</li>
+<li id="46">
+
+<b><code>:edited-slots</code></b> - applicable only to the
+<code>:table-of-class-instances</code> type, which is allowed
+only on an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a>.
+Specifies a nested edited-slots specification for the columns of a
+class-grid widget that's on an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> dialog.
+
+</li>
+<li id="47">
+
+<b><code>:template-allows-sign</code></b> - applicable only to the
+<code>:fixed-numeric</code> type.  A boolean value indicating
+whether the user is allowed to type a plus or minus character to the
+left of all non-whitespace characters.  If unspecified, the default is
+<code>nil</code>.
+
+</li>
+<li id="48">
+
+<b><code>:edit-start-trigger</code></b> - one of the values
+<code>:click</code>, <code>:get-focus</code>, or
+<code>:begin-typing</code>, determining the user action that will
+begin text editing in a grid cell.  See <a href="../e/edit-start-trigger.htm"><b>edit-start-trigger</b></a>.  Applicable only to <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>, and only for the types
+<code>:fixed-numeric</code>, <code>:fixed-char</code>,
+<code>:date</code>, <code>:variable-char</code>, and
+<code>:variable-char-multi-line</code>.  If unspecified, the
+default is <code>:click</code>.  See <a href="../e/edit-start-trigger.htm"><b>edit-start-trigger</b></a>.
+
+</li>
+<li id="49">
+
+<b><code>:edit-end-trigger</code></b> - one of the values
+<code>:enter</code> or <code>:enter-or-arrow-keys</code>,
+determining the user action that will end text editing in a grid cell.
+See <a href="../e/edit-end-trigger.htm"><b>edit-end-trigger</b></a>.
+Applicable only to <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>, and only for the types
+<code>:fixed-numeric</code>, <code>:fixed-char</code>,
+<code>:date</code>, <code>:variable-char</code>, and
+<code>:variable-char-multi-line</code>.  If unspecified, the
+default is <code>:enter</code>.  See <a href="../e/edit-end-trigger.htm"><b>edit-end-trigger</b></a>.
+
+</li>
+</ul>
+
+<h2 id="50">
+Editing Slots Indirectly
+</h2>
+
+<p id="51">
+When a slot reference is a list of slot names, the associated widget
+or grid column will indirectly edit a slot of some object other than
+the one being displayed by the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> or <a href="../../../classes/cg/class-grid.htm"><code>class-grid</code></a>.  It does this by taking the first
+slot-name in the list and reading the value of that slot of the
+displayed instance.  If there are further slot names in the list, then
+the value that was read is expected to be a first-class object (a
+class instance), and the next slot in the list is read from that
+object.  That continues until the last slot is read.
+</p>
+<p id="52">
+For example, if an <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> is editing a patient, and the slot
+reference for one of its widgets is <code>(hospital ceo
+phone-number)</code>, then the widget will read what should be a
+hospital object from the hospital slot of the patient that the <a href="../../../classes/cg/object-editor.htm"><code>object-editor</code></a> is currently
+displaying, then read a CEO object from the ceo slot of that hospital
+object, and then read a value from the phone-number slot of that CEO
+object.  This will hopefully be the phone number of the CEO of the
+hospital of the patient.  If the user edits the value of the widget
+and saves it, then this would change the CEO's phone number even
+though the dialog is editing a patient.  For that reason, it's
+probably usually appropriate to use static (non-editable) widgets for
+indirect slot references.
+</p>
+
+<hr><p id="53"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/e/edited-slots.htm">9.0 version</a></td></tr></table></body></html>

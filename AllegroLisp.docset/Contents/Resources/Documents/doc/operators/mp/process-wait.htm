@@ -1,0 +1,139 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>process-wait</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-wait.htm">9.0 version</a></td></tr></table><h2 id="2">process-wait</h2>
+
+<p id="3"><b>Arguments: </b><i>
+whostate function </i> &amp;rest <i>arguments</i><i>
+</i></p>
+
+<p id="4">
+This function suspends the current process (the value of <a href="../../variables/system/s_current-process_s.htm"><code>*current-process*</code></a>) until
+applying the wait function <i>function</i> to
+<i>arguments</i> yields true. The
+<i>whostate</i> argument must be a string which
+temporarily replaces the process' whostate for the duration of the
+wait. This function returns <code>nil</code>.
+</p>
+<p id="5">
+If the wait function, <i>function</i>, is one of these:
+</p>
+<ul>
+<li id="6">
+<a href="gate-open-p.htm"><b>gate-open-p</b></a> or
+<code>(symbol-function 'gate-open-p)</code>
+</li>
+<li id="7">
+<a href="../excl/read-no-hang-p.htm"><b>read-no-hang-p</b></a> or
+<code>(symbol-function 'read-no-hang-p)</code>
+</li>
+<li id="8">
+<a href="../excl/write-no-hang-p.htm"><b>write-no-hang-p</b></a>
+or <code>(symbol-function 'write-no-hang-p)</code>
+</li>
+<li id="9">
+<a href="../excl/stream-listen.htm"><b>stream-listen</b></a> or
+<code>(symbol-function 'stream-listen)</code>
+</li>
+</ul>
+<p id="10">
+then the wait can be scheduled without any additional effort.  If a
+more general wait funtion is used, then in the native threads model
+Allegro CL starts a non-process support thread to make sure the
+general wait conditions are tested periodically. They will be tested
+in any event before the lisp goes idle, but the
+<b>general-wait-tester</b>, as it's called, ensures that the tests are
+made at reasonable intervals. See also <a href="../../variables/mp/s_general-wait-delay_s.htm"><code>*general-wait-delay*</code></a>.
+</p>
+<p id="11">
+See <a href="../../multiprocessing.htm#gates-1">Gates</a>
+in <a href="../../multiprocessing.htm">multiprocessing.htm</a> for a discussion of gates,
+one of the efficient choices.
+</p>
+<p id="12">
+Wait functions get called arbitrarily many times and they may be
+called in a dynamic state (and in a thread) other than that of the
+waiting thread that specified it. They are typically also called even
+after they have returned non-<code>nil</code> (that is,
+after they have already indicated the wait is over). Because of this,
+wait functions with side effects should be coded very carefully so
+that the multiple calls and calls after they have returned non-<code>nil</code> do not cause problems. And all wait funcions:
+</p>
+<ul>
+<li id="13">
+should be fast
+</li>
+<li id="14">
+must do no i/o
+</li>
+<li id="15">
+must not process windows messages
+</li>
+<li id="16">
+must not wait on anything (directly or indirectly, so no calls to <a href="../system/with-timeout.htm"><b>with-timeout</b></a> or <a href="with-process-lock.htm"><b>with-process-lock</b></a>, for example)
+</li>
+<li id="17">
+must not contain <a href="../excl/without-interrupts.htm"><b>without-interrupts</b></a> or <a href="../system/without-scheduling.htm"><b>without-scheduling</b></a> forms
+</li>
+</ul>
+<p id="18">
+If a wait function signals an error, the waiting thread will no longer
+be waiting; it will call the wait function again, outside the
+scheduling regime, and react there to the signalled error.
+</p>
+
+<p id="19">
+See the discussion in the following sections in 
+<a href="../../multiprocessing.htm">multiprocessing.htm</a> for
+information on why not to use this function when waiting for input
+from a file.
+</p>
+
+<ul>
+<li id="20">
+<a href="../../multiprocessing.htm#waiting-for-input-ost-2">Waiting for input from a stream</a>
+</li>
+<li id="21">
+<a href="../../multiprocessing.htm#process-wait-vs-wait-for-input-available-ost-3">mp:process-wait 
+vs mp:wait-for-input-available</a>
+</li>
+</ul>
+
+<p id="22">See also 
+<a href="wait-for-input-available.htm"><b>wait-for-input-available</b></a>
+and <a href="waiting-for-input-available.htm"><b>waiting-for-input-available</b></a>.
+</p>
+<p id="23">
+See <a href="../../cgide.htm#cg-event-driven-design-1">About
+design considerations for event-driven applications</a> in
+<a href="../../cgide.htm">cgide.htm</a> and <a href="../cg/p/post-funcall-in-cg-process.htm"><b>post-funcall-in-cg-process</b></a> if you
+intend to call this function is a Common Graphics process.
+</p>
+
+
+<h3 id="24">
+Arbitrary wait functions in non-SMP Lisps
+</h3>
+
+<p id="25">
+Handling arbitrary wait functions may require a heartbeat process must
+be running (one is already running in SMP Lisps). You can do this be
+evaluating:
+</p>
+
+<pre id="26">
+(mp:process-run-function "heartbeat" #'(lambda () (loop (sleep 1))))
+</pre>
+
+<p id="27">
+If no heartbeat is running, you may get a bus error with an arbitrary
+wait function.
+</p>
+
+
+<p id="28">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="29"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/mp/process-wait.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>*temporary-directory*</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: system</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/system/s_temporary-directory_s.htm">9.0 version</a></td></tr></table><h2 id="2">*temporary-directory*</h2>
+
+<p id="3">
+The value of this variable should be a pathname object naming a
+directory. This directory will be used as the temporary directory by
+<a href="../../operators/system/temporary-directory.htm"><b>temporary-directory</b></a>.
+</p>
+
+<p id="4">
+The value of this variable can also
+be <code>nil</code>. If it
+is <code>nil</code>, when <a href="../../operators/system/temporary-directory.htm"><b>temporary-directory</b></a> is called, it will
+determine a suitable value and make it the value of this variable.
+</p>
+<p id="5">
+<a href="../../operators/system/temporary-directory.htm"><b>sys:temporary-directory</b></a>
+should be used to access the value of this variable. It tests (using
+<a href="../../../ansicl/dictentr/probe-fi.htm"><b>probe-file</b></a>) whether
+the value of this variable is <code>nil</code> or an
+invalid directory pathname, resetting the value to a suitable
+directory pathname if <a href="../../../ansicl/dictentr/probe-fi.htm"><b>probe-file</b></a>
+returns <code>nil</code> and returning this variable's
+value if <a href="../../../ansicl/dictentr/probe-fi.htm"><b>probe-file</b></a>
+returns true. See <a href="../../operators/system/temporary-directory.htm"><b>sys:temporary-directory</b></a> for details on how a
+new directory is chosen if necessary.
+</p>
+<p id="6">
+The initial value of this variable is <code>nil</code>. In
+images created by <a href="../../operators/excl/dumplisp.htm"><b>dumplisp</b></a>, <a href="../../operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>, or
+<a href="../../operators/excl/generate-application.htm"><b>generate-application</b></a>, it may
+happen that the initial value in an image is a valid directory
+pathname set in some fashion during image creation. In that case, that
+directory will be used (even if this is not the intention of the
+user).
+</p>
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/system/s_temporary-directory_s.htm">9.0 version</a></td></tr></table></body></html>

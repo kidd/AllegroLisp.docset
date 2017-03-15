@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>icon-images</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/i/icon-images.htm">9.0 version</a></td></tr></table><h2 id="2">icon-images</h2>
+
+<p id="3"><b>Arguments: </b><i>
+icon-drawing-view
+</i></p>
+
+ 
+<p id="4">
+Returns the value of the <a href="../i/icon-images.htm"><b>icon-images</b></a> property of an <a href="../../../classes/cg/icon-drawing-view.htm"><code>icon-drawing-view</code></a>. The value may be set at
+creation time by passing
+the <i>icon-images</i> initarg, or any time
+later by calling <a href="../i/icon-images.htm"><b>(setf icon-images)</b></a>.
+</p>
+<p id="5">
+The images that are used as icons for an <a href="../../../classes/cg/icon-drawing-view.htm"><code>icon-drawing-view</code></a> in a <a href="../../../classes/cg/chart-or-plot.htm"><code>chart-or-plot</code></a>. The value should be a sequence
+(list or vector) where each element is either a pixmap, or the symbol
+name of a pixmap that has been cached by calling <a href="../c/cache-pixmap.htm"><b>cache-pixmap</b></a>, or else the name of one of the
+built-in non-pixmap icons. The default value is the
+list <code>(:circle :square :triangle :diamond)</code>, which is
+a list of all of the non-pixmap icons except
+for <code>:dot</code>.
+</p>
+<p id="6">
+When a pixmap is used as an icon, it is drawn at its natural size and
+centered about the data point that it represents. Pixmap icons look
+better when they have masks so that they do not make a rectangular
+area of the graph totally opaque;
+see <a href="../../../cg/cg-pixmaps.htm">cg-pixmaps.htm</a> for how to define
+pixmaps with masks.
+</p>
+<p id="7">
+When the name of a built-in non-pixmap icon is used as an icon, it
+should be one of the keyword symbols <code>:circle</code>,
+<code>:square</code>, <code>:triangle</code>,
+<code>:diamond</code>, or <code>:dot</code>. These icons
+are line drawings that can be scaled with the <a href="../i/icon-sizes.htm"><b>icon-sizes</b></a> property, and are drawn according to
+the <a href="../i/icon-line-widths.htm"><b>icon-line-widths</b></a>,
+<a href="../i/icons-filled.htm"><b>icons-filled</b></a>,
+and <a href="../i/icon-fill-colors.htm"><b>icon-fill-colors</b></a>
+properties.
+</p>
+<p id="8">
+If this property value is <code>nil</code>, then no icons
+are drawn. Otherwise, the first object in the chart-widget's sequence
+of <a href="../c/chart-objects.htm"><b>chart-objects</b></a> is drawn with
+the first icon, the second object with the second icon, and so on. If
+there are fewer icons in the list than there are <a href="../c/chart-objects.htm"><b>chart-objects</b></a>, then the drawing code will cycle
+back through the list of icons as needed.
+</p>
+<p id="9">
+This property is used only when the <a href="../d/draw-icons.htm"><b>draw-icons</b></a> property is true.
+</p>
+
+
+<p id="10">
+See <a href="../../../classes/cg/chart-widget.htm"><code>chart-widget</code></a> and also <a href="../../../cg/cg-chart-widget.htm">cg-chart-widget.htm</a>.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/i/icon-images.htm">9.0 version</a></td></tr></table></body></html>

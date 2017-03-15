@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ftrace</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/ftrace.htm">9.0 version</a></td></tr></table><h2 id="2">ftrace</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+function-spec </i>&amp;key <i>condition break-before break-after inside not-inside print-before print-after show-stack</i><i>
+</i></p>
+
+<p id="4">
+Starts tracing <i>function-spec</i>, which can be a
+function name (such as a symbol naming a function) or a function
+object (such as returned by <a href="../../../ansicl/dictentr/functio3.htm"><b>function</b></a> applied to a symbol naming a
+function). The related macro <a href="../../../ansicl/dictentr/traceunt.htm"><b>trace</b></a> and top-level command <a href="../../tpl-commands/trace.htm"><b>:trace</b></a> do not accept function objects as
+arguments.
+</p>
+<p id="5">
+Thus,
+</p>
+<pre id="6">
+(ftrace #'foo)
+</pre>
+<p id="7">
+starts tracing of the function object associated with
+<code>foo</code>.  See also <a href="funtrace.htm"><b>funtrace</b></a>. See <a href="../../debugging.htm#tracer-1">The tracer</a> and <a href="../../debugging.htm#tracing-function-objects-2">Tracing function
+objects</a> in <a href="../../debugging.htm">debugging.htm</a>.
+</p>
+<p id="8">
+The various keyword arguments (<i>condition</i>,
+<i>break-before</i>, <i>break-after</i>,
+<i>inside</i>, <i>not-inside</i>,
+<i>print-before</i>, <i>print-after</i>)
+are a subset of those accepted by the <a href="../../tpl-commands/trace.htm"><b>:trace</b></a> top-level command and have the same
+effect. See that page for details.
+</p>
+<p id="9">
+The <a href="../../tpl-commands/trace.htm"><b>:trace</b></a> top-level command also
+accepts the keyword arguments <i>break-all</i> and
+<i>print-all</i>, which are not accepted by <a href="ftrace.htm"><b>ftrace</b></a>. To achieve the effect of
+specifying either of those, specify both the associated
+<i>before</i> and <i>after</i> arguments
+as true. Thus, to get the effect of <code>:print-all t</code>
+passed to <a href="../../tpl-commands/trace.htm"><b>:trace</b></a>, specify
+<code>:print-before t :print-after t</code> to <a href="ftrace.htm"><b>ftrace</b></a>; similarly specify
+<code>:break-before t :break-after t</code> in place of
+<code>:break-all t</code>.
+</p>
+
+
+<hr><p id="10"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/ftrace.htm">9.0 version</a></td></tr></table></body></html>

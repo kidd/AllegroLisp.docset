@@ -1,0 +1,27 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>po-and</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/po-and.htm">9.0 version</a></td></tr></table><h2 id="2">po-and</h2>
+
+<p id="3">
+A paint operation that "erases" color from the destination stream,
+except for the color in the new content being drawn.  More precisely,
+each bit in the resulting color value of a pixel on the destination
+stream will be set to one if the corresponding bit was already one on
+the destination stream <b>and</b> is one in the new content being
+drawn.  See <a href="../../operators/cg/p/paint-operation.htm"><b>paint-operation</b></a>.
+</p>
+<p id="4">
+For example, if you set the <a href="../../operators/cg/f/foreground-color.htm"><b>foreground-color</b></a> of a stream to be <a href="red.htm"><code>red</code></a> and set its <a href="../../operators/cg/p/paint-operation.htm"><b>paint-operation</b></a> to be <a href="po-and.htm"><code>po-and</code></a>, and then you draw a line
+on the stream, then the colors that will be produced where the line is
+drawn will consist only of whatever redness was already there on the
+destination stream.
+</p>
+<p id="5">
+If the stream has a <a href="../../operators/cg/p/palette.htm"><b>palette</b></a>,
+then the bit-combining is done on palette indices rather than on
+true-color values.  This tends to result in palette indices of
+unrelated colors that are not predictable from the colors being
+combined.
+</p>
+
+<hr><p id="6"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/variables/cg/po-and.htm">9.0 version</a></td></tr></table></body></html>

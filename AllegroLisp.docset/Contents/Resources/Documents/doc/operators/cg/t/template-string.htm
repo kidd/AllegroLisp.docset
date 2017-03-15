@@ -1,0 +1,151 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>template-string</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/template-string.htm">9.0 version</a></td></tr></table><h2 id="2">template-string</h2>
+
+<p id="3"><b>Arguments: </b><i>
+editable-text
+</i></p>
+
+<p id="4">
+Returns the template for a single-line <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> control, which
+constrains the number and type of characters that a user can type into
+the control. 
+The value can be set at creation time by specifying the
+<i>template-string</i> initarg, or any time later by
+calling <a href="../t/template-string.htm"><b>(setf
+template-string)</b></a>.
+</p>
+<p id="5">
+A template consists of two kinds of characters: 
+</p>
+<ol>
+<li id="6">
+
+static characters that are shown in the control and over which users
+cannot type (the cursor is moved past these characters as the user
+types or uses the arrow keys).
+
+</li>
+<li id="7">
+
+template characters, which must be described in the <a href="../../../variables/cg/s_template-chars_s.htm"><code>*template-chars*</code></a>
+association list (any character not in this alist is regarded as a
+static character). Initially the template characters appear as
+blank spaces, zeroes, or other default characters in the
+control and allow users to enter certain types of characters depending
+on which template character is specified for each position.
+
+</li>
+</ol>
+<p id="8">
+Templates can be cleared with <a href="../c/clear-template.htm"><b>clear-template</b></a>.
+</p>
+<h3 id="9">
+Example:
+</h3>
+<pre id="10">
+(setf (template-string my-editable-text-widget) "999-99-9999")
+</pre>
+<p id="11">
+This example would set up a template for entering a social security
+number. There is an entry in 
+<a href="../../../variables/cg/s_template-chars_s.htm"><code>*template-chars*</code></a> for
+the character #\9 indicating that a user must enter a numeral in its
+position, and that it displays initially as a space. There is no entry
+in <a href="../../../variables/cg/s_template-chars_s.htm"><code>*template-chars*</code></a> for the dash
+character, so the dashes in this template will display as dashes, and
+users cannot type over them.
+</p>
+<p id="12">
+<a href="../t/template-string.htm"><b>template-string</b></a>
+is a property of the <a href="../../../classes/cg/editable-text.htm"><code>editable-text</code></a> class, as well as the
+<a href="../../../classes/cg/editable-text-column-mixin.htm"><code>editable-text-column-mixin</code></a>
+and <a href="../../../classes/cg/combo-box-column-mixin.htm"><code>combo-box-column-mixin</code></a>&nbsp; <a href="../../../classes/cg/grid-widget.htm"><code>grid-widget</code></a> classes.
+</p>
+
+
+
+<h2 id="13">
+Behavior of Various Keystrokes
+</h2>
+
+<p id="14">
+When a graphical character is typed, it will be considered for the
+character position at the text cursor if there is a template character
+rather than a static character at that position.  Otherwise it will be
+considered for the first position to the right of that position at
+which there is a template character, if any.  If the typed character
+passes the predicate function for that position, then it will replace
+the character at that position.  The text cursor will then move to the
+next template character position to the right, if there is one, and
+otherwise will move to the rightmost end of the template string.  When
+the character is not valid at the current position, there is a beep
+and nothing else is done.
+</p>
+<p id="15">
+A special case is that if the text cursor is at the rightmost end of
+the template string, then typing a character will shift each character
+that has already been typed one template character position to the
+left, and then the new character is written to the rightmost template
+character position.  This is typically used for entering numbers as
+with a calculator or ATM machine.
+</p>
+<p id="16">
+If any text is selected when a graphical character is typed, then the
+selected characters are first converted (cleared) to the initial print
+characters for those positions, then the text cursor is moved to the
+front of the selection (deselecting the text), and then the character
+is handled as above.  An exception is that if the <a href="../j/justification.htm"><b>justification</b></a> of the widget is
+<code>:right</code> and all of the text is selected, then the
+text cursor is moved to the end of the selection rather than to the
+front.
+</p>
+<p id="17">
+The left and right arrow keys will move the text cursor to the next
+template character position in each direction if there is one, or else
+to front or end of the template string if it is not there already.
+Pressing the left and right arrow keys while holding down the Shift
+key will select text as usual.
+</p>
+<p id="18">
+The <b>Home</b> key will move the text cursor to the first template
+character position that does not have a space in it, unless the text
+cursor is already in that posiiton, in which case it will move to the
+first template character position.  (In other words, typing
+<b>Home</b> will first move to the beginning of the text that has been
+entered, and typing it again will move to the first typable position.
+That is intended to be useful especially when editing right-justified
+numbers.)  Similarly, typing <b>End</b> will first move the text
+cursor just to the right of the last template character position that
+does not contain a space, unless the text cursor is already at that
+position, in which case it is moved just after the last template
+character position.
+</p>
+<p id="19">
+The <b>Delete</b> key will change the character at the text cursor to
+the initial print character for that position and move to the next
+template character position to the right.  The <b>Backspace</b> key
+will move to the next template character position to the left and
+change the character at that position to the initial print character
+for that position.  A special case is that typing <b>Delete</b> when
+the text cursor is at the rightmost end of the template string will
+delete the last character by shifting all other typed characters one
+position to the right.
+</p>
+
+<h2 id="20">
+Allowing Numeric Sign Characters
+</h2>
+
+<p id="21">
+If the <a href="../t/template-allows-sign.htm"><b>template-allows-sign</b></a>
+property of the widget is true, then the user will be allowed to type
+a plus or minus character in any template character position that is
+to the left of all non-space typed characters.
+</p>
+
+
+
+
+
+<hr><p id="22"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/t/template-string.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,2540 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <title>Remote Procedure Call support in Allegro CL</title></head><link rel="stylesheet" href="acldoc-styles.css" type="text/css"><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/rpc.htm">9.0 version</a></td></tr></table><h1 id="2">Remote Procedure Call support in Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#rpc-intro-1">1.0 Introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#package-module-2">1.1 The package and module for RPC</a><br>&nbsp;&nbsp;&nbsp;<a href="#security-2">1.2 Security considerations</a><br><a href="#simple-rpc-example-1">2.0 A Simple RPC Example</a><br><a href="#stream-datagram-connections-1">3.0 Connection options, Server Classes, and Port Classes</a><br>&nbsp;&nbsp;&nbsp;<a href="#stream-socket-connections-2">3.1 Stream Socket Connections</a><br>&nbsp;&nbsp;&nbsp;<a href="#datagram-socket-connections-2">3.2 Datagram Socket Connection</a><br>&nbsp;&nbsp;&nbsp;<a href="#shared-memory-connections-2">3.3 Shared Memory Connections</a><br>&nbsp;&nbsp;&nbsp;<a href="#new-port-server-classes-2">3.4 Creating new RPC port and server classes</a><br>&nbsp;&nbsp;&nbsp;<a href="#security-mixin-classes-2">3.5 Security mixins and subclasses</a><br><a href="#rpc-programming-interface-1">4.0 The Lisp RPC Programming Interface</a><br>&nbsp;&nbsp;&nbsp;<a href="#stream-socket-connections-desc-2">4.1 Stream socket connections</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ss-connecting-3">4.1.1 Connecting stream sockets</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ss-explicit-port-interface-3">4.1.2 Explicit port interface of stream sockets</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ss-declarative-interface-3">4.1.3 Declarative interface of stream sockets</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ss-callback-style-3">4.1.4 Callback style of stream sockets</a><br>&nbsp;&nbsp;&nbsp;<a href="#datagram-socket-connections-desc-2">4.2 Datagram socket connections</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ds-connecting-3">4.2.1 Connecting datagram sockets</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ds-explicit-port-3">4.2.2 Explicit port interface of datagram socket connections</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ds-declarative-interface-3">4.2.3 Declarative interface of datagram socket connections</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ds-callback-style-3">4.2.4 Callback style of datagram socket connections</a><br>&nbsp;&nbsp;&nbsp;<a href="#shared-memory-connections-desc-2">4.3 Shared Memory Connections (Windows Only)</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#making-shared-memory-connections-3">4.3.1 Making a Shared Memory Connection</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#explicit-port-shared-memory-3">4.3.2 Explicit port interface of shared memory connections</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#declarative-shared-memory-3">4.3.3 Declarative interface of shared memory connections</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#callback-shared-memory-3">4.3.4 Callback style of shared memory connections</a><br><a href="#data-rep-1">5.0 Data Representation</a><br>&nbsp;&nbsp;&nbsp;<a href="#rr-uniqueness-2">5.1 Uniqueness of Remote References</a><br>&nbsp;&nbsp;&nbsp;<a href="#argument-conversion-2">5.2 Argument Conversions</a><br>&nbsp;&nbsp;&nbsp;<a href="#operator-conversion-2">5.3 Operator Conversion</a><br>&nbsp;&nbsp;&nbsp;<a href="#data-type-2">5.4 Data Type Qualifiers</a><br><a href="#error-tags-1">6.0 Error Messages and Tags</a><br>&nbsp;&nbsp;&nbsp;<a href="#error-messages-2">6.1 Error messages in simple-error instances</a><br>&nbsp;&nbsp;&nbsp;<a href="#error-keywords-2">6.2 Error keywords returned as the second value</a><br><a href="#gates-1">7.0 Gates</a><br><a href="#examples-1">8.0 Examples</a><br><a href="#several-images-1">9.0 Running several communicating Allegro CL images</a><br><a href="#rpc-index-1">10.0 Index of RPC operators, classes, and variables</a><br><hr><hr><h2 id="4"><a name="rpc-intro-1">1.0 Introduction</a></h2>
+
+
+<p id="5">
+The purpose of the RPC utility is to allow separate Lisp images to
+communicate with each other by remote procedure calls. This is
+accomplished by:
+</p>
+<ul>
+<li id="6">
+Defining a remote object representation that allows one Lisp image to
+make references to data in another Lisp image.
+</li>
+<li id="7">
+Defining a protocol to transfer a restricted set of Lisp data types
+from one image to another.
+</li>
+<li id="8">
+Adding functions that allow one Lisp image to call functions in
+another Lisp image.
+</li>
+<li id="9">
+Adding facilities to manage the retention, validation, and garbage
+collections of remote references among a set of communicating Lisp
+images.
+</li>
+</ul>
+
+<p id="10">
+Although the interface is very symmetric, there is a need to
+distinguish between the roles of client and server. The server
+advertises the possibility of a connection, and the client connects to
+an advertising server. The distinction between client and server is
+significant when a connection is established (or
+re-established). Thus, a client image may connect on demand when a
+call is made, but a server image may call the client only when the
+client has made a connection. Once the connection is made, the actual
+calling protocol makes no reference to the distinction.
+</p>
+<p id="11">
+It is possible for the same image to be both client and server and
+each image in a set of communicating Lisp images may be both. But
+remote references to data are specific to a particular connection.
+</p>
+
+<hr><h2 id="12"><a name="package-module-2">1.1 The package and module for RPC</a></h2>
+
+<p id="13">
+All the symbols associated with RPC reside in the
+<code>net.rpc</code> package. RPC functionality is in
+the <code>:aclrpc</code> module. It is loaded into an image
+by evaluating <code>(require :aclrpc)</code>.
+</p>
+
+
+
+<hr><h2 id="14"><a name="security-2">1.2 Security considerations</a></h2>
+
+<p id="15">
+The base RPC facility allows unrestricted connections between clients
+and servers.  Once the connection is established, arbitrary function
+calls are allowed in both directions.  This could be a serious security
+exposure unless all possible clients are trusted applications.
+All the data transmitted between client and server is only encoded for
+efficiency and is exposed to third-party snooping.
+</p>
+<p id="16">
+If SSL connections are used (see <a href="socket.htm#ssl-1">Secure Socket Layer (SSL)</a> in
+<a href="socket.htm">socket.htm</a>), then both client authentication and
+data protection can be as secure as desired.
+</p>
+<p id="17">
+Access control based on the remote host may be done in the function
+supplied as the <i>connect-function</i> keyword argument
+to <a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a>. This
+function may close the connection before any remote operations are
+initiated.
+</p>
+<p id="18">
+In addition, application programs may perform arbitrary filtering
+before and after each remote operation by implementing <a href="operators/rpc/rpc-do-request.htm"><b>rpc-do-request</b></a> and <a href="operators/rpc/rpc-do-invoke.htm"><b>rpc-do-invoke</b></a> methods on
+sub-classes of <a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a>.  These generic functions are
+called to do the work of any remote request or remote call.
+</p>
+<p id="19">
+A lightweight approach to access control may be sufficient if the
+network is secure from malicious access. The application may still
+need to be protected from inadvertant or inappropriate connections.
+For this situation, we offer a passcode scheme that can be used to
+authenticate clients, and methods that can be used to filter
+individual calls and callbacks.  We provide mixin classes <a href="classes/rpc/with-rpc-server-enabler.htm"><code>with-rpc-server-enabler</code></a> and
+<a href="classes/rpc/with-rpc-port-enabler.htm"><code>with-rpc-port-enabler</code></a>,
+and sub-classes <a href="classes/rpc/rpc-socket-server-with-enabler.htm"><code>rpc-socket-server-with-enabler</code></a> and <a href="classes/rpc/rpc-socket-port-with-enabler.htm"><code>rpc-socket-port-with-enabler</code></a>.
+The sub-classes implement this passcode scheme with specific
+implementations of the <a href="operators/rpc/rpc-do-invoke.htm"><b>rpc-do-invoke</b></a> and <a href="operators/rpc/rpc-do-request.htm"><b>rpc-do-request</b></a> methods.
+</p>
+
+
+
+<hr><hr><h2 id="20"><a name="simple-rpc-example-1">2.0 A Simple RPC Example</a></h2>
+
+<p id="21">
+For the sake of discussion in the following, we assume that two Lisp images, A and B are communicating. Image A is a server and B is a client. 
+</p>
+
+<pre id="22">
+Image A (server)                        Image B (client)
+(require :aclrpc)
+(use-package :net.rpc)
+                                        (require :aclrpc)
+                                        (use-package :net.rpc)
+
+(multiple-value-setq (s p l es) 
+  (make-rpc-server 'rpc-socket-server
+     :home &quot;lispA&quot; :local-port 4326 
+     :open :listener
+     :connect-action :call
+     :connect-function 
+     #'(lambda (pt) (setf p pt))
+     ;; :verbose t
+     ))
+(type-of s)  -&gt; rpc-socket-server
+(null p)  -&gt; t
+(null es)  -&gt; t
+(type-of l)  -&gt; mp:process                
+                                        (multiple-value-setq (q ec)
+					  (make-rpc-client 'rpc-socket-port
+					  :home &quot;lispB&quot; :remote-port 4326 
+					  :open t
+                                          ;; :remote-host &quot;[serverhost]&quot;
+                                              ;;; if server is not localhost
+					  ;; :verbose t
+					  ))                      
+					(type-of q)
+                                               -&gt; rpc-socket-port
+					(null ec) -&gt; t
+					(rpc-open-p q)
+				        (with-remote-port (q)
+					  (rcall 'print &quot;Hello from B&quot;)
+					  )
+&quot;Hello from B&quot;
+
+(rpc-open-p p)
+(with-remote-port (p)
+  (rcall 'print &quot;Hello from A&quot;)         
+  )
+                                        &quot;Hello from A&quot;
+					
+					(rpc-close q :final t)
+
+(rpc-open-p p)
+(rpc-close s :stop :final)
+                                        
+(rpc-open-p :all)                       
+                                        (rpc-open-p :all)
+</pre>
+<hr><hr><h2 id="23"><a name="stream-datagram-connections-1">3.0 Connection options, Server Classes, and Port Classes</a></h2>
+
+<p id="24">
+The following classes define the connection parameters and data
+transmission formats of stream socket connections:
+</p>
+
+<ul>
+<li id="25">
+<a href="classes/rpc/rpc-port-server.htm"><code>rpc-port-server</code></a>
+defines the parameters of an advertising rpc server.
+</li>
+<li id="26">
+<a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a> defines the
+parameters of a connection on both server and client images.
+</li>
+<li id="27">
+<a href="classes/rpc/rpc-message.htm"><code>rpc-message</code></a> defines a
+message passed between rpc client and server.
+</li>
+<li id="28">
+<a href="classes/rpc/rpc-remote-ref.htm"><code>rpc-remote-ref</code></a> defines
+a data item wrapped for transmission.
+</li>
+</ul>
+
+<hr><h2 id="29"><a name="stream-socket-connections-2">3.1 Stream Socket Connections</a></h2>
+
+<p id="30">
+Stream connections are implemented to use the operating system
+stream socket implementation. Stream sockets provide reliable two-way
+communication between two host processes. If a Lisp RPC call is made
+through a stream socket connection, the caller will receive a value or
+an error signal indicating that the call failed to complete.
+</p>
+<p id="31">
+If one Lisp host makes two RPC calls in succession to the same Lisp
+destination host (on the same stream socket connection), then the
+remote calls will be begun in the same order as they were sent.
+</p>
+<p id="32">
+The following classes define the connection parameters and data
+transmission formats of stream socket connections:
+</p>
+
+<ul>
+<li id="33">
+<a href="classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>
+defines the parameters of an advertising rpc server.
+</li>
+<li id="34">
+<a href="classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a> defines the
+parameters of a connection on both server and client images.
+</li>
+</ul>
+
+
+
+<hr><h2 id="35"><a name="datagram-socket-connections-2">3.2 Datagram Socket Connection</a></h2>
+
+<p id="36">
+Datagram connections are implemented to use the operating system
+datagram socket implementation. The datagram protocol does not
+guarantee arrival of messages, nor does it preserve order.
+</p>
+<p id="37">
+Because of these semantics, callbacks hardly ever make sense and
+remote pointers are of dubious value since any manipulation of a
+remote pointer usually requires a call back to the home of the
+reference.
+</p>
+<p id="38">
+The following classes define the connection parameters and data
+transmission formats of datagram socket connections:
+</p>
+
+<ul>
+<li id="39">
+<a href="classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>
+defines the parameters of an advertising rpc server.
+</li>
+<li id="40">
+<a href="classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a> defines the
+parameters of a connection on both server and client images.
+</li>
+</ul>
+
+
+
+<hr><h2 id="41"><a name="shared-memory-connections-2">3.3 Shared Memory Connections</a></h2>
+
+<p id="42">
+<b>NOTE</b>: This feature is only implemented in the Windows version
+of Allegro CL.
+</p>
+<p id="43">
+Shared memory connections are implemented by Lisp functions storing
+data into and fetching data from a memory area shared between two OS
+processes.  On a machine with multiple processors, the processes could
+be running on separate processors.  Shared memory connections are
+synchronous and reliable, like stream socket connections.
+</p>
+<p id="44">
+The following classes define the connection parameters and data
+transmission formats of shared memory connections:
+</p>
+    
+<ul>
+<li id="45">
+<a href="classes/rpc/shared-memory-rpc-port-server.htm"><code>shared-memory-rpc-port-server</code></a>
+defines the parameters of an advertising rpc server.
+</li>
+<li id="46">
+<a href="classes/rpc/shared-memory-rpc-port.htm"><code>shared-memory-rpc-port</code></a> defines the
+parameters of a connection on both server and client images.
+</li>
+</ul>
+
+
+
+
+<hr><h2 id="47"><a name="new-port-server-classes-2">3.4 Creating new RPC port and server classes</a></h2>
+
+<p id="48">
+A new sub-class of <a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a> must be created in order to
+implement <a href="operators/rpc/rpc-do-request.htm"><b>rpc-do-request</b></a>
+and <a href="operators/rpc/rpc-do-invoke.htm"><b>rpc-do-invoke</b></a> methods
+specific to some application.  This is done with a form such as
+</p>
+<pre id="49">
+(defclass new-port-class (... rpc-port ...) ())
+</pre>
+<p id="50">
+The only requirement is that <a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a> must appear somewhere in the class
+precedence list of the new class.
+</p>
+<p id="51">
+In order to cause the creation of appropriate server ports, the
+application must also define a sub-class of <a href="classes/rpc/rpc-port-server.htm"><code>rpc-port-server</code></a> with an initial value for
+the port-instance slot.
+</p>
+<pre id="52">
+(defclass new-server-class (... rpc-port-server ...)
+   ((port-instance :initform (make-instance 'new-port-class))
+    ...))
+</pre>
+<p id="53">
+Again, one requirement is that <a href="classes/rpc/rpc-port-server.htm"><code>rpc-port-server</code></a> must appear somewhere in
+the class precedence list of the new class. The second requirement is
+that the port-instance slot must be initialized to an instance of the
+corresponding <a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a>
+sub-class.
+</p>
+<p id="54">
+These classes should not be instantiated with <a href="../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>.  Use the functions <a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a> and <a href="operators/rpc/make-rpc-client.htm"><b>make-rpc-client</b></a> to create
+instances of these classes.
+</p>
+
+
+
+<hr><h2 id="55"><a name="security-mixin-classes-2">3.5 Security mixins and subclasses</a></h2>
+
+<p id="56">
+The two mixin classes, <a href="classes/rpc/with-rpc-server-enabler.htm"><code>with-rpc-server-enabler</code></a> and <a href="classes/rpc/with-rpc-port-enabler.htm"><code>with-rpc-port-enabler</code></a>, and the
+corresponding stream socket sub-classes, <a href="classes/rpc/rpc-socket-server-with-enabler.htm"><code>rpc-socket-server-with-enabler</code></a> and <a href="classes/rpc/rpc-socket-port-with-enabler.htm"><code>rpc-socket-port-with-enabler</code></a>,
+are examples of server and port sub-classing to implement a
+lightweight security interface for stream socket connections.
+</p>
+<p id="57">
+The socket sub-classes implement <a href="operators/rpc/rpc-do-invoke.htm"><b>rpc-do-invoke</b></a> and <a href="operators/rpc/rpc-do-request.htm"><b>rpc-do-request</b></a>
+methods that manage a simple passcode scheme.
+</p>
+
+
+
+<hr><hr><h2 id="58"><a name="rpc-programming-interface-1">4.0 The Lisp RPC Programming Interface</a></h2>
+
+<p id="59">
+The function <a href="operators/rpc/rpc-version.htm"><b>rpc-version</b></a>
+returns information about the running Allegro CL RPC version. If the
+rpc module is updated after release, the version will be
+changed. Thus, <a href="operators/rpc/rpc-version.htm"><b>rpc-version</b></a> will allow you to determine
+whether you are running the updated version.
+</p>
+
+<hr><h2 id="60"><a name="stream-socket-connections-desc-2">4.1 Stream socket connections</a></h2>
+
+<p id="61">
+In the subsections of this section, we describe the Lisp API for Stream
+Socket connections.
+</p>
+
+<hr><h2 id="62"><a name="ss-connecting-3">4.1.1 Connecting stream sockets</a></h2>
+
+<p id="63">
+The following classes define the connection parameters of stream
+socket connections.
+</p>
+<ul>
+
+<li id="64">
+<a href="classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a>: this
+is the subclass of <a href="classes/rpc/rpc-port-server.htm"><code>rpc-port-server</code></a> specific to stream socket
+connections.
+</li>
+<li id="65">
+<a href="classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a>: this
+is the subclass of <a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a> specific to stream socket
+connections.
+</li>
+</ul>
+
+<p id="66">
+The functions associated with connecting are:
+</p>
+
+<ul>
+<li id="67">
+<a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a>
+</li>
+<li id="68">
+<a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a>
+</li>
+<li id="69">
+<a href="operators/rpc/rpc-open-listener.htm"><b>rpc-open-listener</b></a>
+</li>
+<li id="70">
+<a href="operators/rpc/rpc-close.htm"><b>rpc-close</b></a>
+</li>
+<li id="71">
+<a href="operators/rpc/rpc-begin.htm"><b>rpc-begin</b></a>
+</li>
+<li id="72">
+<a href="operators/rpc/make-rpc-client.htm"><b>make-rpc-client</b></a>
+</li>
+<li id="73">
+<a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a>
+</li>
+<li id="74">
+<a href="operators/rpc/ropen.htm"><b>ropen</b></a>
+</li>
+<li id="75">
+<a href="operators/rpc/rpc-open-p.htm"><b>rpc-open-p</b></a>
+</li>
+</ul>
+
+
+
+<hr><h2 id="76"><a name="ss-explicit-port-interface-3">4.1.2 Explicit port interface of stream sockets</a></h2>
+
+<p id="77">
+The following operators are used once the port is established.
+</p>
+
+<ul>
+<li id="78">
+<a href="operators/rpc/with-remote-port.htm"><b>with-remote-port</b></a>
+</li>
+<li id="79">
+<a href="operators/rpc/rpc-enable-port.htm"><b>rpc-enable-port</b></a>
+</li>
+<li id="80">
+<a href="operators/rpc/rcall.htm"><b>rcall</b></a>
+</li>
+<li id="81">
+<a href="operators/rpc/rcall-ignore.htm"><b>rcall-ignore</b></a>
+</li>
+<li id="82">
+<a href="operators/rpc/rcall-one-way.htm"><b>rcall-one-way</b></a>
+</li>
+<li id="83">
+<a href="operators/rpc/rapply.htm"><b>rapply</b></a>
+</li>
+<li id="84">
+<a href="operators/rpc/rapply-ignore.htm"><b>rapply-ignore</b></a>
+</li>
+<li id="85">
+<a href="operators/rpc/rapply-one-way.htm"><b>rapply-one-way</b></a>
+</li>
+<li id="86">
+<a href="operators/rpc/rthrow.htm"><b>rthrow</b></a>
+</li>
+<li id="87">
+<a href="operators/rpc/rpc-invoke.htm"><b>rpc-invoke</b></a>
+</li>
+<li id="88">
+<a href="operators/rpc/rpc-query.htm"><b>rpc-query</b></a>
+</li>
+<li id="89">
+<a href="operators/rpc/rpc-wait.htm"><b>rpc-wait</b></a>
+</li>
+<li id="90">
+<a href="operators/rpc/rpc-get.htm"><b>rpc-get</b></a>
+</li>
+<li id="91">
+<a href="operators/rpc/rpc-send-request.htm"><b>rpc-send-request</b></a>
+</li>
+<li id="92">
+<a href="operators/rpc/rpc-do-request.htm"><b>rpc-do-request</b></a>
+</li>
+<li id="93">
+<a href="operators/rpc/eval-string.htm"><b>eval-string</b></a>
+</li>
+<li id="94">
+<a href="operators/rpc/rpc-process-pool.htm"><b>rpc-process-pool</b></a>
+</li>
+</ul>
+<p id="95">
+The variable  <a href="variables/rpc/s_rpc-port_s.htm"><code>*rpc-port*</code></a> is also useful.
+</p>
+
+
+
+
+<hr><h2 id="96"><a name="ss-declarative-interface-3">4.1.3 Declarative interface of stream sockets</a></h2>
+
+<ul>
+<li id="97">
+<a href="operators/rpc/def-remote-function.htm"><b>def-remote-function</b></a>
+</li>
+<li id="98">
+<a href="operators/rpc/def-remote-method.htm"><b>def-remote-method</b></a>
+</li>
+<li id="99">
+<a href="operators/rpc/import-remote-class.htm"><b>import-remote-class</b></a>
+</li>
+<li id="100">
+<a href="operators/rpc/export-remote-symbol.htm"><b>export-remote-symbol</b></a>
+</li>
+</ul>
+
+
+
+<hr><h2 id="101"><a name="ss-callback-style-3">4.1.4 Callback style of stream sockets</a></h2>
+
+<p id="102">
+This RPC API supports three callback models: 
+</p>
+
+<ul>
+<li id="103">
+Nested 
+</li>
+<li id="104">
+Parallel 
+</li>
+<li id="105">Blocking 
+</li>
+</ul>
+
+<p id="106">
+Consider two lisp images A and B where A.i and B.j represent threads (Lisp processes) in A and B respectively. 
+</p>
+
+<p id="107">
+<b>Nested</b> - Nested mode provides a continuity in dynamic
+environments in each running image. Nested calls are possible only if
+every caller at each level is waiting for a result, i.e. the caller
+uses <a href="operators/rpc/rcall.htm"><b>rcall</b></a> or <a href="operators/rpc/rpc-invoke.htm"><b>rpc-invoke</b></a> with <code>:wait
+t</code>, or has called <a href="operators/rpc/rpc-wait.htm"><b>rpc-wait</b></a> explicitly.  Callbacks cannot
+interrupt running code.
+</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="50%"><b>Image A -- thread A.i</b></td>
+    <td width="50%"><b>Image B -- thread B.j</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><ul>
+    <li id="108">A begins thread A.i and
+    </li>
+    <li id="109">calls function g in B for the first time
+    </li>
+    </ul>
+    </td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td width="50%"></td>
+    <td width="50%"><ul>
+    <li id="110">B responds in (new) thread B.j
+    </li>
+    <li id="111">B.j calls function h in A
+    </li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%"><ul>
+    <li id="112">Call is handled in A.i on top of suspended call chain 
+    </li>
+    <li id="113">h in A.i calls function m in B 
+    </li>
+    </ul>
+    </td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td width="50%"></td>
+    <td width="50%"><ul>
+    <li id="114">Call is handled in B.j on top of suspended call chain 
+    </li>
+    <li id="115">When m completes, B.j resumes wait for h to complete in A
+    </li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%"><ul>
+    <li id="116">When h completes, A.i goes back to wait mode 
+    </li>
+    </ul>
+    </td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td width="50%"></td>
+    <td width="50%"><ul>
+    <li id="117">control returns to waiting B.j
+    </li>
+    <li id="118">When g completes, B.j terminates
+    </li>
+    </ul>
+    </td>
+  </tr>
+ <tr>
+    <td width="50%"><ul>
+    <li id="119">and control returns to A.i
+    </li>
+    <li id="120">with nothing left unfinished.
+    </li>
+    </ul>
+    </td>
+    <td width="50%"></td>
+  </tr>
+
+</table>
+
+
+
+<p id="121">
+<b>Parallel</b> - Parallel mode may be the preferred mode for GUI event
+callbacks.This mode may be more prone to deadlocks than the nested
+mode.
+</p>
+
+
+<table border="1" width="95%">
+  <tr>
+    <td width="25%"><b>Image A -- thread A.i</b></td>
+    <td width="25%"><b>Image B -- thread B.j</b></td>
+    <td width="25%"><b>Image A -- thread A.k</b></td>
+    <td width="25%"><b>Image B -- thread B.l</b></td>
+  </tr>
+  <tr>
+    <td width="25%"><ul>
+    <li id="122">A begins thread A.i and 
+    </li>
+    <li id="123">calls function g in B for the first time 
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="25%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"><ul>
+    <li id="124">B responds in (new) thread B.j 
+    </li>
+    <li id="125">B.j calls function h in A 
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+    <td width="25%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="25%"><ul>
+    <li id="126">Call is handled in (new) thread A.k 
+    </li>
+    <li id="127">h in A.k calls function m in B 
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="25%"><ul>
+    <li id="128">Call is handled in (new) thread B.l 
+    </li>
+    <li id="129">When m completes, B.l terminates (or gets recycled)
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="25%"><ul>
+    <li id="130">When h completes, A.k terminates (or gets recycled)
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"><ul>
+    <li id="131">control returns to waiting B.j 
+    </li>
+    <li id="132">When g completes, B.j terminates
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+    <td width="25%"></td>
+  </tr>
+  <tr>
+    <td width="25%"><ul>
+    <li id="133">and control returns to A.i 
+    </li>
+    <li id="134">with nothing left unfinished.
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="25%"></td>
+  </tr>
+
+</table>
+
+<p id="135">
+<b>Blocking</b> - Blocking mode prevents recursive callbacks
+entirely. It requires careful programming to avoid deadlocks or
+errors.
+</p>
+
+
+<table border="1" width="95%">
+  <tr>
+    <td width="25%"><b>Image A -- thread A.i</b></td>
+    <td width="25%"><b>Image B -- thread B.j</b></td>
+    <td width="50%"><b>Image A -- thread A.k</b></td>
+  </tr>
+  <tr>
+    <td width="25%"><ul>
+    <li id="136">A begins thread A.i and 
+    </li>
+    <li id="137">calls function g in B for the first time
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"><ul>
+    <li id="138">B responds in (new) thread B.j 
+    </li>
+    <li id="139">B.j calls function h in A
+    </li>
+    </ul>
+    </td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="50%"><ul>
+    <li id="140">Call is handled in (new) thread A.k 
+    </li>
+    <li id="141">A.k tries to call function m in B 
+    </li>
+    <li id="142">An error is signaled in A.k because the path from 
+     A to B is still busy with the initial call from A.i to h in B.j
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+  </tr>
+
+</table>
+
+<p id="143">
+Each RPC port defines a default callback mode for calls through the
+port. The caller may override the default mode for an individual call.
+</p>
+<p id="144">
+Callbacks from :one-way calls are always handled in the :parallel 
+style since the caller is not waiting for a result, and hence is
+not prepared to deal with a callback.  The remote application making
+the callback has no basis for any assumptions about the dynamic
+environment at the destination.
+</p>
+
+
+
+
+
+<hr><h2 id="145"><a name="datagram-socket-connections-desc-2">4.2 Datagram socket connections</a></h2>
+
+<p id="146">
+In this section and its subsections, we describe the Lisp API for
+Datagram Socket connections. The functions and methods have the same
+names as in the Stream Socket API but the semantics are sometimes
+different because of the nature of the protocol.
+</p>
+<p id="147">
+In addition to the indeterminate nature of message arrival, datagram
+connections exhibit several other unique characteristics:
+</p>
+<ul>
+<li id="148">
+Each datagram call and result must be entirely contained
+in a single message of bounded length. The maximum length
+is specified when the connection is defined,
+The default length is 4096 bytes.
+</li>
+<li id="149">
+All incoming calls are handled by an <a href="classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a> instance.
+</li>
+<li id="150">
+All outgoing calls are handled by an <a href="classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a> instance.
+</li>
+</ul>
+
+<p id="151">
+Thus datagram connections do not exhibit the same symmetry as stream socket
+connections.
+</p>
+
+<hr><h2 id="152"><a name="ds-connecting-3">4.2.1 Connecting datagram sockets</a></h2>
+
+<p id="153">
+The following classes define the connection parameters of datagram connections.
+</p>
+
+<ul>
+<li id="154">
+<a href="classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>:
+this is the subclass of <a href="classes/rpc/rpc-port-server.htm"><code>rpc-port-server</code></a> specific to datagram
+connections.
+</li>
+<li id="155">
+<a href="classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a>:
+this is the subclass of <a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a> specific to datagram connections.
+</li>
+</ul>
+
+<p id="156">
+The following functions and methods are used for Datagram socket
+connecting.
+</p>
+
+<ul>
+<li id="157">
+<a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a>.  When
+calling this function with the <i>port-class</i>
+(required) argument a subclass of <a href="classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>, do not specify a
+<i>name</i> and make sure the <i>limit</i>
+is nil or a large number.
+</li>
+<li id="158">
+<a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a>. The
+effect of this method is to wait for one datagram message to arrive.
+The message could be a new RPC call, the result of some previous RPC
+call, or an RPC request. Unless this method is called repeatedly in
+some loop, the Lisp host will be very unreceptive to remote calls and
+requests.
+</li>
+<li id="159">
+<a href="operators/rpc/rpc-open-listener.htm"><b>rpc-open-listener</b></a>.
+This method starts a listener process that continually accepts and handles
+remote calls, results and requests.
+</li>
+<li id="160">
+<a href="operators/rpc/rpc-close.htm"><b>rpc-close</b></a>. When the
+(required) <i>port</i> argument is an instance of
+<a href="classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>,
+this method only has effect if the <i>stop</i> argument
+is non-<code>nil</code>, in which case it stops the
+listener. When the (required) <i>port</i> argument is an
+instance of <a href="classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a>, the method is
+effectively a no-op, since a datagram port is closed after each RPC
+message.
+</li>
+<li id="161">
+<a href="operators/rpc/rpc-begin.htm"><b>rpc-begin</b></a>. This method is
+a no-op for datagram connections.
+</li>
+<li id="162">
+<a href="operators/rpc/make-rpc-client.htm"><b>make-rpc-client</b></a>. When
+calling this function. no value should be specified for the
+<i>home</i> keyword argument, since the home name of a
+datagram connection is constructed from the local and remote hosts and
+ports. The <i>server</i> keyword argument can be a
+<a href="classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a>
+instance or the name of one. The server instance is used for incoming
+messages and the client instance is used for outgoing messages.
+</li>
+<li id="163">
+<a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a>.
+This method is a no-op for datagram connections.
+</li>
+<li id="164">
+<a href="operators/rpc/rpc-open-p.htm"><b>rpc-open-p</b></a>.
+This method will normally return :idle for any datagram port.
+</li>
+</ul>
+
+
+
+<hr><h2 id="165"><a name="ds-explicit-port-3">4.2.2 Explicit port interface of datagram socket connections</a></h2>
+
+
+<p id="166">
+The following functions and methods provide the interface to
+datagram socket connections.
+</p>
+
+<ul>
+<li id="167">
+<a href="operators/rpc/rpc-enable-port.htm"><b>rpc-enable-port</b></a>.
+This method is a no-op for datagram connections.
+</li>
+<li id="168">
+<a href="operators/rpc/rpc-invoke.htm"><b>rpc-invoke</b></a>.
+The timeout argument overrides the default value
+in the message-timeout slot of the port. A timeout is signaled as an
+error.
+</li>
+<li id="169">
+<a href="operators/rpc/rpc-query.htm"><b>rpc-query</b></a>. The behavior
+of this method is identical to the behavior for stream
+sockets.
+</li>
+<li id="170">
+<a href="operators/rpc/rpc-wait.htm"><b>rpc-wait</b></a>. The behavior
+of this method is identical to the behavior of stream socket methods.
+</li>
+<li id="171">
+<a href="operators/rpc/rpc-get.htm"><b>rpc-get</b></a>. The behavior of
+this method is identical to the behavior for stream
+sockets.
+</li>
+<li id="172">
+<a href="operators/rpc/rpc-send-request.htm"><b>rpc-send-request</b></a>. The
+behavior of this method is identical to the behavior for stream
+sockets.
+</li>
+<li id="173">
+<a href="operators/rpc/rpc-do-request.htm"><b>rpc-do-request</b></a>. The
+behavior of this method is identical to the behavior for stream
+sockets.
+</li>
+<li id="174">
+<a href="operators/rpc/with-remote-port.htm"><b>with-remote-port</b></a>. The
+behavior of this macro is identical to the behavior for stream
+sockets.
+</li>
+<li id="175">
+<a href="operators/rpc/rclose.htm"><b>rclose</b></a>. The
+behavior of this function is identical to the behavior of stream socket
+methods.</li>
+<li id="176">
+<a href="operators/rpc/ropen.htm"><b>ropen</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+<li id="177">
+<a href="operators/rpc/rcall.htm"><b>rcall</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+<li id="178">
+<a href="operators/rpc/rcall-ignore.htm"><b>rcall-ignore</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+<li id="179">
+<a href="operators/rpc/rcall-one-way.htm"><b>rcall-one-way</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+<li id="180">
+<a href="operators/rpc/rapply.htm"><b>rapply</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+<li id="181">
+<a href="operators/rpc/rapply-ignore.htm"><b>rapply-ignore</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+<li id="182">
+<a href="operators/rpc/rapply-one-way.htm"><b>rapply-one-way</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+<li id="183">
+<a href="operators/rpc/rthrow.htm"><b>rthrow</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets.
+</li>
+</ul>
+
+
+
+
+<hr><h2 id="184"><a name="ds-declarative-interface-3">4.2.3 Declarative interface of datagram socket connections</a></h2>
+
+<p id="185">
+The following macros and function allow defining remote functions,
+methods, and classes.
+</p>
+
+<ul>
+<li id="186">
+<a href="operators/rpc/def-remote-function.htm"><b>def-remote-function</b></a>. The
+behavior of this macro is identical to the behavior for stream
+sockets.
+</li>
+<li id="187">
+<a href="operators/rpc/def-remote-method.htm"><b>def-remote-method</b></a>. The
+behavior of this macro is identical to the behavior for stream
+sockets.
+</li>
+<li id="188">
+<a href="operators/rpc/import-remote-class.htm"><b>import-remote-class</b></a>. The
+behavior of this function is identical to the behavior for stream
+sockets, but since remote references are of dubious value in the
+datagram interface, this function is mostly irrelevant.
+</li>
+<li id="189">
+<a href="operators/rpc/export-remote-symbol.htm"><b>export-remote-symbol</b></a>. The
+behavior of this function is identical to the behavior in the stream
+socket interface.  However, since remote references are of dubious
+value in the datagram interface, this function is mostly irrelevant.
+</li>
+</ul>
+
+
+
+
+<hr><h2 id="190"><a name="ds-callback-style-3">4.2.4 Callback style of datagram socket connections</a></h2>
+
+<p id="191">
+As said in
+<a href="#stream-datagram-connections-1">Section 3.0 Connection options, Server Classes, and Port Classes</a>, the
+datagram protocol does not guarantee arrival of messages, nor does it
+preserve the order of messages.  Under these semantics, callbacks
+hardly ever make sense and remote pointers are of dubious value since
+any manipulation of a remote pointer usually requires a call back to
+the home of the reference.
+</p>
+<p id="192">
+Therefore, the datagram interface forces the callback mode to
+<code>:blocking</code>. Any <i>mode</i> arguments
+are ignored. Here is the description of blocking mode repeated from
+<a href="#ss-callback-style-3">Section 4.1.4 Callback style of stream sockets</a>.
+</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="25%"><b>Image A -- thread A.i</b></td>
+    <td width="25%"><b>Image B -- thread B.j</b></td>
+    <td width="50%"><b>Image A -- thread A.k</b></td>
+  </tr>
+  <tr>
+    <td width="25%"><ul>
+    <li id="193">A begins thread A.i and 
+    </li>
+    <li id="194">calls function g in B for the first time
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"><ul>
+    <li id="195">B responds in (new) thread B.j 
+    </li>
+    <li id="196">B.j calls function h in A
+    </li>
+    </ul>
+    </td>
+    <td width="50%"></td>
+  </tr>
+  <tr>
+    <td width="25%"></td>
+    <td width="25%"></td>
+    <td width="50%"><ul>
+    <li id="197">Call is handled in (new) thread A.k 
+    </li>
+    <li id="198">A.k tries to call function m in B 
+    </li>
+    <li id="199">An error is signaled in A.k because the path from 
+     A to B is still busy with the initial call from A.i to h in B.j
+    </li>
+    </ul>
+    </td>
+    <td width="25%"></td>
+  </tr>
+
+</table>
+
+
+
+
+
+
+<hr><h2 id="200"><a name="shared-memory-connections-desc-2">4.3 Shared Memory Connections (Windows Only)</a></h2>
+
+<p id="201">
+<b>NOTE</b>: This feature is only implemented in the Windows version
+of Allegro CL.
+</p>
+<p id="202">
+The following classes define the connection parameters of shared
+memory connections.
+</p>
+<ul>
+<li id="203">
+<a href="classes/rpc/shared-memory-rpc-port-server.htm"><code>shared-memory-rpc-port-server</code></a>: this
+is the subclass of <a href="classes/rpc/rpc-port-server.htm"><code>rpc-port-server</code></a> specific to shared
+memory connections.
+</li>
+<li id="204">
+<a href="classes/rpc/shared-memory-rpc-port.htm"><code>shared-memory-rpc-port</code></a>: this is the
+subclass of <a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a>
+specific to shared memory connections.
+</li>
+</ul>
+<p id="205">
+There is a one-to-one correspondence between server and client since
+each <a href="classes/rpc/shared-memory-rpc-port-server.htm"><code>shared-memory-rpc-port-server</code></a> instance can
+connect to only one client.  The server instance must be created with
+the <i>open</i> parameter <code>nil</code>,
+the application must extract the name of the shared memory area from
+the server and only then begin the wait for a client connection.
+</p>
+<pre id="206">
+(setf server (make-rpc-server :open nil))
+(setf name (rps-buffer-name server))
+(rpc-open-server server)
+</pre>
+<p id="207">
+The client image must obtain the name of the shared memory area and
+pass it to <a href="operators/rpc/make-rpc-client.htm"><b>make-rpc-client</b></a>.
+</p>
+
+<pre id="208">
+(make-rpc-client :connect name-from-server-image)
+</pre>
+
+<hr><h2 id="209"><a name="making-shared-memory-connections-3">4.3.1 Making a Shared Memory Connection</a></h2>
+
+<p id="210">
+The following functions and methods are used to make shared memory
+connections.
+</p>
+
+<ul>
+<li id="211">
+<a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a>: the
+<i>local-host</i> and <i>local-port</i>
+keyword arguments are ignored; the <i>limit</i> and
+<i>max</i> keyword arguments are treated as if specifed
+1; the <i>re-connect</i> keyword argument is treated as
+if specified <code>nil</code>.
+<p id="212">
+The <i>open</i> keyword argument should be <code>nil</code> and the call to <a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a> should be followed
+by calls to <a href="operators/rpc/rps-buffer-name.htm"><b>rps-buffer-name</b></a> and <a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a>.
+</p>
+<p id="213">
+The <i>buffer-size</i> keyword argument should be a
+positive integer in the range (100 100000) to specify a buffer size.
+The default value is 1024.  Larger buffers allow more efficient transfer 
+of large data objects.  Smaller buffers make more efficient use of memory
+if most messages are small.
+</p>
+<p id="214">
+The <i>buffer-count</i> keyword argument should be a
+positive integer in the range (3 30) to specify the number of buffers
+to use between two hosts.  The default value is 5.  Each rpc
+interaction involves several messages and each message is transmitted
+by closing one buffer and advancing to the next.  A large number of
+buffers may improve performance if calls are frequently made in quick
+succession.
+</p>
+</li>
+<li id="215">
+<a href="operators/rpc/rps-buffer-name.htm"><b>rps-buffer-name</b></a> is an
+accessor which is defined for instances of <a href="classes/rpc/shared-memory-rpc-port-server.htm"><code>shared-memory-rpc-port-server</code></a>.  It must be
+called after <a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a> has created the shared
+memory area for this connection.
+<p id="216">
+Since the shared memory area must be unique to each connection, the name is
+generated with a numeric component.  Names are generated until a new name is found.
+</p>
+</li>
+<li id="217">
+<a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a>:
+Same behavior as for stream sockets.
+</li>
+<li id="218">
+<a href="operators/rpc/rpc-open-listener.htm"><b>rpc-open-listener</b></a>: Undefined.
+</li>
+<li id="219">
+<a href="operators/rpc/rpc-close.htm"><b>rpc-close</b></a>: Same
+behavior as for stream sockets.
+</li>
+<li id="220">
+<a href="operators/rpc/rpc-begin.htm"><b>rpc-begin</b></a>: Same
+behavior as for stream sockets.
+</li>
+<li id="221">
+<a href="operators/rpc/make-rpc-client.htm"><b>make-rpc-client</b></a>: the
+<i>local-host</i> and <i>local-port</i>
+keyword arguments are ignored, <i>limit</i> and
+<i>max</i> are treated as if specifed 1,
+<i>re-connect</i> is treated as if specified <code>nil</code>.
+<p id="222">
+The <i>buffer-size</i> and
+<i>buffer-count</i> keyword arguments are accepted, like
+with <a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a>. If
+values are specified, they must be <a href="../ansicl/dictentr/eql.htm"><b>eql</b></a> to the value specified for the server.  The
+<i>connect</i> keyword argument is also accepted.  The
+value must be the string name of the shared memory area created by the
+server.
+</p>
+</li>
+<li id="223">
+<a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a>: Same
+behavior as for stream sockets.
+</li>
+<li id="224">
+<a href="operators/rpc/rpc-open-p.htm"><b>rpc-open-p</b></a>: Same
+behavior as for stream sockets.
+</li>
+</ul>
+
+
+
+<hr><h2 id="225"><a name="explicit-port-shared-memory-3">4.3.2 Explicit port interface of shared memory connections</a></h2>
+
+<p id="226">
+This interface is identical to the stream socket interface.
+</p>
+
+
+
+<hr><h2 id="227"><a name="declarative-shared-memory-3">4.3.3 Declarative interface of shared memory connections</a></h2>
+
+<p id="228">
+This interface is identical to the stream socket interface.
+</p>
+
+
+
+<hr><h2 id="229"><a name="callback-shared-memory-3">4.3.4 Callback style of shared memory connections</a></h2>
+
+<p id="230">
+The callback styles available with shared memory connections are the same
+styles that are available with stream socket connections.
+</p>
+
+
+
+
+
+
+<hr><hr><h2 id="231"><a name="data-rep-1">5.0 Data Representation</a></h2>
+
+<p id="232">
+Data may be transmitted by value or by reference between two RPC
+applications.  When data is transmitted by value, a copy of the data
+is sent to the recipient.  Any changes made to the data at the
+destination do not affect the source data.  When data is transmitted
+by reference, the recipient gets a remote reference object.
+Remote references are opaque objects that allow arbitrary
+references to be passed between hosts.  Accessing remote references
+requires a call to the home host of the reference.
+</p>
+<p id="233">
+The following data types are always transmitted by value:
+</p>
+<ul>
+<li id="234">
+character
+</li>
+<li id="235">
+nil
+</li>
+<li id="236">
+fixnum
+</li>
+</ul>
+<p id="237">
+The following data types may be transmitted by value or by reference
+(the default is by value):
+</p>
+<ul>
+<li id="238">
+bignum
+</li>
+<li id="239">
+string
+</li>
+<li id="240">
+real
+</li>
+<li id="241">
+Lisp sequences of integer, real or string
+</li>
+</ul>
+<p id="242">
+All other data types must be transmitted by reference.   
+</p>
+<p id="243">
+Lisp symbols form a special case that may be transmitted by reference
+or by name.  When a symbol is transmitted by name (the default), the
+symbol's name and package are sent to the recipient where a local
+symbol is interned.  With only moderate care, it is possible to
+preserve <a href="../ansicl/dictentr/eq.htm"><b>eq</b></a>-ness
+of symbols transmitted by name.  When a symbol is transmitted by
+reference, it is represented at the receiving end by an opaque remote
+reference object.
+</p>
+
+
+<p id="244">
+The class <a href="classes/rpc/rpc-remote-ref.htm"><code>rpc-remote-ref</code></a> (with reader methods <a href="operators/rpc/rr-home.htm"><b>rr-home</b></a>, <a href="operators/rpc/rr-base.htm"><b>rr-base</b></a>, and <a href="operators/rpc/rr-type.htm"><b>rr-type</b></a>) represents remote references in a
+Lisp image.
+</p>
+<p id="245">
+The operators <a href="operators/rpc/rref.htm"><b>rref</b></a> and
+ <a href="operators/rpc/rpc-ref.htm"><b>rpc-ref</b></a> create explicit reference objects.
+</p>
+
+
+<hr><h2 id="246"><a name="rr-uniqueness-2">5.1 Uniqueness of Remote References</a></h2>
+
+
+<p id="247">
+Remote references are relative to a particular connection.  Consider a
+data item <i>d</i> passed from <i>A</i> to <i>B</i> on connection
+<i>p</i> as the remote reference <i>r</i>. If <i>B</i> passes <i>r</i>
+back to <i>A</i> on connection <i>p</i>, then <i>A</i> will see the
+pointer to <i>d</i>. Consider a second connection <i>q</i> between
+<i>A</i> and <i>B</i>, and a reference to <i>d</i> is passed to
+<i>B</i> on <i>q</i> as the remote reference <i>s</i>. If <i>B</i>
+passes <i>s</i> back to <i>A</i> on connection <i>p</i>, then <i>B</i>
+will see a remote reference, and not the pointer <i>d</i>.
+</p>
+
+
+
+<hr><h2 id="248"><a name="argument-conversion-2">5.2 Argument Conversions</a></h2>
+
+
+<p id="249">
+The arguments to a remote call are passed by the following rules: 
+</p>
+
+<ul>
+<li id="250">
+If the argument is
+an immediate reference, a symbol reference, or a remote reference, it
+is passed unchanged to the caller. (This allows the finest degree of
+control by the user.)
+</li>
+<li id="251">
+If the data can be passed by value, it is passed by value. 
+The following data may be passed by value: 
+<ul>
+<li id="252">
+<code>nil</code>
+</li>
+<li id="253">
+character 
+</li>
+<li id="254">
+string 
+</li>
+<li id="255">
+integer in the (signed-byte 32) range 
+</li>
+<li id="256">
+float 
+</li>
+<li id="257">
+homogeneous sequences of the above types 
+</li>
+<li id="258">
+bignums (which may be passed by value, but the default is to pass
+bignums by reference)
+</li>
+</ul>
+</li>
+<li id="259">
+If the data cannot be passed by value, it is passed as a remote
+reference. 
+</li>
+</ul>
+
+<p id="260">
+Note in addition, any data allocated in memory may be passed by
+reference.
+</p>
+
+
+
+<hr><h2 id="261"><a name="operator-conversion-2">5.3 Operator Conversion</a></h2>
+
+<p id="262">
+The operator argument in <a href="operators/rpc/rcall.htm"><b>rcall</b></a> or <a href="operators/rpc/rpc-invoke.htm"><b>rpc-invoke</b></a> may be one of the following:
+</p>
+
+<ul>
+<li id="263">
+A remote reference, which is assumed to be a reference to an
+appropriate funcallable object in the called environment, and is
+passed without change.
+</li>
+<li id="264">
+A symbol, which is passed as the symbol reference 
+<pre id="265">
+(rref symbol :type :function)
+</pre>
+<p id="266">
+where the destination symbol is treated as the name of a function. 
+</p>
+</li>
+<li id="267">
+A string, which is passed as the symbol reference 
+<pre id="268">
+(rref t :type :function :symbol-name string)
+</pre>
+</li>
+<li id="269">
+A compiled function, which is passed as the symbol reference 
+<pre id="270">
+(rref t :type :function :symbol-name name-of-op)
+</pre>
+</li>
+</ul>
+
+<p id="271">
+Any other argument will signal an error in the calling environment.
+</p>
+
+
+
+<hr><h2 id="272"><a name="data-type-2">5.4 Data Type Qualifiers</a></h2>
+
+<p id="273">
+This section describes the <i>type</i> argument to
+<a href="operators/rpc/rref.htm"><b>rref</b></a> and <a href="operators/rpc/rpc-ref.htm"><b>rpc-ref</b></a>. The
+<i>symbol-mode</i>, <i>package-mode</i>,
+<i>symbol-name</i>, and
+<i>symbol-package</i> arguments are also described.
+</p>
+
+<p id="274">
+The <i>type</i> argument can be any of the following
+qualifiers:
+</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="26%"><b>Qualifier</b></td>
+    <td width="74%"><b>Effect</b></td>
+  </tr>
+
+  <tr>
+    <td width="26%">:copy-maybe</td>
+    <td width="74%">Create a transfer copy if possible.
+    This is the default behavior for arguments and 
+    returned values.</td>
+  </tr>
+  <tr>
+    <td width="26%">:copy</td>
+    <td width="74%">Like :copy-maybe</td>
+  </tr>
+  <tr>
+    <td width="26%">:copy-only</td>
+    <td width="74%">Signal an error if the data cannot be passed by value.</td>
+  </tr>
+  <tr>
+    <td width="26%">:ref-maybe</td>
+    <td width="74%">Create a remote reference if possible. 
+    For example, a float is normally passed by value, but may 
+    also be passed as a remote reference since it is a stored 
+    object in the Lisp image.</td>
+  </tr>
+  <tr>
+    <td width="26%">:ref</td>
+    <td width="74%">Like :ref-maybe</td>
+  </tr>
+  <tr>
+    <td width="26%">:ref-only</td>
+    <td width="74%">Signal an error if the data cannot be passed 
+    by reference. This is the case for fixnums, characters, and 
+    other immediate Lisp pointers.</td>
+  </tr>
+  <tr>
+    <td width="26%">:ignore</td>
+    <td width="74%">This reference is being created in a call where 
+    the value will be ignored. Treated like :copy-maybe.</td>
+  </tr>
+  <tr>
+    <td width="26%">:one-way</td>
+    <td width="74%">This reference is being created in a one-way call. 
+    Treated like :copy-maybe.</td>
+  </tr>
+</table>
+
+<p id="275">
+The following qualifiers make sense only when wrapping a value
+explicitly with <a href="operators/rpc/rref.htm"><b>rref</b></a>.
+</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="26%">:symbol</td>
+    <td width="74%">Create a remote reference to a symbol. 
+    The data argument must be a symbol, but the symbol may be 
+    ignored if symbol-name and symbol-package keywords are passed.</td>
+  </tr>
+  <tr>
+    <td width="26%">:value</td>
+    <td width="74%">Create a remote reference to the value of a symbol.</td>
+  </tr>
+  <tr>
+    <td width="26%">:function</td>
+    <td width="74%">Create a remote reference to the function value 
+    of a symbol.</td>
+  </tr>
+  <tr>
+    <td width="26%">:class</td>
+    <td width="74%">Create a remote reference to the class 
+    named by a symbol.</td>
+  </tr>
+  <tr>
+    <td width="26%">:boolean</td>
+    <td width="74%">Create an immediate boolean value based on data.</td>
+  </tr>
+  <tr>
+    <td width="26%">:null</td>
+    <td width="74%">The data argument must be <code>nil</code>.</td>
+  </tr>
+  <tr>
+    <td width="26%">:string</td>
+    <td width="74%">The data argument must be a string.</td>
+  </tr>
+  <tr>
+    <td width="26%">:int</td>
+    <td width="74%">The data argument must be coercible to an integer.</td>
+  </tr>
+  <tr>
+    <td width="26%">:single</td>
+    <td width="74%">The data argument must be coercible to a 
+    single-float value.</td>
+  </tr>
+  <tr>
+    <td width="26%">:double</td>
+    <td width="74%">The data argument must be coercible to a 
+    double-float value.</td>
+  </tr>
+  <tr>
+    <td width="26%">:byte</td>
+    <td width="74%">The data argument must be coercible to an integer. 
+    It is truncated to a (signed-byte 8) value.</td>
+  </tr>
+  <tr>
+    <td width="26%">:short</td>
+    <td width="74%">The data argument must be coercible to an integer. 
+    It is truncated to a (signed-byte 16) value.</td>
+  </tr>
+  <tr>
+    <td width="26%">:char</td>
+    <td width="74%">The data argument must be a character.</td>
+  </tr>
+</table>
+
+<p id="276">
+When a symbol reference must be created, the
+<i>symbol-name</i>, <i>symbol-package</i>,
+<i>symbol-mode</i> and <i>package-mode</i>
+arguments are used to control how the symbol is transmitted to and is
+found in the remote environment.
+</p>
+<p id="277">
+The recommended, most reliable, and case-portable way to send symbol references
+is with the form
+</p>
+<pre id="278">
+   (rref &quot;ppp::nnnnn&quot; :type &lt;symtype&gt;)
+</pre>
+<p id="279">
+or the more verbose form
+</p>
+<pre id="280">
+   (rref t :type &lt;symtype&gt; :symbol-name &quot;ppp::nnnnn&quot;)
+</pre>
+<p id="281">
+where <b>&lt;symtype&gt;</b> is one of the keywords
+<code>:symbol</code>, <code>:function</code>,
+<code>:class</code>, or <code>:value</code>; <b>ppp</b> is
+a package prefix; and <b>nnnnn</b> is a symbol name in lower or mixed
+case.  Upper case and mixed case symbol names should be used only to
+denote upper case symbols and mixed case symbols in a modern ACL.
+</p>
+<p id="282">
+A symbol in a remote argument list or the simple form
+</p>
+<pre id="283">
+   (rref 'symbol)
+</pre>
+<p id="284">
+is equivalent to
+</p>
+<pre id="285">
+   (rref "ppp::ssss" :type :symbol)
+</pre>
+<p id="286">
+where <b>ssss</b> is the symbol name and <b>ppp</b> is its package
+qualifier. This form will usually denote the correct symbol in the
+remote image if both images are in the same case mode and have similar
+package usage.
+</p>
+<p id="287">
+The following notations are retained for back compatibility, but may be
+deprecated and removed in the future.
+</p>
+<pre id="288">
+(rref "xxx" :type stype . rest) == (rref t :type stype
+                                           :symbol-name "xxx" 
+                                           :symbol-package "" or symbol-package
+                                           . rest)
+
+(rref data :type stype . rest)
+</pre>
+<p id="289">
+If <b>symbol-name</b> is supplied, it must be a string, and name of
+data is ignored.  If <b>symbol-package</b> is supplied, it must be a
+package or a string or symbol.
+</p>
+<p id="290">
+The following tables show what is sent for symbol and package names
+given values of symbol-mode.
+</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="33%"><b>symbol-mode</b></td>
+    <td width="33%"><b>What is sent for symbol-name</b></td>
+    <td width="33%"><b>What is sent for symbol-package</b></td>
+  </tr>
+  <tr>
+    <td width="33%"><code>:absolute</code></td>
+    <td width="33%"><code>(or symbol-name (symbol-name data))</code></td>
+    <td width="33%"><code>symbol-package | (symbol-package data)</code></td>
+  </tr>
+  <tr>
+    <td width="33%"><code>:string-equal-any</code></td>
+    <td width="33%"><code>(or symbol-name (symbol-name data))</code></td>
+    <td width="33%"><code>symbol-package | ""</code></td>
+  </tr>
+  <tr>
+    <td width="33%"><code>:string-equal-one</code></td>
+    <td width="33%"><code>(or symbol-name (symbol-name data))</code></td>
+    <td width="33%"><code>symbol-package | (symbol-package data)</code></td>
+  </tr>
+  <tr>
+    <td width="33%"><code>:read-relative</code></td>
+    <td width="33%"><code>(or symbol-name (format nil "~S" data))</code></td>
+    <td width="33%"><code>""</code></td>
+  </tr>
+  <tr>
+    <td width="33%"><code>:read-case</code></td>
+    <td width="33%"><code>symbol-name "ppp::nnn"</code></td>
+    <td width="33%"><code>symbol-package | ""</code></td>
+  </tr>
+</table>
+<p id="291">
+Then at the destination:
+</p>
+<table border="1" width="95%">
+<tr>
+<td colspan="2">
+<b>symbol-mode</b> is <code>:absolute</code>,
+<code>:string-equal-one</code>, or <code>:read-case</code>
+</td>
+</tr>
+<tr>
+<td ALIGN="CENTER">
+<b>Value of package-mode</b>
+</td>
+<td ALIGN="CENTER">
+<b>Action</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>:absolute</code>
+</td>
+<td>
+<b>find-package</b> of <b>package-name</b> or <b>*package*</b> at
+destination
+</td>
+</tr>
+<tr>
+<td>
+<code>:string-equal</code>
+</td>
+<td>
+<b>find-package</b> of <b>package-name</b> with <b>equalp</b> or
+<b>*package*</b> at destination
+</td> 
+</tr>
+<tr>
+<td>
+<code>:keyword</code>
+</td>
+<td>
+keyword package
+</td>
+</tr>
+<tr>
+<td>
+<code>:read-case</code>
+</td>
+<td>
+<b>read-from-string</b> in package
+</td> 
+</tr>
+<tr>
+<td ALIGN="CENTER">
+<b>Value of symbol-mode</b>
+</td>
+<td ALIGN="CENTER">
+<b>Action</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>:absolute</code>
+</td>
+<td>
+intern symbol-name string in package
+</td>
+</tr>
+<tr>
+<td>
+<code>:string-equal-one</code>
+</td>
+<td>
+find the first equalp symbol in package or <b>read-from-string</b>
+</td>
+</tr>
+<tr>
+<td>
+<code>:read-case</code>
+</td>
+<td>
+read-from-string in package
+</td>
+</tr>
+</table>
+<p id="292">
+Or <b>symbol-mode</b> is <code>:read-relative</code>, in which
+case <b>package-mode</b> is ignored and the package is determined by
+<b>read-from-string</b> using <b>*package*</b> at the destination.
+</p>
+<p id="293">
+Or <b>symbol-mode</b> is <code>:string-equal-any</code>, in which
+case <b>package-mode</b> is ignored and the package is determined by
+finding the first equalp symbol in any package or (failing that) by
+<b>read-from-string</b> using <b>*package*</b> at the destination.
+</p>
+
+
+
+<hr><hr><h2 id="294"><a name="error-tags-1">6.0 Error Messages and Tags</a></h2>
+
+<hr><h2 id="295"><a name="error-messages-2">6.1 Error messages in simple-error instances</a></h2>
+
+<h2 id="296">
+Attempting to use inappropriate rpc port xxx
+</h2>
+
+<p id="297">
+The application is attempting to use a port created in the server
+when responding to a client connection, but the port is not
+connected. This port can be used only when the client is connected.
+The server cannot re-connect to a client that has disconnected.
+</p>
+
+<h2 id="298">
+Attempting to use rpc port in odd state xxx
+</h2>
+
+<p id="299">
+This error is probably caused by a timing bug in the ACLRPC
+implementation. A stable port is in on of the three states
+<code>:idle</code>, <code>:connected</code>, or
+<code>:closed</code>. There are a few short-lived intermediate
+states that should be visible only in certain transient situations.
+If you have a reproducible test case, we may be able to track down the
+race condition and correct it.
+</p>
+
+
+
+
+<hr><h2 id="300"><a name="error-keywords-2">6.2 Error keywords returned as the second value</a></h2>
+
+<p id="301">
+Many RPC functions return a first value of <code>nil</code> if the operation fails. The second value is one
+of the following keywords to describe the reason for failure. Some
+functions return additional values (indicated by +)
+that add information about the
+failure. 
+</p>
+
+<table border="1" width="95%">
+  <tr>
+    <td width="35%"><b>Keyword</b></td>
+    <td width="65%"><b>Meaning and additional information</b></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-open-server</code></td> <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a> - cannot call on server
+    port</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-server-timeout</code></td>
+    <td width="65%"><a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a>
+     - failed to get connection in time</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-not-listening</code></td>
+    <td width="65%"><a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a> - server is not listening</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-accept</code> + err</td>
+    <td width="65%"><a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a> - error from socket accept</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connect-action</code></td>
+    <td width="65%">connect-action is not :call :process or 
+    <code>nil</code></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-not-string</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - home name is not a string</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-version</code> + remote-vers</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - remote version mismatch</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-duplicate</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - home name is duplicate in 
+    remote host</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-not-found</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>...(re-connect) - home name not found</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-limit</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - remote host has 
+    reached connection limit</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-max</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - remote host saturated (temp)</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-home-busy</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>...(connect) - home is already in use 
+    (connected or waiting for re-connect)</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-re-connect</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>...(re-connect) - home is already in use 
+    (connected)</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-refused</code></td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>...(re-connect) - refused: bad 
+    gen or remote</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connect</code> + code</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a> or <a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a>...- the first byte received 
+    by the server was not one of the two expected values (:connect or
+    :re-connect); code is the actual numeric value of the byte.</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connected-error</code> + code</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>...- failed to get :connected 
+    confirmation</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-not-client</code></td>
+    <td width="65%">from <a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-not-idle</code></td>
+    <td width="65%">from <a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-already-open</code></td>
+    <td width="65%">from <a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-streams</code></td>
+    <td width="65%">from <a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a> - stream not consistent</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connect-failed</code> + err</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - connect failed, err 
+    from remote host</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connect-failed</code> + rhome</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - connect failed, duplicate 
+    connect attempt</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connect-failed</code> + 
+    sockerr</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - connect failed
+    with sockerr</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connect-failed</code> + long</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - connect failed
+    after n attempts</td>
+  </tr>
+  <tr>
+  <td width="35%"><code>:rpc-err-connect-failed-nopoll</code> +
+    err</td> 
+  <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a> or <a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a> - the socket connection
+    failed and no polling was requested. The err value is the error
+    signaled by <a href="operators/socket/make-socket.htm"><b>acl-socket:make-socket</b></a>.</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-re-connect-failed</code> + rhome</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - duplicate re-connect attempt</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-connerr</code> + err</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - connect failed, err from 
+    remote host</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-bad-connect</code> + code</td>
+    <td width="65%"><a href="operators/rpc/ropen.htm"><b>ropen</b></a>... - protocol garbled 
+    (expected :confirm-connect or :conn-error)</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-begin-failed</code>
+    + begin-err...</td>
+    <td width="65%"><a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-begin-state</code>
+    + state</td>
+    <td width="65%"><a href="operators/rpc/rpc-begin.htm"><b>rpc-begin</b></a></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-begin-gate</code></td>
+    <td width="65%"></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-begin-fail</code>
+     + state + flag</td>
+    <td width="65%"></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-begin-timeout</code> 
+     + port</td>
+    <td width="65%"></td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-req-dest</code></td>
+    <td width="65%"><a href="operators/rpc/rpc-send-request.htm"><b>rpc-send-request</b></a> - destination thread unknown</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-invoke-dest</code></td>
+    <td width="65%"><a href="operators/rpc/rcall.htm"><b>rcall</b></a>... - destination thread unknown</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-user</code> + ~A</td>
+    <td width="65%">request/invoke - error in remote application code</td>
+  </tr>
+  <tr>
+    <td width="35%"><code>:rpc-err-socket-error</code> +
+    sockerr</td> <td width="65%"><a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a> - error from
+    socket call</td>
+  </tr>
+</table>
+
+
+
+<hr><hr><h2 id="302"><a name="gates-1">7.0 Gates</a></h2>
+
+<p id="303">
+In the initial release of the Allegro CL RPC module, the following
+macros and functions were provided as an interface to multiprocessing
+gate objects (see <a href="multiprocessing.htm#gates-1">Gates (both models)</a> in
+<a href="multiprocessing.htm">multiprocessing.htm</a>). However, we have determined
+that they were not useful for that purpose. They symbols naming them
+have been unexported and the interface is no longer supported.
+</p>
+
+<ul>
+<li id="304">
+No longer supported: <b>with-access-gate</b>
+</li>
+<li id="305">
+No longer supported: <b>with-access-gate*</b>
+</li>
+<li id="306">
+No longer supported: <b>grab-gate</b>
+</li>
+<li id="307">
+No longer supported: <b>ungrab-gate</b>
+</li>
+</ul>
+
+<hr><hr><h2 id="308"><a name="examples-1">8.0 Examples</a></h2>
+
+<p id="309">
+We include some examples of RPC coding in
+<i>examples/aclrpc/</i> subdirectory of the Allegro
+directory. The file <i>rpc-nameserve.cl</i> contains a
+simple nameserver implemented with datagram calls.
+</p>
+<p id="310">
+The file <i>rpc-inspect.cl</i> contains an extension to
+the Allegro CL console inspector. The extension uses RPC calls to display the
+components and contents of remote data objects.
+</p>
+
+
+<p id="311">
+The server image is activated by evaluating
+<code>(server)</code> and the client image is activated by
+evaluating <code>(client)</code>.
+</p>
+<p id="312">
+The <b>client</b> function sets the variable <code>*var*</code>
+in the server image. The variable is set to a remote reference to a
+list of objects in the client image.
+</p>
+<p id="313">
+The following annotated typescript shows how the variable
+<code>*var*</code> is examined from the console of the server
+image.
+</p>
+
+<pre id="314">
+cl-user(23): *var*
+#&lt;rpc-ref inspectee:pointer#161529357/1001/&quot;cons&quot;&gt;
+cl-user(24): :i *
+rpc-remote-ref @ #x20e518aa = #&lt;rpc-ref inspectee:pointer#161529357/1001/&quot;cons&quot;&gt;
+   0 RefType ------&gt; The symbol :pointer
+   1 RemoteHome ---&gt; A simple-string (9) &quot;inspectee&quot;
+   2 RemoteType ---&gt; A simple-string (4) &quot;cons&quot;
+   3 RemoteParts --&gt; #&lt;remote-field-defs @ #x20e5c02a&gt;
+</pre>
+<p id="315">
+As we inspect the remote reference in <code>*var*</code>, the
+inspector extension shows the information that is available without
+leaving the local image. This is a design decision in the inspector
+extension - remote information is retrieved only on demand to avoid
+potentially extensive delays.
+</p>
+<pre id="316">
+cl-user(25): :i 3
+remote-field-defs @ #x20e5c1e2 = #&lt;remote-field-defs @ #x20e5c1e2&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1001/&quot;cons&quot;&gt;
+   1 Size ---------&gt; fixnum 5 [#x00000014]
+   2 LookingAt ----&gt; (0 4), a proper list with 2 elements
+   3 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1002/&quot;myclass&quot;&gt;
+   4 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1003/&quot;mystruct&quot;&gt;
+   5 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1004/&quot;t&quot;&gt;
+   6 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1005/&quot;t&quot;&gt;
+   7 nil ----------&gt; (1 2 3 4 . 5), a dotted list with 4 elements
+</pre>
+<p id="317">
+If we select the RemoteParts field, the inspector goes to the
+inspectee image and retrieves the top-level components of the
+list. Line 1 shows that we are looking at a remote object with 5
+components. Line 2 shows that we are looking at components 0 through
+4, all the components in this case.
+</p>
+<pre id="318">
+cl-user(26): :i 3
+rpc-remote-ref @ #x20e60a52 = #&lt;rpc-ref inspectee:pointer#161529357/1006/&quot;myclass&quot;&gt;
+   0 RefType ------&gt; The symbol :pointer
+   1 RemoteHome ---&gt; A simple-string (9) &quot;inspectee&quot;
+   2 RemoteType ---&gt; A simple-string (7) &quot;myclass&quot;
+   3 RemoteParts --&gt; #&lt;remote-field-defs @ #x20e60eca&gt;
+</pre>
+<p id="319">
+As we select line 3 (or component 0), we again see a remote reference. 
+</p>
+<pre id="320">
+cl-user(27): :i 3
+remote-field-defs @ #x20e61042 = #&lt;remote-field-defs @ #x20e61042&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1006/&quot;myclass&quot;&gt;
+   1 Size ---------&gt; fixnum 2 [#x00000008]
+   2 LookingAt ----&gt; (0 1), a proper list with 2 elements
+   3 a ------------&gt; fixnum 123 [#x000001ec]
+   4 b ------------&gt; fixnum 455 [#x0000071c]
+</pre>
+<p id="321">
+When we select the RemoteParts field, we see the slot names and the values. 
+</p>
+<pre id="322">
+cl-user(28): :i -
+rpc-remote-ref @ #x20e60a52 = #&lt;rpc-ref inspectee:pointer#161529357/1006/&quot;myclass&quot;&gt;
+   0 RefType ------&gt; The symbol :pointer
+   1 RemoteHome ---&gt; A simple-string (9) &quot;inspectee&quot;
+   2 RemoteType ---&gt; A simple-string (7) &quot;myclass&quot;
+   3 RemoteParts --&gt; #&lt;remote-field-defs @ #x20e62eb2&gt;
+cl-user(29): :i -
+remote-field-defs @ #x20e5c1e2 = #&lt;remote-field-defs @ #x20e5c1e2&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1001/&quot;cons&quot;&gt;
+   1 Size ---------&gt; fixnum 5 [#x00000014]
+   2 LookingAt ----&gt; (0 4), a proper list with 2 elements
+   3 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1007/&quot;myclass&quot;&gt;
+   4 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1008/&quot;mystruct&quot;&gt;
+   5 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1009/&quot;t&quot;&gt;
+   6 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1010/&quot;t&quot;&gt;
+   7 nil ----------&gt; (1 2 3 4 . 5), a dotted list with 4 elements
+cl-user(30): :i 4
+rpc-remote-ref @ #x20e6698a = #&lt;rpc-ref inspectee:pointer#161529357/1011/&quot;mystruct&quot;&gt;
+   0 RefType ------&gt; The symbol :pointer
+   1 RemoteHome ---&gt; A simple-string (9) &quot;inspectee&quot;
+   2 RemoteType ---&gt; A simple-string (8) &quot;mystruct&quot;
+   3 RemoteParts --&gt; #&lt;remote-field-defs @ #x20e66e3a&gt;
+</pre>
+<p id="323">
+Returning to the initial object contents, we select line 4, or element
+1 of the remote list.
+</p>
+<pre id="324">
+cl-user(31): :i 3
+remote-field-defs @ #x20e66fb2 = #&lt;remote-field-defs @ #x20e66fb2&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1011/&quot;mystruct&quot;&gt;
+   1 Size ---------&gt; fixnum 16 [#x00000040]
+   2 LookingAt ----&gt; (0 9), a proper list with 2 elements
+   3 a ------------&gt; The symbol nil
+   4 b ------------&gt; The symbol nil
+   5 c ------------&gt; The symbol nil
+   6 d ------------&gt; The symbol nil
+   7 e ------------&gt; The symbol nil
+   8 f ------------&gt; The symbol nil
+   9 g ------------&gt; The symbol nil
+  10 h ------------&gt; The symbol nil
+  11 i ------------&gt; The symbol nil
+  12 j ------------&gt; The symbol nil
+  13 MoreParts ----&gt; #&lt;remote-field-defs @ #x20e71622&gt;
+</pre>
+<p id="325">
+As we select the RemoteParts field, we see the first 10 slots of a
+structure with 16 slots. We can see the remaining slots by selecting
+the MoreParts field on line 13.
+</p>
+<pre id="326">
+cl-user(32): :i -
+rpc-remote-ref @ #x20e6698a = #&lt;rpc-ref inspectee:pointer#161529357/1011/&quot;mystruct&quot;&gt;
+   0 RefType ------&gt; The symbol :pointer
+   1 RemoteHome ---&gt; A simple-string (9) &quot;inspectee&quot;
+   2 RemoteType ---&gt; A simple-string (8) &quot;mystruct&quot;
+   3 RemoteParts --&gt; #&lt;remote-field-defs @ #x20e71842&gt;
+cl-user(33): :i -
+remote-field-defs @ #x20e5c1e2 = #&lt;remote-field-defs @ #x20e5c1e2&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1001/&quot;cons&quot;&gt;
+   1 Size ---------&gt; fixnum 5 [#x00000014]
+   2 LookingAt ----&gt; (0 4), a proper list with 2 elements
+   3 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1012/&quot;myclass&quot;&gt;
+   4 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1013/&quot;mystruct&quot;&gt;
+   5 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1014/&quot;t&quot;&gt;
+   6 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1015/&quot;t&quot;&gt;
+   7 nil ----------&gt; (1 2 3 4 . 5), a dotted list with 4 elements
+cl-user(34): :i 5
+rpc-remote-ref @ #x20e75572 = #&lt;rpc-ref inspectee:pointer#161529357/1016/&quot;t&quot;&gt;
+   0 RefType ------&gt; The symbol :pointer
+   1 RemoteHome ---&gt; A simple-string (9) &quot;inspectee&quot;
+   2 RemoteType ---&gt; A simple-string (14) &quot;(array t (57))&quot;
+   3 RemoteParts --&gt; #&lt;remote-field-defs @ #x20e75a6a&gt;
+cl-user(35): :i 3
+remote-field-defs @ #x20e75be2 = #&lt;remote-field-defs @ #x20e75be2&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1016/&quot;t&quot;&gt;
+   1 Size ---------&gt; fixnum 57 [#x000000e4]
+   2 LookingAt ----&gt; (0 9), a proper list with 2 elements
+   3 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1017/&quot;cons&quot;&gt;
+   4 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1018/&quot;cons&quot;&gt;
+   5 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1019/&quot;cons&quot;&gt;
+   6 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1020/&quot;cons&quot;&gt;
+   7 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1021/&quot;cons&quot;&gt;
+   8 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1022/&quot;cons&quot;&gt;
+   9 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1023/&quot;cons&quot;&gt;
+  10 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1024/&quot;cons&quot;&gt;
+  11 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1025/&quot;cons&quot;&gt;
+  12 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1026/&quot;cons&quot;&gt;
+  13 MoreParts ----&gt; #&lt;remote-field-defs @ #x20e7cf1a&gt;
+cl-user(36): :i 13
+remote-field-defs @ #x20e7d0a2 = #&lt;remote-field-defs @ #x20e7d0a2&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1016/&quot;t&quot;&gt;
+   1 Size ---------&gt; fixnum 57 [#x000000e4]
+   2 LookingAt ----&gt; (10 19), a proper list with 2 elements
+   3 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1027/&quot;cons&quot;&gt;
+   4 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1028/&quot;cons&quot;&gt;
+   5 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1029/&quot;cons&quot;&gt;
+   6 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1030/&quot;cons&quot;&gt;
+   7 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1031/&quot;cons&quot;&gt;
+   8 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1032/&quot;cons&quot;&gt;
+   9 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1033/&quot;cons&quot;&gt;
+  10 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1034/&quot;cons&quot;&gt;
+  11 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1035/&quot;cons&quot;&gt;
+  12 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1036/&quot;cons&quot;&gt;
+  13 MoreParts ----&gt; #&lt;remote-field-defs @ #x20e843ea&gt;
+cl-user(37): :i 13
+remote-field-defs @ #x20e84572 = #&lt;remote-field-defs @ #x20e84572&gt;
+   0 RemoteObject -&gt; #&lt;rpc-ref inspectee:pointer#161529357/1016/&quot;t&quot;&gt;
+   1 Size ---------&gt; fixnum 57 [#x000000e4]
+   2 LookingAt ----&gt; (20 29), a proper list with 2 elements
+   3 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1037/&quot;cons&quot;&gt;
+   4 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1038/&quot;cons&quot;&gt;
+   5 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1039/&quot;cons&quot;&gt;
+   6 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1040/&quot;cons&quot;&gt;
+   7 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1041/&quot;cons&quot;&gt;
+   8 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1042/&quot;cons&quot;&gt;
+   9 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1043/&quot;cons&quot;&gt;
+  10 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1044/&quot;cons&quot;&gt;
+  11 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1045/&quot;cons&quot;&gt;
+  12 nil ----------&gt; #&lt;rpc-ref inspectee:pointer#161529357/1046/&quot;cons&quot;&gt;
+  13 MoreParts ----&gt; #&lt;remote-field-defs @ #x20e8b8ba&gt;
+</pre>
+<p id="327">
+To see the components of a very large object, we need to select the MoreParts field several times. 
+</p>
+<pre id="328">
+cl-user(38): :i 0
+rpc-remote-ref @ #x20e75572 = #&lt;rpc-ref inspectee:pointer#161529357/1016/&quot;t&quot;&gt;
+   0 RefType ------&gt; The symbol :pointer
+   1 RemoteHome ---&gt; A simple-string (9) &quot;inspectee&quot;
+   2 RemoteType ---&gt; A simple-string (14) &quot;(array t (57))&quot;
+   3 RemoteParts --&gt; #&lt;remote-field-defs @ #x20e8bc82&gt;
+</pre>
+<p id="329">
+We can return to the initial reference of the large object by
+selecting the RemoteObject field on line 0. This avoids the need to
+climb back through multiple MoreParts steps.
+</p>
+
+<hr><hr><h2 id="330"><a name="several-images-1">9.0 Running several communicating Allegro CL images</a></h2>
+
+<p id="331">
+Starting in Allegro CL 8.0, the aclrpc module includes a set of
+functions to manage a collection of communicating Allegro CL images
+running in separate processes, possibly on separate hosts.
+</p>
+<p id="332">
+It is sometimes necessary or desirable to run a collection of Allegro
+CL images in separate processes and/or separate processors but on a
+common task. The Allegro CL RPC facility is a convenient way to
+coordinate the activities of these processes.
+</p>
+<p id="333">
+The function <a href="operators/rpc/run-other-client.htm"><b>run-other-client</b></a> is called in one Allegro
+CL image to start another. The calling image is a control process
+that can communicate with any number of client images. The control
+image can call functions in the client images, and the client images
+can call functions in the control image.
+</p>
+<p id="334">
+Each instance of the class <a href="classes/rpc/client-lisp.htm"><code>client-lisp</code></a> describes one client image.
+The function <a href="operators/rpc/client-ready-p.htm"><b>client-ready-p</b></a> is a predicate that tests
+when a client image is ready to respond to calls from the control
+image.  The function <a href="operators/rpc/client-funcall.htm"><b>client-funcall</b></a> makes a remote funcall in a
+client image. The function <a href="operators/rpc/client-exit.htm"><b>client-exit</b></a> terminates a client image.  The
+function <a href="operators/rpc/client-end-all.htm"><b>client-end-all</b></a>
+terminates all client images.
+</p>
+<p id="335">
+In each client image, activity is initiated by a function supplied in
+the call to <a href="operators/rpc/run-other-client.htm"><b>run-other-client</b></a>.  The client image may
+call the control process through the RPC port bound to <a href="variables/rpc/s_other-client-port_s.htm"><code>*other-client-port*</code></a>.  The
+client image may be terminated from the control image, or the client
+image may call <a href="operators/rpc/other-client-exit.htm"><b>other-client-exit</b></a> to end the client image
+after notifying the control image.
+</p>
+
+
+
+<hr><hr><h2 id="336"><a name="rpc-index-1">10.0 Index of RPC operators, classes, and variables</a></h2>
+
+<ul>
+<li id="337"> 
+<a href="operators/rpc/client-end-all.htm"><b>client-end-all</b></a>
+(Function)
+</li>
+<li id="338">
+<a href="operators/rpc/client-exit.htm"><b>client-exit</b></a> (Generic Function)
+</li>
+<li id="339">
+<a href="operators/rpc/client-funcall.htm"><b>client-funcall</b></a> (Generic Function)
+</li>
+<li id="340">
+<a href="classes/rpc/client-lisp.htm"><code>client-lisp</code></a> (Class)
+</li>
+<li id="341">
+<a href="operators/rpc/client-lisp-data.htm"><b>client-lisp-data</b></a> 
+(Generic Function)
+</li>
+<li id="342">
+<a href="operators/rpc/client-lisp-errors.htm"><b>client-lisp-errors</b></a> 
+(Generic Function)
+</li>
+<li id="343">
+<a href="operators/rpc/client-lisp-key.htm"><b>client-lisp-key</b></a> (Generic Function)
+</li>
+<li id="344">
+<a href="operators/rpc/client-lisp-name.htm"><b>client-lisp-name</b></a> 
+(Generic Function)
+</li>
+<li id="345">
+<a href="operators/rpc/client-lisp-port.htm"><b>client-lisp-port</b></a> 
+(Generic Function)
+</li>
+<li id="346">
+<a href="operators/rpc/client-lisp-start.htm"><b>client-lisp-start</b></a> 
+(Generic Function)
+</li>
+<li id="347">
+<a href="operators/rpc/client-lisp-verbose.htm"><b>client-lisp-verbose</b></a> 
+(Generic Function)
+</li>
+<li id="348">
+<a href="operators/rpc/client-ready-p.htm"><b>client-ready-p</b></a> (Generic Function)
+</li>
+<li id="349">
+<a href="operators/rpc/def-remote-function.htm"><b>def-remote-function</b></a> (Macro)
+</li>
+<li id="350">
+<a href="operators/rpc/def-remote-method.htm"><b>def-remote-method</b></a> (Macro)
+</li>
+<li id="351">
+<a href="operators/rpc/define-remote-class.htm"><b>define-remote-class</b></a> (Function)
+</li>
+<li id="352">
+<a href="operators/rpc/define-rpc-client.htm"><b>define-rpc-client</b></a> (Function)
+</li>
+<li id="353">
+<a href="operators/rpc/define-rpc-server.htm"><b>define-rpc-server</b></a> (Function)
+</li>
+<li id="354">
+<a href="operators/rpc/eval-string.htm"><b>eval-string</b></a> (Function)
+</li>
+<li id="355">
+<a href="operators/rpc/export-remote-symbol.htm"><b>export-remote-symbol</b></a> 
+(Generic Function)
+</li>
+<li id="356">
+<a href="operators/rpc/import-remote-class.htm"><b>import-remote-class</b></a> 
+(Generic Function)
+</li>
+<li id="357">
+<a href="operators/rpc/make-rpc-client.htm"><b>make-rpc-client</b></a> (Function)
+</li>
+<li id="358">
+<a href="operators/rpc/make-rpc-server.htm"><b>make-rpc-server</b></a> (Function)
+</li>
+<li id="359">
+<a href="operators/rpc/other-client-error.htm"><b>other-client-error</b></a> (Function)
+</li>
+<li id="360">
+<a href="operators/rpc/other-client-exit.htm"><b>other-client-exit</b></a> (Function)
+</li>
+<li id="361">
+<a href="operators/rpc/rapply.htm"><b>rapply</b></a> (Function)
+</li>
+<li id="362">
+<a href="variables/rpc/s_other-client-port_s.htm"><code>*other-client-port*</code></a> (Variable)
+</li>
+<li id="363">
+<a href="operators/rpc/rapply-ignore.htm"><b>rapply-ignore</b></a> (Function)
+</li>
+<li id="364">
+<a href="operators/rpc/rapply-one-way.htm"><b>rapply-one-way</b></a> (Function)
+</li>
+<li id="365">
+<a href="operators/rpc/rcall.htm"><b>rcall</b></a> (Function)
+</li>
+<li id="366">
+<a href="operators/rpc/rcall-ignore.htm"><b>rcall-ignore</b></a> (Function)
+</li>
+<li id="367">
+<a href="operators/rpc/rcall-one-way.htm"><b>rcall-one-way</b></a> (Function)
+</li>
+<li id="368">
+<a href="operators/rpc/rclose.htm"><b>rclose</b></a> (Function)
+</li>
+<li id="369">
+<a href="operators/rpc/register-client-lisp.htm"><b>register-client-lisp</b></a> 
+(Generic Function)
+</li>
+<li id="370">
+<a href="operators/rpc/ropen.htm"><b>ropen</b></a> (Function)
+</li>
+<li id="371">
+<a href="operators/rpc/rpc-begin.htm"><b>rpc-begin</b></a> (Generic
+Function)
+</li>
+<li id="372">
+<a href="operators/rpc/rpc-close.htm"><b>rpc-close</b></a> (Generic
+Function)
+</li>
+<li id="373">
+<a href="classes/rpc/rpc-datagram-port.htm"><code>rpc-datagram-port</code></a> (Class)
+</li>
+<li id="374">
+<a href="classes/rpc/rpc-datagram-server.htm"><code>rpc-datagram-server</code></a> (Class)
+</li>
+<li id="375">
+<a href="operators/rpc/rpc-do-invoke.htm"><b>rpc-do-invoke</b></a> (Generic
+Function)
+</li>
+<li id="376">
+<a href="operators/rpc/rpc-do-request.htm"><b>rpc-do-request</b></a> (Generic Function)
+</li>
+<li id="377">
+<a href="operators/rpc/rpc-enable-client.htm"><b>rpc-enable-client</b></a> 
+(Generic Function)
+</li>
+<li id="378">
+<a href="operators/rpc/rpc-enable-port.htm"><b>rpc-enable-port</b></a> (Generic Function)
+</li>
+<li id="379">
+<a href="operators/rpc/rpc-get.htm"><b>rpc-get</b></a> (Generic
+Function)
+</li>
+<li id="380">
+<a href="operators/rpc/rpc-invoke.htm"><b>rpc-invoke</b></a> (Generic
+Function)
+</li>
+<li id="381">
+<a href="classes/rpc/rpc-message.htm"><code>rpc-message</code></a> (Class)
+</li>
+<li id="382">
+<a href="operators/rpc/rpc-open-client.htm"><b>rpc-open-client</b></a> (Generic Function)
+</li>
+<li id="383">
+<a href="operators/rpc/rpc-open-listener.htm"><b>rpc-open-listener</b></a> 
+(Generic Function)
+</li>
+<li id="384">
+<a href="operators/rpc/rpc-open-p.htm"><b>rpc-open-p</b></a> (Function)
+</li>
+<li id="385">
+<a href="operators/rpc/rpc-open-server.htm"><b>rpc-open-server</b></a> 
+(Generic Function)
+</li>
+<li id="386">
+<a href="classes/rpc/rpc-port.htm"><code>rpc-port</code></a> (Class)
+</li>
+<li id="387">
+<a href="classes/rpc/rpc-port-server.htm"><code>rpc-port-server</code></a> (Class)
+</li>
+<li id="388">
+<a href="variables/rpc/s_rpc-port_s.htm"><code>*rpc-port*</code></a> (Variable)
+</li>
+<li id="389">
+<a href="classes/rpc/rpc-process-pool.htm"><code>rpc-process-pool</code></a> (Class)
+</li>
+<li id="390">
+<a href="operators/rpc/rpc-process-pool.htm"><b>rpc-process-pool</b></a> (Function)
+</li>
+<li id="391">
+<a href="operators/rpc/rpc-query.htm"><b>rpc-query</b></a> (Generic
+Function)
+</li>
+<li id="392">
+<a href="operators/rpc/rpc-ref.htm"><b>rpc-ref</b></a> (Generic
+Function)
+</li>
+<li id="393">
+<a href="classes/rpc/rpc-remote-ref.htm"><code>rpc-remote-ref</code></a> (Class)
+</li>
+<li id="394">
+<a href="operators/rpc/rpc-send-request.htm"><b>rpc-send-request</b></a> 
+(Generic Function)
+</li>
+<li id="395">
+<a href="classes/rpc/rpc-socket-port.htm"><code>rpc-socket-port</code></a> (Class)
+</li>
+<li id="396">
+<a href="classes/rpc/rpc-socket-port-with-enabler.htm"><code>rpc-socket-port-with-enabler</code></a> (Class)
+</li>
+<li id="397">
+<a href="classes/rpc/rpc-socket-server.htm"><code>rpc-socket-server</code></a> (Class)
+</li>
+<li id="398">
+<a href="classes/rpc/rpc-socket-server-with-enabler.htm"><code>rpc-socket-server-with-enabler</code></a> (Class)
+</li>
+<li id="399">
+<a href="operators/rpc/rpc-version.htm"><b>rpc-version</b></a> (Function)
+</li>
+<li id="400">
+<a href="operators/rpc/rpc-wait.htm"><b>rpc-wait</b></a> (Generic
+Function)
+</li>
+<li id="401">
+<a href="operators/rpc/rpp-passcode.htm"><b>rpp-passcode</b></a> (Generic
+Function)
+</li>
+<li id="402">
+<a href="operators/rpc/rpp-tester.htm"><b>rpp-tester</b></a> (Generic
+Function)
+</li>
+<li id="403">
+<a href="operators/rpc/rr-base.htm"><b>rr-base</b></a> (Generic
+Function)
+</li>
+<li id="404">
+<a href="operators/rpc/rr-home.htm"><b>rr-home</b></a> (Generic
+Function)
+</li>
+<li id="405">
+<a href="operators/rpc/rr-type.htm"><b>rr-type</b></a> (Generic
+Function)
+</li>
+<li id="406">
+<a href="operators/rpc/rref.htm"><b>rref</b></a> (Function)
+</li>
+<li id="407">
+<a href="operators/rpc/rthrow.htm"><b>rthrow</b></a> (Function)
+</li>
+<li id="408">
+<a href="operators/rpc/run-other-client.htm"><b>run-other-client</b></a> (Function)
+</li>
+<li id="409">
+<a href="operators/rpc/run-other-lisp.htm"><b>run-other-lisp</b></a> (Function)
+</li>
+<li id="410">
+<a href="operators/rpc/with-other-client-port.htm"><b>with-other-client-port</b></a> (Macro)
+</li>
+<li id="411">
+<a href="operators/rpc/with-remote-port.htm"><b>with-remote-port</b></a> (Macro)
+</li>
+<li id="412">
+<a href="classes/rpc/with-rpc-port-enabler.htm"><code>with-rpc-port-enabler</code></a> (Class)
+</li>
+<li id="413">
+<a href="classes/rpc/with-rpc-server-enabler.htm"><code>with-rpc-server-enabler</code></a> (Class)
+</li>
+</ul>
+
+</body><hr><p id="2"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/rpc.htm">9.0 version</a></td></tr></table></html>

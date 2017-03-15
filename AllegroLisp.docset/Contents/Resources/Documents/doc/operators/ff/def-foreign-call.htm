@@ -1,0 +1,1115 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>def-foreign-call</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/def-foreign-call.htm">9.0 version</a></td></tr></table><h2 id="2">def-foreign-call</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name-and-options arglist </i>&amp;key <i>call-direct callback convention returning method-index release-heap release-heap-ignorable arg-checking optimize-for-space strings-convert error-value pass-structs-by-value allow-gc release-heap-implies-allow-gc documentation</i><i>
+</i></p>
+
+<p id="4">
+This macro creates the specification which allows Lisp to correctly
+call non-Lisp code.  Like other defining forms, its macroexpansion
+clearly shows what will occur and at what eval-when times. The
+execution of the expanded form always returns the Lisp name being
+defined. The definition that is installed is a Lisp function that
+serves as a wrapper and initiates the foreign call.</p>
+
+<p id="5">
+Macroexpansion of a <b>def-foreign-call</b> form provides useful
+information about how the call is interpreted. See <a href="#macroexpansion-info">below</a>.
+</p>
+
+<p id="6">
+The following table shows the arguments. The first two entries are the
+required arguments and the remainder are keyword arguments.
+</p>
+
+<table border="1" width="90%">
+<tr>
+<td width="14%"><strong>Argument</strong></td>
+<td width="35%"><strong>Value and Details</strong></td>
+<td width="51%"><strong>Notes</strong></td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>name-and-options</i></td>
+
+<td width="35%" VALIGN="TOP">A required argument.
+<p id="7">Symbol or a list of a
+symbol and an external-name specification, which can either
+be:</p> 
+<p id="8">(1) a symbol naming a function of one argument that
+returns a string to be used as the foreign name or </p> 
+<p id="9">(2) a
+string which will be used as the foreign name.</p></td> 
+<td width="51%" VALIGN="TOP">The symbol represents the lisp-name 
+for which the
+foreign-call definition will be installed. The external name
+specification can be either a string specifying a literal external
+name, or it can be a symbol, which represents the name of a
+conversion function. That conversion function must take one
+required argument and at least the <i>language</i>
+keyword argument, and must be defined at the time the macro
+expansion is executed. At that time this conversion function will
+be called and will receive the lisp-name specified, as well as the
+arguments <code>:language </code><code><em>lang</em></code> where <em>lang</em>
+is the value of the <i>convention</i> keyword
+argument to <a href="def-foreign-call.htm"><b>def-foreign-call</b></a>.</td>
+
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>arglist</i></td>
+
+<td width="35%" VALIGN="TOP">A required argument.<p id="10">A possibly 
+empty list of
+argument specifications. <code>nil</code> and
+<code>(:void)</code> have special meanings.</p></td>
+
+<td width="51%" VALIGN="TOP"><code>nil</code> implies 
+much the same as it does in C, that arguments are
+not checked for type or number.
+<p id="11">(:void) means 0 arguments are explicitly required (also
+as in C).</p>
+<p id="12">Note that string-conversion is done automatically when
+<i>arglist</i> is <code>nil</code>
+unless <i>strings-convert</i> is specified 
+<code>nil</code>. See 
+<a href="#note-4-no-arg-strings">Note 4: String conversion
+when no arguments are specified</a> after the
+table.</p>
+<p id="13">Otherwise a list of argument specifications. See 
+<a href="#note-1-arg-specifications">Note 1: Argument Specifications</a>
+after the
+table.</p>
+<p id="14">See <a href="../../foreign-functions.htm#foreign-addresses-3">A note on foreign addresses</a>
+in <a href="../../foreign-functions.htm">foreign-functions.htm</a>
+for a discussion of foreign addresses and what is expected 
+when <code>:foreign-address</code>
+is specified.</p></td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP">
+<i>returning</i>
+</td> 
+<td width="35%" VALIGN="TOP">
+Keyword argument.  
+<p id="15">
+Default: the foreign type <code>:int</code>, with a conversion
+to Lisp type integer (a fixnum with a possible overflow to a
+bignum). See <a href="#note-7-returning-int-problem">Note 7: Potential
+problems with foreign functions returning :int in 64-bit Lisps</a> for
+possible problems with returning :int on 64-bit Lisps. 
+</p>
+<p id="16">
+The value can also be: 
+</p>
+<p id="17">
+A foreign type (defined by <a href="def-foreign-type.htm"><b>def-foreign-type</b></a>)</p>
+<p id="18">A list of a foreign type and a Lisp type (and an optional 
+third element which is not
+used but may be in a later release). Example:
+<code>(:double single-float)</code>. See also <a href="#note-8-returning-booleans">Note 8: Returning booleans</a>.</p>
+<p id="19"><code>((* :char))</code>, or 
+<code>((* :char) </code><code><i>string</i></code><code>)</code>, etc.
+Causes <a href="../excl/native-to-string.htm"><b>native-to-string</b></a>
+to be called automatically after the return. The alternative 
+specification of defining the
+returning value as an integer and then to explicitly call <a href="../excl/with-native-string.htm"><b>with-native-string</b></a> on the result,
+still works, and should be used if any external-format other than
+<code>:default</code> is desired. 
+</p>
+<p id="20"><code>:lisp</code>, meaning a Lisp object. 
+No conversion is done. If not actually a
+Lisp object, gc failure is possible.</p>
+<p id="21"><code>:foreign-address</code></p>
+<p id="22"><code>:single-float-from-double</code>, 
+a double is returned and it is converted to a
+single. This specification is deprecated though it will work.
+The preferred specification is 
+<code>(:double single-float)</code></p>
+<p id="23"><code>:void</code>, nothing is returned, the 
+Lisp function returns <code>nil</code> 
+(<code>:void</code>
+is actually a foreign type).</p></td>
+
+<td width="51%" VALIGN="TOP">This argument specifies how the value returned
+from the foreign function will be interpreted. If both foreign and
+Lisp types are chosen, they will be checked for consistency and a
+warning might be given. <p id="24">A common idiom is to use </p>
+<p id="25"><code>:returning (:int fixnum) </code></p> 
+<p id="26">to specify that
+the foreign value returned is to be simply shifted into a fixnum
+value, with no consing and simple truncation of the top two bits
+on overflow. </p> 
+<p id="27">If <code>:foreign-address</code> is
+specified, the return value will be interpreted as an unsigned
+integer and converted to a positive Lisp integer.  The system will
+not store this value into a foreign-pointer object. The discussion
+in <a href="../../foreign-functions.htm#foreign-addresses-3">A note on foreign addresses</a>
+in <a href="../../foreign-functions.htm">foreign-functions.htm</a> does not
+specifically apply to returning values. Programmers can add code
+to store the returned value as desired.</p>
+</td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>convention</i></td>
+<td width="35%" VALIGN="TOP">Keyword argument. Default :c
+<p id="28">
+Other possibilities listed in 
+<a href="#note-2-possible-values">Note 2: Possible Values for Convention</a>
+after the table.</p></td>
+<td width="51%" VALIGN="TOP">This argument allows the 
+specialization of calling conventions due to
+language or operating-system distinctions. The default 
+convention is :c, and is adequate
+for most situations. (Note that on Windows the c/stdcall convention 
+distinction
+is required for callbacks using 
+<a href="defun-foreign-callable.htm"><b>defun-foreign-callable</b></a>,
+but is not required in <a href="def-foreign-call.htm"><b>def-foreign-call</b></a>). </td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>arg-checking</i></td>
+<td width="35%" VALIGN="TOP"><code>t</code> or 
+<code>nil</code> (default is <code>t</code>)</td>
+<td width="51%" VALIGN="TOP">If true, this argument causes 
+the Lisp wrapper function to first check the
+Lisp types against the Lisp argument type specifications. 
+When <code>nil</code>, no
+argument checking is done (although the number of arguments 
+might still be checked). If
+true, the lisp-types specified or 
+implied in the argument specification
+(provided with the <i>arglist</i> argument) 
+is used to check the actual arguments to the
+wrapper; if a mismatch occurs, error is called. The default 
+value is <code>t</code>,
+unless <i>arglist</i> is <code>nil</code>.</td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>call-direct</i></td>
+<td width="35%" VALIGN="TOP">t or <code>nil</code> 
+(default is <code>nil</code>)</td>
+<td width="51%" VALIGN="TOP">The argument causes no changes to the 
+Lisp wrapper itself, but, when
+specified true, allows for other Lisp functions to call 
+the foreign function directly when
+compiled after the <strong>def-foreign-call</strong> 
+form is in effect. In order for the
+compilation of a direct-call to be successful, the 
+argument and return types must imply
+simple type conversions which the compiler can handle. 
+That list of direct-callable
+conversions on a platform is constantly changing, but can be 
+examined by calling the
+function <a href="../compiler/list-call-direct-possibilities.htm"><b>list-call-direct-possibilities</b></a>.
+<p id="29">If
+for any reason a call to the foreign function cannot be 
+compiled into a direct-call, a
+warning is issued and a call to the wrapper is generated. 
+When <i>error-value</i> is non-<code>nil</code>,
+the call cannot be a direct-call so <i>call-direct</i>
+is ignored (but a warning is printed if <i>call-direct</i>
+is  non-<code>nil</code>).</p></td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>method-index</i> 
+&nbsp;<b>[Windows Only]</b></td>
+<td width="35%" VALIGN="TOP"><code>nil</code> (the default) 
+or an index into C++ table, as described at
+right.</td>
+<td width="51%" VALIGN="TOP">This argument allows for calling of 
+C++ style member-methods. The value,
+if specified, must be an integer index into the virtual 
+table of the C++ class. Symbolic
+index specifications are not directly supported. 
+<p id="30">See <a href="#note-6-method-index-details">Note 6: More on the 
+:method-index argument</a> for information on a 
+non-<code>nil</code> value for this argument.
+</p>
+</td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>callback</i></td>
+<td width="35%" VALIGN="TOP">t (the default and only allowed value)</td>
+<td width="51%" VALIGN="TOP">The <i>callback</i> 
+keyword is non-operative, but is retained in the
+hopes that its functionality can be revived in future versions. 
+A null value indicates a
+promise by the programmer that the foreign function will never 
+call-back into lisp.
+Unfortunately, due to the nature of OS threads implementations, 
+this promise is currently
+impossible to keep. The value of this keyword is always 
+taken as <code>t</code>, and a
+warning is issued if specified to <code>nil</code>. </td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>release-heap</i></td>
+<td width="35%" VALIGN="TOP">Only used on platforms that use the
+:os-threads model for multiprocessing.  See <a href="#note-3-release-heap">Note 3: the release-heap keyword
+argument</a> below the table.</td> <td width="51%" VALIGN="TOP">The
+<i>release-heap</i> keyword allows the foreign function
+to operate in native-OS threads (so :os-threads is on the <a href="../../../ansicl/dictentr/features.htm"><code>*features*</code></a> list), without
+causing conflicting demands on the Lisp heap. The values for this
+keyword are discussed in <a href="#note-3-release-heap">Note 3: the
+release-heap keyword argument</a> below the table.  <b>Note</b>: the
+specification of :release-heap on any non-os-threads implementation to
+any value other than <code>:never</code> will generate a
+warning, unless the user also specifies :release-heap-ignorable as a
+non-<code>nil</code> value.
+</td>
+</tr>
+
+<tr>
+<td width="14%" VALIGN="TOP"><i>release-heap-ignorable</i></td> 
+<td width="35%" VALIGN="TOP"><code>t</code> or <code>nil</code> (default is <code>nil</code>)</td> 
+<td width="51%" VALIGN="TOP">This
+argument, when <code>t</code>, tells the system to
+ignore the <i>release-heap</i> keyword
+argument, regardless of its value, on non-os-threads
+implementations. The value on non-os-threads implementations
+should be <code>:never</code>.
+If the value of this argument
+is <code>nil</code>, a warning will be generated if
+the value of the <i>release-heap</i> is anything
+other than <code>:never</code>. (The reason is such a value
+is meaningless and the system wants to be sure that the programmer
+understands that a meaningless value has been specified. Assuming
+that the heap can be released on non-os-threads (it cannot be
+released) may affect behavior or performance.) This argument is
+provided to allow the same <a href="def-foreign-call.htm"><b>def-foreign-call</b></a> forms to be
+used on both os-threads and non-os-threads platforms without
+warnings being signaled and without conditionalizing the value
+of the <i>release-heap</i> argument.
+</td>
+</tr>
+
+
+<tr>
+<td width="14%" VALIGN="TOP"><i>allow-gc</i></td> 
+<td width="35%" VALIGN="TOP"><code>:never</code>, <code>:always</code>, or
+<code>:when-ok</code> (default
+is <code>:never</code>)</td>
+<td width="51%" VALIGN="TOP">
+This argument can have the same values as
+<i>release-heap</i>, and they roughly mean the same
+thing, except here applying to the garbage-collector is allowed to run
+either never (with :never), when interrupts are enabled (with
+:when-ok) or always (with :always). See <a href="#note-3-release-heap">Note 3: the release-heap keyword
+argument</a> below the table. This argument is only used in an SMP Lisp.
+<p id="31">
+It is planned to add as an
+allowable value :match-release-heap and eliminate the
+:release-heap-implies-allow-gc argument.
+</p>
+</td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>release-heap-implies-allow-gc</i></td> 
+<td width="35%" VALIGN="TOP"><code>t</code> or <code>nil</code> (default is <code>nil</code>)</td> 
+<td width="51%" VALIGN="TOP">
+If in an SMP Lisp the <i>release-heap</i> argument is
+given a value other than <code>:never</code>, then a warning is
+issued.  This is because :release-heap is a confusing concept in an
+SMP world, and it is necessary to require users porting to SMP Lisps
+to explicitly state what is desired for SMP, regardless of the options
+used for os-threads or virtual-threads (where Lisp processes are
+managed within Lisp).  So the user can elect to use conditional
+reading using #+os-threads, #+smp, etc., or these conditionalizations
+can be avoided with <i>release-heap-implies-allow-gc</i>
+which says "I understand that in an SMP Lisp we are really allowing
+the gc, but I want to use the release-heap argument to specify this".
+<p id="32">
+It is the intention to remove this argumement and allow an additional
+value for <i>allow-gc</i> to replace it.
+</p>
+</td>
+</tr>
+
+<tr>
+<td width="14%" VALIGN="TOP"><i>optimize-for-space</i></td>
+<td width="35%" VALIGN="TOP"><code>t</code> or <code>nil</code> (default is <code>nil</code>)</td>
+<td width="51%" VALIGN="TOP">The 
+<i>optimize-for-space</i> keyword provides 
+for minimal space
+requirement for foreign-call wrappers. This option is 
+best used in conjunction with the <i>call-direct</i>
+option. If true, 
+<i>optimize-for-space</i> will ensure that the wrapper
+definition takes up very little room, usually as a closure. 
+This usually comes at a cost
+of speed, and so only makes sense when <i>call-direct</i> 
+is used to compile all actual
+calls to the foreign function directly, so that the Lisp wrapper 
+is not called normally at
+all. </td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>strings-convert</i></td>
+<td width="35%" VALIGN="TOP"><code>t</code> or 
+<code>nil</code>
+(default is <code>t</code>)</td>
+<td width="51%" VALIGN="TOP">This argument assists in having the 
+foreign-function 
+interface handle Allegro CL's 16-bit strings automatically. 
+When the <i>strings-convert</i> is true, then 
+when any of the specified
+arguments at def-foreign-call time are declared directly or indirectly
+as <code>(* :char)</code>, <a href="def-foreign-call.htm"><b>def-foreign-call</b></a> augments the
+function wrapping the low-level foreign function call so that for each
+<code>(* :char)</code> declared argument, a check is made at
+runtime to see if that declaration's corresponding value is a string.
+If it is, then that value is converted at runtime to native-string
+format using a dynamic-extent array, and this new array is passed in
+place of the original string argument to low-level foreign function
+call. See <a href="../../iacl.htm#foreign-functions-1">Foreign-Functions</a> in 
+<a href="../../iacl.htm">iacl.htm</a> for full details and examples.
+<p id="33">
+If <i>arglist</i> is <code>nil</code>
+(meaning that no information about the type or the number of
+arguments is supplied) and this argument is unspecified,
+string conversion is enabled and a warning is printed stating
+that fact. See 
+<a href="#note-4-no-arg-strings">Note 4: String conversion
+when no arguments are specified</a> after the
+table.
+</p></td>
+</tr>
+<tr>
+<td width="14%" VALIGN="TOP"><i>error-value</i></td>
+<td width="35%" VALIGN="TOP"><code>nil</code>,
+<code>:errno</code>, <code>:os-specific</code>,
+(default is <code>nil</code>)</td>
+<td width="51%" VALIGN="TOP">
+<code>nil</code> causes normal operation of the foreign call
+   and a return of the one value that the foreign call itself
+   returns.
+<p id="34">
+<code>:errno</code> gets the most recent value of the
+   <b>errno</b> variable and returns it as the second return value
+   from the foreign call.
+</p>
+<p id="35">
+<code>:os-specific</code> gets an architecture/operating-system 
+specific error
+   value and returns it as the second return value from the
+   foreign call.  On Windows systems, the <b>GetLastError()</b>
+   function is used to get this error value.  Currently, all
+   other architectures retrieve the value of the errno variable.
+</p>
+<p id="36">
+<i>call-direct</i> is
+ineffective if <i>error-value</i> is 
+non-<code>nil</code> (a warning is printed and the
+<i>call-direct</i> argument is ignored if 
+non-<code>nil</code> values are specified for both
+<i>error-value</i> and <i>call-direct</i>). 
+</p>
+<p id="37">
+See 
+<a href="#note-5-error-value-details">Note 5: More on the 
+error-value argument</a> after the table for more information.
+</p>
+</td>
+</tr>
+
+<tr>
+<td width="14%" VALIGN="TOP"><i>pass-structs-by-value</i></td> 
+<td width="35%" VALIGN="TOP"><code>nil</code>
+or <code>t</code>, default is <code>nil</code>
+</td>
+<td width="51%" VALIGN="TOP">
+<code>nil</code> causes an argument structure not
+specified with a * to be passed by reference anyway. So an argument
+specification <code>(point Point)</code>
+with <i>pass-structs-by-value</i> nil will be passed by
+reference, as will <code>(point (* Point))</code>,
+while <code>(point Point)</code>
+with <i>pass-structs-by-value</i> t will be passed by
+reference. If not specified, a warning is
+issued. See <a href="../../foreign-functions.htm#structs-by-value-1">Passing structures by value</a>
+in <a href="../../foreign-functions.htm">foreign-functions.htm</a> for details.
+</td>
+</tr>
+
+<tr>
+<td width="14%" VALIGN="TOP"><i>documentation</i></td> 
+<td width="35%" VALIGN="TOP"><code>nil</code>
+or a string, default is <code>nil</code>
+</td>
+<td width="51%" VALIGN="TOP">
+Supplies a documentation string for the foreign function. The string
+can be accessed with <code>(documentation name
+'function)</code>.  You can set the documentation after definition
+with <a href="../../../ansicl/dictentr/document.htm"><b>(setf documentation)</b></a>. If
+<a href="../../variables/excl/s_load-documentation_s.htm"><code>excl:*load-documentation*</code></a>
+is <code>nil</code>, documentation string is effectively
+ignored.
+</td>
+</tr>
+
+</table>
+
+<h3 id="38">
+<a name="note-1-arg-specifications">Note 1: Argument Specifications</a></h3>
+
+<p id="39">
+Argument specifications are available with a rich set of syntax and
+defaults which allow for a C "feel" while still retaining
+the Lisp semantics and power. 
+</p>
+<p id="40">
+The basic argument list is simply a list of names, e.g. (a b c d),
+whose types default to C int types converted in the usual manner from
+Lisp integer types. Any one argument can be specified more fully, as a
+list of the name optionally followed by the foreign type optionally
+followed by the Lisp type (optionally followed by a translation
+specification, which has not been implemented). Here is an example:
+</p>
+<pre id="41">
+  (a (b :int fixnum) (c :lisp))
+</pre>
+<p id="42">
+The
+foreign type can either be a built-in foreign type or a type defined
+by <a href="def-foreign-type.htm"><b>def-foreign-type</b></a>, or it can be
+one of the keywords <code>:lisp</code>, 
+<code>:foreign-address</code>,
+or <code>:single-float-no-proto</code> (deprecated). The value
+:lisp means the argument will be passed unchanged, analogous to the
+returning type :lisp. The lisp type (the optional third element of
+the list) can be any valid lisp type.
+</p>
+<p id="43">
+If the foreign type is not 
+specified, it defaults to
+<code>:int</code> (and the Lisp type thus defaults to integer). 
+If the
+foreign type is specified but the Lisp type is not, a reasonable Lisp
+type is chosen to correspond to the foreign type. If both foreign and
+Lisp types are chosen, they will be checked for consistency and a
+warning might be given. A foreign type specification that includes a
+reference spec such as <code>(& :int)</code> 
+will be interpreted
+as a pass-by-reference argument. 
+</p>
+
+
+<p id="44">
+For boolean values, specify the argument <code>(argname :int
+boolean)</code>. Then any non-<code>nil</code> Lisp
+value (including 0) will be converted into a C value of 1, and <code>nil</code> will be converted into a C value of 0. For
+returned values, a C value of 0 is converted into <code>nil</code> and a non-zero C value is converted into <code>t</code>.
+</p>
+
+<p id="45">
+The special Lisp type specification <code>:no-proto</code> is
+provided for use with a <code>:float</code> foreign type; it is
+equivalent to the <code>:single-float-no-proto</code>. Note that
+both of these specifications are deprecated though they will
+work. The preferred specification is <code>(:double
+single-float)</code>.
+</p>
+<p id="46">
+Specifying the value (* :float) or (* :double) as the type of an
+argument is not recommended. The function will expect a foreign
+address (not a Lisp address) and it will not pass the address of a
+Lisp float is a Lisp float is given as a value.
+</p>
+
+<p id="47">See 
+<a href="../../foreign-functions.htm#foreign-addresses-3">A note on foreign addresses</a>
+in <a href="../../foreign-functions.htm">foreign-functions.htm</a> for a discussion of
+foreign addresses and what is expected when
+<code>:foreign-address</code> is specified.</p>
+
+<h3 id="48">
+<a name="note-2-possible-values">Note 2: Possible Values for 
+<em>Convention</em></a></h3>
+
+<p id="49">
+Other than <code>:c</code>, (the default and suitable for most
+purposes), the <code>:fortran</code> convention is defined.
+This convention generally causes a conversion of most atomic arguments
+to pass-by-reference.
+</p>
+<h4 id="50">:fastcall convention on Windows does not work</h4>
+<p id="51">
+<code>:fastcall</code> is a special convention used by some
+Windows operating systems to speed up some calls, by passing two
+arguments in registers. However, it does not work with Allegro CL. In
+Allegro CL on X86 architectures, the first two arguments are usually
+passed in registers anyway in Lisp, but they are different registers
+than used in fastcall. Also, since the calling sequence itself
+overshadows the speed that would be gained by saving a couple of push
+instructions, the foreign call to a fastcall function would not in
+fact be very fast at all.
+</p>
+
+
+<h3 id="52"><a name="note-3-release-heap">Note 3: the release-heap
+keyword argument</a></h3>
+
+<p id="53">The native-threads implementation of Allegro CL changes some basic
+assumptions of the foreign functions user interface. There is always
+exactly one native thread per Lisp Process, but there is not
+necessarily a Lisp process for every thread. Threads are free to run
+whenever they want; however, only one thread at a time can access the
+Lisp heap (for read or write); a thread cannot access the Lisp heap
+unless it has "acquired" the heap, which is only possible
+after another thread has "released" the heap.
+</p>
+<p id="54">
+See <a href="../../foreign-functions.htm#releasing-the-heap-2">Releasing the
+heap when calling foreign functions</a> in
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for more information on this point.
+</p>
+
+<p id="55">
+<a href="def-foreign-call.htm"><b>def-foreign-call</b></a>
+allows for the specification of whether to release the heap or not
+during a call. The possibilities for the
+<i>release-heap</i> keyword argument are: 
+</p>
+
+<ul>
+<li id="56">
+<code>:never</code> - This is the default and is compatible to
+the original <a href="defforeign.htm"><b>defforeign</b></a> interface; the caller
+necessarily has the lisp heap, this call will not release it. Note
+that if the foreign code being called spawns any new threads, or if it
+allows another thread to run, and the other thread attempts to call
+back into lisp, it will have to wait for the lisp heap. The danger is
+that the original thread may be waiting for results from its partner
+thread, but it has not yet given up the heap (this constitutes a
+deadlock situation). If this situation holds (foreign code does spawn
+new thread which call back into Lisp), <code>:when-ok</code> is
+the appropriate value for the <i>release-heap</i>
+argument.
+</li>
+  <li id="57"><code>:always</code> - The foreign call always 
+    gives up the heap before making the
+    transition into non-lisp execution. If the form is being 
+    called within the dynamic context
+    of a <a href="../excl/without-interrupts.htm"><b>without-interrupts</b></a> 
+    form, an error
+    is signaled. </li>
+  <li id="58"><code>:when-ok</code> - The current dynamic context is 
+    examined, and if
+    without-interrupts is in effect, the heap is not released; 
+    otherwise the heap is released.
+  </li>
+</ul>
+<h4 id="59">
+Garbage collections in an SMP Lisp
+</h4>
+<p id="60">
+There is a big difference in dealing with other-thread and garbage
+collection (gc) action intermingled with foreign calls in all of
+virtual-threads (processes are managed by Lisp), os-threads (processes
+are managed by the OS, but only one hardware processor is used for
+Lisp code), and SMP (multiple hardware processors can be used for Lisp
+and foreign code) Lisps.  All three are different. This makes
+designing functionality which will run correctly on all three
+complicated.
+</p>
+<p id="61">
+The <i>release-heap</i> argument was added for
+os-threads, and has options :never, :always, and :when-ok.  These are
+still the options. They pertain to whether the thread calling a
+foreign-function wants to allow another thread to access the Lisp heap
+during the call (note that amonst other things, this could lead to a
+garbage-collection).
+</p>
+<p id="62">
+The virtual-threads Lisps are simpler. Because they are more
+constrained, :release-heap :never is the only option that makes sense,
+since there is no concept of releasing the heap by a thread separate
+from pausing the thread.  
+</p>
+<p id="63">
+If the user is coding for both virtual and
+os-threads, he can code for os-threads, and then add the
+:release-heap-ignorable t option to allow virtual-threads calls to
+compile without warning (and with the implied descriptive value of
+:never for the :release-heap option).
+</p>
+<p id="64">
+SMP Lisps are more complicated As with virtual threads, there is again
+no concept of heap ownership, in this case not because the heap is
+automatically assigned to the running thread, but because there are no
+longer any heap management constraints except one (explained later)
+which means that any thread can access the heap at any time.  So the
+concept of releasing the heap makes even less sense in an SMP Lisp
+than it does in a virtual-threads Lisp.
+</p>
+<p id="65">
+In a pure SMP Lisp, there would be no restrictions at all on foreign
+calls.  But, as mentioned above, although the heap itself is no longer
+a one-at-a-time resource needing gating, the garbage-collector, which
+is a stop-the-world collector still, must have complete and exclusive
+access to the heap when it runs, and so threads must specify whether
+to allow the gc to run.
+</p>
+<p id="66">
+<a href="def-foreign-call.htm"><b>def-foreign-call</b></a> has two new
+keyword arguments: allow-gc and release-heap-implies-allow-gc to deals
+with these issues.
+</p>
+<p id="67">
+<i>allow-gc</i>,defaults to :never, to keep it in line
+with the <i>release-heap</i> argument.  It can have the
+same values as <i>release-heap</i>, and they roughly
+mean the same thing (with the difference being that the
+garbage-collector is allowed to run either never (with :never), when
+interrupts are enabled (with :when-ok) or always (with :always). Note
+that as with os-threads, in an SMP Lisp, <code>:allow-gc
+:never</code> does not lock out the gc if the foreign code performs
+a callback to Lisp.  So appropriae measures must still be taken, if a
+callback is possible, to reacquire Lisp objects after a possible gc,
+because they may have moved.
+</p>
+
+
+<h3 id="68"><a name="note-4-no-arg-strings">Note 4: String conversion when 
+no arguments are specified</a></h3>
+
+<p id="69">
+<code>(ff:def-foreign-call foo ())</code>
+has no arguments specified, meaning that any number of 
+arguments of any type
+will be passed. If any of these arguments are strings, it may be that
+string conversion should be performed.
+</p>
+<p id="70">
+String conversion is done by default. The
+above <a href="def-foreign-call.htm"><b>def-foreign-call</b></a> form will
+generate a warning message (to indicate that string arguments will be
+converted). To suppress the warning but still convert the strings,
+specify the value <code>t</code> for the
+<i>strings-convert</i> keyword argument. To suppress
+the warning and to suppress all automatic strings conversion, specify
+the value <code>nil</code> for the
+<i>strings-convert</i> keyword argument.
+</p>
+
+<h3 id="71"><a name="note-5-error-value-details">Note 5: More on the error-value
+argument</a></h3>
+
+<p id="72">
+Getting an error value from a foreign call is somewhat complicated, so
+users should not casually use this feature, but instead consider
+whether the information is necessary and be aware of various ways in
+which the information may be incorrect.
+</p>
+<p id="73">
+First note the following:
+<ul>
+<li id="74">
+<b>The cost of obtaining the error value and returning it as the
+second value is not insignificant</b>, so the value should only be
+obtained (by specifying a non-<code>nil</code> value for
+the <i>error-value</i> argument) if there is reason to
+believe it may be needed.
+</li>
+<li id="75">
+<b>The only way to get the correct value is to specify the correct
+non-<code>nil</code> value for for
+the <i>error-value</i> argument</b>. Foreign function
+call are complicated and typically additional functionality is wrapped
+around the actual function call by the system (that is, by Allegro
+CL). This additional functionality may affect the value of
+the <b>errno</b> system variable in the current system thread or the
+value returned by <b>GetLastError()</b> so simply looking
+at <b>errno</b> or calling <b>GetLastError()</b> after the forreign
+call has returned will not work: the value seen can be different from
+the correct value. When <i>error-value</i> has an
+appropriate non-<code>nil</code> value (appropriate values
+are discussed below), code is added by the system to get and store the
+value of <b>errno</b> or the return value of <b>GetLastError()</b>
+immediately after the actual foreign function returns (and before the
+additional wrapper code is
+run). Using <i>error-value</i> is the only way to get
+the correct value, and even that may not always work, as the next
+bullet discusses. 
+</li>
+<li id="76">
+<b>The returned as the error value assumes the foreign function being
+called behaves correctly with regard to errors</b>. Thus, the value of
+<b>errno</b> has to be set to 0 at the beginning of the call or the
+error value seen by <b>GetLastError()</b> has to be cleared. Then the
+value seen when the call returns will be correct. If this is not done,
+then the value seen need not be correct. So, for example, if the
+foreign call does nothing to set <b>errno</b>, and its value happens
+to be 2 when the call is made, and the function runs without error
+so <b>errno</b> is not affected by any error handler, then the return
+error value will be 2 even though it should be zero. Note that this
+has nothing to do with Allegro CL and the code it generates. Allegro
+CL is returning what it promises: the value of <b>errno</b> or that
+retruned by <b>GetLastError()</b> immediately after the foreign
+function returns. It is just that value in such a case is bogus.  The
+Allegro CL shared library does have a
+function <b>clear_errno_value()</b>.  While this can be called by the
+actual foreign function, if you have such a function where you cannot
+modify the source, you could call this function, either in a wrapper
+around the foreign function of interest or even in a separate foreign
+call prior to the call of interest and, while not guaranteed for
+reasons just given, will make the second return value more likely to
+be correct.
+</li>
+</ul>
+
+<p id="77">
+The two acceptable non-<code>nil</code> values
+for <i>error-value</i> are <code>:errno</code>
+and <code>:os-specific</code>.
+</p>
+<h4 id="78">
+On UNIX and UNIX-like platforms
+</h4>
+<p id="79">
+The two non-<code>nil</code> values have the same effect:
+the value of <b>errno</b> is stored immediately after the actual
+foreign function returns (and before additional wrapper code is
+run), and then returned as the second return value of the foreign
+call.
+</p>
+<h4 id="80">
+On Windows
+</h4>
+<p id="81">
+The values have different effects. 
+</p>
+<p id="82">
+If you specify the value
+<code>:os-specific</code>, then <b>GetLastError()</b> is called
+immediately after the actual foreign function returns (and before
+additional wrapper code is run), and then returned as the second
+return value of the foreign call. This is the standard Windows
+procedure, and works for all standard Windows routines, for
+example <b>LoadLibrary()</b> (see the description of that function in
+the MSDN where it says that you get error information by
+calling <b>GetLastError()</b>).
+</p>
+If you specify the value <code>:errno</code>, then the value
+of <b>errno</b> is stored immediately after the actual foreign
+function returns (and before additional wrapper code is run), and then
+returned as the second return value of the foreign call. This is not
+standard Windows procedure, but is how some routines work,
+particularly those which are provided in UNIX-like libraries. This is
+often how Windows versions of <b>open()</b> works, for example,
+(<b>open()</b> is not a standard Windows function).
+</p>
+<p id="83">
+On Windows, you must specify the appropriate way to get the error
+value for the routine you are
+calling. Specifying <code>:errno</code> will give a wrong value
+for <b>LoadLibrary()</b>. Specifying <code>:os-specific</code>
+will give a wrong value for (many, perhaps all implementations
+of) <b>open()</b>.
+</p>
+
+
+
+<h3 id="84"><a name="note-6-method-index-details">Note 6: More on the method-index
+argument</a></h3>
+
+<p id="85">
+This argument is supported on Windows only. If a non-<code>nil</code> value is specified for the
+<i>method-index</i> keyword argument, then the value
+must be a vector whose first value is the integer index into the
+virtual table of the C++ class.  And then, when the foreign function
+is called, the first argument of the call must be the vector whose
+first element is an integer which is a pointer to the table of method
+addresses. The arguments specified to <a href="def-foreign-call.htm"><b>def-foreign-call</b></a> follow that
+first argument. Note that the function name specified in the <a href="def-foreign-call.htm"><b>def-foreign-call</b></a> form
+is used only for the Lisp function name, and does not refer to any
+function in a shared library. Instead, the function's address (as a
+table address and an index into the table) is passed when the function
+is called.
+</p>
+
+
+<h3 id="86">
+<a name="note-7-returning-int-problem">Note 7: Potential problems with
+foreign functions returning :int in 64-bit Lisps</a>
+</h3>
+
+<p id="87">
+<a href="def-foreign-call.htm"><b>def-foreign-call</b></a> is defined to
+default its <i>:returning</i> keyword argument
+(specifying the expected type of value returned by the foreign call)
+to <code>:int</code>. <code>:int</code> corresponds to C's
+int type. However, if the foreign function does not actually return an
+int, subtle bugs could be introduced in programs, particularly if the
+C function returns a long, an unsigned long, or a pointer of some
+sort. In 32-bit Lisps, returning those values is not a problem (when
+<code>:returning :int</code> is specified or defaulted to)
+because int is always 32 bits on every architecture we support. But on
+64-bit Lisps, if a 64 bit value is returned, the upper 32 bits are
+lost. If the value was not correctly sign-extended by the foreign
+code, a negative value in the foreign code could be seen by Lisp as a
+large positive value. Also, the <code>:long</code> or
+<code>:unsigned-long</code> type is an inadequate specfication
+because on Windows long types are always 32 bits. So on either 32 or
+64 bit lisps, for portability, use <code>:returning
+:unsigned-nat</code> when the return value is some kind of
+pointer. (See <a href="../../implementation.htm#nat-vs-int-2">The :nat and :unsigned-nat types</a>
+in <a href="../../implementation.htm">implementation.htm</a> for a description of
+the <code>:nat</code> and <code>:unsigned-nat</code>
+types.) When the returned value is an integer value, be sure to use
+the correct type and be sure that the foreign code actually produces
+that type.
+</p>
+
+<h3 id="88">
+<a name="note-8-returning-booleans">Note 8: Returning booleans</a>
+</h3>
+
+<p id="89">
+<a href="def-foreign-call.htm"><b>def-foreign-call</b></a> can accept
+<code>:returning :boolean</code> as a return type, and it will
+be automatically translated to a canonical form which is
+<code>:returning (:int boolean)</code>.  This works with some
+foreign languages (where 0 is considered false and anything else is
+considered true - it translates 0 into <code>nil</code> on
+the lisp side and anything else to the value <code>t</code>), but in some cases (C++, for instance) the boolean
+type is equivalent to signed-char type, and so it must be specified in
+the <a href="def-foreign-call.htm"><b>def-foreign-call</b></a> as
+<code>:returning (:char boolean)</code>.
+</p>
+
+<h3 id="90">Examples:</h3>
+
+<pre id="91">
+(def-foreign-call add2 (x y))
+</pre>
+
+<p id="92">
+The symbol add2 will have a function definition 
+calling the foreign function probably
+named "add2" in C, whose first arg is named 
+"x" and is an integer in
+Lisp and which is converted to an int for passing to C. 
+If the integer is larger than can
+be held in a C int, it is truncated. As with the first arg, 
+the second arg named
+"y" is an integer converted to a C int. The 
+return value is interpreted as a C
+int type, and is converted to a Lisp integer (which may 
+either be a fixnum or consed as a
+bignum). </p>
+
+<p id="93">We say the foreign function is "probably" 
+named "add2" because
+since no specific name or conversion function is 
+specified, the default system conversion
+function is used. It depends on the platform and 
+platform-specific rules but typically
+downcases the symbol name.</p>
+
+<pre id="94">
+(def-foreign-call t_double ((x :double)
+                            (y :double single-float)
+                            (z :int fixnum))
+  :returning :double)
+</pre>
+
+<p id="95">
+Call a function, probably named "t_double" in 
+C (again "probably"
+because the actual name depends on platform-dependent defaults), 
+whose first arg is a
+double-float both in Lisp and in C, and whose second arg is a 
+single-float in Lisp but is
+converted to double float for passing into C (this is the 
+calling convention used by some
+non ANSI C compilers and by others when the arguments are not 
+prototyped), and the third
+argument is a fixnum Lisp passed as an integer to C. The 
+function returns and boxes a
+double-float value to Lisp.
+</p>
+
+<pre id="96">
+(def-foreign-call (t-float dash-to-underscore) ((x :double)
+                                                (y (:float :no-proto))
+                                                (z :int fixnum)
+                                                (w (* :char) string))
+  :returning #-(or (and sun4 (not svr4)) sun3q) :float
+             #+(or (and sun4 (not svr4)) sun3q) (:double single-float)
+
+(def-foreign-call (t-float "t_float") ((x :double)
+                                                (y (:float :no-proto))
+                                                (z :int fixnum)
+                                                (w (* :char) string))
+  :returning #-(or (and sun4 (not svr4)) sun3q) :float
+             #+(or (and sun4 (not svr4)) sun3q) (:double single-float)
+</pre>
+
+<p id="97">
+These two examples do the same thing: call a function, 
+named "t_float" in C
+(assuming in the first case proper conversion by 
+<strong>dash-to-underscore</strong>,
+which must already be defined and should downcase 
+the symbol name and replace dashes with
+underscores), whose first arg is a double-float 
+both in Lisp and in C. Like the previous
+example, the second arg is a float in Lisp, and 
+is converted to double float for passing
+into C. The third arg named "z" is a 
+fixnum passed as an int, and "w"
+is a (null-terminated) Lisp string, whose 
+first-character-address is passed to C (beware,
+the string may move if a gc is allowed). 
+Depending on the architecture, the C function
+will return either a double (from older C compilers) 
+or a float, each interpreted and
+boxed as a Lisp single-float value.
+</p>
+
+<p id="98">We give both examples to show how a lisp name (the symbol
+<code>t-float</code>) is converted to a foreign name
+("t_float"). You can either specify a function that takes a
+symbol as an argument and returns the correct string (so
+<code>(dash-to-underscore 't-float)</code> returns
+<code>"t_float"</code>) or you can simply specify the
+correct string. Note again that <strong>dash-to-underscore</strong>
+must be already defined when the <a href="def-foreign-call.htm"><b>def-foreign-call</b></a> form is
+evaluated. </p>
+
+<h3 id="99"><a name="macroexpansion-info">Macroexpansion of a
+def-foreign-call-form now provides more useful
+information</a></h3>
+
+<p id="100">
+<b>def-foreign-call</b> has enhanced the macroexpansion to give
+useful information for users. Here is an example:
+</p>
+
+<pre id="101">
+cl-user(11): (pprint 
+               (macroexpand '(ff:def-foreign-call foo (x (y (* :char))))))
+
+Warning: A runtime with-native-string call is being generated for argument `y'
+         to the foreign-function `foo'.  The with-native-string macro can be
+         used for explicit string conversions around the foreign calls.  This
+         warning is suppressed when :strings-convert is specified in the
+         def-foreign-call.
+
+(progn (eval-when (:compile-toplevel)
+         (excl::check-lock-definitions-compile-time 'foo 'function
+           'foreign-functions:def-foreign-call (fboundp 'foo))
+         (push 'foo excl::.functions-defined.))
+       (eval-when (compile load eval) (remprop 'foo 'system::direct-ff-call))
+       (setf (fdefinition 'foo)
+             (let ((excl::f
+                    (named-function foo
+                      (lambda (x y)
+                        (excl::check-args '((:int (integer * *))
+                                            ((* :char) (array character (*))))
+                                          'foo x y)
+                        (with-native-string (#:g34798
+                                             (if*
+                                              (stringp y)
+                                                then y
+                                                else ""))
+                                            (unless
+                                             (stringp y)
+                                             (setq #:g34798 y))
+                                            (symbol-macrolet
+                                             ((y #:g34798))
+                                             (system::ff-funcall
+                                              (load-time-value
+                                               (excl::determine-foreign-address
+                                                '("foo" :language :c)
+                                                2
+                                                nil))
+                                              '(:int (integer * *))
+                                              x
+                                              '((* :char)
+                                                (array character (*)))
+                                              y
+                                              '(:int (integer * *)))))))))
+               (excl::set-func_name excl::f 'foo)
+               excl::f))
+       (record-source-file 'foo) 'foo)
+cl-user(12): 
+</pre>
+
+
+
+<h3 id="102">
+The effects of the new, longer array implementation on
+def-foreign-call
+</h3>
+
+<p id="103">
+The new array implementation is discussed in the <a href="../../implementation.htm#arrays-1">Arrays and short
+arrays</a> section in <a href="../../implementation.htm">implementation.htm</a>. In
+brief, standard Common Lisp arrays now can be significantly larger
+than in earlier releases, while the new short arrays implement the old
+arrays (the same size limitations but also the same type codes and
+structure).
+</p>
+<p id="104">
+In this discussion, `array' refers to the newly-implemented arrays,
+while `short array' refers to the old implementation, preserved as
+short arrays in 7.0.
+</p>
+<p id="105">
+Foreign calls are made with arrays as arguments by passing the address
+of the first value. In the new implementation, simple-arrays always
+have exactly the same first element offset (but some short arrays are
+aligned to the next higher word boundary so that the elements within
+are naturally aligned). This sometimes-difference between arrays and
+short-arrays poses an extra burden on the ff interface, in that the
+arrays must be distinguished between themselves at runtime.
+</p>
+<p id="106">
+It is now possible to declare an argument a
+<code>(short-simple-array ... (*))</code> and the interface will
+generate code as it did before for normal arrays, passing the address
+of the first argument.
+</p>
+<p id="107">
+For 7.0, a declaration of <code>(simple-array
+... (*))</code> actually generates code that tests at runtime
+whether the argument is a short array or a normal array. So in
+effect, a short simple-array passed in as if it were a normal
+simple-array will be properly passed.
+</p>
+<p id="108">
+Note that with this setup, if argument checking is specified and a
+short-array is passed in, the check will fail, because a short-array
+is not a subtype of simple-array. But for 7.0, if you suppress
+this argument checking, the interface will pass either array
+correctly. 
+</p>
+<p id="109">
+However, programmers are urged to provide correct declarations and
+pass the correct type of array even though 7.0 allows
+sloppiness. In a future release, we anticipate adding a
+<code>(dual-simple-array ... (*))</code> declaration to the
+direct-call foreign interface, and to move that functionality from its
+current place in the <code>(simple-array ... (*))</code>
+declaration.  This would then mean that the <code>(simple-array
+... (*))</code> declaration would only pass simple-arrays, and
+<b>not</b> short simple-arrays. This change will also make more
+consistent the arg-checking feature of the direct-call interface,
+since the dual-simple-array type is defined as an or of simple-array
+and short-simple-array, so a short-simple-array being passed will pass
+the test of being a dual-simple-array.
+</p>
+
+
+<p id="110">
+See <a href="../../ftype.htm">ftype.htm</a> for information on foreign types in
+Allegro CL and <a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL. See particularly
+<a href="../../foreign-functions.htm#def-foreign-call-2">def-foreign-call</a> in
+<a href="../../foreign-functions.htm">foreign-functions.htm</a>.
+</p>
+
+<hr><p id="111"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/def-foreign-call.htm">9.0 version</a></td></tr></table></body></html>

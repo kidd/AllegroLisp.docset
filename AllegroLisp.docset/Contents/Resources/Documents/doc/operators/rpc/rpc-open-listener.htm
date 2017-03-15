@@ -1,0 +1,56 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>rpc-open-listener</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.rpc</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-open-listener.htm">9.0 version</a></td></tr></table><h2 id="2">rpc-open-listener</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(server rpc-socket-server) </i>&amp;key <i>confirm name open local-host local-port limit max timeout home re-connect begin connect-action connect-function connect-args debug verbose mode export message-timeout message-length certificate key other-certificates tester passcode</i><i>
+</i></p>
+
+<p id="4"><b>Arguments: </b><i>
+(server rpc-datagram-server) </i>&amp;key <i>confirm</i><i>
+</i></p>
+
+<p id="5">
+This function starts a Lisp process that accepts connections from a
+passive socket. The newly created process (a port instance) is
+returned but <code>nil</code> is returned if the process
+could not be started.  This is the typical method of maintaining an
+RPC connection both in the stream socket and datagram protocols.
+</p>
+<p id="6">
+The keyword arguments are the same as <a href="make-rpc-server.htm"><b>make-rpc-server</b></a>, and are used to update the
+settings in the server instance. See <a href="make-rpc-server.htm"><b>make-rpc-server</b></a> for information on the
+keyword arguments. Only confirm is discussed here.
+</p>
+<p id="7">
+When a connection is accepted, a server port is created and the
+<i>connect-function</i> is called if it is specified
+(see <a href="rpc-open-server.htm"><b>rpc-open-server</b></a> for
+more information on the <i>connect-function</i>). The
+limit count is decremented if limit is
+non-<code>nil</code>. When limit reaches zero, new
+connections are no longer accepted. The decremented limit persists
+over closing and re-opening a listener. To reset the limit count, add
+the limit keyword argument in the call to <a href="rpc-open-listener.htm"><b>rpc-open-listener</b></a>.
+</p>
+
+<p id="8">
+The <i>confirm</i> keyword argument: when this argument
+is non-<code>nil</code>, the Lisp RPC protocol includes
+additional confirmation messages that track the progress of a remote
+call in more detail (see <a href="rpc-query.htm"><b>rpc-query</b></a> for more details).  The default
+value is <code>nil</code>.
+</p>
+<p id="9">
+A non-<code>nil</code> value may be applicable when using
+a very slow network connection. In such cases more detailed progress
+information could be useful.
+</p>
+
+
+<p id="10">
+See also <a href="../../rpc.htm">rpc.htm</a> for general information on the
+Remote Procedure Call utility in Allegro CL.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had moderate revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Moderately revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/rpc/rpc-open-listener.htm">9.0 version</a></td></tr></table></body></html>

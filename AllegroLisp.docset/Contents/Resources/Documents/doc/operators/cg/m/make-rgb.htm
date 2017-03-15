@@ -1,0 +1,189 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>make-rgb</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/make-rgb.htm">9.0 version</a></td></tr></table><h2 id="2">make-rgb</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>red green blue alpha scratch-rgb</i><i>
+</i></p>
+
+
+
+<p id="4">
+Returns an rgb color object with the specified values of
+<i>red</i>, <i>green</i>, <i>blue</i>,
+and <i>alpha</i>. All arguments should be integers
+between 0 and
+255. The <i>red</i>, <i>green</i>, and
+<i>blue</i> components default to 0, while
+the <i>alpha</i> component defaults to 255.
+</p>
+<p id="5">
+The <i>alpha</i> component is used only on Windows. It
+can create translucent effects where the existing background partly
+"shows through" new content being drawn.  See the variable
+<a href="../../../variables/cg/s_alpha-blending_s.htm"><code>*alpha-blending*</code></a> for
+more information.
+</p>
+
+<p id="6">
+If the <b><i>scratch-rgb</i></b> argument is specified,
+it should be a rgb object (such as created by <a href="../m/make-rgb.htm"><b>make-rgb</b></a>) which will be modified to have the new
+<i>red</i>, <i>green</i>, 
+<i>blue</i>, and <i>alpha</i>
+values. This avoids consing a new rgb object and is
+particularly useful when many colors are created, used temporarily,
+and discarded.
+</p>
+<p id="7">
+Note that the value of color properties (such as <a href="../b/background-color.htm"><b>background-color</b></a> and <a href="../f/foreground-color.htm"><b>foreground-color</b></a>) must be
+RGB color objects, as made with <a href="../m/make-rgb.htm"><b>make-rgb</b></a>. If you use HLS
+colors, you should apply the
+function <a href="../h/hls-to-rgb.htm"><b>hls-to-rgb</b></a> to an HLS color before
+setting a color property to it. You can use the function <a href="../r/rgb-to-hls.htm"><b>rgb-to-hls</b></a> to get the HLS
+equivalent of an RGB color.
+</p>
+<p id="8">
+See also <a href="../m/make-hls.htm"><b>make-hls</b></a>, <a href="../h/hls-to-rgb.htm"><b>hls-to-rgb</b></a>, <a href="../r/rgb-to-hls.htm"><b>rgb-to-hls</b></a>, and <a href="../r/rgb-blue.htm"><b>rgb-blue</b></a>, <a href="../r/rgb-red.htm"><b>rgb-red</b></a>, <a href="../r/rgb-green.htm"><b>rgb-green</b></a>, <a href="../r/rgb-equal.htm"><b>rgb-equal</b></a>, <a href="../r/rgb-p.htm"><b>rgb-p</b></a>, and <a href="../../../classes/cg/rgb.htm"><code>rgb</code></a>.
+</p>
+<p id="9">
+And see <a href="../../../cg/cg-color-palettes.htm">cg-color-palettes.htm</a>.
+</p>
+
+<p id="10">
+A number of RGB objects are pre-defined as the values of the following
+symbols:
+</p>
+<ul>
+<li id="11">
+
+<a href="../../../variables/cg/black.htm"><code>black</code></a>
+
+</li>
+<li id="12">
+
+<a href="../../../variables/cg/white.htm"><code>white</code></a>
+
+
+</li>
+<li id="13">
+
+<a href="../../../variables/cg/gray.htm"><code>gray</code></a>
+
+</li>
+<li id="14">
+
+<a href="../../../variables/cg/dark-gray.htm"><code>dark-gray</code></a>
+
+</li>
+
+<li id="15">
+
+<a href="../../../variables/cg/light-gray.htm"><code>light-gray</code></a>
+
+</li>
+
+<li id="16">
+
+<a href="../../../variables/cg/red.htm"><code>red</code></a>
+
+</li>
+<li id="17">
+
+<a href="../../../variables/cg/dark-red.htm"><code>dark-red</code></a>
+
+</li>
+
+<li id="18">
+
+<a href="../../../variables/cg/light-red.htm"><code>light-red</code></a>
+
+</li>
+
+<li id="19">
+
+<a href="../../../variables/cg/green.htm"><code>green</code></a>
+
+</li>
+<li id="20">
+
+<a href="../../../variables/cg/dark-green.htm"><code>dark-green</code></a>
+
+</li>
+
+<li id="21">
+
+<a href="../../../variables/cg/light-green.htm"><code>light-green</code></a>
+
+</li>
+
+<li id="22">
+
+<a href="../../../variables/cg/blue.htm"><code>blue</code></a>
+
+</li>
+<li id="23">
+
+<a href="../../../variables/cg/dark-blue.htm"><code>dark-blue</code></a>
+
+</li>
+
+<li id="24">
+
+<a href="../../../variables/cg/light-blue.htm"><code>light-blue</code></a>
+
+</li>
+
+<li id="25">
+
+<a href="../../../variables/cg/cyan.htm"><code>cyan</code></a>
+
+</li>
+<li id="26">
+
+<a href="../../../variables/cg/dark-cyan.htm"><code>dark-cyan</code></a>
+
+</li>
+
+<li id="27">
+
+<a href="../../../variables/cg/light-cyan.htm"><code>light-cyan</code></a>
+
+</li>
+
+<li id="28">
+
+<a href="../../../variables/cg/magenta.htm"><code>magenta</code></a>
+
+</li>
+<li id="29">
+
+<a href="../../../variables/cg/dark-magenta.htm"><code>dark-magenta</code></a>
+
+</li>
+
+<li id="30">
+
+<a href="../../../variables/cg/light-magenta.htm"><code>light-magenta</code></a>
+
+</li>
+
+<li id="31">
+
+<a href="../../../variables/cg/yellow.htm"><code>yellow</code></a>
+
+</li>
+<li id="32">
+
+<a href="../../../variables/cg/dark-yellow.htm"><code>dark-yellow</code></a>
+
+</li>
+
+<li id="33">
+
+<a href="../../../variables/cg/light-yellow.htm"><code>light-yellow</code></a>
+
+</li>
+
+</ul>
+
+<hr><p id="34"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/m/make-rgb.htm">9.0 version</a></td></tr></table></body></html>

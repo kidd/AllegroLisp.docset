@@ -1,0 +1,123 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>multi-line-editable-text</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/multi-line-editable-text.htm">9.0 version</a></td></tr></table><h2 id="2">multi-line-editable-text</h2>
+
+<h3 id="3">
+Class 
+</h3>
+<p id="4">
+The class of the multi-line-editable-text control.
+</p>
+<h3 id="5">
+Control
+</h3>
+<p id="6">
+Instance of the :multi-line-editable-text. This control behaves
+similarly to <a href="editable-text.htm"><code>editable-text</code></a>, but covers more than
+one line and has vertical scrollbars whenever the size of the text
+block exceeds the size of the window. Text on long lines wraps to fit
+in the window when the horizontal scrollbar is not enabled, and
+continues to wrap even after resizing.
+</p>
+<p id="7">
+The edited text is stored as a simple string in the <a href="../../operators/cg/v/value.htm"><b>value</b></a> field of the dialog item. The
+text initially displayed can be specified by storing a simple string
+in the <a href="../../operators/cg/v/value.htm"><b>value</b></a>
+field.
+</p>
+<p id="8">
+Note that the TAB character cannot be entered when the <a href="../../operators/cg/t/tabstop.htm"><b>tabstop</b></a> property is on,
+since entering TAB causes the focus to move to the next control in the
+tab sequence.
+</p>
+<p id="9">
+<a href="multi-line-editable-text.htm"><code>multi-line-editable-text</code></a> controls
+do not have titles. If you want to add a title to your
+multi-line-editable-text control, pair it with a <a href="static-text.htm"><code>static-text</code></a> control.
+</p>
+<h3 id="10">
+Adding a multi-line-editable-text control to your form
+</h3>
+<p id="11">
+Click the multi-line-editable-text tool on the Component toolbar. Move
+the mouse cursor to the part of the form where you want to place the
+control, and click again. The control will appear with colored
+resizing handles.
+</p>
+<h3 id="12">
+Resizing and moving the control
+</h3>
+<p id="13">
+Controls can only be resized and moved on forms during the design
+stage; the size and location of everything is fixed on a running form.
+</p>
+<p id="14">
+Resize the control by clicking the mouse cursor and dragging one of
+the handles to the new size-point. Release the mouse key when you are
+satisfied with the new size. Note: resizing the control changes the
+size of the bounding-box, but not the size of the actual characters
+inside. Change the <a href="../../operators/cg/f/font.htm"><b>font</b></a> property if you want to change
+the size of the characters.
+</p>
+<p id="15">
+Move the control by clicking anywhere on it except a resizing handle
+and dragging it to a new location on the form. Release the mouse key
+when you are ready to place the control.
+</p>
+<h3 id="16">
+Customizing multi-line-editable-text control behavior
+</h3>
+
+<p id="17">
+<b>Adding scrollbars to multi-line-editable-text controls</b>: set the
+<a href="../../operators/cg/s/scrollbars.htm"><b>scrollbars</b></a>
+property to t (use both scrollbars), :vertical (use vertical
+scrollbar only), or :horizontal (use the horizontal scrollbar
+only). If the value of this property is nil, scrollbars will not
+appear.
+</p>
+<p id="18">
+Note: If the horizontal scrollbar is not enabled, then the text will
+wrap automatically at space boundaries to prevent the text from
+extending off the right edge of the control. This is done at display
+time by Windows without adding newline characters, so the text will
+re-wrap if the dialog-item is resized.
+</p>
+<p id="19">
+<b>Making multi-line-editable-text controls read-only or not</b>: set
+the <a href="../../operators/cg/r/read-only.htm"><b>read-only</b></a>
+property. T means read-only, nil means editable. True, which prevents
+the user from typing into the widget, can be handy for displaying
+scrolling text that the user should not change.
+</p>
+
+<p id="20">
+<b>When user-generated changes appear</b>: the <a href="../../operators/cg/d/delayed.htm"><b>delayed</b></a> property controls whether
+the dialog-item value is updated after every keystroke or only after
+the user moves to another item on the dialog.
+</p>
+<h3 id="21">
+Data in a multi-line-editable-text
+</h3>
+<p id="22">
+The generic function <a href="../../operators/cg/t/text-range.htm"><b>text-range</b></a> can be used to
+extract data from a multi-line-editable-text control.
+</p>
+<p id="23">
+See <a href="../../cgide.htm#code-creating-controls-1">About how
+to get sample code for creating controls</a> in <a href="../../cgide.htm">cgide.htm</a>, which explains how to use the
+IDE to create such code.
+</p>
+
+
+
+
+
+
+<p id="24">
+A diagram of window and widget classes is shown in <a href="../../cgide.htm#widget-classes-1">Widget and window
+classes</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="25"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/cg/multi-line-editable-text.htm">9.0 version</a></td></tr></table></body></html>

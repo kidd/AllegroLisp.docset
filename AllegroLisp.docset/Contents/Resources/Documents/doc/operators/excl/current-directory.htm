@@ -1,0 +1,52 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>current-directory</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/current-directory.htm">9.0 version</a></td></tr></table><h2 id="2">current-directory</h2>
+
+<p id="3"><b>Arguments: </b><i></i> &amp;optional <i>use-cache drive</i></p>
+
+<p id="4">
+Return a pathname with the directory component holding the current
+directory. Note that when processing pathnames and filling in missing
+components (for example, when a filename is passed, as an argument
+to <a href="../../../ansicl/dictentr/load.htm"><b>load</b></a>), the system typically
+uses the value of <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> instead of the
+current directory as returned by this function. The value
+of <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> may not be the same
+as the value returned by this function. <a href="chdir.htm"><b>chdir</b></a> modifies the current directory (what is
+returned by this function) but does not modify <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a>. In contrast,
+<a href="../../tpl-commands/cd.htm"><b>:cd</b></a> modifies both.
+</p>
+<p id="5">
+On UNIX, <a href="current-directory.htm"><b>current-directory</b></a>
+caches information about the current directory in each call. If the
+<i>use-cache</i> optional argument is non-<code>nil</code> and you call <a href="current-directory.htm"><b>current-directory</b></a> from the same directory,
+<a href="current-directory.htm"><b>current-directory</b></a> does not
+compute the current working directory, it just returns the previous
+value (so the returned value will be <a href="../../../ansicl/dictentr/eq.htm"><b>eq</b></a> to the previous returned value). It checks
+that the directory has not changed by comparing the inode of (and
+other relevant data about) `.' to cached information, and returning
+the cached pathname value if the comparisons are
+true. <i>use-cache</i> is accepted but ignored on
+Windows.
+</p>
+<p id="6">
+The <i>drive</i> optional argument should only be
+specified in Windows. Its value should be a string naming a drive
+(like "d:" or "d"). If given, <a href="current-directory.htm"><b>current-directory</b></a> will return the current
+working directory on that drive. If <code>nil</code>,
+<a href="current-directory.htm"><b>current-directory</b></a> will
+return the current working directory on the <i>current drive</i>. The
+current drive is the drive letter of the pathname in <a href="../../../ansicl/dictentr/default-.htm"><code>*default-pathname-defaults*</code></a> or
+the last call to <a href="chdir.htm"><b>chdir</b></a> that
+specified a path that contained a drive letter.
+</p>
+
+<p id="7">
+See <a href="../../tpl-commands/pwd.htm"><b>:pwd</b></a> and <a href="../../tpl-commands/dirs.htm"><b>:dirs</b></a>, which both print the current
+directory.  See also <a href="../../os-interface.htm">os-interface.htm</a> for general
+information on the interface between Allegro CL and the operating
+system.
+</p>
+
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/current-directory.htm">9.0 version</a></td></tr></table></body></html>

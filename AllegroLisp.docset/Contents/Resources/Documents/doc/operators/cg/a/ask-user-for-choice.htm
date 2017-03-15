@@ -1,0 +1,97 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ask-user-for-choice</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-choice.htm">9.0 version</a></td></tr></table><h2 id="2">ask-user-for-choice</h2>
+
+<p id="3"><b>Arguments: </b><i>
+prompt button1 </i> &amp;optional <i>button2 button3 button4 title stream</i><i>
+</i>&amp;key <i>topmost</i><i>
+</i></p>
+
+<p id="4">
+This is another version of <a href="../p/pop-up-message-dialog.htm"><b>pop-up-message-dialog</b></a>.  A dialog is
+displayed with as many buttons (one, two, three, or four) as are
+specified non-<code>nil</code>. The user clicks on a
+button and the value of that button (the value specified as the
+argument) is returned.
+</p>
+<p id="5">
+If the user cancels the dialog by clicking on the close box or
+pressing the Escape key, <a href="../a/ask-user-for-choice.htm"><b>ask-user-for-choice</b></a> returns the same as if the
+rightmost non-<code>nil</code> button was clicked. If
+the user hits Enter, the value of <i>button1</i> is
+returned. That is, the leftmost button (<i>button1</i>,
+which must be non-<code>nil</code>) acts as the default
+button and the rightmost non-<code>nil</code> button acts
+as the cancel button. If there is only one button
+(<i>button2</i>, <i>button3</i>, and
+<i>button4</i> are all <code>nil</code>),
+then any action (clicking on it, pressing Escape, pressing Enter, or
+clicking on the close button) causes <i>button1</i> to
+be returned.
+</p>
+<p id="6">
+If you have more than four choices, you can use <a href="../a/ask-user-for-choice-from-list.htm"><b>ask-user-for-choice-from-list</b></a>.
+</p>
+
+<p id="7">
+The arguments are:
+</p>
+<ul>
+<li id="8">
+<i>prompt</i>: should be a string. It will be displayed
+in the dialog.
+</li>
+<li id="9">
+<i>button1</i>: the value can be a symbol or a string
+naming the button, or a list whose first element is a symbol or string
+naming the button and whose second element is a help string. The
+button is labeled with the string or the print name of the symbol. If
+a help string is provided, it is displayed in the status bar when the
+cursor is over the button. If the user clicks on this button, the
+arguments value (a symbol, a string, or a list of a symbol or string
+and a string) is returned.
+</li>
+<li id="10">
+<i>button2</i>, <i>button3</i>, and
+<i>button4</i>: the value can be a symbol or a string
+naming the button, or a list whose first element is a symbol or string
+naming the button and whose second element is a help string, or
+<code>nil</code>. If the value is <code>nil</code>, the button is not displayed. The button is
+labeled with the string or the print name of the symbol. If a help
+string is provided, it is displayed in the status bar when the cursor
+is over the button. If the user clicks on this button, the arguments
+value (a symbol, a string, or a list of a symbol or string and a
+string) is returned.
+</li>
+<li id="11">
+<i>title</i>: this argument provides the title for the
+dialog. Its value should be a string. Note that all optional button
+arguments must be specified to supply a title (to preserve backward
+compatibility). Specify <code>nil</code> for a button that
+should not be displayed. If no title is specified, none is used.
+</li>
+<li id="12">
+<i>stream</i>: the owning window of the dialog; defaults
+to the stream returned by <a href="../s/selected-window-or-screen.htm"><b>selected-window-or-screen</b></a>. Note
+that all optional button arguments and the title must be specified to
+supply <i>stream</i>. Specify <code>nil</code> for a button that should not be displayed and for
+<i>title</i> if you want no title.
+</li>
+<li id="13">
+<i>topmost</i>: when this argument is true, the utility
+dialog invoked by this function will be topmost while it is present. A
+topmost window is one that remains on top of all other non-topmost
+windows, even those in other applications. This feature is
+particularly useful for modal dialogs that need to alert the user even
+if they have switched to another application. Note that all optional
+arguments must be specified to specify a value for
+<i>topmost</i>.
+</li>
+</ul>
+<p id="14">
+The position of the dialog when displayed is controlled by <a href="../p/position-utility-dialog.htm"><b>position-utility-dialog</b></a>.
+</p>
+
+
+
+<hr><p id="15"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/a/ask-user-for-choice.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,276 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>open-menu</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/open-menu.htm">9.0 version</a></td></tr></table><h2 id="2">open-menu</h2>
+
+<p id="3"><b>Arguments: </b><i>
+items class stream </i> &amp;rest <i>options</i><i>
+</i>&amp;key <i>add-to-menu pop-up help-string</i><i>
+</i></p>
+
+<p id="4">
+Creates and returns a <a href="../../../classes/cg/menu.htm"><code>menu</code></a>, or returns <code>nil</code> if the request to the Operating System to create
+a new menu fails (see the information under the heading <b>open-menu
+returns <code>nil</code> if a menu cannot be created</b>
+near the bottom of this page) or if the <i>class</i> and
+<i>stream</i> arguments are inconsistent. If a <a href="../../../classes/cg/menu.htm"><code>menu</code></a> is created,
+<a href="../o/open-menu.htm"><b>open-menu</b></a> returns
+two values. The first is always the new menu. The second depends on
+<i>stream</i>. The arguments are interpreted as follows:
+</p>
+<h3 id="5">The items argument</h3>
+<p id="6">
+<i>items</i> is a list of elements which can be a
+mixture of types <a href="../../../classes/cg/menu-item.htm"><code>menu-item</code></a>, cons or atom. Each
+element is coerced in the following way:
+</p>
+<ul>
+<li id="7">
+element is a <a href="../../../classes/cg/menu-item.htm"><code>menu-item</code></a>: it is used.
+</li>
+<li id="8">
+element is a cons: a menu-item is created with a form like
+<code>(make-instance 'menu-item :name (car element) :value (cdr
+element))</code>.
+</li>
+<li id="9">
+element is an atom: a menu-item is created with a form like
+<code>(make-instance 'menu-item :name element)</code>.
+</li>
+</ul>
+
+<p id="10">
+For each menu-item specifier in the <i>items</i> list
+that is not an actual <a href="../../../classes/cg/menu-item.htm"><code>menu-item</code></a>, the string to appear on
+the menu for the item is created automatically by capitalizing the
+print name of the menu-item name and replacing any dashes with
+spaces. If this built-in formating is not suitable, then always pass
+actual menu-items whose title properties are the appropriate strings.
+</p>
+<p id="11">
+To insert a horizontal line between groups of menu-items, include a
+<a href="../../../classes/cg/menu-item.htm"><code>menu-item</code></a>
+whose <a href="../t/title.htm"><b>title</b></a> is a string
+containing only a single dash character ("-"). Other attributes of the
+menu-item will be ignored for this special case. Alternately, include
+the value of the variable <a href="../../../variables/cg/menu-separator.htm"><code>menu-separator</code></a> in the list of menu-items instead
+of an actual menu-item (but see the GTK note on the page for that
+symbol).
+</p>
+<p id="12">
+Note that a specific menu-item can only be placed on one menu at a
+time. If you want identical menu-items on two menus, create two
+separate but identical menu items. You can copy a menu-item with
+<a href="../c/copy-menu-item.htm"><b>copy-menu-item</b></a>.
+</p>
+<h3 id="13">The class argument</h3>
+<p id="14">
+The <i>class</i> argument is the name of the menu class
+to instantiate. It should be either <a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a>, <a href="../../../classes/cg/pull-down-menu.htm"><code>pull-down-menu</code></a>, or <a href="../../../classes/cg/menu-bar.htm"><code>menu-bar</code></a>, or a
+subclass of one of those classes. (An application may define its own
+menu subclasses in order to add methods to standard menu generic
+functions.) Note that <a href="../../../classes/cg/pull-down-menu.htm"><code>pull-down-menu</code></a> is already a
+subclass of <a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a>.
+</p>
+<h3 id="15">The stream argument</h3>
+<p id="16">
+The <i>stream</i> argument is the parent on which to
+create the menu, and must match the specified
+<i>class</i>. If <i>class</i> is <a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a> or one of
+its subclasses (but not <a href="../../../classes/cg/pull-down-menu.htm"><code>pull-down-menu</code></a> or one of its
+subclasses), and <i>stream</i> is an existing
+pop-up-menu (or pull-down-menu), then the new menu will be created as
+a submenu of the pop-up-menu. If <i>class</i> is a
+pull-down-menu or one of its subclasses, and
+<i>stream</i> is an existing menu-bar, then the new menu
+will be created as a pull-down menu of the menu-bar. If
+<i>class</i> is a menu-bar, and
+<i>stream</i> is a top-level window that has a
+title-bar, then the new menu will be created as the menu-bar of that
+window.
+</p>
+<p id="17">
+In addition to the above combinations, <i>stream</i> may
+be <code>(screen *system*)</code> (see <a href="../s/screen.htm"><b>screen</b></a> and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a>), regardless of the value
+of <i>class</i>, in order to create a menu without yet
+putting it on a specific parent or displaying it. A pop-up-menu
+created on the screen may be invoked later as a top-level pop-up-menu
+by calling the function <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a>. A pop-up-menu or
+pull-down-menu created on the screen may be added later to a
+pop-up-menu or menu-bar parent (respectively) by calling <a href="../a/add-to-menu.htm"><b>add-to-menu</b></a>. A menu-bar
+created on the screen may be added later to a window by calling
+<a href="../m/menu.htm"><b>(setf
+menu)</b></a>.
+</p>
+<h3 id="18">The pop-up argument</h3>
+<p id="19">
+The <i>pop-up</i> argument specifies whether a <a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a> rather
+than a <a href="../../../classes/cg/menu-bar.htm"><code>menu-bar</code></a> is being created.  The
+default value is t, so if <i>class</i> is menu-bar or
+one of its subclasses, then pop-up should be passed explicitly as
+<code>nil</code>.
+</p>
+<h3 id="20">stream and class mismatch</h3>
+<p id="21">
+If the <i>class</i> and <i>stream</i>
+arguments do not match as described above, then <code>nil</code> is returned. (To recap,
+<i>stream</i> can always be <code>(screen
+*system*)</code> regardless of the value of
+<i>class</i>. If <i>stream</i> is not
+<code>(screen *system*)</code>, then if
+<i>class</i> is <a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a> or one of its
+subclasses (but not <a href="../../../classes/cg/pull-down-menu.htm"><code>pull-down-menu</code></a> or one of its
+subclasses), <i>stream</i> must be an existing
+pop-up-menu or pull-down-menu. If <i>class</i> is a
+pull-down-menu or one of its subclasses, and
+<i>stream</i> must be existing menu-bar. If
+<i>class</i> is a menu-bar, <i>stream</i>
+must be a top-level window that has a title-bar.)
+</p>
+<h3 id="22">When a new menu is created: what is returned</h3>
+<p id="23">
+Otherwise two values are returned:
+(1) the menu that was created, and (2) the menu-item that was created
+in order to add the new menu to a parent menu, if one in fact was
+created, and <code>nil</code> otherwise. A menu-item is
+created only if <i>class</i> is <a href="../../../classes/cg/pop-up-menu.htm"><code>pop-up-menu</code></a> or one of its
+subclasses, stream is a menu, and the add-to-menu argument is
+true.
+</p>
+<h3 id="24">The help-string argument</h3>
+<p id="25">
+<i>help-string</i> is used only if the
+<i>stream</i> argument is a menu. In that case, the new
+menu being created by this call to open-menu becomes a child menu of
+the parent menu specified by the <i>stream</i> argument,
+and a new menu-item is automatically created and added to the parent
+menu for invoking the new child menu. <i>help-string</i>
+will become the help-string of this new menu-item on the parent
+menu. A <a href="../m/menu-item-highlighted.htm"><b>menu-item-highlighted</b></a> method for
+the parent menu may make use of this help-string, such as by calling
+<a href="../w/window-message.htm"><b>window-message</b></a> or
+<a href="../s/status-bar-message.htm"><b>status-bar-message</b></a> to display the
+help-string in a status-bar whenever the end user highlights the
+menu-item. This works even when the parent menu is a menu-bar (in
+which case the new menu-item is displayed on the menu-bar itself to
+invoke a pull-down menu).
+</p>
+<h3 id="26">The options argument</h3>
+<p id="27">
+<i>options</i> are pairs of keys and values, treated the
+same as for <a href="../m/make-window.htm"><b>make-window</b></a>. Any <a href="../m/make-window.htm"><b>make-window</b></a> initargs that may work
+for menus but are not explicit keyword arguments to <a href="../o/open-menu.htm"><b>open-menu</b></a> may thus still be
+specified. Options include:
+</p>
+<ul>
+<li id="28">
+<i>title</i>: this argument is used only if the
+<i>stream</i> argument is a menu. In that case, the new
+menu being created by this call to <a href="../o/open-menu.htm"><b>open-menu</b></a> becomes a child menu of
+the parent menu specified by the stream argument, and a new menu-item
+is automatically created and added to the parent menu for invoking the
+new child menu. <i>title</i> will be used as the label
+of this new menu-item on the parent menu. If the parent menu is a
+menu-bar, then the title will be displayed on the menu-bar
+itself. Note that the Windows operating system does not support titles
+on non-child pop-up menus.
+</li>
+<li id="29">
+<i>on-click</i>: the value of this argument should be a
+function name or function object naming the function that is called
+whenever a menu-item is selected. Such a function is passed three
+arguments: the menu, the menu-item chosen and the owning stream (e.g.
+<code>(screen *system*)</code> -- see <a href="../s/screen.htm"><b>screen</b></a> and <a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a> -- for pop-up menus, or some
+other menu bar for pull-down menus). The default
+<i>on-click</i> function simply returns the unevaluated
+value of the selected menu-item, but <a href="../e/eval-menu-item.htm"><b>eval-menu-item</b></a>, <a href="../f/funcall-menu-item.htm"><b>funcall-menu-item</b></a>, and <a href="../f/funcall-menu-item-with-window.htm"><b>funcall-menu-item-with-window</b></a> may
+be useful.
+<p id="30">
+Pop-up menus are displayed by calling <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a>. The value returned by
+the <i>on-click</i> is also returned by <a href="../p/pop-up-menu.htm"><b>pop-up-menu</b></a> so your code
+can use that value to decide what action to take. Pull-down menus,
+however, are displayed by an internal function whose return value is
+not available to user code. So, for pull-down menus, the
+<i>on-click</i> is quite important: if it does not do
+anything, choosing a menu-item from a menu will not do anything. The
+default function, which, as said above, simply returns the unevaluated
+value of the selected menu-item, does not do anything useful for
+pull-down menus since the returned value is discarded by the
+(internal) function that displayed the menu. Again, the functions
+<a href="../e/eval-menu-item.htm"><b>eval-menu-item</b></a>,
+<a href="../f/funcall-menu-item.htm"><b>funcall-menu-item</b></a>, and <a href="../f/funcall-menu-item-with-window.htm"><b>funcall-menu-item-with-window</b></a> are
+useful for pull-down menus.
+</p>
+</li>
+</ul>
+<h3 id="31">The add-to-menu argument</h3>
+<p id="32">
+<i>add-to-menu</i> controls the effect of creating a
+menu when the <i>stream</i> argument to open-menu is an
+existing menu. In that case, the argument should be one of the
+following values (the same values that the position argument to
+<a href="../a/add-to-menu.htm"><b>add-to-menu</b></a> can
+have):
+</p>
+
+<ul>
+<li id="33">
+<code>:start</code>: add new menu at the start of <i>stream</i> menu
+</li>
+<li id="34">
+<code>:end</code>: add new menu at the end of <i>stream</i> menu
+</li>
+<li id="35">
+non-negative integer: the menu-item that is created for the new menu
+is inserted into the parent menu (the value of the
+<i>stream</i> argument) at that index position, as in
+<a href="../a/add-to-menu.htm"><b>add-to-menu</b></a>. (Position zero is the
+start of the menu. An integer position greater than the length of the
+menu is interpreted as the end of the menu.)
+</li>
+</ul>
+
+<p id="36">
+The new menu is incorporated into a menu-item whose name is the title
+of the new menu and whose value is the new menu. In this case, the
+second value returned from open-menu is the new menu-item added to
+<i>stream</i> menu.
+</p>
+<p id="37">
+While it is typical not to specify a value when
+<i>stream</i> is not a menu, you can specify <code>nil</code> in that case.
+</p>
+
+<h3 id="38">open-menu returns nil if a menu cannot be created</h3>
+
+<p id="39">
+<a href="../o/open-menu.htm"><b>open-menu</b></a> returns
+<code>nil</code> if the operating system failed to make
+the requested menu. Such failure is typically due to one of the
+operating system's tables for all windows and menus becoming
+full. This situation should be rare, but if it does happen then your
+application should be modified to close any windows or menus that are
+no longer being used, in order to free up the corresponding operating
+system resources.  Note that removing a menu-bar from a window (by
+passing <code>nil</code> to <a href="../m/menu.htm"><b>(setf menu)</b></a>) does not
+close the menu, and closing a menu does not close its sub-menus, since
+each of these can still be used elsewhere. If your application creates
+lots of menus over time, it is prudent to call <a href="../../../../ansicl/dictentr/close.htm"><b>close</b></a> on each menu and sub-menu that will no
+longer be used.
+</p>
+
+<h3 id="40">Other documentation</h3>
+
+<p id="41">
+See also the <a href="../../../cg/ide-ug/ide_user_guide_7.htm">menu
+chapter</a> in the <a href="../../../cg/ide-ug/ide_user_guide_1.htm">IDE User
+Guide</a>, which has examples using this function. See also the
+<a href="../../../ide-menus-and-dialogs/menu-editor-dialog.htm">Menu
+Editor</a>.
+</p>
+
+
+
+
+
+
+<hr><p id="42"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/o/open-menu.htm">9.0 version</a></td></tr></table></body></html>

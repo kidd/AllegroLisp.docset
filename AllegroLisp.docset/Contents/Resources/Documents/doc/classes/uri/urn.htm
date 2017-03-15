@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>urn</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Class</b></td><td align="left" bgcolor="#00FFFF"><b>Package: net.uri</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/uri/urn.htm">9.0 version</a></td></tr></table><h2 id="2">urn</h2>
+
+<p id="3">
+This is the class of URI (Universal Resource Indicator) objects.URN's
+are a subset of URI's.  RFC2141 defines URNs as:
+</p>
+<pre id="4">
+&lt;URN&gt; ::= &quot;urn:&quot; &lt;NID&gt; &quot;:&quot; &lt;NSS&gt;
+</pre>
+<p id="5">
+where &lt;NID&gt; is the Namespace Identifier, and &lt;NSS&gt; is the
+Namespace Specific String. The leading &quot;urn:&quot; sequence is
+case-insensitive. <a href="../../operators/uri/urn-nid.htm"><b>urn-nid</b></a>
+accesses the NID of an URN. The related function
+<a href="../../operators/uri/urn-nss.htm"><b>urn-nss</b></a> accesses
+the NSS. The Namespace ID determines the syntactic interpretation of
+the Namespace Specific String. Thus:
+</p>
+<pre id="6">
+cl-user(7): (setq urn (net.uri:parse-uri &quot;urn:foo:10&quot;))
+#&lt;uri urn:foo:10&gt;
+cl-user(8): (net.uri:urn-nid urn)
+&quot;foo&quot;
+cl-user(9): (net.uri:urn-nss urn)
+&quot;10&quot;
+cl-user(10): 
+</pre>
+
+
+
+<p id="7">
+See also <a href="../../uri.htm">uri.htm</a> for general
+information on Universal Resource Indicator support in Allegro
+CL.
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/classes/uri/urn.htm">9.0 version</a></td></tr></table></body></html>

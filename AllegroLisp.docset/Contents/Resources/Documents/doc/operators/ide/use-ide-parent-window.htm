@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>use-ide-parent-window</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/use-ide-parent-window.htm">9.0 version</a></td></tr></table><h2 id="2">use-ide-parent-window</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+An IDE configuration option that returns whether the IDE uses a parent
+window (with all other IDE windows contained within it) rather than a
+non-parent owner window (with its owned IDE windows floating freely on
+the screen).  A true value indicates a parent window, while <code>nil</code> indicates an owner window.
+</p>
+
+
+<p id="5">
+The initial value is true.  The owner window style could be
+used by evaluating the form
+</p>
+
+<pre id="6">
+(setf (ide:use-ide-parent-window (configuration ide:*ide-system*))
+      nil)
+</pre>
+
+<p id="7">
+and then restarting the IDE (assuming that the <a href="save-options-on-exit.htm"><b>save-options-on-exit</b></a> option is enabled as it is
+by default).  
+<a href="use-ide-parent-window.htm"><b>use-ide-parent-window</b></a>
+is on the <a href="../../ide-menus-and-dialogs/options-dialog-ide-1-2.htm">IDE
+1</a> tab of the <a href="../../ide-menus-and-dialogs/options-dialog.htm">Options dialog</a>. A change to this option
+will be in effect only when you restart the IDE (so options must be
+save for the change to have any effect).
+</p>
+<p id="8">
+When this option is <code>nil</code> to use multiple
+top-level windows, the opaque background of a single parent window can
+be simulated by turning on the <a href="use-ide-background-window.htm"><b>use-ide-background-window</b></a> option, while still
+allowing the individual top-level windows to float freely.
+</p>
+
+<p id="9">
+On GTK a parent window
+is highly recommended because support for non-child owned
+windows is not adequate in the X window system.  If you change the
+value to <code>nil</code> on GTK, things would generally
+work, but other applications could become intermingled in the window
+occlusion stack with the various IDE windows, and there would be a
+separate taskbar button and alt-tab choice for each owned IDE window
+(with most window managers).
+</p>
+
+<p id="10">
+In either case, the function <a href="main-ide-window.htm"><b>main-ide-window</b></a> will return the owner window of
+the various IDE tool windows.  When an IDE parent window is used, the
+<a href="main-ide-window.htm"><b>main-ide-window</b></a> will be an
+instance of the ide-child-window class; this window is the frame-child
+of the IDE parent window, which is an instance of the <a href="../../classes/ide/ide-parent-window.htm"><code>ide-parent-window</code></a> class.  When an
+IDE owner window is used, the <a href="main-ide-window.htm"><b>main-ide-window</b></a> will be the IDE owner window
+itself, which is an instance of the <a href="../../classes/ide/ide-owner-window.htm"><code>ide-owner-window</code></a> class.  The function <a href="top-ide-window.htm"><b>top-ide-window</b></a> always returns the
+topmost IDE window.
+</p>
+<p id="11">
+See <a href="../../cgide.htm#child-parent-overlapped-etc-1">About child, parent, and owner
+windows</a> in <a href="../../cgide.htm">cgide.htm</a>.
+</p>
+
+
+<hr><p id="12"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/use-ide-parent-window.htm">9.0 version</a></td></tr></table></body></html>

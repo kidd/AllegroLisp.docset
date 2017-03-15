@@ -1,0 +1,34 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>full-compile-project</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/full-compile-project.htm">9.0 version</a></td></tr></table><h2 id="2">full-compile-project</h2>
+
+<p id="3"><b>Arguments: </b><i>
+project </i>&amp;key <i>load-project-file include-cancel-button</i><i>
+</i></p>
+
+<p id="4">
+Compiles and loads all of the source code files of the specified
+project, even when their fasl files are already up-to-date. Returns
+true if the project was successfully compiled and loaded, and <code>nil</code> otherwise. This function is called by the
+<a href="../../ide-menus-and-dialogs/tools-menu.htm#full-compile">Tools | Full Compile</a> command.
+</p>
+<p id="5">
+If <b><i>load-project-file</i></b> is true, then the
+.lpr project definition file is first loaded (to update the project if
+that file has changed).  Otherwise it is not loaded.
+</p>
+<p id="6">
+If there are compiler warnings and the <a href="show-dialog-on-compiler-warnings.htm"><b>show-dialog-on-compiler-warnings</b></a> IDE
+configuration option is true, then a dialog will display the warnings.
+If the <b><i>include-cancel-button</i></b> argument is
+true, then this dialog will include a Cancel button in addition to the
+usual OK button. If the user presses the Cancel button (or the Escape
+key), then <a href="full-compile-project.htm"><b>full-compile-project</b></a> will return
+<code>nil</code> to indicate that the compilation is
+considered to have failed.  This value can be used to decide whether
+to proceed with some further action, such as running the project.
+</p>
+
+
+
+<hr><p id="7"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/full-compile-project.htm">9.0 version</a></td></tr></table></body></html>

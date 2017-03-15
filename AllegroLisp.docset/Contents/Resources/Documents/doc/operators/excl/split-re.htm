@@ -1,0 +1,132 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>split-re</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/split-re.htm">9.0 version</a></td></tr></table><h2 id="2">split-re</h2>
+
+<p id="3"><b>Arguments: </b><i>
+regexp string </i>&amp;key <i>count</i> (<i>start</i> 0)<i> end</i> (<i>return</i> :string)<i> case-fold single-line multiple-lines ignore-whitespace limit</i><i>
+</i></p>
+
+
+<p id="4">
+This function scans <i>string</i> for a delimiter given
+by <i>regexp</i> and returns a list of substrings.  If
+<i>count</i> is given, then split into no more than
+<i>count</i> substrings, in which case the last
+substring will contain the rest of the <i>string</i>. If
+<b><i>start</i></b> and <b><i>end</i></b>
+are specified, the whole string is scanned but only delimiters between
+<i>start</i> (inclusive) and
+<b><i>end</i></b> (exclusive) are considered.
+</p>
+
+<p id="5">
+If <b><i>limit</i></b> is specified, it should be a
+non-negative integer. 0 means no limit. Any positive value means no
+more than that number of strings will be returned, with the last
+string containing the rest of the output, if any:
+</p>
+
+<pre id="6">
+cl-user(8): (split-re ":" "a:b:c:d" :limit 3)
+("a" "b" "c:d")
+</pre>
+
+<p id="7">
+In most cases, <i>limit</i> is
+like <i>count</i> (which limits the number of matches),
+but not in the case where the empty string is
+matched. <i>limit</i> should be used instead
+of <i>count</i>.
+</p>
+<p id="8">
+If
+<i>count</i> is given, then split into no more than
+<i>count</i> substrings, in which case the last
+substring will contain the rest of the <i>string</i>.
+Use of count is deprecated in favor of the <i>limit</i>
+keyword argument.
+</p>
+
+
+
+<p id="9">
+If <i>regexp</i> matches a zero length
+string, <a href="split-re.htm"><b>split-re</b></a> works to
+split each individual characters, excluding the characters that matched
+the <i>regexp</i>.
+</p>
+<pre id="10">
+(split-re &quot;/*&quot; &quot;/foo/bar&quot;) =&gt; (&quot;f&quot; &quot;o&quot; &quot;o&quot; &quot;b&quot; &quot;a&quot; &quot;r&quot;)
+</pre>
+
+<p id="11">
+If input is empty, <code>nil</code> is returned unless
+non-zero <i>limit</i> argument is given.
+</p>
+<p id="12">
+The trailing empty fields are removed unless
+non-zero <i>limit</i> is given.
+</p>
+
+<pre id="13">
+(split-re &quot;:&quot; &quot;:a:b:c:::&quot;) -&gt; (&quot;&quot; &quot;a&quot; &quot;b&quot; &quot;c&quot;)
+(split-re &quot;:&quot; &quot;:a:b:c:::&quot; :limit 100) -&gt; (&quot;&quot; &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;&quot; &quot;&quot; &quot;&quot;)
+</pre>
+
+<p id="14">
+The <b><i>return</i></b> argument can be
+<code>:string</code> (the default, the return value will be a
+list of strings) or <code>:index</code> (the return value will
+be a list of dotted pairs or indexes into string corresponding to the
+substrings that would have been returned if
+<i>return</i> was :string). See the example.
+</p>
+<p id="15">
+See the section <a href="../../regexp.htm#regexp-new-matching-2">Matching mode in the regexp2
+module</a> in <a href="../../regexp.htm">regexp.htm</a> for information on
+the <b><i>case-fold</i></b>,
+<b><i>single-line</i></b>,
+<b><i>multiple-lines</i></b>, and
+<b><i>ignore-whitespace</i></b> keyword arguments.
+</p>
+
+
+<p id="16">
+The symbol naming this operator is 
+also exported from the regexp package.
+</p>
+
+<h3 id="17">Examples
+</h3>
+
+
+<pre id="18">
+(excl:split-re &quot;-&quot; &quot;a-b-c-d&quot;)
+  --&gt; (&quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;)
+(split-re &quot;:&quot; &quot;1:2:3:4:5&quot;)
+  --&gt; (&quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot;)
+(split-re &quot;:&quot; &quot;1:2:3:4:5&quot; :return :index)
+  --&gt; ((0 . 1) (2 . 3) (4 . 5) (6 . 7) (8 . 9))
+(split-re &quot;:&quot; &quot;1:2:3:4:5&quot; :limit 2)
+  --&gt; (&quot;1&quot; &quot;2&quot; &quot;3:4:5&quot;)
+(split-re &quot;:&quot; &quot;1:2:3:4:5&quot; :start 2)
+  --&gt; (&quot;1:2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot;)
+(split-re &quot;:&quot; &quot;1:2:3:4:5&quot; :start 2 :return :index)
+  --&gt; ((0 . 3) (4 . 5) (6 . 7) (8 . 9))
+
+cl-user(23): (split-re &quot;/+&quot; &quot;abc/def&quot;)
+(&quot;abc&quot; &quot;def&quot;)
+cl-user(24): (split-re &quot;/+&quot; &quot;/abc//def///ghi&quot;)
+(&quot;&quot; &quot;abc&quot; &quot;def&quot; &quot;ghi&quot;)
+cl-user(25): 
+
+
+</pre>
+
+<p id="19">
+See <a href="../../regexp.htm#regexp-new-1">The new regexp2
+module</a> in <a href="../../regexp.htm">regexp.htm</a> for further
+information on this function and the <b>regexp2</b> module.
+</p>
+
+<hr><p id="20"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/split-re.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>generate-filled-ef-templates</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/generate-filled-ef-templates.htm">9.0 version</a></td></tr></table><h2 id="2">generate-filled-ef-templates</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>external-formats directory force</i><i>
+</i></p>
+
+<p id="4">
+<i>external-formats</i> should be a list of
+external-formats. It defaults to the list returned by <a href="all-external-formats.htm"><b>all-external-formats</b></a>. <i>directory</i>
+should be a pathname. It defaults to the value of
+*default-pathname-defaults*. <i>force</i> is a boolean.
+</p>
+<p id="5">
+This function uses <a href="../../../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> to generate fasl files which, when
+loaded into Lisp, fill code external-format specific templates used
+for Allegro CL system code. This function allows users defining their
+own external-formats to "pre-build" the filled-templates so that, when
+a filled-template is needed at runtime, the corresponding
+external-format's filled-templates fasl file can simply be
+loaded. Allegro CL autoloads this file when needed using require.
+</p>
+<p id="6">
+If the fasl file does not exist, the template being filled may get
+built using the Lisp compiler. Thus, the main advantage of using a
+pre-built filled-ef-templates file is that the compiler is not needed
+at runtime.
+</p>
+<p id="7">
+The <i>external-formats</i> argument names the
+external-formats for which the fasl files are built.
+</p>
+<p id="8">
+The <i>directory</i> argument names the location where
+the fasl files are to be created.
+</p>
+<p id="9">
+The <i>force</i> argument causes the fasl files to be
+regenerated if they exist. Note that if the fasl file corresponding
+to an external-format exists and is found to be out of date, it will
+be regenerated regardless of the value of force.
+</p>
+
+<p id="10">
+See <a href="../../iacl.htm">iacl.htm</a> for more information on international
+character support in Allegro CL.
+</p>
+
+<hr><p id="11"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/generate-filled-ef-templates.htm">9.0 version</a></td></tr></table></body></html>

@@ -1,0 +1,115 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>ide-inspect</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/ide-inspect.htm">9.0 version</a></td></tr></table><h2 id="2">ide-inspect</h2>
+
+<p id="3"><b>Arguments: </b><i>
+object </i>&amp;key <i>new-window-p new-window-name tabs initial-tab existing-inspector-only no-expose-p not-if-same-object additional-objects initial-property on-the-screen</i><i>
+</i></p>
+
+<p id="4">
+This function invokes the IDE's inspector to examine an arbitrary
+specified object.
+</p>
+<p id="5">
+Typically you do not need to call this function. Instead would use one
+of the commands <a href="../../ide-menus-and-dialogs/tools-menu.htm#inspect-selected-object">Tools | Inspect Selected Object</a>
+and <a href="../../ide-menus-and-dialogs/tools-menu.htm#inspect-returned-object">Tools | Inspect Returned
+Object</a>.  Or you would call <a href="../../../ansicl/dictentr/inspect.htm"><b>cl:inspect</b></a> in an IDE listener, which will invoke
+the IDE's inspector because this function (<a href="ide-inspect.htm"><b>ide-inspect</b></a>) is the value
+of <code>inspect::*inspector-hook*</code> in IDE processes.
+</p>
+<p id="6">
+But it might be useful to call this function directly for the options
+that its keyword arguments provide. It might also be useful to set the
+value of the (internal) global
+variable <b><code>inspect::*inspector-hook*</code></b> to this
+function in non-IDE processes where it is not already the value, to
+cause calls to <a href="../../../ansicl/dictentr/inspect.htm"><b>cl:inspect</b></a> in
+those processes to invoke the IDE's inspector.
+</p>
+<p id="7">
+The arguments are:
+</p>
+<ul>
+<li id="8">
+<b><i>object</i></b> is the object to inspect. It can
+be any type of Lisp object.
+</li>
+<li id="9">
+If <b><i>new-window-p</i></b> is true, then the object
+is inspected in a new inspector window, even if one or more inspector
+windows already exist. The new window will be offset somewhat from an
+existing inspector, if any. If <code>nil</code> or
+unspecified, then an existing inspector will be used, if any.
+</li>
+<li id="10">
+<b><i>new-window-name</i></b> may be a symbol by which
+to identify this particular inspector window programmatically. This is
+used only if <i>new-window-p</i> is
+true. If <code>nil</code> or unspecified,
+a <a href="../../../ansicl/dictentr/gensym.htm"><b>gensym</b></a>ed name is used.
+</li>
+<li id="11">
+<b><i>tabs</i></b> may be a list of some subset of the
+keywords <code>:internal</code>, <code>:property</code>,
+and <code>:event-handler</code>, indicating which tabs should be
+included on the inspector. If <code>nil</code> or
+unspecified, this defaults to the tabs for which there are any values
+defined for the object.
+</li>
+<li id="12">
+<b><i>intial-tab</i></b> may be one of the symbols
+<code>:internal</code>, <code>:property</code>, or
+<code>:event-handler</code>, indicating which tab should be
+selected initially. If <code>nil</code> or unspecified,
+this defaults to the tab that was already displayed, except when the
+new object has properties but the previous object did not, in which
+case the <b>Properties</b> tab is selected.
+</li>
+<li id="13">
+If <b><i>existing-inspector-only</i></b> is true and no
+inspector window is already present, then no inspection is done.
+</li>
+<li id="14">
+If <b><i>no-expose-p</i></b> is true, then the inspector
+window is not brought to the front and given the keyboard focus.
+</li>
+<li id="15">
+If <b><i>not-if-same-object</i></b> is true and the
+specified object is already being inspected in the inspector that
+would be used, then no re-inspection is done. The inspector is still
+brought to the front and given the keyboard focus, though (unless
+<i>no-expose-p</i> is true).
+</li>
+<li id="16">
+<b><i>additional-objects</i></b> may be a list of
+additional arbitrary objects that may be modified at the same time as
+the main object. The inspector will display only the values of the
+main object, but modifying one of those values will modify the same
+attribute of the main object as well as each of the additional
+objects. The properties and event-handlers that are displayed will be
+limited to the ones that all of the objects have.
+</li>
+<li id="17">
+<b><i>initial-property</i></b> may be the name of a
+property or event-handler to initially select, when
+the <b>Properties</b> or <b>Events</b> tab is initially selected. The
+property name is generally the name of the reader function for the
+property (e.g. <b>value</b> for <a href="../cg/v/value.htm"><b>value</b></a>). If <code>nil</code> or
+unspecified, this defaults to the property that was selected for the
+previous object if both objects have that property, and otherwise
+defaults to the first property.
+</li>
+<li id="18">
+If <b><i>on-the-screen</i></b> is true, then the owner
+of the inspector window will be the screen, and otherwise it will be
+the main IDE window. In either case, an existing inspector window will
+be used only when it has the appropriate owner, and otherwise a window
+will be created.  The function <a href="ide-inspect-standalone.htm"><b>ide-inspect-standalone</b></a> passes this argument as
+true to invoke an inspector that is independent of the IDE (and which
+may be used even when the IDE is loaded but not running).
+</li>
+</ul>
+
+
+<hr><p id="19"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ide/ide-inspect.htm">9.0 version</a></td></tr></table></body></html>

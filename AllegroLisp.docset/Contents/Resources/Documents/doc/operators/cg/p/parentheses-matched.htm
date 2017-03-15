@@ -1,0 +1,58 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>parentheses-matched</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/parentheses-matched.htm">9.0 version</a></td></tr></table><h2 id="2">parentheses-matched</h2>
+
+<p id="3"><b>Arguments: </b><i>lisp-edit-pane file-position type matches-closing
+in-view</i></p>
+
+<p id="4">
+This generic function is called whenever the text cursor in a <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> is
+moved so that it is just before an opening parenthesis or just after a
+closing parenthesis, if there is a matching parenthesis within the
+top-level lisp form that the text cursor is in. It is also called for
+matching double-quote characters of literal strings.
+</p>
+<p id="5">
+There is no need for an application to call this function, but it may
+add methods to implement side effects. A <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> will automatically
+draw a mark to indicate the matching parenthesis if it is in view
+(according to <a href="../p/parenthesis-matching-style.htm"><b>parenthesis-matching-style</b></a> and
+<a href="../p/parenthesis-matching-color.htm"><b>parenthesis-matching-color</b></a>), but an
+application may also wish to add a status-bar message, for example,
+particularly if the matching parenthesis is not in view.
+</p>
+<p id="6">
+The default method that specializes on <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> does nothing.  (The
+IDE editor adds an internal method to its <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> subclass for
+status-bar messages.)
+</p>
+<p id="7">
+The method will be called with the following arguments:
+</p>
+<ul>
+<li id="8">
+<i>lisp-edit-pane</i> is the <a href="../../../classes/cg/lisp-edit-pane.htm"><code>lisp-edit-pane</code></a> window where the
+parenthesis match has occurred.
+</li>
+<li id="9">
+<i>file-position</i> is the character index of the
+matching character.
+</li>
+<li id="10">
+<i>type</i> is either <code>nil</code> for a
+matching parenthesis or the keyword <code>:quote</code> for a
+matching double-quote character.
+</li>
+<li id="11">
+<i>matches-closing</i> is true if the matching character
+is a closing parenthesis or quote, and <code>nil</code> if
+it is an opening one.
+</li>
+<li id="12">
+<i>in-view</i> is true if the matching character is
+currently scrolled into view, and is <code>nil</code>
+otherwise.
+</li>
+</ul>
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/p/parentheses-matched.htm">9.0 version</a></td></tr></table></body></html>

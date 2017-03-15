@@ -1,0 +1,68 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>default-width</title><link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-width.htm">9.0 version</a></td></tr></table><h2 id="2">default-width</h2>
+
+<p id="3"><b>Arguments: </b><i>
+window-or-configuration
+</i></p>
+
+<p id="4">
+Returns the width to be used for a newly created window if an explicit
+width was not specified in the call to <a href="../m/make-window.htm"><b>make-window</b></a>.  This function is
+called automatically by the system and should not be called by
+applications, but an application may supply <a href="../d/default-width.htm"><b>default-width</b></a> methods to specify
+the default sizes for its window subclasses.
+</p>
+<p id="5">
+The default-width is
+used as described below when a window is created with <a href="../m/make-window.htm"><b>make-window</b></a> but neither
+the :exterior nor :interior arguments are specified.
+</p>
+<p id="6">
+The <a href="../d/default-width.htm"><b>default-width</b></a>
+is called after the Lisp object for the window has been created but
+before the actual window has been created by the operating system. It
+returns an integer denoting the width to use for the new window. The
+default version of this method (for simple-streams) works as
+follows. The width is determined by:
+</p>
+<p id="7">
+1. If a method is supplied for the class of the window argument, and
+that method returns an integer (rather than <code>nil</code>), that value is used for the width. Otherwise:
+</p>
+<p id="8">
+2. If the value of <code>(default-width (configuration
+*system*))</code> is true, use that value for
+the width.  (It is <code>nil</code> initially though.)
+</p>
+<p id="9">
+3. If <code>(default-width (configuration *system*))</code> is
+<code>nil</code>, multiply the width of the screen,
+<code>(width (screen *system*))</code>, by
+<code>(default-width-factor (configuration *system*))</code> and
+use the result as the width.
+</p>
+<p id="10">
+<a href="../d/default-width.htm"><b>default-width</b></a>
+methods may be added for window subclasses of an application in lieu
+of passing the equivalent initargs for each window instance.
+</p>
+<p id="11">
+You can pass the :exterior-top-left argument to <a href="../m/make-window.htm"><b>make-window</b></a> in order to specify a
+particular position for the top-left corner of a window without
+overriding these default size methods. The top-left position will
+otherwise default to being offset somewhat from the position at which
+the previous window was created.
+</p>
+<p id="12">
+<a href="../d/default-width.htm"><b>default-width</b></a> is
+a property of the <a href="../../../classes/cg/configuration.htm"><code>configuration</code></a> class.  See also
+<a href="../d/default-height.htm"><b>default-height</b></a>
+and <a href="../d/default-top-left.htm"><b>default-top-left</b></a>.
+</p>
+
+
+
+
+
+<hr><p id="13"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/cg/d/default-width.htm">9.0 version</a></td></tr></table></body></html>

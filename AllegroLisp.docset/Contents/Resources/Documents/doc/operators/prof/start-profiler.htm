@@ -1,0 +1,258 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>start-profiler</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: prof</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Significantly revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/start-profiler.htm">9.0 version</a></td></tr></table><h2 id="2">start-profiler</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i>&amp;key <i>type start-sampling-p count count-list except-processes interpret-closures verbose</i><i>
+</i></p>
+
+<p id="4">
+This function starts the collection of runtime analyzer data. It
+creates two new files in a temporary location for saving sample data
+and initializes the runtime analyzer data structures.  These files are
+removed after analysis. See <a href="../../runtime-analyzer.htm#further-info-1">Further points, including information on
+temporary files</a> in
+<a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a>.
+</p>
+
+<p id="5">
+The <b><i>type</i></b> keyword argument specifies the
+type of profile data to be collected. The choices are
+</p>
+
+<table border="1" width="56%">
+  <tr>
+    <td width="37%"><strong>Value</strong></td>
+    <td width="63%"><strong>Meaning</strong></td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:time</code></td>
+    <td width="63%">collect CPU time data (but not space data)</td>
+  </tr>
+
+  <tr>
+    <td width="37%"><code>:real-time</code></td>
+    <td width="63%">collect real time data (but not space data)</td>
+  </tr>
+
+  <tr>
+    <td width="37%"><code>:space</code></td>
+    <td width="63%">collect space data (but not time data)</td>
+  </tr>
+  <tr>
+    <td width="37%"><code>:count-only</code></td>
+    <td width="63%">collect call-count data but no time or space data</td>
+  </tr>
+</table>
+
+<p id="6">
+You can collect either time data or space data but not both in a
+single run, but you can have call-counting data collected while
+collecting either time or space data. Or you can have call-counting
+data only collected.  So the choices are:
+</p>
+<ul>
+<li id="7">
+<b>time only</b>: <i>type</i> should be
+<code>:time</code> or <code>:real-time</code>
+and both <i>count</i> and
+<i>count-list</i> should be <code>nil</code>
+or unspecified.
+</li>
+<li id="8">
+<b>time and call-counting</b>: <i>type</i> should be
+<code>:time</code> or <code>:real-time</code>
+and either <i>count</i> or
+<i>count-list</i> (or both) should be non-<code>nil</code>. (Appropriate 
+non-<code>nil</code> values of <i>count</i> and
+<i>count-list</i> are given below.)
+</li>
+<li id="9">
+<b>space only</b>: <i>type</i> should be
+<code>:space</code> and both <i>count</i> and
+<i>count-list</i> should be <code>nil</code>
+or unspecified.
+</li>
+<li id="10">
+<b>space and call-counting</b>: <i>type</i> should be
+<code>:space</code> and either <i>count</i> or
+<i>count-list</i> (or both) should be non-<code>nil</code>. (Appropriate non-<code>nil</code> values of <i>count</i> and
+<i>count-list</i> are given below.)
+</li>
+<li id="11">
+<b>call-counting only</b>: <i>type</i> should be
+<code>:count-only</code> and either <i>count</i>
+or <i>count-list</i> (or both) should be non-<code>nil</code>. (Appropriate non-<code>nil</code> values of
+<i>count</i> and <i>count-list</i> are
+given below.)
+</li>
+</ul>
+
+<p id="12">
+If no value is specified for <i>type</i>, it defaults to
+<code>:count-only</code> if either <i>count</i> or
+<i>count-list</i> (or both) are non-<code>nil</code> and it defaults to <code>:time</code> if
+both <i>count</i> or <i>count-list</i> are
+<code>nil</code> or unspecified.
+</p>
+
+
+<p id="13">The <b><i>count</i></b> and
+<b><i>count-list</i></b> arguments control whether
+call-counting information should be collected during the run. Call
+count information is collected if either argument is true. Both
+default to <code>nil</code>.</p>
+
+<p id="14"><b><i>count</i></b> can be a positive integer or
+t. If it is a positive integer, a hash table with that many entries is
+created. If it is t, a hash table of 1000 entries is created. The
+table is filled with function objects specified by
+<b><i>count-list</i></b>, if any. New function objects
+(beyond what is specified in
+<b><i>count-list</i></b>) are added to the table as the
+associated function is called until the table is filled. No
+information is collected on function objects called for the first time
+after the table is filled.</p>
+
+<p id="15"><b><i>count-list</i></b>, if specified, should be a
+list of function objects (not symbols -- thus elements should
+be <em>#'foo</em> rather than <em>foo</em>). The hash table mentioned
+in the description of
+<b><i>count</i></b> just above is filled with the
+elements of
+<b><i>count-list</i></b>, in order, until the hash table
+is filled or the list is exhausted. Specifying a value for this
+variable ensures that functions you are interested in are
+call-counted. Note that if the length of the list is greater than the
+value of
+<b><i>count</i></b>, only the first
+<b><i>count</i></b> elements are entered in the hash
+table; the rest are ignored. If
+<i>count-list</i> has a 
+true
+value but no value is specified for 
+<b><i>count</i></b>,
+<b><i>count</i></b> defaults to 1000 (even if the length
+of
+<b><i>count-list</i></b> is greater than 1000).</p>
+
+<p id="16">If the <b><i>start-sampling-p</i></b> keyword
+argument is true or is not supplied then sampling is started
+immediately. If it is specified <code>nil</code>, sampling
+is not started until <a href="start-sampling.htm"><b>start-sampling</b></a> is called. The functions
+<a href="start-sampling.htm"><b>start-sampling</b></a> and
+<a href="stop-sampling.htm"><b>stop-sampling</b></a> can be
+used to control the gathering of samples while the runtime analyzer is
+running. The default value of this argument is t.
+</p>
+
+<p id="17">
+The <b><i>except-processes</i></b> keyword argument
+should be a list of processes or <code>nil</code>. This
+argument causes the runtime analyzer to not record data about the
+processes listed in this argument. Use of this argument is a good way
+to narrow down the extent of an analysis, if multiprocessing is being
+used. (In earlier releases, there was an
+<i>except-stack-groups</i> argument, which applied to
+certain platforms. That argument is no longer supported and a value
+provided for it is assumed to be a value for
+<i>except-processes</i>. A warning is signaled if
+<i>except-stack-groups</i> is specified.)
+</p>
+
+
+<p id="18">
+The <b><i>interpret-closures</i></b> argument controls
+the handling of closures. When <i>interpret-closures</i>
+is
+<code>nil</code> (the default) the closures are not saved
+and analyzed separately. When true,
+closures are saved and analyzed as separate profile entries, even
+though they may use the same template function. A function
+specialization called <code>prof:closure</code> has been added. This
+is valid whenever an analyzed profile exists and identifies the
+closures which the runtime analyzer has seen. The specialization is
+<code>(prof:closure n)</code> where n is a small integer enumerating
+the closures in the profile. This allows the user to grab the closure
+object and to do a <code>prof:disassemble-profile</code> on it without
+having to know what symbol holds its <code>fdefinition</code>
+(sometimes this is very hard).
+</p>
+
+<p id="19">
+When flat analyses and call-graphs are reported, closures are
+identified by <code>(prof:closure n)</code>, followed by the printed
+representation of the closure object itself.
+</p>
+
+<p id="20">
+Note that if you use the Emacs-Lisp interface or the IDE (on Windows),
+you are using multiprocessing. The <a href="../../tpl-commands/processes.htm"><b>:processes</b></a> top-level command lists active
+processes. The Process Browser in Allegro Composer (on UNIX) and the
+one displayed with <strong>View</strong> | <strong>Processes</strong>
+in the IDE (on Windows) also list processes and provide a graphic
+interface to include or exclude a process from profiling.
+</p>
+
+<p id="21">
+The <b><i>verbose</i></b> argument, if true (default
+is <code>nil</code>), causes messages about what the
+profiler is doing to be printed to
+<a href="../../../ansicl/dictentr/debug-io.htm"><code>*standard-output*</code></a>
+during data collection.
+</p>
+
+<p id="22">
+Data can be collected for only one analysis at a time. Calling this
+function while data is already being collected will signal an
+error.
+</p>
+
+
+<a name="real-vs-cpu"></a>
+<h3 id="23">
+CPU time versus real time profiles
+</h3>
+<p id="24">
+A CPU time profile takes samples while the program is running and
+bases its results on the CPU time used during the profile. A real time
+profile takes samples whether or not the program is consuming CPU
+time. The difference can be seen by profiling a call
+to <a href="../../../ansicl/dictentr/sleep.htm"><b>sleep</b></a>. The CPU
+time profile records nothing (no hits -- some runs may have a hit or
+two) since almost no CPU time was used. The real time profiler
+recorded the full 20 seconds.
+</p>
+
+<pre id="25">
+cl-user(2): (prof:with-profiling (:type :time)
+               (dotimes (i 10) (sleep 2)))
+nil
+cl-user(3): (prof:show-flat-profile)
+No samples have been collected for the specified time profiler.
+cl-user(4): (prof:with-profiling (:type :real-time)
+              (dotimes (i 10) (sleep 2)))
+nil
+cl-user(5): (prof:show-flat-profile)
+Sampling stopped after 2000 samples taken for the real-time profiler.
+
+Sample represents 20.0 seconds of real time (out of a total of .1).
+
+Real Times below 1.0% will be suppressed.
+
+      %     %   self total         self   total  Function                                  
+Real Time  Cum. secs  secs calls ms/call ms/call   name                                    
+    100.0 100.0 20.0  20.0                       "__select"
+cl-user(6): 
+</pre>
+
+
+
+<p id="26">
+The macro <a href="with-profiling.htm"><b>with-profiling</b></a> starts and stops a
+profing run while executing the code specified as the body of the
+macro calling form. See <a href="../../runtime-analyzer.htm">runtime-analyzer.htm</a> for
+general information on the runtime analyzer.
+</p>
+
+<hr><p id="27"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page has had significant revisions compared to the 9.0 page.</small><br><small>Created 2016.6.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Significantly revised from 9.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/prof/start-profiler.htm">9.0 version</a></td></tr></table></body></html>

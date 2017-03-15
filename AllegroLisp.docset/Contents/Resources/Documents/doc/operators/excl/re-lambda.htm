@@ -1,0 +1,141 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>re-lambda</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/re-lambda.htm">9.0 version</a></td></tr></table><h2 id="2">re-lambda</h2>
+
+<p id="3"><b>Arguments: </b><i>
+regexp bindings
+</i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+<i>regexp</i> must be a string that specifies a regular
+expression, or a list of such a string followed by options, or an
+expression that evaluates to a compiled regular expression.
+</p>
+<p id="5">
+<a href="re-lambda.htm"><b>re-lambda</b></a> returns a closure
+which takes the arguments <code>(string &key
+if-does-not-match)</code>.
+</p>
+<p id="6">
+When the closure is called, it scans the given string by
+<i>regexp</i>, and if it matches, then evaluates
+<i>body</i> with the environment where the variables in
+<i>bindings</i> are bound to the substrings of the
+match(es). The closure returns the result(s) of the last expression of
+<i>body</i>.
+</p>
+<p id="7">
+<i>bindings</i> is like the binding form of let.  Each
+element of <i>bindings</i> must be either one of the
+following:
+</p>
+<ul>
+<li id="8">
+<code>(var integer)</code> ;; var binds to integer-th submatch
+(0 for whole).
+</li>
+<li id="9">
+<code>(var string/symbol)</code> ;; var binds to the submatch
+named by string/symbol.
+</li>
+<li id="10">
+<code>var</code> ;; var binds to the submatch named by var.
+</li>
+</ul>
+<p id="11">
+If the specified match doesn't have a value, var is bound to <code>nil</code>. You can also bind a substring before or after
+the specified submatch, by giving modifier like <code>(var integer
+:before)</code> or <code>(var integer :after)</code>.
+</p>
+<p id="12">
+If <i>string</i> doesn't match
+<i>regexp</i>, <i>body</i> is not
+evaluated, and the value given to the keyword argument
+<i>if-does-not-match</i> is returned.
+</p>
+<p id="13">
+If <i>regexp</i> is the form of <code>(string-re
+options ...)</code>, then options are passed to <a href="compile-re.htm"><b>compile-re</b></a> to create a compiled regular
+expression. It takes place at macro-expansion time, so options must
+only contain constant literals.
+</p>
+
+<h3 id="14">
+Examples
+</h3>
+<pre id="15">
+cl-user(26): (funcall (re-lambda &quot;(abc|def)(.*)&quot; ((a 0) (b 1) (c 2))
+                                  (list a b c))
+                       &quot;defabc&quot;)
+(&quot;defabc&quot; &quot;def&quot; &quot;abc&quot;)
+cl-user(27): (funcall (re-lambda &quot;(?&lt;foo&gt;[a-z]+)(?&lt;bar&gt;\\d+)&quot; (foo bar)
+                                  (list foo bar))
+                       &quot;   acl70beta &quot;)
+(&quot;acl&quot; &quot;70&quot;)
+cl-user(28): (funcall (re-lambda &quot;cde&quot; ((a 0 :before) (b 0) (c 0 :after))
+                         (list a b c))
+                       &quot;abcdefg&quot;)
+(&quot;ab&quot; &quot;cde&quot; &quot;fg&quot;)
+cl-user(29): 
+</pre>
+
+
+<p id="16">
+See also <a href="re-case.htm"><b>re-case</b></a> and <a href="re-let.htm"><b>re-let</b></a>.
+</p>
+
+
+<h3 id="17">
+Example
+</h3>
+
+<pre id="18">
+cl-user(4): (setq f
+	      (re-lambda &quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;
+		  ((foo 1) (bar 2) (baz 3))
+		(list foo bar baz)))
+#&lt;Interpreted Function (unnamed) @ #x71ed7892&gt;
+cl-user(5): (funcall f &quot;foo the bar&quot;)
+(&quot;foo&quot; &quot;the&quot; &quot;bar&quot;)
+cl-user(6): (re-let &quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;
+		&quot;foo the bar&quot;
+		((foo 1) (bar 2) (baz 3))
+	      (list foo bar baz))
+(&quot;foo&quot; &quot;the&quot; &quot;bar&quot;)
+cl-user(7): 
+
+
+cl-user(9): (re-case &quot;foo the barmy&quot;
+	      (&quot;foo a (.*)&quot; ((it 1)) (list it))
+	      (&quot;foo the (.*)&quot; ((it 1)) (list it))
+	      (t :no-match))
+(&quot;barmy&quot;)
+cl-user(10): (re-case &quot;foo a barmy&quot;
+	      (&quot;foo a (.*)&quot; ((it 1)) (list it))
+	      (&quot;foo the (.*)&quot; ((it 1)) (list it))
+	      (t :no-match))
+(&quot;barmy&quot;)
+cl-user(11): (re-case &quot;foo xx barmy&quot;
+	      (&quot;foo a (.*)&quot; ((it 1)) (list it))
+	      (&quot;foo the (.*)&quot; ((it 1)) (list it))
+	      (t :no-match))
+:no-match
+cl-user(12): 
+</pre>
+
+
+
+<p id="19">
+The symbol naming this operator is 
+also exported from the regexp package.
+</p>
+
+
+<p id="20">
+See <a href="../../regexp.htm#regexp-new-1">The new regexp2
+module</a> in <a href="../../regexp.htm">regexp.htm</a> for further
+information on this macro and the <b>regexp2</b> module.
+</p>
+
+<hr><p id="21"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/excl/re-lambda.htm">9.0 version</a></td></tr></table></body></html>

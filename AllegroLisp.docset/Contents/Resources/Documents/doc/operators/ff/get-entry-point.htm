@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <title>get-entry-point</title><link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ff</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/get-entry-point.htm">9.0 version</a></td></tr></table><h2 id="2">get-entry-point</h2>
+
+<p id="3"><b>Arguments: </b><i>
+name
+</i></p>
+
+<p id="4">
+This function returns two values. The first is the entry point for 
+<i>name</i>, which must be a string. 
+<code>nil</code> is
+returned if <i>name</i> does not have an entry point.
+</p>
+<p id="5">
+The second returned value is the handle of the .so/.sl/.dll/.dylib library
+in which the symbol was found.
+</p>
+<p id="6">
+For example, "aclmalloc" is the name of the C function called by
+<a href="../excl/aclmalloc.htm"><b>aclmalloc</b></a>. Using this
+function, we find its entry point is 1872778976 and the handle of its
+library is 4. Using <a href="../excl/get-shared-library-handle.htm"><b>get-shared-library-handle</b></a> and <a href="../excl/get-shared-library-name.htm"><b>get-shared-library-name</b></a>, we find it
+is in the Allegro CL shared library called (on this machine and in
+this run) "libacli61pf4.so" (the name you see will be different).
+</p>
+
+<pre id="7">
+cl-user(101): (ff:get-entry-point "aclmalloc")
+1872778976
+4
+cl-user(102): (get-shared-library-handle)
+4
+cl-user(103): (get-shared-library-name)
+"libacli61pf4.so"
+cl-user(104): 
+</pre>
+
+<p id="8">
+See <a href="../../ftype.htm">ftype.htm</a> for
+information on foreign types in Allegro CL and
+<a href="../../foreign-functions.htm">foreign-functions.htm</a> for general
+information on foreign functions in Allegro CL.
+</p>
+
+<hr><p id="9"><small>Copyright (c) 1998-2016, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 9.0 page.</small><br><small>Created 2015.5.21.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.0</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 9.0 to 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/9.0/doc/operators/ff/get-entry-point.htm">9.0 version</a></td></tr></table></body></html>
