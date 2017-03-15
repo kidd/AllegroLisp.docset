@@ -1,3 +1,5 @@
+;; Raimon Grau Cuscó <raimonster@gmail.com> Licensed under wtfpl
+
 (let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
@@ -14,7 +16,7 @@
 (ql:quickload :plump)
 
 (defun process-file (letter)
-  (let* ((fpath (format nil "/home/rgrau/programmingStuff/allegroweb/franz.com/support/documentation/10.0/doc/nocg-index-~a.htm" letter))
+  (let* ((fpath (format nil "franz.com/support/documentation/10.0/doc/nocg-index-~a.htm" letter))
          (page (file-string fpath))
          (links (clss:select "li > a" (plump:parse page))))
     (map 'list (lambda (x) `(:text ,(plump:text x)
