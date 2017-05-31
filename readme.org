@@ -11,5 +11,17 @@
   1) make import
   2) make commit
 
+* Generate links without alisp
+  As a first approach to generating the links, you can use [[https://github.com/ericchiang/pup][pup]] to
+  extract useful info.
+
+  #+BEGIN_SRC bash
+    cat index-{a..w}.htm | pup 'li > a json{}' | jq '[.[] |{href, text} | select(.href | test("\\.\\.") |not  )]'
+
+     cat index-{a..w}.htm | pup 'li > a json{}' |
+     jq -r '[.[] |{href, text} | select(.href | test("^\\.\\.") | not)] | map(["insert" , .href , .text]|join(" ")) | join("\n")'
+  #+END_SRC
+
+
 * Author
   Raimon Grau Cuscó <raimonster@gmail.com>
