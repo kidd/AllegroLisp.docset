@@ -1,0 +1,34 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>show-quick-symbol-info-on-space</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table><h2 id="2">show-quick-symbol-info-on-space</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+If this IDE user option is enabled, then typing a space after a symbol
+in the IDE's editor or listener will automatically invoke the command
+"Help | Quick Symbol Info" to display brief information about the
+symbol in the status bar.
+</p>
+<p id="5">
+This option is enabled by default, though it may interfere with some
+input methods that use multiple keystrokes for typing some characters,
+if one of the keys in such a sequence is the spacebar. If this
+happens, you can turn this option off to avoid the problem.
+</p>
+<p id="6">
+This option is not on the <a href="../../ide-menus-and-dialogs/options-dialog.htm">Options dialog</a>, but you could turn it off
+interactively with <a href="../../ide-menus-and-dialogs/tools-menu.htm#inspect-system-data">Tools | Inspect System Data</a> |
+<b>IDE Configuration Options</b> menu command, or programmatically
+with this expression:
+</p>
+
+<pre id="7">
+(setf (ide:show-quick-symbol-info-on-space
+        (configuration ide:*ide-system*))
+  nil)
+</pre>
+
+<hr><p id="8"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.1 release.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table></body></html>

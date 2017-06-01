@@ -1,0 +1,65 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"><title>monitor-info</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/cg/m/monitor-info.htm">10.0 version</a></td></tr></table><h2 id="2">monitor-info</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i></p>
+
+<p id="4">
+Returns a list of information about all of the monitors that are
+present.  This includes the coordinate range of each monitor, which
+can be useful for positioning windows within particular monitors in a
+multiple-monitor system.
+</p>
+<p id="5">
+Each element of the list describes one monitor, and so the length of
+the list indicates the number of monitors.
+</p>
+<p id="6">
+The element for each monitor is itself a list.  The first element of
+that list on either Windows or GTK is a box that specifies the
+coordinate range of that monitor.  For the primary monitor, this will
+be the same box that is returned by <code>(</code><code><a href="../e/exterior.htm"><b>exterior</b></a></code><code> (</code><code><a href="../s/screen.htm"><b>screen</b></a></code><code> </code><code><a href="../../../variables/cg/s_system_s.htm"><code>*system*</code></a></code><code>))</code>.
+</p>
+<p id="7">
+On GTK, that box is the only element in the list for a monitor.  On
+Windows there are three additional values. On Windows the four values
+are:
+</p>
+<ol>
+<li id="8">
+a box for the exterior of the monitor
+</li>
+<li id="9">
+a box for the interior of the monitor
+</li>
+<li id="10">
+a boolean value for whether this monitor is the primary one
+</li>
+<li id="11">
+a string for the name of the monitor
+</li>
+</ol>
+
+<p id="12">
+The exterior covers the entire monitor, while the interior is the
+portion that applications can use, which basically means that the
+interior excludes the Windows task bar when there is one on that
+monitor.
+</p>
+<pre id="13">
+;; Here are example on Windows and Linux where there are two monitors.
+;;
+;; On Windows, the output is a list of three element lists:
+(monitor-info)
+RETURNS
+((#&lt;box 0 0 1600 900&gt; #&lt;box 0 0 1600 860&gt; t &quot;\\\\.\\DISPLAY1&quot;)
+ (#&lt;box -2400 -300 0 1200&gt; #&lt;box -2400 -300 0 1200&gt; nil &quot;\\\\.\\DISPLAY2&quot;))
+
+;; On GTK, each list has just one element:
+(monitor-info)
+RETURNS
+((#&lt;box 0 0 1600 900&gt;)(#&lt;box -2400 -300 0 1200&gt;))
+</pre>
+
+<hr><p id="14"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 10.0 page.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/cg/m/monitor-info.htm">10.0 version</a></td></tr></table></body></html>

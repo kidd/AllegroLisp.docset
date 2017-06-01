@@ -16,7 +16,7 @@
 (ql:quickload :plump)
 
 (defun process-file (letter)
-  (let* ((fpath (format nil "franz.com/support/documentation/10.0/doc/nocg-index-~a.htm" letter))
+  (let* ((fpath (format nil "franz.com/support/documentation/10.1/doc/nocg-index-~a.htm" letter))
          (page (file-string fpath))
          (links (clss:select "li > a" (plump:parse page))))
     (map 'list (lambda (x) `(:text ,(plump:text x)

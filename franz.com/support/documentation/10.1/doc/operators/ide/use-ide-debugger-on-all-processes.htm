@@ -1,0 +1,47 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>use-ide-debugger-on-all-processes</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: ide</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table><h2 id="2">use-ide-debugger-on-all-processes</h2>
+
+<p id="3"><b>Arguments: </b><i>
+ide-configuration
+</i></p>
+
+<p id="4">
+This user option controls controls whether the IDE's debugger will be
+used for all non-IDE processes when they signal errors, rather than
+using the base Lisp's debugger.  (The IDE's debugger is always used
+for IDE processes.) The default value is true to use the IDE's
+debugger for all processes. One case where you may want to use the
+base Lisp's debugger instead for non-IDE processes is when running the
+IDE from Emacs, in which case you may want to turn this option off.
+</p>
+<p id="5">
+This option does not appear on the options dialog, but it could be
+turned off with the following expression:
+</p>
+
+<pre id="6">
+(setf (ide:use-ide-debugger-on-all-processes
+        (cg:configuration ide:*ide-system*))
+      nil)
+</pre>
+
+<p id="7">
+An alternative is to specify whether the IDE's debugger should be used
+for an individual non-IDE process. This can be done by adding a
+<code>:use-ide-debugger</code> entry to the
+<a href="../mp/process-property-list.htm"><b>process-property-list</b></a> of the
+process. If such an entry is in the plist, it overrides the value
+of <a href="use-ide-debugger-on-all-processes.htm"><b>use-ide-debugger-on-all-processes</b></a> even if the
+plist entry is <code>nil</code>.  For example, the
+following expression would ensure that the IDE's debugger
+is <b>not</b> used for the current process.
+</p>
+
+<pre id="8">
+(setf (getf (mp:process-property-list mp:*current-process*)
+            :use-ide-debugger)
+      nil)
+</pre>
+
+<hr><p id="9"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.1 release.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table></body></html>

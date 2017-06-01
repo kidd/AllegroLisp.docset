@@ -1,0 +1,60 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>compose-octet-array</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table><h2 id="2">compose-octet-array</h2>
+
+<p id="3"><b>Arguments: </b><i>
+</i> &amp;rest <i>parts</i><i>
+</i></p>
+
+<p id="4">
+This macro implements a convenient notation for representing a vector
+of octets in a source file. The value of the macro call is a vector
+of type <code>(array * (unsigned-byte 8))</code> initialized to
+all the octets specified in the arguments with the forms:
+</p>
+<ul>
+<li id="5">    
+<b>string</b>: The character code of each character in the string
+specifies one octet in the result vector.
+</li>
+<li id="6">                 
+<b>A character</b>: The character code specifies the octet.
+</li>
+<li id="7">                 
+<b>An integer</b>: The number specifies the octet.
+</li>
+<li id="8">                 
+<b>:[</b>: The arguments following this argument up to an occurrence
+of <b>:]</b> are converted to hexadecimal numbers that specify each
+octet.
+</li>
+<li id="9"> 
+<b>A symbol</b>: The symbol is treated as the name of a character that
+specifies the octet.
+</li>
+<li id="10">                 
+<b>:eval</b>: The following argument is evaluated at run time. The
+value must be a sequence of values allowed as arguments to
+<a href="compose-octet-array-fn.htm"><b>compose-octet-array-fn</b></a>.
+</li>
+</ul>
+
+<p id="11">
+Each octet value must be in the octet value range. If not an error is
+signaled.
+</p>
+<p id="12">
+If there are no occurrences of the <code>:eval</code> argument,
+the result emitted by the macro is a constant vector. If
+the <code>:eval</code> argument is used, the macro emits a call
+to the <a href="compose-octet-array-fn.htm"><b>compose-octet-array-fn</b></a> function.
+</p>
+
+<p id="13">
+See <a href="../../iacl.htm">iacl.htm</a> for more information on international
+characters and external formats.
+</p>
+
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.1 release.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table></body></html>

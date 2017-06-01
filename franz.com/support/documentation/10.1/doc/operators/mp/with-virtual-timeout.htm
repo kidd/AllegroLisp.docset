@@ -1,0 +1,59 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>with-virtual-timeout</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table><h2 id="2">with-virtual-timeout</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+(mode seconds </i> &amp;body <i>timeout-body</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+
+<p id="4">
+This macro is simlar to <a href="../system/with-timeout.htm"><b>sys:with-timeout</b></a> with the addition of
+a <b><i>mode</i></b>
+argument. <b><i>mode</i></b> must
+be <code>:process</code> or <code>:thread</code>. The
+<code>:thread</code> option is only valid in SMP lisps.
+</p>
+<p id="5">
+When <i>mode</i> is <code>:process</code>, the
+timeout occurs after the specified time (in seconds as for
+<a href="../system/with-timeout.htm"><b>sys:with-timeout</b></a>) has been
+used by the cpu when running the Lisp process, not counting time spent
+doing garbage collection.
+</p>
+<p id="6">
+When mode is <code>:thread</code> (which is allowed in SMP Lisps
+only), the timeout occurs after the specified time (in seconds as for
+<a href="../system/with-timeout.htm"><b>sys:with-timeout</b></a>) has been
+used by the cpu when running thread executing the body code, not
+counting time spent doing garbage collection.  
+</p>
+<p id="7">
+Contrast this behavior with <a href="../system/with-timeout.htm"><b>sys:with-timeout</b></a>, which times out
+after <i>time</i> real time
+seconds. See <a href="../system/with-timeout.htm"><b>sys:with-timeout</b></a> for more information on the
+other arguments.
+</p>
+<p id="8">
+Here is an example of code using <a href="with-virtual-timeout.htm"><b>with-virtual-timeout</b></a>. We define a
+variant of <a href="../../../ansicl/dictentr/y-or-n-p.htm"><b>y-or-n-p</b></a>
+which times out after a specified number of seconds, taking the
+default value specified in the arguments.
+</p>
+
+<pre id="9">
+(defun y-or-n-p-with-virtual-timeout (seconds default &rest args)
+  (mp:with-virtual-timeout (:process seconds (format t "[Timed out] ~a~%" default)
+	     default)
+	 (apply #'y-or-n-p args)))
+</pre>
+
+<p id="10">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+
+<hr><p id="11"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.1 release.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table></body></html>

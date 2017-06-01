@@ -1,0 +1,63 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>unicode-code-at</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table><h2 id="2">unicode-code-at</h2>
+
+<p id="3"><b>Arguments: </b><i>
+string index
+</i></p>
+<p id="4">
+The Allegro CL character string implementation stores Unicode characters
+using the UTF-16 encoding. Unicode characters with codes above the
+16-bit range are stored as two string characters, a high surrogate
+character followed by a low surrogate character. All the ACL string
+manipilation functions interpret a character string as a uniform
+array of 16-bit characters.
+</p>
+<p id="5">
+This function allows a program to walk a string extracting the actual
+Unicode characters stored in it. <b><i>string</i></b> is
+the string to be examined. <b><i>index</i></b> is the
+index or the character to examine.
+</p>
+<p id="6">
+The function returns two values
+</p>
+<ol>
+<li id="7">
+An integer Unicode character code or <code>nil</code>
+</li>
+<li id="8">
+One of the values 1, 2, <code>:high-surrogate</code>, or
+<code>:low-surrogate</code>.
+</li>
+</ol>
+<p id="9">
+If the first value is an integer, the second value specifies
+how many string characters were used to compose the first value.
+</p>
+<p id="10">
+If the first value is <code>nil</code>, the string
+character at <i>index</i> is not a valid Unicode code
+point. In that case the second value describes the string character at
+<i>index</i> with these return values:
+</p>
+<ul>
+<li id="11">
+<code>:high-surrogate</code>: The string character
+at <i>index</i> is a high surrogate character that is
+not immediately followed by a low surrogate character in the string.
+</li>
+<li id="12">
+<code>:low-surrogate</code>: The string character
+at <i>index</i> is a low surrogate character. There is
+no check for a preceding high surrogate character.
+</li>
+</ul>
+
+<p id="13">
+See <a href="../../iacl.htm">iacl.htm</a> for more information on international
+characters and external formats.
+</p>
+
+    
+<hr><p id="14"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.1 release.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table></body></html>

@@ -1,0 +1,64 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>with-locked-queue</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/mp/with-locked-queue.htm">10.0 version</a></td></tr></table><h2 id="2">with-locked-queue</h2>
+
+
+<p id="3"><b>Arguments: </b><i>
+(queue </i>&amp;key <i>timeout norecursive seized whostate</i><i>) </i> &amp;body <i>body</i><i>
+</i></p>
+
+<p id="4">
+This macro executes the body with the queue's lock seized. Like
+<a href="with-process-lock.htm"><b>with-process-lock</b></a>,
+<a href="with-locked-queue.htm"><b>with-locked-queue</b></a> protects
+against a single process trying to seize a lock it already owns. If
+executed dynamically inside another <a href="with-locked-queue.htm"><b>with-locked-queue</b></a> for the same queue, and if
+<i>norecursive</i> is <code>nil</code>,
+<a href="with-locked-queue.htm"><b>with-locked-queue</b></a> behaves as
+if the lock was seized successfully, and the body is executed. If
+<i>norecursive</i> is <code>t</code>, an
+error is signaled. The default value
+of <i>norecursive</i> is <code>nil</code>.
+</p>
+<p id="5">
+If the <b><i>seized</i></b> keyword argument is
+specified it should name a variable (which is <b>not</b> bound by the
+<a href="with-locked-queue.htm"><b>with-locked-queue</b></a> form). If
+specified, this variable is set to <code>nil</code> before
+the queue is examined, and is set to <code>t</code> if the
+queue is found to be already locked by the current thread. Unless
+<i>norecursive</i> has been specified as true, the body
+forms can see the value of that variable reflecting this status.
+</p>
+<p id="6">
+If a <b><i>timeout</i></b> is specified and
+non-<code>nil</code>, the value should be an integer; the
+units are seconds. Non-positive timeout values time out immediately. A
+value of <code>nil</code> is equivalent to an unspecified
+<i>timeout</i> argument.
+</p>
+<p id="7">
+If the form times out before the lock is available, the
+<a href="with-locked-queue.htm"><b>with-locked-queue</b></a> form
+returns nil without the body being executed. If you want to take
+specific action if the lock does not become available when timeout is
+specified, use a form like this:
+</p>
+
+<pre id="8">
+;; This incomplete code sample (the suspension points must be
+;; replaced with actual code) whows the use of this macro:
+''
+(block ok
+  (with-locked-queue (queue :timeout 10)
+    (return-from ok (progn body-forms ...)))
+  (... action if lock never becomes available ...))
+</pre>
+
+<p id="9">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+<hr><p id="10"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 10.0 page.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/mp/with-locked-queue.htm">10.0 version</a></td></tr></table></body></html>

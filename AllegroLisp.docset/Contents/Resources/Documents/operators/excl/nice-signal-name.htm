@@ -1,0 +1,35 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>nice-signal-name</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/excl/nice-signal-name.htm">10.0 version</a></td></tr></table><h2 id="2">nice-signal-name</h2>
+
+<p id="3"><b>Arguments: </b><i>
+signal-number
+</i></p>
+
+<p id="4">
+This function returns a string which is a nice (that is a meaningful and
+easy to interpret) name for <b><i>signal-number</i></b>,
+which must be an integer. This nice name is operating system
+dependent.
+</p>
+<p id="5">
+For example, on Solaris and Linux, <code>(nice-signal-name
+1)</code> returns "Hangup". On FreeBSD and macOS, the same thing
+returns "Hangup: 1". It is possible the return values for an OS will
+change over time because of OS changes.
+</p>
+<p id="6">
+If <i>signal-number</i> does not name a valid signal,
+<code>nil</code> is returned.
+</p>
+
+<p id="7">
+The function <a href="../../os-interface.htm#strsignal-op-bookmarkxx"><b>strsignal</b></a>
+is a synonym of this function (its name corresponds to the name of the
+UNIX library function <b>strsignal()</b>). That library function does
+not exist on Windows but <a href="nice-signal-name.htm"><b>nice-signal-name</b></a> and <a href="../../os-interface.htm#strsignal-op-bookmarkxx"><b>strsignal</b></a> work
+on all platforms (using different underlying functionality on
+Windows).
+</p>
+
+<hr><p id="8"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 10.0 page.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/excl/nice-signal-name.htm">10.0 version</a></td></tr></table></body></html>

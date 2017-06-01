@@ -1,0 +1,118 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>do-periodically</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Macro</b></td><td align="left" bgcolor="#00FFFF"><b>Package: mp</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table><h2 id="2">do-periodically</h2>
+
+<p id="3"><b>Arguments: </b><i>
+(seconds </i>&amp;key <i>sleep-first</i> (<i>whostate</i> "sleeping")<i>) </i> &amp;body <i>body</i><i>)
+</i></p>
+
+<p id="4">
+After evealuating seconds, sleep-first, and whostate (in that order),
+this macro repeatedly executes <i>body</i> while
+sleeping for <i>seconds</i> seconds between each
+execution. It expands into code which roughly produces the following
+inner loop:
+</p>
+
+<pre id="5">
+   (if sleep-first (sleep seconds))
+   (loop
+      body
+      (sleep seconds))
+</pre>
+
+<p id="6">
+<b><i>seconds</i></b> must evaluate to a non-negative
+real number; <b><i>sleep-first</i></b> is a boolean
+defaulting to <code>nil</code>;
+<b><i>whostate</i></b> must evaluate to a string or
+<code>nil</code>. <i>whostate</i> defaults
+to "sleeping". 
+</p>
+<p id="7">
+The purpose of this macro is to reduce consing when
+executing the same code repeatedly with sleeps in between. Because
+<i>seconds</i>, <i>sleep-first</i>, and
+<i>whostate</i> are only evaluated once, all additional
+consing comes from the evaluation of <i>body</i> and if
+<i>body</i> itself does not cons, there is no additional
+consing.
+</p>
+<p id="8">
+If <i>sleep-first</i> is true, the executing
+thread/process will sleep before the first executaion
+of <i>body</i>. If
+<i>sleep-first</i> is <code>nil</code> (the
+default), the thread will execute <i>body</i>
+immediately and then sleep.
+</p>
+<p id="9">
+The whostate of the thread/process will be changed
+to <i>whostate</i> while the thread/process is sleeping
+(while executing <i>body</i>, the whostate of the
+thread/process will be its original whostate -- see <a href="process-whostate.htm"><b>process-whostate</b></a>).
+</p>
+<p id="10">
+This macro does not return of its own accord, but the execution of
+<i>body</i> is wrapped in a block
+named <code>nil</code>, so
+<code>(return)</code> will jump out of the loop
+(returning <code>nil</code>) and <code>(return
+&lt;form&gt;)</code> will jump out of the loop returning the value
+of
+<code>&lt;form&gt;</code> (see <a href="../../../ansicl/dictentr/return.htm"><b>return</b></a>).
+</p>
+<h3 id="11">
+Example
+</h3>
+<pre id="12">
+;; The following example shows how this macro reduces
+;; consing (run in Allegro CL 10.1 SMP on a Linux platform):
+
+(defun ltest1 ()
+  (let ((ct 1000))
+    (loop
+      (sleep .1)
+      (decf ct)
+      (when (&lt;= ct 0)
+	(return)))))
+
+(defun ltest2 ()
+  (let ((ct 1000))
+    (mp:do-periodically (.1 :sleep-first t)
+      (decf ct)
+      (when (&lt;= ct 0)
+	(return)))))
+
+cl-user(12): (time (ltest1))
+; cpu time (non-gc) 0.054992 sec user, 0.052992 sec system
+; cpu time (gc)     0.001000 sec user, 0.000000 sec system
+; cpu time (total)  0.055992 sec user, 0.052992 sec system
+; cpu time (thread) 0.037994 sec user, 0.022997 sec system
+; real time  100.182389 sec (00:01:40.182389) (.1088%)
+; space allocation:
+;  2,000 cons cells, 577,136 other bytes, 0 static bytes
+; Page Faults: major: 0 (gc: 3), minor: 3 (gc: 3)
+nil
+cl-user(13): (time (ltest2))
+; cpu time (non-gc) 0.045993 sec user, 0.046993 sec system
+; cpu time (gc)     0.000000 sec user, 0.000000 sec system
+; cpu time (total)  0.045993 sec user, 0.046993 sec system
+; cpu time (thread) 0.020997 sec user, 0.025996 sec system
+; real time  100.171188 sec (00:01:40.171188) (.0928%)
+; space allocation:
+;  2 cons cells, 368 other bytes, 0 static bytes
+; Page Faults: major: 0 (gc: 0), minor: 0 (gc: 0)
+nil
+
+;; The times are roughly the same but cons cells and other bytes
+;; are significantly reduced with DO-PERIODICALLY.
+</pre>
+<p id="13">
+See <a href="../../multiprocessing.htm">multiprocessing.htm</a>
+for general
+information on multiprocessing in Allegro CL.
+</p>
+
+
+<hr><p id="14"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page is new in the  10.1 release.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">This page is new in 10.1.</a></small></td></tr></table></body></html>
