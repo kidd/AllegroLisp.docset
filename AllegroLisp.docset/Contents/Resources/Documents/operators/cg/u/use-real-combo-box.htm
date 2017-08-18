@@ -1,10 +1,22 @@
-<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"><title>use-real-combo-box</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/cg/u/use-real-combo-box.htm">10.0 version</a></td></tr></table><h2 id="2">use-real-combo-box</h2>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../../acldoc-styles.css" type="text/css"><title>use-real-combo-box</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Generic Function</b></td><td align="left" bgcolor="#00FFFF"><b>Package: cg</b></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../../introduction.htm#updates-s"> Significant update since the initial 10.1 release.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/cg/u/use-real-combo-box.htm">10.0 version</a></td></tr></table><h2 id="2">use-real-combo-box</h2>
 
 <p id="3"><b>Arguments: </b><i>
 combo-box-column-mixin
 </i></p>
 
 <p id="4">
+<b>This <a href="../../../classes/cg/combo-box-column-mixin.htm"><code>combo-box-column-mixin</code></a> option has been
+deprecated</b>. The default value of <code>nil</code>
+should always be used. Setting this option to true can
+lead to problems with some combinations of other options, and so this
+option should not have been provided. On the Windows platform, this option
+tells a Microsoft combo-box widget to show its drop-down
+pane even though the combo-box itself is hidden, which the OS does not
+expect.  On the GTK platforms, this option has never had an effect at
+all.
+</p>
+
+<p id="5">
 Returns true or <code>nil</code> to
 indicate whether the argument, which must be an instance of <a href="../../../classes/cg/grid-column.htm"><code>grid-column</code></a> and of the
 mixin class <a href="../../../classes/cg/combo-box-column-mixin.htm"><code>combo-box-column-mixin</code></a>, uses a
@@ -12,14 +24,14 @@ standard <a href="../../../classes/cg/combo-box.htm"><code>combo-box</code></a> 
 drop-down list of choices, rather than using whatever simulation of a
 combo-box control is used by default (the default is <code>nil</code>).
 </p>
-<p id="5">
+<p id="6">
 This provides a choice for alternative styles for grid-widget
 combo-box cells, and an application may use whichever one is more
 suitable for it. This property may be set either by calling the
 <a href="../../../../ansicl/dictentr/setfpset.htm"><b>setf</b></a> of this function or by
 passing the <code>:use-real-combo-box</code> initarg to <a href="../../../../ansicl/dictentr/make-ins.htm"><b>make-instance</b></a>.
 </p>
-<p id="6">
+<p id="7">
 In the current Windows implementation, the default value of <code>nil</code> causes a pop-up menu to be used. The menu will
 always be as wide as needed in order to display the complete string
 for each choice. A value of true causes a Windows
@@ -33,6 +45,6 @@ the spacebar or the return key. The two styles have different
 borders.
 </p>
 
-<hr><p id="7"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<hr><p id="8"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
 <small>This page was not revised from the 10.0 page.</small><br><small>Created 2017.2.15.</small><br>
-</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/cg/u/use-real-combo-box.htm">10.0 version</a></td></tr></table></body></html>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../../introduction.htm#updates-s"> Significant update since the initial 10.1 release.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/operators/cg/u/use-real-combo-box.htm">10.0 version</a></td></tr></table></body></html>

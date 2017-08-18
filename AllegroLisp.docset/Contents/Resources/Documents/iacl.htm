@@ -1,4 +1,4 @@
-<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="acldoc-styles.css" type="text/css"><title>International Character Support in Allegro CL</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/iacl.htm">10.0 version</a></td></tr></table><h1 id="2">International Character Support in Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#iacl-intro-1">1.0 Introduction</a><br><a href="#internal-rep-1">2.0 Internal Representation</a><br>&nbsp;&nbsp;&nbsp;<a href="#history-2">2.1 History</a><br>&nbsp;&nbsp;&nbsp;<a href="#unicode-2">2.2 Unicode</a><br>&nbsp;&nbsp;&nbsp;<a href="#memory-usage-2">2.3 Memory Usage</a><br>&nbsp;&nbsp;&nbsp;<a href="#char-names-2">2.4 Character names</a><br><a href="#external-formats-1">3.0 External formats</a><br>&nbsp;&nbsp;&nbsp;<a href="#external-format-overview-2">3.1 External-Format Overview</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#basic-ef-types-3">3.1.1 Basic External-Format Types</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#unicode-and-fat-3">3.1.2 The unicode and fat External-Format Types; the unicode BOM</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#composed-efs-3">3.1.3 Composed External-Formats</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#defining-efs-3">3.1.4 Defining External-Formats</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#retrieving-efs-3">3.1.5 Retrieving Existing External-Formats</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ef-runtime-mode-3">3.1.6 External-Format Runtime Mode</a><br>&nbsp;&nbsp;&nbsp;<a href="#ef-usage-2">3.2 External-Format Usage</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#streams-3">3.2.1 Streams</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#string-ef-arrays-3">3.2.2 String &lt;-&gt; External-Format Lisp Arrays</a><br>&nbsp;&nbsp;&nbsp;<a href="#ef-in-8bit-2">3.3 External-Formats in 8-bit Lisp.</a><br>&nbsp;&nbsp;&nbsp;<a href="#older-ef-compatibility-2">3.4 Older Allegro CL External-Format Compatibility</a><br><a href="#foreign-functions-1">4.0 Foreign-Functions</a><br><a href="#locales-1">5.0 External formats and locales</a><br>&nbsp;&nbsp;&nbsp;<a href="#initial-locale-2">5.1 The initial locale when Allegro CL starts up</a><br>&nbsp;&nbsp;&nbsp;<a href="#locales-in-apps-2">5.2 Locales in applications</a><br><a href="#localization-1">6.0 Localization support in Allegro CL</a><br>&nbsp;&nbsp;&nbsp;<a href="#locale-intro-2">6.1 Introduction to locales</a><br>&nbsp;&nbsp;&nbsp;<a href="#locale-definition-2">6.2 Locale Definition</a><br>&nbsp;&nbsp;&nbsp;<a href="#locale-attributes-2">6.3 Locale Attribute Accessors</a><br><a href="#collation-1">7.0 String collation with international characters</a><br><a href="#iacl-compatibility-1">8.0 Earlier International Allegro CL Compatibility</a><br>&nbsp;&nbsp;&nbsp;<a href="#euc-module-2">8.1 EUC Module</a><br>&nbsp;&nbsp;&nbsp;<a href="#mode-removal-2">8.2 :mode Option Removal</a><br><a href="#api-1">Appendix A. Operators, Symbols, Variables Documentation</a><br>&nbsp;&nbsp;&nbsp;<a href="#ef-ap1-2">Appendix A.1. External-Format API</a><br><a href="#newline-1">Appendix B. #\newline Discussion</a><br><a href="#8-bit-images-1">Appendix C. 8-bit images</a><br><a href="#unicode-links-1">Appendix D. Links to Unicode Reports</a><br><hr><hr><h2 id="4"><a name="iacl-intro-1">1.0 Introduction</a></h2>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="acldoc-styles.css" type="text/css"><title>International Character Support in Allegro CL</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/iacl.htm">10.0 version</a></td></tr></table><h1 id="2">International Character Support in Allegro CL</h1><p id="3">This document contains the following sections:</p><a href="#iacl-intro-1">1.0 Introduction</a><br><a href="#internal-rep-1">2.0 Internal Representation</a><br>&nbsp;&nbsp;&nbsp;<a href="#history-2">2.1 History</a><br>&nbsp;&nbsp;&nbsp;<a href="#unicode-2">2.2 Unicode</a><br>&nbsp;&nbsp;&nbsp;<a href="#memory-usage-2">2.3 Memory Usage</a><br>&nbsp;&nbsp;&nbsp;<a href="#char-names-2">2.4 Character names</a><br><a href="#external-formats-1">3.0 External formats</a><br>&nbsp;&nbsp;&nbsp;<a href="#external-format-overview-2">3.1 External-Format Overview</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#basic-ef-types-3">3.1.1 Basic External-Format Types</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#strict-efs-3">3.1.2 Strict external formats which do not allow improper characters</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#unicode-and-fat-3">3.1.3 The unicode and fat External-Format Types; the unicode BOM</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#composed-efs-3">3.1.4 Composed External-Formats</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#defining-efs-3">3.1.5 Defining External-Formats</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#retrieving-efs-3">3.1.6 Retrieving Existing External-Formats</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ef-runtime-mode-3">3.1.7 External-Format Runtime Mode</a><br>&nbsp;&nbsp;&nbsp;<a href="#ef-usage-2">3.2 External-Format Usage</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#streams-3">3.2.1 Streams</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#string-ef-arrays-3">3.2.2 String &lt;-&gt; External-Format Lisp Arrays</a><br>&nbsp;&nbsp;&nbsp;<a href="#ef-in-8bit-2">3.3 External-Formats in 8-bit Lisp.</a><br>&nbsp;&nbsp;&nbsp;<a href="#older-ef-compatibility-2">3.4 Older Allegro CL External-Format Compatibility</a><br><a href="#foreign-functions-1">4.0 Foreign-Functions</a><br><a href="#locales-1">5.0 External formats and locales</a><br>&nbsp;&nbsp;&nbsp;<a href="#initial-locale-2">5.1 The initial locale when Allegro CL starts up</a><br>&nbsp;&nbsp;&nbsp;<a href="#locales-in-apps-2">5.2 Locales in applications</a><br><a href="#localization-1">6.0 Localization support in Allegro CL</a><br>&nbsp;&nbsp;&nbsp;<a href="#locale-intro-2">6.1 Introduction to locales</a><br>&nbsp;&nbsp;&nbsp;<a href="#locale-definition-2">6.2 Locale Definition</a><br>&nbsp;&nbsp;&nbsp;<a href="#locale-attributes-2">6.3 Locale Attribute Accessors</a><br><a href="#collation-1">7.0 String collation with international characters</a><br><a href="#iacl-compatibility-1">8.0 Earlier International Allegro CL Compatibility</a><br>&nbsp;&nbsp;&nbsp;<a href="#euc-module-2">8.1 EUC Module</a><br>&nbsp;&nbsp;&nbsp;<a href="#mode-removal-2">8.2 :mode Option Removal</a><br><a href="#api-1">Appendix A. Operators, Symbols, Variables Documentation</a><br>&nbsp;&nbsp;&nbsp;<a href="#ef-ap1-2">Appendix A.1. External-Format API</a><br><a href="#newline-1">Appendix B. #\newline Discussion</a><br><a href="#8-bit-images-1">Appendix C. 8-bit images</a><br><a href="#unicode-links-1">Appendix D. Links to Unicode Reports</a><br><hr><hr><h2 id="4"><a name="iacl-intro-1">1.0 Introduction</a></h2>
 
 <p id="5">
 The International Version of Allegro CL, which uses 16-bit characters,
@@ -253,42 +253,26 @@ external-formats supplied with Allegro CL:
  :iso8859-14    :latin-14, :latin14
  :iso8859-15    :latin-15, :latin15
  :koi8-r
-
- :gb18030       :gb-18030                     New external-format implements the PRC standard encoding GB-18030.
-
 </pre>
 
 
 <p id="40">
-<b>Table notes</b>:
-</p>
-<ol>
-<li id="41">
-The <code>:gb18030</code> external-format is associated with the
-variable <a href="variables/excl/s_gb-18030-transcoding-error-action_s.htm"><code>*gb-18030-transcoding-error-action*</code></a>, the
-function <a href="operators/excl/gb-18030-transcoding-error-char.htm"><b>gb-18030-transcoding-error-char</b></a>, and the
-conditions <a href="classes/excl/gb-18030-transcoding-error.htm"><code>gb-18030-transcoding-error</code></a> and
-<a href="classes/excl/gb-18030-transcoding-warning.htm"><code>gb-18030-transcoding-warning</code></a>.
-</li>
-</ol>
-
-<p id="42">
 The following are special external-formats not listed above:
 </p>
 <ul>
-<li id="43">
+<li id="41">
 <code>:emacs-mule</code><br>
 Used to communicate international
 characters through the Allegro CL Emacs-Lisp Interface.
 </li>
-<li id="44">
+<li id="42">
 <code>:octets</code><br>
 Used simply to pass unconverted octets
 (8-bit bytes). Equivalent to <code>(crlf-base-ef
 :latin1)</code>. See <a href="#composed-efs-3">below</a> for a description of "base"
 external-formats and for an explanation about <a href="operators/excl/crlf-base-ef.htm"><b>crlf-base-ef</b></a>.
 </li>
-<li id="45">
+<li id="43">
 <code>:void</code><br>
 This external-format signals an error (of
 type <a href="classes/excl/void-external-format.htm"><code>void-external-format</code></a>). This external-format
@@ -296,7 +280,7 @@ can be used, for example, as the <a href="../ansicl/dictentr/stream-1.htm"><b>st
 stream meant only for binary I/O.
 </li>
 </ul>
-<p id="46">
+<p id="44">
 The general class of external-formats are for the variable-width
 multi-byte character sets often used for Asian languages.  As
 described above, a single Lisp character may be represented externally
@@ -307,7 +291,7 @@ following are the names and nicknames for the multi-byte
 external-formats supplied with Allegro CL:
 </p>
 
-<pre id="47">
+<pre id="45">
  Name            Nicknames                      Comments
  ----            ---------                      --------
  :utf8           :utf-8
@@ -321,18 +305,268 @@ external-formats supplied with Allegro CL:
  :950                                           For MS Windows
  :jis
  :shiftjis
+
+ :utf-8s                                        Strict
+
+
+ :gb18030       :gb-18030                       This strict external-format implements the PRC standard encoding GB-18030.
+
 </pre>
 
-<p id="48">
-See <a href="#unicode-and-fat-3">Section 3.1.2 The unicode and fat External-Format Types; the unicode BOM</a> for external
+<p id="46">
+See <a href="#unicode-and-fat-3">Section 3.1.3 The unicode and fat External-Format Types; the unicode BOM</a> for external
 formats that are exactly two bytes wide.
 </p>
 
+<p id="47">
+<b>Table notes</b>:
+</p>
+<ol>
+<li id="48">
+The <code>:utf-8s</code> external-format is associated with the
+variable <a href="variables/excl/s_utf-8s-transcoding-error-action_s.htm"><code>*utf-8s-transcoding-error-action*</code></a>, the
+function <a href="operators/excl/utf-8s-transcoding-error-char.htm"><b>utf-8s-transcoding-error-char</b></a>, and the
+conditions <a href="classes/excl/utf-8s-transcoding-error.htm"><code>utf-8s-transcoding-error</code></a> and
+<a href="classes/excl/utf-8s-transcoding-warning.htm"><code>utf-8s-transcoding-warning</code></a>.
+See <a href="#strict-efs-3">Section 3.1.2 Strict external formats which do not allow improper characters</a> for more information.
+</li>
+
+<li id="49">
+The <code>:gb18030</code> external-format is associated with the
+variable <a href="variables/excl/s_gb-18030-transcoding-error-action_s.htm"><code>*gb-18030-transcoding-error-action*</code></a>, the
+function <a href="operators/excl/gb-18030-transcoding-error-char.htm"><b>gb-18030-transcoding-error-char</b></a>, and the
+conditions <a href="classes/excl/gb-18030-transcoding-error.htm"><code>gb-18030-transcoding-error</code></a> and
+<a href="classes/excl/gb-18030-transcoding-warning.htm"><code>gb-18030-transcoding-warning</code></a>.
+See <a href="#strict-efs-3">Section 3.1.2 Strict external formats which do not allow improper characters</a> for more information.
+</li>
+
+</ol>
 
 
-<hr><h2 id="49"><a name="unicode-and-fat-3">3.1.2 The unicode and fat External-Format Types; the unicode BOM</a></h2>
 
-<p id="50">
+
+
+
+<hr><h2 id="50"><a name="strict-efs-3">3.1.2 Strict external formats which do not allow improper characters</a></h2>
+<p id="51">
+Some external formats require that all characters be appropriate. When
+such external formats, which we call <i>strict</i> external formats,
+are used, inappropriate characters are automatically replaced with a
+specified proper character when necessary. The strict external formats
+are <code>:utf-8s</code>, supported in version 10.0 and later,
+and <code>:gb18030</code>, which is supported in version 10.1
+and later (but not in version 10.0).
+</p>
+<p id="52">
+The functionality associated with the <code>:utf-8s</code>
+strict external format is:
+</p>
+<ul>
+<li id="53">
+<a href="variables/excl/s_utf-8s-transcoding-error-action_s.htm"><code>*utf-8s-transcoding-error-action*</code></a>
+</li>
+<li id="54">
+<a href="operators/excl/utf-8s-transcoding-error-char.htm"><b>utf-8s-transcoding-error-char</b></a>
+</li>
+<li id="55">
+<a href="classes/excl/utf-8s-transcoding-error.htm"><code>utf-8s-transcoding-error</code></a>
+</li>
+<li id="56">
+<a href="classes/excl/utf-8s-transcoding-warning.htm"><code>utf-8s-transcoding-warning</code></a>
+</li>
+</ul>
+
+<p id="57">
+The functionality associated with the <code>:gb-18030</code>
+strict external format is:
+</p>
+<ul>
+<li id="58">
+<a href="variables/excl/s_gb-18030-transcoding-error-action_s.htm"><code>*gb-18030-transcoding-error-action*</code></a>
+</li>
+<li id="59">
+<a href="operators/excl/gb-18030-transcoding-error-char.htm"><b>gb-18030-transcoding-error-char</b></a>
+</li>
+<li id="60">
+<a href="classes/excl/gb-18030-transcoding-error.htm"><code>gb-18030-transcoding-error</code></a>
+</li>
+<li id="61">
+<a href="classes/excl/gb-18030-transcoding-warning.htm"><code>gb-18030-transcoding-warning</code></a>
+</li>
+</ul>
+
+<p id="62">
+When a strict external format is in use and Lisp encounters (on
+reading characters or on writing characters) an inappropriate single
+character or (the more common case) character sequence, it takes one
+of the following actions, based on the value of
+the <code>:utf-8s</code> error action variable action
+variable <a href="variables/excl/s_utf-8s-transcoding-error-action_s.htm"><code>*utf-8s-transcoding-error-action*</code></a> for
+:utf-8s or the value of
+the <code>:gb18030</code> error action variable
+<a href="variables/excl/s_gb-18030-transcoding-error-action_s.htm"><code>*gb-18030-transcoding-error-action*</code></a>:
+</p>
+<ul>
+<li id="63">
+When the value of the error action variable
+is <code>nil</code>, <code>:warn</code>, 
+<code>:count</code>,
+<code>:collect</code>, an integer, or a cons, replace the
+improper character with the designated error character 
+(the value returned by <a href="operators/excl/utf-8s-transcoding-error-char.htm"><b>utf-8s-transcoding-error-char</b></a> for
+<code>:utf-8s</code> or the value returned by
+<a href="operators/excl/gb-18030-transcoding-error-char.htm"><b>gb-18030-transcoding-error-char</b></a> for
+:gb18030) and also:
+<ul>
+<li id="64">
+Do nothing further when the error action variable has
+value <code>nil</code>.
+</li>
+<li id="65">
+Signal a warning of type
+<a href="classes/excl/utf-8s-transcoding-warning.htm"><code>utf-8s-transcoding-warning</code></a> or of
+type <a href="classes/excl/gb-18030-transcoding-warning.htm"><code>gb-18030-transcoding-warning</code></a> when the
+error action variable has value <code>:warn</code>.
+</li>
+<li id="66">
+Set the value of the error action variable to the number of improper
+characters when the error action variable has
+value <code>:count</code>.
+</li>
+<li id="67">
+Increase the value of the error action variable by the number of improper
+characters when the value of the error action variable is an integer.
+</li>
+<li id="68">
+Set the value of the error action variable to a list of error markers
+when the error action variable has
+value <code>:collect</code>. The list is of all bad characters
+encountered when converting characters to octets and of all bad octets
+when converting octets to characters.
+</li>
+<li id="69">
+Augment the non-empty list which is the value of the error action
+variable when the value of the error action variable is a cons. New
+bad characters or octets are pushed onto the list as they are
+encountered.
+</li>
+</ul>
+</li>
+<li id="70">
+Signal an error of type
+<a href="classes/excl/utf-8s-transcoding-error.htm"><code>utf-8s-transcoding-error</code></a>
+or of type <a href="classes/excl/gb-18030-transcoding-error.htm"><code>gb-18030-transcoding-error</code></a> if the
+value of the error action variable is <code>:error</code> or any
+value other
+than <code>nil</code>, <code>:warn</code>, 
+<code>:count</code>,
+<code>:collect</code>, an integer, or a cons.
+</li>
+</ul>
+<p id="71">
+Here are some examples showing the behavior when using
+the <code>:utf-8s</code> external format. The behavior
+when using the <code>:gb18030</code> external formats is similar
+when improper <code>:gb18030</code> characters are
+encountered.
+</p>
+<pre id="72">
+(setq array-utf8
+      (string-to-octets "abcdefghijk"
+        :external-format :utf8
+        :null-terminate nil))
+    RETURNS #(97 98 99 100 101 102 103 104 105 106 107)
+
+
+;; Now we store some bad octets in array-utf8. The sequence
+;; 144 followed by 23 is improper UTF-8.
+
+(setf (aref array-utf8 6) 144 (aref array-utf8 7) 23)
+    RETURNS 23
+
+;; We write ARRAY-UTF8 to a file named 'tmp.data':
+(with-open-file (s "tmp.data" :direction :output :if-exists :supersede)
+  (dotimes (i (length array-utf8)) (write-byte (aref array-utf8 i) s)))
+    RETURNS nil
+
+;; We make the value of the :utf-8s error action variable :WARN:
+(setq *utf-8s-transcoding-error-action* :warn)
+
+;; We try to read the contents of tmp.data using the 
+;; strict :utf-8s external format. This causes a warning
+;; (because the value of *utf-8s-transcoding-error-action*
+;; is :WARN) and causes the bad character sequence to be replaced
+;; with the UTF-8S-TRANSCODING-ERROR-CHAR, which is (by default) the
+;; character #\?. Note that the sequence of two characters are
+;; replaced by a single character/
+;;
+(with-open-file (s "tmp.data" :external-format :utf-8s) (read-line s))
+Warning: Converting ill-formed UTF-8 octets #x90 #x17 to internal char
+         ?=#x3f.
+    RETURNS "abcdef?ijk"
+
+;; We give the error action variable the value :COUNT:
+;;
+(let ((*utf-8s-transcoding-error-action* :count))
+  (with-open-file (s "tmp.data" :external-format :utf-8s)
+    (read-line s))
+  *utf-8s-transcoding-error-action*)
+    RETURNS 2
+
+;; We give the error action variable the value the integer 17:
+(let ((*utf-8s-transcoding-error-action* 17))
+  (with-open-file (s "tmp.data" :external-format :utf-8s)
+    (read-line s))
+  *utf-8s-transcoding-error-action*)
+    RETURNS 19
+
+;; If the value of the error action variable is :COUNT and
+;; is not reset after a read, its value after multiple reads
+;; is the total number of bad characters read:
+''
+(let ((*utf-8s-transcoding-error-action* :count))
+  (with-open-file (s "tmp.data" :external-format :utf-8s)
+    (read-line s))
+  (with-open-file (s "tmp.data" :external-format :utf-8s)
+    (read-line s))
+  *utf-8s-transcoding-error-action*)
+    RETURNS 4
+
+;; We give the error action variable the value :COLLECT:
+;; 
+(let ((*utf-8s-transcoding-error-action* :collect))
+  (with-open-file (s "tmp.data" :external-format :utf-8s)
+    (read-line s))
+  *utf-8s-transcoding-error-action*)
+    RETURNS ((144 23))
+
+;; The value of the error action variable can be any list,
+;; not just a list created by reading bad charcaters.
+;; New bad characters are just pushed onto the list.
+;;
+(let ((*utf-8s-transcoding-error-action* (list :old-stuff)))
+  (with-open-file (s "tmp.data" :external-format :utf-8s)
+    (read-line s))
+  *utf-8s-transcoding-error-action*)
+    RETURNS ((144 23) :old-stuff)
+
+;; We give the error action variable the value :ERROR.
+;; Now an error is signaled when bad characters are encountered:
+;;
+(let ((*utf-8s-transcoding-error-action* :error))
+  (with-open-file (s "tmp.data" :external-format :utf-8s)
+    (read-line s)))
+Error: Found ill-formed UTF-8 octets #x90 #x17 .
+  [condition type: utf-8s-transcoding-error]
+
+</pre>
+
+
+
+
+<hr><h2 id="73"><a name="unicode-and-fat-3">3.1.3 The unicode and fat External-Format Types; the unicode BOM</a></h2>
+
+<p id="74">
 Some external formats use precisely two bytes (16 bits) per character.
 These include <code>:fat</code>
 (big-endian), <code>:fat-le</code> (little-endian), and
@@ -346,7 +580,7 @@ stream-external-format)</b></a>) to the unicode external-format, the
 unicode byte-order-marker is used in the following way:
 </p>
 <ul>
-<li id="51">
+<li id="75">
 The first time a character is requested from the stream (e.g., via
 read-char) a check for the unicode byte-order marker is made. If one
 is found, then the stream's internal state for subsequent character
@@ -355,35 +589,35 @@ is done automatically by the external-format convertor. If a
 byte-order marker is not found, then little-endian ordering is
 assumed.
 </li>
-<li id="52">
+<li id="76">
 The first time a character is output to the stream (e.g., via
 write-char) a unicode byte-order marker is written before that first
 character. See <a href="operators/excl/sniff-for-unicode.htm"><b>sniff-for-unicode</b></a>.
 </li>
 </ul>
 
-<h3 id="53">
+<h3 id="77">
 BOM and UTF-8
 </h3>
 
-<p id="54">
+<p id="78">
 The Unicode BOM (Byte Order Mark) is not generally used in utf-8
 encodings since such encodings are independent of the possible byte
 orderings used when serializing text to series of octets.
 </p>
-<p id="55">
+<p id="79">
 The BOM, U+feff zero width no-break space, converts to the following
 octet sequence in utf-8:
 </p>
-<pre id="56">
+<pre id="80">
  #xef #xbb #xbf
 </pre>
 
 
-<h3 id="57">
+<h3 id="81">
 More on BOM
 </h3>
-<p id="58">
+<p id="82">
 The <code>:unicode</code> external-format detects BOMS for UTF-8
 UTF-16BE and UTF-16LE. If the UTF-8 BOM is detected, the error
 <code>UTF-8-BOM-IN-UNICODE</code> is signaled. If one of the
@@ -391,26 +625,26 @@ other two BOMs is detected, it is skipped and the file is processed in
 the specified endianness. If no BOM is detected, little-endian is
 assumed. Output is always big-endian with BOM.
 </p>
-<p id="59">
+<p id="83">
 The <code>:unicode-be</code> external-format is
 like <code>:unicode</code>, but input is assumed big-endian if
 no BOM is detected.
 </p>
-<p id="60">
+<p id="84">
 The <code>:unicode-le</code> external-format is
 like <code>:unicode</code>, but output is always little-endian
 with BOM.
 </p>
-<p id="61">
+<p id="85">
 The <code>:utf8</code> (and <code>:utf-8</code>)
 external-format detects and skips the UTF-8 BOM if present.
 </p>
-<p id="62">
+<p id="86">
 The <code>:utf-8nb</code> external-format is
 like <code>:utf8</code> but does not detect a BOM. If a BOM is
 present, it is treated as any other character.
 </p>
-<p id="63">
+<p id="87">
 The function <a href="operators/excl/sniff-for-unicode.htm"><b>sniff-for-unicode</b></a> accepts a second (optional)
 argument, <i>return-bom</i>. If the arguemnt is present
 and non-<code>nil</code>, a third value is returned
@@ -422,9 +656,9 @@ is <code>:utf-8</code>, <code>:utf-16le</code>, or
 
 
 
-<hr><h2 id="64"><a name="composed-efs-3">3.1.3 Composed External-Formats</a></h2>
+<hr><h2 id="88"><a name="composed-efs-3">3.1.4 Composed External-Formats</a></h2>
 
-<p id="65">
+<p id="89">
 The most abstract of external-formats in Allegro CL are the "composed"
 or "composing" or "wrapper" external-formats.  (The terms "composed
 external-format" and "composing external-format" are used
@@ -436,7 +670,7 @@ Thus, a composed external-format is created by combining a
 <i>composer</i>, which is a character-to-character convertor with a
 <i>composee</i>, which is a character-to-octets convertor.
 </p>
-<p id="66">
+<p id="90">
 There are two types of composing external-formats in Allegro CL,
 macro-based and encapsulating-stream-based.  The macro-based composing
 external-formats were introduced in Allegro CL 6.0 and are the type of
@@ -445,7 +679,7 @@ composing external-formats created by the <a href="operators/excl/compose-extern
 Allegro CL, can be used to compose either macro-based or
 encapsulating-stream-based composing external-formats.
 </p>
-<p id="67">
+<p id="91">
 Defining a macro-based composing external-format involves defining the
 convertor macros (described later in this document) using calls to the
 composee external-format's convertors.  The macros are then combined
@@ -454,14 +688,14 @@ using <a href="operators/excl/compose-external-formats.htm"><b>compose-external-
 <a href="operators/excl/compose-external-formats.htm"><b>compose-external-formats</b></a>
 macro).
 </p>
-<p id="68">
+<p id="92">
 An encapsulating-stream-based composing external-format works on a
 stream by internally converting that stream into an encapsulating
 stream.  The base stream of the encapsulation uses the macro-based
 composee external-format. The encapsulator stream operates by
 converting the characters received from or sent to the base stream.
 </p>
-<p id="69">
+<p id="93">
 The most widely used composed external-format, named :e-crlf, is an
 encapsulating-stream-based composing external-format, and is used to
 convert the Common Lisp #\newline character from/to the combination
@@ -471,7 +705,7 @@ end each line (regardless of character set encoding) with the ASCII
 octets 13 and 10 which represent 'carriage return' and 'linefeed'
 respectively.
 </p>
-<p id="70">
+<p id="94">
 On the Windows platform, the default external-format used (that which
 is specified by the current locale, see
 <a href="#locales-1">Section 5.0 External formats and locales</a>) is a composition of the
@@ -489,13 +723,13 @@ external-format. For Japanese Windows, where the default code page is
 :932-base external-format to create <code>(:e-crlf
 :932-base)</code> as the Lisp's default external-format.
 </p>
-<p id="71">
+<p id="95">
 The <code>:e-cr</code> external-format converts ascii `carriage
 return' to/from #\Newline. Composing this external-format with a "crlf-base"
 external-format effectively turns this into an external-format for the
 Macintosh line-ending convention. 
 </p>
-<p id="72">
+<p id="96">
 The function <a href="operators/excl/eol-convention.htm"><b>eol-convention</b></a>
 allows determining and setting the end-of-line convention of a
 stream. The default eol-convention on the Macintosh is
@@ -504,12 +738,12 @@ compose the `cr' external-format on Macintosh platforms as is done
 with the `crlf' external-format on Windows platforms. However, this is
 easily done by a programmer using <a href="operators/excl/eol-convention.htm"><b>eol-convention</b></a>.
 </p>
-<p id="73">
+<p id="97">
 At Allegro CL startup time, when the global value of <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a>, is being set, the
 default external-format is set as the <a href="operators/excl/locale-external-format.htm"><b>locale-external-format</b></a> of <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a>. See also
 <a href="#initial-locale-2">Section 5.1 The initial locale when Allegro CL starts up</a>.
 </p>
-<p id="74">
+<p id="98">
 The changes made to Allegro CL 6.0 (and kept in later releases)
 regarding #\newline handling can, in some cases, cause compatibility
 problems for code that was explicitly handling multi-character newline
@@ -517,16 +751,16 @@ terminations. The special composing external-format
 <code>crcrlf</code> is designed to work around these problems.
 See <a href="#newline-1">Appendix B #\newline Discussion</a> below.
 </p>
-<p id="75">
+<p id="99">
 The function <a href="operators/excl/crlf-base-ef.htm"><b>crlf-base-ef</b></a>
 extracts the external format composed with the :e-crlf external-format
 or the :crcrlf external-format when passed such a composed external
 format.
 </p>
 
-<h3 id="76">Windows/Unix Portability Notes</h3>
+<h3 id="100">Windows/Unix Portability Notes</h3>
 
-<p id="77">
+<p id="101">
 Most external-formats supplied by Allegro CL are set up to be used
 portably in either the Unix or Windows environments by acting as
 aliases to appropriate lower-level "base" external-formats. This
@@ -534,7 +768,7 @@ effect can be seen by evaluating <a href="operators/excl/find-external-format.ht
 out the addresses and you may see other differences in the printed
 representations):
 </p>
-<pre id="78">
+<pre id="102">
 ;; On Unix/Linux: 
 
 (find-external-format :jis) 
@@ -547,24 +781,24 @@ representations):
 ;; or
 ==&gt; #&lt;external-format ['(:e-crlf :jis-base)]&gt;
 </pre>
-<p id="79">
+<p id="103">
 The <a href="operators/excl/crlf-base-ef.htm"><b>crlf-base-ef</b></a> function
 can be used to return an external-format which strips out any composed
 crlf processing. Thus, on either Unix or Windows, the following result
 occurs (we have left out some of the information printed):
 </p>
-<pre id="80">
+<pre id="104">
 (crlf-base-ef (find-external-format :jis))
   ==&gt; #&lt;external-format [(crlf-base-ef :jis)]&gt;
 </pre>
-<p id="81">
+<p id="105">
 Note that while one can specify the name of a "base" external-format
 directly to find-external-format, this use is not recommended since
 not only is Windows/Unix portability potentially sacrificed, but also
 external-format autoloading may not properly occur when specifying
 "base" external-formats.  Example:
 </p>
-<pre id="82">
+<pre id="106">
 ;; The following only works if the :jis external-format 
 ;; is already loaded (or autoloaded) into Lisp.
 ;;
@@ -579,15 +813,15 @@ external-format autoloading may not properly occur when specifying
 
 
 
-<hr><h2 id="83"><a name="defining-efs-3">3.1.4 Defining External-Formats</a></h2>
+<hr><h2 id="107"><a name="defining-efs-3">3.1.5 Defining External-Formats</a></h2>
 
-<p id="84">
+<p id="108">
 An external-format object is defined in Lisp. Many external-formats
 are pre-defined for and distributed with Allegro CL. Occasionally, new
 external-formats may be made available after a release, either as
 patches or as supplemental lisp files.
 </p>
-<p id="85">
+<p id="109">
 Users can define their own external-formats using <a href="operators/excl/def-external-format.htm"><b>def-external-format</b></a>. Except for encapsulating
 composing formats, a complete external-format object includes
 translation macros specified by <a href="operators/excl/def-char-to-octets-macro.htm"><b>def-char-to-octets-macro</b></a> and <a href="operators/excl/def-octets-to-char-macro.htm"><b>def-octets-to-char-macro</b></a>.  These macros are
@@ -597,9 +831,9 @@ and stored as auto-loaded fasl files using the function <a href="operators/excl/
 </p>
 
 
-<hr><h2 id="86"><a name="retrieving-efs-3">3.1.5 Retrieving Existing External-Formats</a></h2>
+<hr><h2 id="110"><a name="retrieving-efs-3">3.1.6 Retrieving Existing External-Formats</a></h2>
 
-<p id="87">
+<p id="111">
 The <a href="operators/excl/find-external-format.htm"><b>find-external-format</b></a>
 function takes as its required argument a name and returns the
 external-format whose name, or one of whose nicknames, matches the
@@ -616,13 +850,13 @@ and, if found, loaded. Using autoloading in this way allows Allegro CL
 to have in memory only those external-formats and translation tables
 that are needed.
 </p>
-<p id="88">
+<p id="112">
 The <a href="operators/excl/find-composed-external-format.htm"><b>find-composed-external-format</b></a> function takes
 two external-format arguments, a composer external-format (either
 macro-based or encapsulated-based), and a composee external-format and
 returns their composition.
 </p>
-<p id="89">
+<p id="113">
 If you are preparing an application for delivery to another computer
 (using <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>), and the application
 will likely use arbitrary external formats, it is best if you ensure
@@ -636,9 +870,9 @@ ones loaded during the image build.
 
 
 
-<hr><h2 id="90"><a name="ef-runtime-mode-3">3.1.6 External-Format Runtime Mode</a></h2>
+<hr><h2 id="114"><a name="ef-runtime-mode-3">3.1.7 External-Format Runtime Mode</a></h2>
 
-<p id="91">
+<p id="115">
 An external-format lacking translation macro definitions is said to be
 in <i>runtime-mode</i>. This means that the external-format exists
 (i.e., can be retrieved with <a href="operators/excl/find-external-format.htm"><b>find-external-format</b></a>), and other aspects of
@@ -654,9 +888,9 @@ used by the macros that are not needed when the external-format is in
 runtime mode. The Allegro CL <a href="operators/excl/switch-ef-to-runtime.htm"><b>switch-ef-to-runtime</b></a> function switches an
 external-format to runtime mode.
 </p>
-<p id="92">
+<p id="116">
 When an external-format is autoloaded (see
-<a href="#retrieving-efs-3">Section 3.1.5 Retrieving Existing External-Formats</a> above), an attempt is
+<a href="#retrieving-efs-3">Section 3.1.6 Retrieving Existing External-Formats</a> above), an attempt is
 also made to autoload the pre-filled external-format code
 templates. These pre-filled templates are stored in separate fasl
 files, usually with names that begin with 'efft-'. If the pre-filled
@@ -668,11 +902,11 @@ external-format is automatically switched to runtime mode.
 
 
 
-<hr><h2 id="93"><a name="ef-usage-2">3.2 External-Format Usage</a></h2>
+<hr><h2 id="117"><a name="ef-usage-2">3.2 External-Format Usage</a></h2>
 
-<hr><h2 id="94"><a name="streams-3">3.2.1 Streams</a></h2>
+<hr><h2 id="118"><a name="streams-3">3.2.1 Streams</a></h2>
 
-<p id="95">
+<p id="119">
 The Lisp <a href="../ansicl/dictentr/open.htm"><b>open</b></a>
 function (and, analagously, <a href="../ansicl/dictentr/load.htm"><b>load</b></a> and <a href="../ansicl/dictentr/compile-.htm"><b>compile-file</b></a>) takes an
 <i>external-format</i> keyword argument argument. If
@@ -684,7 +918,7 @@ in <a href="implementation.htm">implementation.htm</a> for a general discussion 
 the implementation of <b>open</b> but note all discussion of the
 <i>external-format</i> argument is here.)
 </p>
-<p id="96">
+<p id="120">
 When an operation requests to read an input character stream's next
 character, the stream's external-format template(s) will request one
 or more octets from the buffered stream device which it then
@@ -693,7 +927,7 @@ characters via streams, the external-format is used to translate the
 Lisp character code in Unicode to the octet(s) specified by the
 external-format translation.
 </p>
-<p id="97">
+<p id="121">
 A stream's external-format can be changed at arbitrary times, using
 <code>(setf (stream-external-format ...) ...)</code>. If it is
 changed to be an external-format for which readers/writers are not
@@ -707,21 +941,21 @@ bare minimum.
 
 
 
-<hr><h2 id="98"><a name="string-ef-arrays-3">3.2.2 String &lt;-&gt; External-Format Lisp Arrays</a></h2>
+<hr><h2 id="122"><a name="string-ef-arrays-3">3.2.2 String &lt;-&gt; External-Format Lisp Arrays</a></h2>
 
-<p id="99">
+<p id="123">
 When defining a new external-format, the <a href="operators/excl/string-to-octets.htm"><b>string-to-octets</b></a> and <a href="operators/excl/octets-to-string.htm"><b>octets-to-string</b></a> functions are a convenient
 way to test the conversion macros. These functions and the functions
 <a href="operators/excl/string-to-native.htm"><b>string-to-native</b></a> and <a href="operators/excl/native-to-string.htm"><b>native-to-string</b></a> take an
 external-format argument to specify how to convert between a Lisp
 string and a Lisp octet array.
 </p>
-<p id="100">
+<p id="124">
 For example, the following translates to the Shift-JIS
 external-format:
 </p>
 
-<pre id="101">
+<pre id="125">
 &gt; (setq mb (string-to-octets (coerce '(#\hiragana_letter_a
                                           #\hiragana_letter_i
                                           #\hiragana_letter_u)
@@ -732,12 +966,12 @@ external-format:
 7
 </pre>
 
-<p id="102">
+<p id="126">
 The following takes the above Shift-JIS result and converts it to
 EUC:
 </p>
 
-<pre id="103">
+<pre id="127">
  &gt; (string-to-octets
     (octets-to-string mb :external-format :shiftjis)
     :external-format :euc)
@@ -745,7 +979,7 @@ EUC:
  #(164 162 164 164 164 166 0)
  7
 </pre>
-<p id="104">
+<p id="128">
 The first value returned by string-to-octets is the octet array in EUC
 format.  The second value is the number of octets generated including
 the null-terminating 0 which is added by string-to-octets (and not by
@@ -756,9 +990,9 @@ the external-format).
 
 
 
-<hr><h2 id="105"><a name="ef-in-8bit-2">3.3 External-Formats in 8-bit Lisp.</a></h2>
+<hr><h2 id="129"><a name="ef-in-8bit-2">3.3 External-Formats in 8-bit Lisp.</a></h2>
 
-<p id="106">
+<p id="130">
 External-Formats are defined to convert octets to/from Lisp Unicode
 characters. Thus, they are only fully supported in the standard
 Allegro CL International (i.e., 16-bit) images, which are those using
@@ -768,13 +1002,13 @@ extension <i>exe</i>.) See <a href="startup.htm#executable-names-1">Allegro CL E
 <a href="startup.htm">startup.htm</a> for information on the various images
 and executables.
 </p>
-<p id="107">
+<p id="131">
 But external-formats are also available, in a limited way, in
 non-international (i.e., 8-bit) Lisps (those using
 the 8-bit executable like <i>mlisp8</i> and
 <i>alisp8</i>). 
 </p>
-<p id="108">
+<p id="132">
 Their usage is limited because it is an error in an 8-bit Lisp to
 create a Lisp character with a code exceeding 255. For example, one
 cannot use an external-format to create a Unicode Japanese Lisp
@@ -788,7 +1022,7 @@ does not exceed 255. Furthermore, the <code>:crlf</code> composing
 external-format can also be used (and is, in fact, used on Windows
 platforms) because it only deals with ASCII character codes.
 </p>
-<p id="109">
+<p id="133">
 As described in <a href="#unicode-and-fat-3">the earlier
 section on Unicode</a> in this document, a non-Latin1
 8-bit character is represented in an 8-bit Lisp with its character
@@ -805,9 +1039,9 @@ other than the default, latin1, external-format.
 
 
 
-<hr><h2 id="110"><a name="older-ef-compatibility-2">3.4 Older Allegro CL External-Format Compatibility</a></h2>
+<hr><h2 id="134"><a name="older-ef-compatibility-2">3.4 Older Allegro CL External-Format Compatibility</a></h2>
 
-<p id="111">
+<p id="135">
 The variable <a href="variables/excl/s_default-external-format_s.htm"><code>*default-external-format*</code></a> is no longer supported.
 Users should either to bind a locale to
 <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> (see
@@ -823,23 +1057,23 @@ stored in <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a>.
 
 
 
-<hr><hr><h2 id="112"><a name="foreign-functions-1">4.0 Foreign-Functions</a></h2>
+<hr><hr><h2 id="136"><a name="foreign-functions-1">4.0 Foreign-Functions</a></h2>
 
 
-<p id="113">
+<p id="137">
 In C, the 'char' type is equivalent to an 8-bit byte.  A C string is
 represented as an array of 8-bit bytes terminated by the null (or 0)
 byte. Therefore, a C routine expecting a 'char *' argument may expect
 a null-terminated 8-bit character array (i.e., string) in this format.
 </p>
-<p id="114">
+<p id="138">
 The Allegro CL Foreign-Function Interface allows users/programmers
 to pass Lisp strings to C routines expecting 'char *' arguments.
 Since Allegro CL internally null-terminates lisp string objects,
 passing a lisp string to a foreign function simply means internally
 passing the address to the first character of the lisp string's array.
 </p>
-<p id="115">
+<p id="139">
 The previous Allegro CL string-passing mechanism described above
 breaks down in the International version since the internal character
 codes of the lisp string's array are in Unicode, and non-ASCII
@@ -854,26 +1088,26 @@ function, the foreign function will most likely treat the string
 argument as truncated since the first upper (all-zero) byte will be
 regarded as the string terminator.
 </p>
-<p id="116">
+<p id="140">
 One solution offered to this
 problem was to provide a macro, called <a href="operators/excl/with-native-string.htm"><b>with-native-string</b></a>, to be used around all
 foreign-function calls that pass strings. This macro is used to
 convert string arguments to native format using a dynamic-extent array
 of 8-bit bytes.
 </p>
-<p id="117">
+<p id="141">
 Even with the <a href="operators/excl/with-native-string.htm"><b>with-native-string</b></a> solution, users porting
 foreign function code from earlier releases of Allegro CL to
 International Allegro CL would have to manually hunt down every
 string-passing foreign function call in order to wrap those calls with
 <a href="operators/excl/with-native-string.htm"><b>with-native-string</b></a>.
 </p>
-<p id="118">
+<p id="142">
 In order to save users from this burden, Allegro CL has a
 keyword argument :strings-convert to <a href="operators/ff/def-foreign-call.htm"><b>def-foreign-call</b></a>. The default
 value of this argument is true.
 </p>
-<p id="119">
+<p id="143">
 <a href="operators/ff/def-foreign-call.htm"><b>def-foreign-call</b></a> creates a
 low-level function that actually calls out to the foreign
 code. When :strings-convert is true, arguments declared directly
@@ -886,19 +1120,19 @@ native-string format using a dynamic-extent array, and this new array
 is passed in place of the original string argument to the
 foreign function call.
 </p>
-<p id="120">
+<p id="144">
 Since this runtime search for string arguments only happens for those
 arguments declared directly or indirectly as <code>(*
 :char)</code>, no new code is introduced for foreign functions not
 expecting strings. Consequently, no checking is introduced if the
 arguments are specified as a <code>&rest</code> list.
 </p>
-<p id="121">
+<p id="145">
 Suppose we have a C function which takes two input string arguments
 and one output string argument defined as follows:
 </p>
 
-<pre id="122">
+<pre id="146">
  /*
   * concatenates first two arguments,
   * returns result in third output argument.
@@ -921,12 +1155,12 @@ and one output string argument defined as follows:
  }
 </pre>
 
-<p id="123">
+<p id="147">
 To call this function from Allegro CL using the foreign function
 interface, one can define the Lisp foreign function as follows:
 </p>
 
-<pre id="124">
+<pre id="148">
 (ff:def-foreign-call myconcat ((st1 (* :char))
                                (st2 (* :char))
                                (result (* :char) 
@@ -934,13 +1168,13 @@ interface, one can define the Lisp foreign function as follows:
       :returning :int)
 </pre>
 
-<p id="125">
+<p id="149">
 Evaluating the above form causes the following warnings (of condition
 type <code>ff:strings-convert-def-warning</code>) to be
 signaled:
 </p>
 
-<pre id="126">
+<pre id="150">
  Warning: A runtime with-native-string call is being generated for argument
 	  `st1' to the foreign-function `myconcat'.  The with-native-string
 	  macro can be used for explicit string conversions around the foreign
@@ -959,13 +1193,13 @@ signaled:
  	  def-foreign-call.
 </pre>
 
-<p id="127">
+<p id="151">
 Disregarding the warnings for the moment, and continuing on to use the
 just-defined foreign function, note that we can call it with lisp string
 arguments:
 </p>
 
-<pre id="128">
+<pre id="152">
 user(22): (let ((x (make-array 500 :element-type '(unsigned-byte 8))))
              (myconcat "abc" "def" x)
              (octets-to-string x))
@@ -974,12 +1208,12 @@ user(22): (let ((x (make-array 500 :element-type '(unsigned-byte 8))))
 6
 </pre>
 
-<p id="129">
+<p id="153">
 The returned value, "abcdef", which is the concatenation of the first
 two arguments (performed by the C foreign function) is correctly
 returned.
 </p>
-<p id="130">
+<p id="154">
 To turn the example above into one which (a) doesn't generate the
 warnings, and (b) generates faster runtime code since string
 conversion checking will be suppressed, one can set the
@@ -987,7 +1221,7 @@ conversion checking will be suppressed, one can set the
 follows:
 </p>
 
-<pre id="131">
+<pre id="155">
 (ff:def-foreign-call myconcat ((st1 (* :char))
                                (st2 (* :char))
                                (result (* :void)))
@@ -995,14 +1229,14 @@ follows:
      :returning :int)
 </pre>
 
-<p id="132">
+<p id="156">
 By specifying :strings-convert to nil, the foreign-function interface
 will not automatically convert string arguments. Thus, to call the
 foreign-function defined this way, one needs to pass converted string
 arguments as follows:
 </p>
 
-<pre id="133">
+<pre id="157">
 user(23): (let ((x (make-array 500 :element-type '(unsigned-byte 8))))
              (with-native-string (st1 "abc")
                (with-native-string (st2 "xyz")
@@ -1013,12 +1247,12 @@ user(23): (let ((x (make-array 500 :element-type '(unsigned-byte 8))))
 6
 </pre>
 
-<p id="134">
+<p id="158">
 It is instructive to note what happens when :strings-convert is nil,
 yet the string arguments are not converted:
 </p>
 
-<pre id="135">
+<pre id="159">
 user(24): (let ((x (make-array 500 :element-type '(unsigned-byte 8))))
              (myconcat "abc" "def" x)
              (octets-to-string x))
@@ -1027,7 +1261,7 @@ user(24): (let ((x (make-array 500 :element-type '(unsigned-byte 8))))
 2
 </pre>
 
-<p id="136">
+<p id="160">
 The result is the first character of the first string concatenated
 with the first character of the second string. The reason this
 happens is that the C foreign function sees the unconverted arguments
@@ -1035,13 +1269,13 @@ as Unicode strings with each element being two octets wide. To the C
 function, each argument appears as the first octet being an ASCII
 character, and the second octet being a string NULL terminator.
 </p>
-<p id="137">
+<p id="161">
 Note that on big-endian platforms, the result of the above form
 is "" (i.e., the empty string). That's because the Unicode Ascii values
 have zero in their upper-bytes, and any array of Unicode Ascii values
 appear to C routines as being zero-length null-terminated strings.
 </p>
-<p id="138">
+<p id="162">
 Note that neither setting of the <i>strings-convert</i>
 keyword argument affects foreign function return results or "output"
 variables. Users with foreign function code that expects to "fill in"
@@ -1050,33 +1284,33 @@ arrays and do conversions, e.g., with <a href="operators/excl/octets-to-string.h
 for the example's third argument.
 </p>
 
-<hr><hr><h2 id="139"><a name="locales-1">5.0 External formats and locales</a></h2>
+<hr><hr><h2 id="163"><a name="locales-1">5.0 External formats and locales</a></h2>
 
 
-<p id="140">
+<p id="164">
 As described in the section <a href="#initial-locale-2">Section 5.1 The initial locale when Allegro CL starts up</a>,
 the global variable <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> is bound to a locale object. The
 value of <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> is
 treated as the current locale. 
 </p>
-<p id="141">
+<p id="165">
 The Windows and UNIX Operating Systems define a locale environment
 for each running program. The OS definition of locale describes
 date/time formats, currency printing formats, and sort ordering
 information in addition to character type information. 
 </p>
-<p id="142">
+<p id="166">
 <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> is used to determine the default
 external-format (see example just below). The
 external-format used in the default Lisp locale object is derived from
 the encoding. 
 </p>
-<p id="143">
+<p id="167">
 Here is an example showing how changing the locale changes the
 external-format.:
 </p>
 
-<pre id="144">
+<pre id="168">
 cl-user(47): (dolist (x (list (find-locale &quot;C&quot;)
 			      (find-locale &quot;japan.EUC&quot;)))
 	       (let ((*locale* x))
@@ -1090,55 +1324,55 @@ default external-format=#&lt;external-format :latin1-base @ #x[...]&gt;
 default external-format=#&lt;external-format :euc-base @ #x[...]&gt;
 </pre>
 
-<p id="145">
+<p id="169">
 See <a href="#initial-locale-2">Section 5.1 The initial locale when Allegro CL starts up</a> for information on
 how the initial locale (that is, the initial value of <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a>) is set.
 </p>
 
-<p id="146">
+<p id="170">
 The
 <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> variable is
 analogous to the Common Lisp <a href="../ansicl/dictentr/package.htm"><code>*package*</code></a> variable in that rebinding the
 variable can affect basic Lisp functionality such as Input/Output.
 </p>
-<p id="147">
+<p id="171">
 The standardized convention for locale names is
 <code>Name[_Territory][.Charset]</code>. 
 </p>
 
-<p id="148">
+<p id="172">
 Suppose the following Lisp session were started in a
 Japanese locale using the EUC encoding.  One can override the default
 external-format by dynamically changing the locale as follows:
 </p>
 
-<p id="149"><img src="pictures/locale.jpg"></p>
+<p id="173"><img src="pictures/locale.jpg"></p>
 
 
 
 
-<hr><h2 id="150"><a name="initial-locale-2">5.1 The initial locale when Allegro CL starts up</a></h2>
+<hr><h2 id="174"><a name="initial-locale-2">5.1 The initial locale when Allegro CL starts up</a></h2>
 
-<p id="151">
+<p id="175">
 The initial locale (that is, the initial value of <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a>) can be determined
 in various ways. Note that the variable is first set to a locale
 that (presumably) always exists. It is only reset if valid locales
 are determined from the additional steps.
 </p>
 <ul>
-<li id="152">
+<li id="176">
 Initially, <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> is
 set to <code>(find-locale "C")</code> (see <a href="operators/excl/find-locale.htm"><b>find-locale</b></a>). This becomes the default value
 for <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> if the
 following tests fail.
 </li>
-<li id="153">
+<li id="177">
 If the environment variable <code>ACL_LOCALE</code> is set, then
 Allegro CL attempts to look up, using <a href="operators/excl/find-locale.htm"><b>find-locale</b></a>, the Lisp locale object named by
 <code>ACL_LOCALE</code>. If a corresponding lisp locale object
 is found, then <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a> is set to this object.
 </li>
-<li id="154">
+<li id="178">
 If the environment variable <code>ACL_LOCALE</code> is not set,
 then Allegro CL attempts to look up, using <a href="operators/excl/find-locale.htm"><b>find-locale</b></a>, the Lisp locale object named by a
 call to <code>setlocale(LC_CTYPE)</code>. (This is the portable
@@ -1153,7 +1387,7 @@ set. If <code>ACL_LOCALE</code> is set but its value is bogus
 all, by the next step.
 </li>
 
-<li id="155">
+<li id="179">
 If the <code>-locale</code> command-line argument is specified
 (see <a href="startup.htm#command-line-args-1">Command line arguments</a> 
 in <a href="startup.htm">startup.htm</a>),
@@ -1170,9 +1404,9 @@ up</a> in <a href="startup.htm">startup.htm</a> for details.
 
 </ul>
 
-<h3 id="156">Some examples from UNIX</h3>
+<h3 id="180">Some examples from UNIX</h3>
 
-<pre id="157">
+<pre id="181">
 % env ACL_LOCALE=japan.EUC mlisp
 cl-user(1): *locale*
 #&lt;locale &quot;japan&quot; [:euc-base] @ #x404a02da&gt;
@@ -1187,7 +1421,7 @@ cl-user(1): *locale*
 cl-user(2): 
 </pre>
 
-<p id="158">
+<p id="182">
 On UNIX machines, you can determine the available locales with the
 <b>locale -a</b> shell command. A process' locale is often
 specified by setting the <code>LANG</code> environment variable,
@@ -1197,9 +1431,9 @@ named <code>LC_CTYPE</code>.
 
 
 
-<hr><h2 id="159"><a name="locales-in-apps-2">5.2 Locales in applications</a></h2>
+<hr><h2 id="183"><a name="locales-in-apps-2">5.2 Locales in applications</a></h2>
 
-<p id="160">
+<p id="184">
 If you are preparing an application for delivery to another computer
 (using <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>), and the locale on the
 computer being delivered to is different from the locale on the
@@ -1211,7 +1445,7 @@ specify the <i>runtime-bundle</i> keyword argument (to
 application from which the locale-changing code can be loaded if
 needed).
 </p>
-<p id="161">
+<p id="185">
 If you know
 the specific locale on the target computer, you can call <a href="operators/excl/find-locale.htm"><b>find-locale</b></a> with that locale name (a
 string) as the argument during the image build (put such a form in a
@@ -1224,9 +1458,9 @@ want to be ready for any locale, specify
 
 
 
-<hr><hr><h2 id="162"><a name="localization-1">6.0 Localization support in Allegro CL</a></h2>
+<hr><hr><h2 id="186"><a name="localization-1">6.0 Localization support in Allegro CL</a></h2>
 
-<p id="163">
+<p id="187">
 <i>Localization</i> is the process of modifying a program or
 application so that attributes specific to the location where the
 program or application is being run are used. Such attributes include
@@ -1234,15 +1468,15 @@ such things as how dates are represented (day/month/year vs
 month/day/year) and the glyph for currency (e.g. $ meaning United
 States dollars) and whether the symbol appears before or after the amount.
 </p>
-<p id="164">
+<p id="188">
 This section and its subsections describe localization support in
 Allegro CL.
 </p>
 
 
-<hr><h2 id="165"><a name="locale-intro-2">6.1 Introduction to locales</a></h2>
+<hr><h2 id="189"><a name="locale-intro-2">6.1 Introduction to locales</a></h2>
 
-<p id="166">
+<p id="190">
 A locale is a Lisp object which contains linguistic, cultural, and
 governmental rules and conventions. The Lisp locale concept is based
 on the C-based POSIX locale specification. At runtime, Lisp locales
@@ -1251,7 +1485,7 @@ startup time, the initial default Lisp locale (stored in the variable
 <a href="variables/excl/s_locale_s.htm"><code>*locale*</code></a>) is
 set using the process' current POSIX locale setting.
 </p>
-<p id="167">
+<p id="191">
 A POSIX locale has attributes from several categories.  The following
 list shows the major categories, including a brief overview
 description of how they are used by Allegro CL. Further details follow
@@ -1259,19 +1493,19 @@ the list.
 </p>
 <ul>
 
-<li id="168">
+<li id="192">
 <code>LC_MONETARY</code>: Used to specify currency display
 information.  Allegro CL supports this by defining a function, <a href="operators/excl/locale-print-monetary.htm"><b>locale-print-monetary</b></a>.  A
 related function, <a href="operators/excl/locale-format-monetary.htm"><b>locale-format-monetary</b></a>, can be used
 with Lisp format's ~/ directive. The principal argument to these
 functions (and the directive) is a number. See <a href="operators/excl/locale-format-monetary.htm"><b>locale-format-monetary</b></a> description for more
 information.
-<p id="169">
+<p id="193">
 There are no plans at this time to support parsing monetary
 information.
 </p>
 </li>
-<li id="170">
+<li id="194">
 <code>LC_NUMERIC</code>: Used to specify locale-dependent
 numeric display information (i.e., thousands separator, grouping, and
 decimal point indicator). Allegro CL supports this by defining a
@@ -1279,14 +1513,14 @@ function, <a href="operators/excl/locale-print-number.htm"><b>locale-print-numbe
 function, <a href="operators/excl/locale-format-number.htm"><b>locale-format-number</b></a>, can be used
 with Lisp format's ~/ directive. The principal argument to these
 functions (and the directive) is a number. 
-<p id="171">
+<p id="195">
 The Allegro CL Lisp reader will not be modified to parse numbers in
 locale numeric display format, but a new function, <a href="operators/excl/locale-parse-number.htm"><b>locale-parse-number</b></a>, is added to
 create a Lisp number from a string representing a number in the locale
 numeric display format.
 </p>
 </li>
-<li id="172">
+<li id="196">
 <code>LC_TIME</code>: Used to specify locale-specific date/time
 display information. Allegro CL supports this by defining the function
 <a href="operators/excl/locale-print-time.htm"><b>locale-print-time</b></a>. A related
@@ -1295,34 +1529,34 @@ with Lisp format's ~/ directive. The principal argument to these
 functions (and the directive) is a universal time (as returned by
 <a href="../ansicl/dictentr/get-univ.htm"><b>get-universal-time</b></a>).
 </li>
-<li id="173">
+<li id="197">
 <code>LC_COLLATE</code>: Used to specify character collation
 sequences.  At this time, Allegro CL does not support this category.
 Allegro CL collation uses Unicode Collation Element tables which are
 specified independently from locales.  (See <a href="#collation-1">Section 7.0 String collation with international characters</a>
 for more information).
 </li>
-<li id="174">
+<li id="198">
 <code>LC_CTYPE</code>: Used to specify charset information for
 non-ASCII characters. This category is not used in Allegro CL where
 all characters are represented in Unicode.
 </li>
-<li id="175">
+<li id="199">
 <code>LC_MESSAGES</code>: Used to specify translation texts.  At
 this time, Allegro CL does not have plans to support this category.
 </li>
 </ul>
 
-<h3 id="176">Other Categories</h3>
+<h3 id="200">Other Categories</h3>
 
-<p id="177">
+<p id="201">
 A locale may include other categories (e.g., for specifying postal
 address information, salutations, etc.).  Allegro CL does not provide
 any particular support for such other categories except to retain
 their information in the locale object and make it available to user
 programs via <a href="operators/excl/locale-attribute.htm"><b>locale-attribute</b></a>.
 </p>
-<p id="178">
+<p id="202">
 The names and meanings of locale attributes are not given in this
 document. They are available from Operating System Documentation. On
 LINUX, <code>man 5 locale</code>. On other UNIX, <code>man 4
@@ -1333,9 +1567,9 @@ Run-Time Library Reference in the MSDN documentation has it.
 
 
 
-<hr><h2 id="179"><a name="locale-definition-2">6.2 Locale Definition</a></h2>
+<hr><h2 id="203"><a name="locale-definition-2">6.2 Locale Definition</a></h2>
 
-<p id="180">
+<p id="204">
 In Allegro CL, a locale is effectively a set of attribute/value pairs.
 These pairs are sectioned into categories as defined by POSIX. Each
 attribute name is unique in the locale. In other words, within a
@@ -1345,7 +1579,7 @@ specified by POSIX). In addition to attribute/value pairs, a Lisp
 locale also holds slots containing (1) the locale's name, and (2) the
 locale's default external-format.
 </p>
-<p id="181">
+<p id="205">
 Lisp locales are defined in Lisp using <a href="operators/excl/load-localedef.htm"><b>load-localedef</b></a>.  The <a href="operators/excl/load-localedef.htm"><b>load-localedef</b></a> function
 takes two arguments: A pathname and a localename. The default for the
 localename is the pathname's name field. The pathname names a
@@ -1353,14 +1587,14 @@ localedef source file. Several localedef source files are included
 with Allegro CL. These definitions come from the IBM Universal Locales
 project.  They can be found in the directory specified by <a href="variables/excl/s_locales-dir_s.htm"><code>*locales-dir*</code></a>.
 </p>
-<p id="182">
+<p id="206">
 We do not document the format of a localedef file, although platform
 operating system documentation may be available.  On Linux platforms,
 one can look at the man entries for locale(5) and localedef(1).  The
 localedef file format is in ASCII, and is mostly self-descriptive in
 case a user wishes to make local customizations.
 </p>
-<p id="183">
+<p id="207">
 The localedef file does not include external-format information.
 After <a href="operators/excl/load-localedef.htm"><b>load-localedef</b></a> parses the input
 file and creates the appropriate attribute/value pairings, the
@@ -1369,7 +1603,7 @@ specified in the locale name (using the &quot;.[charset]&quot; specification).
 If the name does not specify the external-format, then Allegro CL uses
 a [language -&gt; external-format] table which is kept in Lisp.
 </p>
-<p id="184">
+<p id="208">
 Locales are found with <a href="operators/excl/find-locale.htm"><b>find-locale</b></a>. The function <a href="operators/excl/find-locale.htm"><b>find-locale</b></a> takes a single string-designator
 argument, <i>name</i>, and returns the locale specified
 by <i>name</i>. Please see the documentation page of
@@ -1377,15 +1611,15 @@ by <i>name</i>. Please see the documentation page of
 about how locales are returned and/or created based on its argument.
 </p>
 
-<p id="185">
+<p id="209">
 A locale is a class. Accessors to slots include <a href="operators/excl/locale-name.htm"><b>locale-name</b></a> and <a href="operators/excl/locale-external-format.htm"><b>locale-external-format</b></a>.
 </p>
-<p id="186">
+<p id="210">
 The function
 <a href="operators/excl/locale-attribute.htm"><b>locale-attribute</b></a>
 can be used to access an attribute of a locale.
 </p>
-<p id="187">
+<p id="211">
 The function <a href="operators/excl/merge-locale-categories.htm"><b>merge-locale-categories</b></a> enables users to
 create a locale object which combines all of a specified locale with
 categories from other existing
@@ -1395,9 +1629,9 @@ is never returned by <a href="operators/excl/find-locale.htm"><b>find-locale</b>
 
 
 
-<hr><h2 id="188"><a name="locale-attributes-2">6.3 Locale Attribute Accessors</a></h2>
+<hr><h2 id="212"><a name="locale-attributes-2">6.3 Locale Attribute Accessors</a></h2>
 
-<p id="189">
+<p id="213">
 A locale object holds the attributes conceptually in the same way as
 specified in the localedef file.  As specified above, the
 locale-attribute function can be used to obtain the value of any
@@ -1407,24 +1641,24 @@ interface to the attributes used in the localedef files.  This
 alternate interface provides the following two features:
 </p>
 <ul>
-<li id="190">
+<li id="214">
 For attribute names, the dash character is used instead of the
 underscore character. For example,
-<pre id="191">
+<pre id="215">
  (locale-int-curr-symbol locale)
  == (locale-attribute locale "int_curr_symbol" :category "LC_MONETARY")
 </pre>
 </li>
-<li id="192">
+<li id="216">
 Accessors for known boolean attributes, which are specified in the
 localedef file using 0 or 1, return Lisp true and false.  For example,
-<pre id="193">
+<pre id="217">
  (locale-p-cs-precedes locale)
  == (eql 1 (locale-attribute locale "p_cs_precedes" :category "LC_MONETARY"))
 </pre>
 </li>
 </ul>
-<p id="194">
+<p id="218">
 Note that attributes with multiple-values, such as for the list of
 abbreviated months, are specified in the localedef file using the
 semi-colon (`;') delimiter. When parsed by <a href="operators/excl/load-localedef.htm"><b>load-localedef</b></a>, these values create
@@ -1432,7 +1666,7 @@ Lisp lists.  Also, string characters are represented using Unicode.
 For example, the `abmon' (abbreviated month names) category may be
 specified in a localedef as follows ('/' is the escape character):
 </p>
-<pre id="195">
+<pre id="219">
  abmon       &quot;&lt;U004A&gt;&lt;U0061&gt;&lt;U006E&gt;&quot;;&quot;&lt;U0046&gt;&lt;U0065&gt;&lt;U0062&gt;&quot;;/
 	     &quot;&lt;U004D&gt;&lt;U0061&gt;&lt;U0072&gt;&quot;;&quot;&lt;U0041&gt;&lt;U0070&gt;&lt;U0072&gt;&quot;;/
 	     &quot;&lt;U004D&gt;&lt;U0061&gt;&lt;U0079&gt;&quot;;&quot;&lt;U004A&gt;&lt;U0075&gt;&lt;U006E&gt;&quot;;/
@@ -1440,115 +1674,115 @@ specified in a localedef as follows ('/' is the escape character):
 	     &quot;&lt;U0053&gt;&lt;U0065&gt;&lt;U0070&gt;&quot;;&quot;&lt;U004F&gt;&lt;U0063&gt;&lt;U0074&gt;&quot;;/
 	     &quot;&lt;U004E&gt;&lt;U006F&gt;&lt;U0076&gt;&quot;;&quot;&lt;U0044&gt;&lt;U0065&gt;&lt;U0063&gt;&quot;
 </pre>
-<p id="196">
+<p id="220">
 The lisp value for the abmon slot in a corresponding Lisp locale would
 be as follows:
 </p>
-<pre id="197">
+<pre id="221">
  (locale-attribute locale &quot;abmon&quot; :category &quot;LC_TIME&quot;)
 
 ==&gt; 
 (&quot;Jan&quot; &quot;Feb&quot; &quot;Mar&quot; &quot;Apr&quot; &quot;May&quot; &quot;Jun&quot; &quot;Jul&quot; &quot;Aug&quot; &quot;Sep&quot; &quot;Oct&quot; &quot;Nov&quot; &quot;Dec&quot;)
 </pre>
-<p id="198">
+<p id="222">
 Note that, in particular, POSIX locales define LC_NUMERIC `grouping'
 and LC_MONETARY `mon_grouping' as strings.  In Lisp, these categories
 are defined as lists, or, if the category has a single value, an
 integer.  A -1 value in these grouping attributes corresponds to the
 POSIX CHAR_MAX specification.
 </p>
-<p id="199">
+<p id="223">
 These are pre-defined user-visible accessor definitions:
 </p>
 <ul>
-<li id="200">
+<li id="224">
 <a href="operators/excl/locale-int-curr-symbol.htm"><b>locale-int-curr-symbol</b></a>
 </li>
-<li id="201">
+<li id="225">
 <a href="operators/excl/locale-currency-symbol.htm"><b>locale-currency-symbol</b></a>
 </li>
-<li id="202">
+<li id="226">
 <a href="operators/excl/locale-mon-decimal-point.htm"><b>locale-mon-decimal-point</b></a>
 </li>
-<li id="203">
+<li id="227">
 <a href="operators/excl/locale-mon-thousands-sep.htm"><b>locale-mon-thousands-sep</b></a>
 </li>
-<li id="204">
+<li id="228">
 <a href="operators/excl/locale-mon-grouping.htm"><b>locale-mon-grouping</b></a>
 </li>
-<li id="205">
+<li id="229">
 <a href="operators/excl/locale-positive-sign.htm"><b>locale-positive-sign</b></a>
 </li>
-<li id="206">
+<li id="230">
 <a href="operators/excl/locale-negative-sign.htm"><b>locale-negative-sign</b></a>
 </li>
-<li id="207">
+<li id="231">
 <a href="operators/excl/locale-int-frac-digits.htm"><b>locale-int-frac-digits</b></a>
 </li>
-<li id="208">
+<li id="232">
 <a href="operators/excl/locale-frac-digits.htm"><b>locale-frac-digits</b></a>
 </li>
-<li id="209">
+<li id="233">
 <a href="operators/excl/locale-p-cs-precedes.htm"><b>locale-p-cs-precedes</b></a>
 </li>
-<li id="210">
+<li id="234">
 <a href="operators/excl/locale-p-sep-by-space.htm"><b>locale-p-sep-by-space</b></a>
 </li>
-<li id="211">
+<li id="235">
 <a href="operators/excl/locale-n-cs-precedes.htm"><b>locale-n-cs-precedes</b></a>
 </li>
-<li id="212">
+<li id="236">
 <a href="operators/excl/locale-n-sep-by-space.htm"><b>locale-n-sep-by-space</b></a>
 </li>
-<li id="213">
+<li id="237">
 <a href="operators/excl/locale-p-sign-posn.htm"><b>locale-p-sign-posn</b></a>
 </li>
-<li id="214">
+<li id="238">
 <a href="operators/excl/locale-n-sign-posn.htm"><b>locale-n-sign-posn</b></a>
 </li>
-<li id="215">
+<li id="239">
 <a href="operators/excl/locale-am-pm.htm"><b>locale-am-pm</b></a>
 </li>
-<li id="216">
+<li id="240">
 <a href="operators/excl/locale-mon.htm"><b>locale-mon</b></a>
 </li>
-<li id="217">
+<li id="241">
 <a href="operators/excl/locale-abmon.htm"><b>locale-abmon</b></a>
 </li>
-<li id="218">
+<li id="242">
 <a href="operators/excl/locale-day.htm"><b>locale-day</b></a>
 </li>
-<li id="219">
+<li id="243">
 <a href="operators/excl/locale-abday.htm"><b>locale-abday</b></a>
 </li>
-<li id="220">
+<li id="244">
 <a href="operators/excl/locale-t-fmt-ampm.htm"><b>locale-t-fmt-ampm</b></a>
 </li>
-<li id="221">
+<li id="245">
 <a href="operators/excl/locale-t-fmt.htm"><b>locale-t-fmt</b></a>
 </li>
-<li id="222">
+<li id="246">
 <a href="operators/excl/locale-d-fmt.htm"><b>locale-d-fmt</b></a>
 </li>
-<li id="223">
+<li id="247">
 <a href="operators/excl/locale-d-t-fmt.htm"><b>locale-d-t-fmt</b></a>
 </li>
-<li id="224">
+<li id="248">
 <a href="operators/excl/locale-grouping.htm"><b>locale-grouping</b></a>
 </li>
-<li id="225">
+<li id="249">
 <a href="operators/excl/locale-thousands-sep.htm"><b>locale-thousands-sep</b></a>
 </li>
-<li id="226">
+<li id="250">
 <a href="operators/excl/locale-decimal-point.htm"><b>locale-decimal-point</b></a>
 </li>
 </ul>
 
 
 
-<hr><hr><h2 id="227"><a name="collation-1">7.0 String collation with international characters</a></h2>
+<hr><hr><h2 id="251"><a name="collation-1">7.0 String collation with international characters</a></h2>
 
-<p id="228">
+<p id="252">
 Allegro CL provides string comparison functions such as
 <b>string&lt;</b> and <b>string&gt;</b>. These functions operate by
 doing binary comparisons of their argument arrays using the <a href="../ansicl/dictentr/char-co0.htm"><b>char-code</b></a> values of the
@@ -1556,7 +1790,7 @@ characters in the arrays. The effect of these functions is to compute
 the lexicographic order of their argument strings based on the array
 element char-code (Unicode) values.
 </p>
-<p id="229">
+<p id="253">
 For English-only characters, Unicode order is alphabetic except that
 upper case characters have lower code value than lower case
 characters. Thus, one problem with simple <b>string&lt;</b>
@@ -1565,24 +1799,24 @@ may concern some users, is that any string beginning with an uppercase
 letter will always be ordered before any string beginning with a
 lowercase letter.
 </p>
-<p id="230">
+<p id="254">
 Another problem is that with accented, or unicode-combined characters,
 simple <b>string&lt;</b> ordering causes all such characters to be
 ordered after all Ascii characters.
 </p>
-<p id="231">
+<p id="255">
 Further problems include that different cultures order the same
 letters differently; that in some languages characters may be combined
 to form a single letter (e.g., "ch" in Spanish); and other characters
 may be equivalent to two or more letters (e.g., the "ae" ligature).
 </p>
-<p id="232">
+<p id="256">
 To address these problems, Allegro CL supports tools which parse and
 utilize Unicode Collation Element Tables for string collation.  The
 Unicode Organization has defined a default ordering.  Allegro CL uses
 this ordering by default.
 </p>
-<p id="233">
+<p id="257">
 The collation ordering can be customized by creating and loading
 alternate unicode collation element tables into Lisp.  (The current
 Default Unicode Collation Element Table is provided in the following
@@ -1596,7 +1830,7 @@ the one already present for default Unicode collation behavior). The
 <a href="operators/excl/parse-ucet.htm"><b>parse-ucet</b></a> function creates
 a Lisp ucet (Unicode Collation Element Table) object.
 </p>
-<p id="234">
+<p id="258">
 The function <a href="operators/excl/string-sort-key.htm"><b>string-sort-key</b></a>
 takes as arguments a string and a ucet object (as well as additional
 arguments). The function returns a string. The main property of
@@ -1606,13 +1840,13 @@ or <b>string&gt;</b>. In other words, if string A is to be collated
 before string B relative to the table which is the value of
 <code>ucet</code>, then
 </p>
-<pre id="235">
+<pre id="259">
 (string&lt; (string-sort-key A :ucet ucet) (string-sort-key B :ucet ucet))
 </pre>
-<p id="236">
+<p id="260">
 is true.
 </p>
-<p id="237">
+<p id="261">
 If the <code>:ucet</code> argument is not specified,
 <code>(string-sort-key A)</code> returns a sort key relative to
 the Default Unicode Collation Element Table, already present in
@@ -1623,11 +1857,11 @@ collation.
 </p>
 
 
-<hr><hr><h2 id="238"><a name="iacl-compatibility-1">8.0 Earlier International Allegro CL Compatibility</a></h2>
+<hr><hr><h2 id="262"><a name="iacl-compatibility-1">8.0 Earlier International Allegro CL Compatibility</a></h2>
 
-<hr><h2 id="239"><a name="euc-module-2">8.1 EUC Module</a></h2>
+<hr><h2 id="263"><a name="euc-module-2">8.1 EUC Module</a></h2>
 
-<p id="240">
+<p id="264">
 In previous releases of International Allegro CL for UNIX, EUC was the
 only supported external-format, and a special internal format known as
 'process-code' was used. Some user-visible euc-specific functionality
@@ -1638,53 +1872,53 @@ special module no longer built into Allegro CL. This way, backward
 compatibility can be achieved by loading this module using
 <code>(require :euc)</code>.
 </p>
-<p id="241">
+<p id="265">
 The following symbols name type specifiers which correspond to their
 named EUC codesets in the deprecated functionality 
 for the EUC external-format. These remain defined for backward 
 compatibility. 
 </p>
 <ul>
-<li id="242">
+<li id="266">
 <code>ascii</code>
 </li>
-<li id="243">
+<li id="267">
 <code>codeset-0</code>
 </li>
-<li id="244">
+<li id="268">
 <code>codeset-1</code>
 </li>
-<li id="245">
+<li id="269">
 <code>codeset-2</code>
 </li>
-<li id="246">
+<li id="270">
 <code>codeset-3</code>
 </li>
-<li id="247">
+<li id="271">
 <code>gaiji</code>
 </li>
-<li id="248">
+<li id="272">
 <code>half-size-kana</code>
 </li>
-<li id="249">
+<li id="273">
 <code>half-size-katakana</code>
 </li>
-<li id="250">
+<li id="274">
 <code>half-sized-kana</code>
 </li>
-<li id="251">
+<li id="275">
 <code>half-sized-katakana</code>
 </li>
-<li id="252">
+<li id="276">
 <code>kanji</code>
 </li>
 </ul>
 
 
 
-<hr><h2 id="253"><a name="mode-removal-2">8.2 :mode Option Removal</a></h2>
+<hr><h2 id="277"><a name="mode-removal-2">8.2 :mode Option Removal</a></h2>
 
-<p id="254">
+<p id="278">
 Because of incompatibilities between the UNIX and Windows Operating
 Systems with respect to textual line termination, a special keyword
 argument, <code>:mode</code> was added to the <b>cl:open</b>
@@ -1697,9 +1931,9 @@ warning is signaled if this flag is used. See also
 
 
 
-<hr><hr><h2 id="255"><a name="api-1">Appendix A: Operators, Symbols, Variables Documentation</a></h2>
+<hr><hr><h2 id="279"><a name="api-1">Appendix A: Operators, Symbols, Variables Documentation</a></h2>
 
-<p id="256">
+<p id="280">
 Individual operators, variables, etc. are documented on their own
 pages, as is standard in Allegro CL documentation. In this section and the first
 subsection of this section, we provide a list of the operators,
@@ -1708,89 +1942,89 @@ pages.
 </p>
 
 
-<p id="257">
+<p id="281">
 The macros and functions <a href="operators/excl/code-to-utf16-char.htm"><b>code-to-utf16-char</b></a>, <a href="operators/excl/compose-octet-array.htm"><b>compose-octet-array</b></a>, <a href="operators/excl/compose-octet-array-fn.htm"><b>compose-octet-array-fn</b></a>, <a href="operators/excl/compose-string.htm"><b>compose-string</b></a>, and <a href="operators/excl/compose-string-fn.htm"><b>compose-string-fn</b></a> facilitate the creation of
 arrays containing octets and characters outside of the simple ASCII
 range.
 </p>
 
 
-<hr><h2 id="258"><a name="ef-ap1-2">Appendix A.1 External-Format API</a></h2>
+<hr><h2 id="282"><a name="ef-ap1-2">Appendix A.1 External-Format API</a></h2>
 
 <ul>
-<li id="259">
+<li id="283">
 <a href="operators/excl/char-to-octets.htm"><b>char-to-octets</b></a>, a macro
 which expands to the macro stored in the
 <code>char-to-octets-macro</code> slot of the external-format
 passed in.
 </li>
-<li id="260">
+<li id="284">
 <a href="operators/excl/composed-external-format-p.htm"><b>composed-external-format-p</b></a>, 
 a function which
 returns true or false as its argument is or is not a composed external
 format.
 </li>
-<li id="261">
+<li id="285">
 <a href="operators/excl/compose-external-formats.htm"><b>compose-external-formats</b></a>, a
 macro which creates a new external-format composed of argument
 external-formats.
 </li>
-<li id="262">
+<li id="286">
 <a href="operators/excl/def-char-to-octets-macro.htm"><b>def-char-to-octets-macro</b></a>, a
 defining macro which defines a macro associated with an external
 format which will be used for converting a character object to a
 sequence of octets.
 </li>
-<li id="263">
+<li id="287">
 <a href="operators/excl/def-ef-switch-to-runtime.htm"><b>def-ef-switch-to-runtime</b></a>,
 a macro which associates a function object with an external-format.
 </li>
-<li id="264">
+<li id="288">
 <a href="operators/excl/def-external-format.htm"><b>def-external-format</b></a>, a macro
 which defines an external-format object. External-formats are structs
 (defined using <a href="../ansicl/dictentr/defstruc.htm"><b>defstruct</b></a>).
 </li>
-<li id="265">
+<li id="289">
 <a href="operators/excl/def-octets-to-char-macro.htm"><b>def-octets-to-char-macro</b></a>, a
 defining macro which defines a macro associated with an external
 format which will be used for converting a sequence of octets to a
 character object.
 </li>
-<li id="266">
+<li id="290">
 <a href="operators/excl/ef-composee-ef.htm"><b>ef-composee-ef</b></a>, a function
 which returns the value in the <code>composee</code> slot of an
 external format.
 </li>
-<li id="267">
+<li id="291">
 <a href="operators/excl/ef-composer-ef.htm"><b>ef-composer-ef</b></a>,
 a function which returns the
 value in the <code>composer</code> slot of an external format.
 </li>
-<li id="268">
+<li id="292">
 <a href="operators/excl/find-composed-external-format.htm"><b>find-composed-external-format</b></a>,
 a function which returns the composed external-format object
 (either macro-based or encapsulating-streams-based) named by the
 argument external-formats.
 </li>
-<li id="269">
+<li id="293">
 <a href="operators/excl/find-external-format.htm"><b>find-external-format</b></a>, a
 function which returns the external-format object named by the
 argument symbol.
 </li>
-<li id="270">
+<li id="294">
 <a href="operators/excl/octets-to-char.htm"><b>octets-to-char</b></a>, a macro
 which expands to the macro stored in the
 <code>octets-to-char-macro</code> slot of the external-format
 passed as an argument.
 </li>
-<li id="271">
+<li id="295">
 <a href="operators/excl/switch-ef-to-runtime.htm"><b>switch-ef-to-runtime</b></a>, a
 function which invokes the function object <a href="operators/excl/def-ef-switch-to-runtime.htm"><b>def-ef-switch-to-runtime</b></a> for an external
 format.
 </li>
 </ul>
 
-<p id="272">
+<p id="296">
 The following two functions are named by unexported symbols.  We
 document them because the sources for Allegro CL external-formats
 will be made available to users and these functions and trie data
@@ -1799,19 +2033,19 @@ functions are kept internal in the Allegro CL packages to indicate
 that their associated functions are subject to change.
 </p>
 
-<hr><h3 id="273"><a name="build-trie-op-bookmarkxx"></a>build-trie</h3><h3 id="274">Function</h3><h4 id="275">Package: excl</h4>
+<hr><h3 id="297"><a name="build-trie-op-bookmarkxx"></a>build-trie</h3><h3 id="298">Function</h3><h4 id="299">Package: excl</h4>
 
-<p id="276"><b>Arguments: </b><i>
+<p id="300"><b>Arguments: </b><i>
 </i>&amp;key <i>name list index-key value-key optimize</i><i>
 </i></p>
 
-<p id="277">
+<p id="301">
 <i>name</i> should be a symbol.
 <i>list</i> should be a list of index/value pairs.
 <i>index-key</i>, and <i>value-key</i>
 should be designators of functions of one argument (symbols or function specs, or function objects). <i>optimize</i> should be a boolean.
 </p>
-<p id="278">
+<p id="302">
 <b>The symbol naming this function is not exported.</b>&nbsp;
 <b>excl::build-trie</b> builds a trie data structure consisting of the
 data from list. A trie data structure holds index/value pairs where
@@ -1820,22 +2054,22 @@ not store these default values for each index, thus saving space and
 making lookup more efficient. It is not necessary for users to know
 details of trie data structures.
 </p>
-<p id="279">
+<p id="303">
 The list argument names a list of index/value pairs for the trie. The
 index-key is a function which when applied to a pair returns the index
 of the pair. The value-key is a function which when applied to a pair
 returns the value of the pair.
 </p>
-<p id="280">
+<p id="304">
 If the optimize argument is true, then any rows in the resulting trie
 that would be equalp to any rows in any of the tries returned by
 excl::all-tries are shared.  The result is that all equalp rows of all
 existing tries which are equalp become eq.
 </p>
-<h3 id="281">
+<h3 id="305">
 Examples:
 </h3>
-<pre id="282">
+<pre id="306">
 [*package* is the excl package for these examples]
 
 (let ((jis-to-unicode-list '((#x2121 . #x3000)
@@ -1862,12 +2096,12 @@ Examples:
 
 <hr>
 
-<hr><h3 id="283"><a name="all-tries-op-bookmarkxx"></a>all-tries</h3><h3 id="284">Function</h3><h4 id="285">Package: excl</h4>
+<hr><h3 id="307"><a name="all-tries-op-bookmarkxx"></a>all-tries</h3><h3 id="308">Function</h3><h4 id="309">Package: excl</h4>
 
-<p id="286"><b>Arguments: </b><i>
+<p id="310"><b>Arguments: </b><i>
 </i></p>
 
-<p id="287">
+<p id="311">
 <b>The symbol naming this function is not exported.</b>&nbsp;
 <b>excl::all-tries</b> returns a list of all tries built by
 <b>excl::build-trie</b>. The returned list is in plist format:
@@ -1879,9 +2113,9 @@ Examples:
 
 
 
-<hr><hr><h2 id="288"><a name="newline-1">Appendix B: #\newline Discussion</a></h2>
+<hr><hr><h2 id="312"><a name="newline-1">Appendix B: #\newline Discussion</a></h2>
 
-<p id="289">
+<p id="313">
 ANSI Common Lisp specifies that the single character #\newline
 denotes the end of a character text line.  This requirement is
 complicated by the lack of a uniform convention among Operating
@@ -1890,7 +2124,7 @@ applications generally uses Ascii 10; Macintosh based, Ascii 13; and
 Windows based applications use two Ascii characters: 13 followed by
 10.
 </p>
-<p id="290">
+<p id="314">
 To confuse things further, Common Lisp implementations also differ
 on which Ascii character code is used for #\newline.  Some use 13,
 others use 10.  Some Common Lisp implementations may have disregarded
@@ -1898,7 +2132,7 @@ the ANSI requirement that a single newline character be returned at
 the ends of lines, and for Windows, where two character bytes denote
 line endings, return more than one character at the end of a line.
 </p>
-<p id="291">
+<p id="315">
 Allegro CL has an external-format processing mechanism for handling
 character I/O.  Using this mechanism, developed initially for
 multi-byte international characters, several adjacent external bytes
@@ -1907,11 +2141,11 @@ this mechanism is to map external end-of-line markers to/from the
 single Common Lisp #\newline character. The function <a href="operators/excl/eol-convention.htm"><b>eol-convention</b></a> specifies what a #\newline
 translates to in a stream.
 </p>
-<p id="292">
+<p id="316">
 Specifically, for Windows the newline processing is handled using a
 composing external-format. The exact description is as follows:
 </p>
-<pre id="293">
+<pre id="317">
 Standard Translation:
 ---------------------
 
@@ -1932,14 +2166,14 @@ External Octets -&gt; Characters:
   13  ----------------------------------&gt;  #\return
   10  ----------------------------------&gt;  #\linefeed [eq #\newline]
 </pre>
-<p id="294">
+<p id="318">
 One effect of this translation is that since #\linefeed is the same
 as #\newline, '#\return #\linefeed' translates to '13 13 10'.  This
 scenario is only likely to be noticed if a program deliberately
 inserts the '#\return #\linefeed' sequence into a string that is to be
 converted to external format.
 </p>
-<p id="295">
+<p id="319">
 A fix for this situation is for the user/programmer simply to use
 '#\newline' instead of the '#\return #\linefeed' sequence.  For
 users/programmers not immediately able to make this change, a
@@ -1947,7 +2181,7 @@ compatibility mode exists in the form of an alternate composing
 external-format which translates as follows:
 </p>
 
-<pre id="296">
+<pre id="320">
 Compatibility Translation:
 --------------------------
 
@@ -1972,19 +2206,19 @@ External Octets -&gt; Characters:
   13  ----------------------------------&gt;  #\return
   10  ----------------------------------&gt;  #\linefeed [eq #\newline]
 </pre>
-<p id="297">
+<p id="321">
 Note that the new rules allow the external octet sequence '13 13 10'
 to be preserved after undergoing a round-trip conversion via Lisp
 characters.
 </p>
-<p id="298">
+<p id="322">
 Use of the compatibility mode is only supported at lisp startup time
 via a new <code>-compat-crlf</code> command-line argument
 (see <a href="startup.htm#command-line-args-1">Command line arguments</a> 
 in <a href="startup.htm">startup.htm</a>).
 </p>
-<hr><hr><h2 id="299"><a name="8-bit-images-1">Appendix C: 8-bit images</a></h2>
-<p id="300">
+<hr><hr><h2 id="323"><a name="8-bit-images-1">Appendix C: 8-bit images</a></h2>
+<p id="324">
 Standard Allegro CL supports international characters and uses two
 bytes (16 bits total) for each character. 8-bit characters are not
 supported in standard Allegro CL. However, 8-bit versions of Allegro
@@ -1997,20 +2231,20 @@ are incompatible between the two versions.
 </p>
 
 
-<hr><hr><h2 id="301"><a name="unicode-links-1">Appendix D: Links to Unicode Reports</a></h2>
+<hr><hr><h2 id="325"><a name="unicode-links-1">Appendix D: Links to Unicode Reports</a></h2>
 
-<p id="302">
+<p id="326">
 The Unicode technical reports vary slightly with each new release of
 the Unicode Standard. At the time of this writing, the variations
 have not mattered to Allegro CL, but to avoid possible confusion, we provide two
 links for UTS #10: Unicode Collation Algorithm (hereafter, TR 10):
 </p>
 <ul>
-<li id="303">
+<li id="327">
 The version of TR 10 used for this Allegro CL release:  
 <a href="http://www.unicode.org/unicode/reports/tr10/tr10-6.html">http://www.unicode.org/unicode/reports/tr10/tr10-6.html</a>.
 </li>
-<li id="304">
+<li id="328">
 The current version of TR 10 (currently not significantly different
 from the above version):
 <a href="http://www.unicode.org/unicode/reports/tr10/">http://www.unicode.org/unicode/reports/tr10/</a>.

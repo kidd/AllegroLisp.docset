@@ -1,0 +1,58 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" name="description" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="../../acldoc-styles.css" type="text/css"><title>*utf-8s-transcoding-error-action*</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><b>Variable</b></td><td align="left" bgcolor="#00FFFF"><b>Package: excl</b></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/variables/excl/s_utf-8s-transcoding-error-action_s.htm">10.0 version</a></td></tr></table><h2 id="2">*utf-8s-transcoding-error-action*</h2>
+
+<p id="3">
+The value of this variable determines how
+the <code>:utf-8s</code> external-format deals with transcoding
+errors. Unless an error is signaled, all improper (non-utf-8)
+character or octets are replaced with the value returned by
+<a href="../../operators/excl/utf-8s-transcoding-error-char.htm"><b>utf-8s-transcoding-error-char</b></a> (for
+characters) or its <a href="../../../ansicl/dictentr/char-int.htm"><b>char-int</b></a> (for octets). The value of
+this variable can be any of the following:
+</p>
+<ul>
+<li id="4">
+<b>nil</b>: Ignore transcoding errors silently.
+</li>
+<li id="5">
+<b>:warn</b>: Signal a warning of class <a href="../../classes/excl/utf-8s-transcoding-warning.htm"><code>utf-8s-transcoding-warning</code></a>.
+</li>
+<li id="6">
+<b>:count</b>: Replace the value of this variable with a count of
+transcoding errors.
+</li>
+<li id="7">
+<b>an integer</b>: Same as <code>:count</code> but continue
+counting from the given integer value.
+</li>
+<li id="8">
+<b>:collect</b>: Replace the value of this variable with a list of
+error markers. For each error signalled while converting characters to
+octets, push the offending character onto the list.
+<br>
+For each input error, push a list of the offending octets onto the list.
+</li>
+<li id="9">
+<b>a cons</b>: Same as <code>:collect</code> but continue
+pushing onto the given list.
+</li>
+<li id="10">
+<b>:error (or any other value not above)</b>: Signal an error of class
+<a href="../../classes/excl/utf-8s-transcoding-error.htm"><code>utf-8s-transcoding-error</code></a>.
+</li>
+</ul>
+<p id="11">
+In all cases insert the <a href="../../operators/excl/utf-8s-transcoding-error-char.htm"><b>utf-8s-transcoding-error-char</b></a>
+character to replace the offending character or octets in the
+transcoded stream.
+</p>
+<p id="12">
+See <a href="../../iacl.htm#strict-efs-3">Strict external
+formats which do not allow improper
+characters</a> in <a href="../../iacl.htm">iacl.htm</a> for more
+information on the <code>:utf-8s</code> external format,
+international characters and external formats in general.
+</p>
+
+<hr><p id="13"><small>Copyright (c) 1998-2017, Franz Inc. Oakland, CA., USA. All rights reserved.</small><br>
+<small>This page was not revised from the 10.0 page.</small><br><small>Created 2017.2.15.</small><br>
+</p><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"></td><td align="left" bgcolor="#00FFFF"></td><td align="center" bgcolor="#00FFFF"><a href="../../contents.htm"><b>ToC</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../introduction.htm"><b>DocOverview</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../cgide.htm"><b>CGDoc</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../release-notes.htm"><b>RelNotes</b></a></td><td align="center" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../index.htm"><b>Index</b></a></td><td align="center" bgcolor="#00FFFF"><a href="../../permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="../../introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/variables/excl/s_utf-8s-transcoding-error-action_s.htm">10.0 version</a></td></tr></table></body></html>
