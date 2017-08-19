@@ -88,6 +88,23 @@ version 10.1.
 
 <ol>
 <li id="16">
+<b>New Support for Websockets</b>. A new module which implements the
+websocket protocol specified in
+<a href="https://tools.ietf.org/html/rfc6455">RFC 6455</a> has been
+made available as a patch to 10.1 and 10.0. It is described in the section
+<a href="miscellaneous.htm#web-sock-1">Websocket
+API</a> in <a href="miscellaneous.htm">miscellaneous.htm</a>. <b>This
+applies to Allegro CL 10.0 and 10.1</b>.
+</li>
+<li id="17">
+<b>Installing 32-bit Allegro CL on Fedora Linux 25 and later requires
+extra installation steps</b>. See
+<a href="installation.htm#fedora32-fix-2">Getting 32-bit
+Allegro CL to run on 64-bit Fedora 25 and later</a>
+in <a href="installation.htm">installation.htm</a> for more information. <b>This
+applies to Allegro CL 9.0, 10.0, and 10.1</b>.
+</li>
+<li id="18">
 <b>New macro mp:do-periodically.</b> The new macro <a href="operators/mp/do-periodically.htm"><b>mp:do-periodically</b></a> alternates executing a body
 of code with sleeping a specified amount of time, all within a
 non-returning loop (you can break out of the loop by calling
@@ -98,9 +115,22 @@ tailored to cons hardly at all. See the description
 of <a href="operators/mp/do-periodically.htm"><b>mp:do-periodically</b></a> for more
 information. <b>This change applies to releases 9.0, 10.0 and 10.1.</b>
 </li>
+<li id="19">
+<b>New :utf-8s strict external format.</b> When this external format
+is in effect, non-UTF8 characters will be filtered out, replaced by a
+designated error character. Optionally, a warning or error may be
+signaled when an improper character or character sequence or
+associated improper octets are
+encountered. See <a href="iacl.htm#strict-efs-3">Strict
+external formats which do not allow improper characters</a>
+in <a href="iacl.htm">iacl.htm</a> for more information. New functionality
+associated with the <code>:utf-8s</code> external format is
+described there. <b>This change applies to releases 10.0 and 10.1
+but <i>not</i> to release 9.0.</b>
+</li>
 </ol>
 
-<hr><hr><h2 id="17"><a name="fasl-incompat-1">3.0 Fasl files are not-compatible between versions and operating systems</a></h2>
+<hr><hr><h2 id="20"><a name="fasl-incompat-1">3.0 Fasl files are not-compatible between versions and operating systems</a></h2>
 
 
 
@@ -114,9 +144,9 @@ information. <b>This change applies to releases 9.0, 10.0 and 10.1.</b>
 
 
 
-<hr><h2 id="18"><a name="version-fasl-incompat-2">3.1 All pre-10.1 Lisp compiled files must be recompiled (old fasl files will not load)</a></h2>
+<hr><h2 id="21"><a name="version-fasl-incompat-2">3.1 All pre-10.1 Lisp compiled files must be recompiled (old fasl files will not load)</a></h2>
 
-<p id="19">
+<p id="22">
 <i>fasl</i> files (compiled Lisp files) created by
 releases of Allegro CL prior to 10.1 will not load
 into Allegro CL 10.1. All such files must be
@@ -129,14 +159,14 @@ be signaled if Lisp attempts to load an older, incompatible
 
 
 
-<hr><h2 id="20"><a name="os-fasl-incompat-2">3.2 Fasl files may be incompatible in different Lisps on same hardware</a></h2>
+<hr><h2 id="23"><a name="os-fasl-incompat-2">3.2 Fasl files may be incompatible in different Lisps on same hardware</a></h2>
 
-<h3 id="21">
+<h3 id="24">
 Fasl files created on Windows x86 cannot be loaded into Linux or
 FreeBSD x86 Lisps
 </h3>
 
-<p id="22">
+<p id="25">
 The Windows and UNIX operating systems are too different. However,
 FASL files (for the same Lisp version) can generally be shared between
 different UNIX operating systems on the same hardware. The general
@@ -144,24 +174,24 @@ principles are as follows. Note that incompatibility may creep in for
 reasons outside our control. If fasl files are incompatible, recompile
 on the target machine.
 </p>
-<h3 id="23">
+<h3 id="26">
 Fasl files will usually be compatible between platforms when:
 </h3>
 <ul>
-<li id="24">
+<li id="27">
 the architecture (hardware) is the same
 </li>
-<li id="25">
+<li id="28">
 the calling convention is the same (that is, the method of calling
 functions and the registers they use for arguments are the same)
 </li>
-<li id="26">
+<li id="29">
 the method for generating signals can be made compatible (this cannot
 be done for Windows and UNIX, so they are incompatible for this
 reason)
 </li>
 </ul>
-<p id="27">
+<p id="30">
 It is up to the user to ensure that there are no os-specific
 dependencies, or that features (i.e. #+/#- ) did not cause
 essential code to be excluded or extraneous code introduced
@@ -170,10 +200,10 @@ that would cause a problem on the crossed architecture.
 
 
 
-<hr><hr><h2 id="28"><a name="install-1">4.0 Release Notes for installation</a></h2>
+<hr><hr><h2 id="31"><a name="install-1">4.0 Release Notes for installation</a></h2>
 
 <ol>
-<li id="29">
+<li id="32">
 
 
 
@@ -185,7 +215,7 @@ Installation is described in
 
 
 </li>
-<li id="30">
+<li id="33">
 <b>The distribution includes 8 bit and 16 bit character images</b>
 (this information is repeated from earlier Release Notes). Allegro CL
 has images that support 8 bit characters only, or 16 bit
@@ -200,7 +230,7 @@ match. Trying to start an executable with the wrong type of image
 fails.
 </li>
 
-<li id="31">
+<li id="34">
 <b>No prebuilt Allegro Composer images in the distribution</b> 
 (this information is repeated from earlier Release Notes). To
 create an Allegro Composer image, start Allegro CL and load
@@ -209,7 +239,7 @@ create an Allegro Composer image, start Allegro CL and load
 <em>composer8.dxl</em>. Allegro Composer is available on Unix only.
 </li>
 
-<li id="32">
+<li id="35">
 <b>No prebuilt Allegro CLIM images in the distribution</b> (this
 information is repeated from earlier Release Notes). To create a CLIM
 image, start Allegro CL and load <em>buildclim.cl</em>. That will
@@ -220,10 +250,10 @@ produce <em>clim</em> and <em>clim.dxl</em>, or <em>clim8</em> and
 </ol>
 
 
-<hr><hr><h2 id="33"><a name="platform-specific-1">5.0 Release notes for specific platforms</a></h2>
+<hr><hr><h2 id="36"><a name="platform-specific-1">5.0 Release notes for specific platforms</a></h2>
 
 
-<p id="34">
+<p id="37">
 See <a href="installation.htm#install-sizes-2">Installation sizes and supported Operating
 System versions</a> in <a href="installation.htm">installation.htm</a> for a list
 of supported platforms and minimal Operating System versions.  Allegro
@@ -233,22 +263,22 @@ to work on newer versions, including those released after Allegro CL
 10.1 itself was released.
 </p>
 
-<hr><h2 id="35"><a name="openssl-version-2">5.1 Required versions of OpenSSL needed for the :ssl module</a></h2>
+<hr><h2 id="38"><a name="openssl-version-2">5.1 Required versions of OpenSSL needed for the :ssl module</a></h2>
 
-<p id="36">
+<p id="39">
 The :ssl module, when loaded, finds the newest installed version of
 OpenSSL libraries on your machine and loads
 them. See <a href="socket.htm#ssl-1">Secure Socket Layer
 (SSL)</a> in <a href="socket.htm">socket.htm</a> for information on
 how OpenSSL libraries are found and loaded.
 </p>
-<p id="37">
+<p id="40">
 If you load foreign libraries which themselves use OpenSSL, either in
 a development image or in a delivery (application) image, those
 libraries must be compatible with the version of OpenSSL used by the
 :ssl module. If they are not, the :ssl module cannot be used.
 </p>
-<p id="38">
+<p id="41">
 The current supported version of OpenSSL is 1.0.1. We understand there
 are plans to end support for version 1.0.1 on December 31, 2016. By
 that time, support for version 1.0.2 will be available.
@@ -257,14 +287,14 @@ that time, support for version 1.0.2 will be available.
 
 
 
-<hr><h2 id="39"><a name="arm-2">5.2 The ARM-64 (aka ARMv8 and Aarch64) platform</a></h2>
+<hr><h2 id="42"><a name="arm-2">5.2 The ARM-64 (aka ARMv8 and Aarch64) platform</a></h2>
 
-<p id="40">
+<p id="43">
 Allegro CL is now available on the ARM-64 platform under some linux
 implementations. The ARM-64 is also called the ARM64, the ARMv8, and
 the Aarch64
 </p>
-<p id="41">
+<p id="44">
 The ARM-64 processor
 (see the Wikipedia
 description <a href="https://en.wikipedia.org/wiki/ARM_architecture">here</a>
@@ -272,13 +302,13 @@ and the designer
 website <a href="http://www.arm.com/products/processors">here</a>) is
 a RISC processor particularly suited to smaller devices.
 </p>
-<p id="42">
+<p id="45">
 Only 64-bit Allegro CL runs on the ARM-64, with SMP and non-SMP
 versions (there is no 32-bit Lisp on the ARM-64). Common Graphics and
 the IDE (see <a href="cgide.htm">cgide.htm</a>) are supported in the
 non-SMP ARM-64 version.
 </p>
-<p id="43">
+<p id="46">
 Installation on the ARM-64 is similar to installation on other Linux
 platforms. See <a href="installation.htm">installation.htm</a>. See
 the <a href="installation.htm#install-sizes-2">Installation sizes and supported Operating
@@ -289,15 +319,15 @@ operating system versions needed by Allegro CL.
 
 
 
-<hr><h2 id="44"><a name="macosx-2">5.3 macOS notes</a></h2>
+<hr><h2 id="47"><a name="macosx-2">5.3 macOS notes</a></h2>
 
 
-<p id="45">
+<p id="48">
 Allegro CL 10.1 is only supported on macOS version 10.11 or later.
 It is not supported on versions 10.10 or
 earlier.
 </p>
-<p id="46">
+<p id="49">
 Common Graphics and the IDE are now supported on macOS but are not
 supported on the SMP version on the Mac.
 See <a href="#mac-ide-2">Section 8.5 Common Graphics and the IDE on the Mac</a> for more
@@ -308,7 +338,7 @@ in <a href="installation.htm">installation.htm</a> for details.
 </p>
 
 
-<p id="47">
+<p id="50">
 The Runtime Analyzer (see <a href="runtime-analyzer.htm">runtime-analyzer.htm</a>)
 does not work properly on the 64-bit macOS port (there is no
 problem on the 32-bit port).
@@ -316,8 +346,8 @@ problem on the 32-bit port).
 
 
 
-<h4 id="48">Building shared libraries on macOS</h4>
-<p id="49">
+<h4 id="51">Building shared libraries on macOS</h4>
+<p id="52">
 <a href="foreign-functions.htm#ff-on-macosx-1">Building
 shared libraries on macOS</a> in
 <a href="foreign-functions.htm">foreign-functions.htm</a> describes how to create a
@@ -329,9 +359,9 @@ the linked section.
 
 
 
-<hr><h2 id="50"><a name="maverick-x11-2">5.3.1 Updating macOS may break X11</a></h2>
+<hr><h2 id="53"><a name="maverick-x11-2">5.3.1 Updating macOS may break X11</a></h2>
 
-<p id="51">
+<p id="54">
 We have had reports that updating macOS may cause X11 to be stop
 working properly. The symptom is blank rectangles in Common Graphics
 applications (including Gruff). X11 is necessary for the IDE, CLIM,
@@ -351,10 +381,10 @@ updating the macOS.
 
 
 
-<hr><h2 id="52"><a name="heap-start-2">5.4 Heap start locations</a></h2>
+<hr><h2 id="55"><a name="heap-start-2">5.4 Heap start locations</a></h2>
 
 
-<p id="53">
+<p id="56">
 When building large new images, it is often useful to specify Lisp
 heap and ACLmalloc heap start locations. See the discussion of the
 <i>lisp-heap-start</i> and
@@ -473,9 +503,9 @@ Values are Hexadecimal integers.
 
 
 
-<hr><hr><h2 id="54"><a name="acl-1">6.0 Release Notes for the base Lisp</a></h2>
+<hr><hr><h2 id="57"><a name="acl-1">6.0 Release Notes for the base Lisp</a></h2>
 
-<p id="55">
+<p id="58">
 This main section contains three subsections (which have additional
 subsections): one on new features
 (<a href="#acl-new">Section 6.1 New features in the base Lisp</a>), one on changes which are not
@@ -485,36 +515,36 @@ miscellaneous changes (<a href="#acl-other-2">Section 6.3 Other changes to and n
 </p>
 
 
-<hr><h2 id="56"><a name="acl-new">6.1 New features in the base Lisp</a></h2>
+<hr><h2 id="59"><a name="acl-new">6.1 New features in the base Lisp</a></h2>
 
-<p id="57">
+<p id="60">
 Version 10.1 is a maintenance release of Allegro CL. It contains bug
 fixes and optimizations and other improvements but does not have major
 new capabilities.
 </p>
 
-<h3 id="58">
+<h3 id="61">
 Major changes
 </h3>
-<p id="59">
+<p id="62">
 There is now support for the ARM
 processor. See <a href="#arm-2">Section 5.2 The ARM-64 (aka ARMv8 and Aarch64) platform</a> for more
 information.
 </p>
 
-<h3 id="60">
+<h3 id="63">
 Other new features
 </h3>
 
 <ol>
-<li id="61">
+<li id="64">
 <b>Improved support for UTF-16 characters</b>. A number of functions
 associated with UTF-16 characters have been
 added. See <a href="iacl.htm#api-1">Appendix 1: Operators,
 Symbols, Variables Documentation</a>
 in <a href="iacl.htm">iacl.htm</a> for links to the new functionality.
 </li>
-<li id="62">
+<li id="65">
 <b>Support for the GB18030 external-format</b>. See the list of
 external formats and the table notes in the
 section <a href="iacl.htm#basic-ef-types-3">Basic
@@ -524,9 +554,9 @@ more information.
 </ol>
 
 
-<hr><h2 id="63"><a name="acl-added-in-100">6.1.1 Features added to Allegro CL 10.0 after the initial release of Allegro CL 10.0</a></h2>
+<hr><h2 id="66"><a name="acl-added-in-100">6.1.1 Features added to Allegro CL 10.0 after the initial release of Allegro CL 10.0</a></h2>
 
-<p id="64">
+<p id="67">
 The following items were included by patches in Allegro CL 10.0 (and
 some in earlier releases of Allegro CL) after the release of 10.0 and
 therefore were not in the original 10.0 documentation. All are part of
@@ -538,7 +568,7 @@ this document.
 
 
 <ol>
-<li id="65">
+<li id="68">
 <b>sys:lispval-storage-type has new :stack-allocated
 type</b>. Objects which reside on the stack are identified
 as <code>:stack-allocated</code> by
@@ -548,7 +578,7 @@ as <code>:stack-allocated</code> even if it is outside of the
 stack it resides and should have been
 called <code>:static</code>.
 </li>
-<li id="66">
+<li id="69">
 <b>OpenSSL libraries must be installed in order to use OpenSSL in
 socket communication</b>. Except on Windows, prior to a patch released
 in June, 2016, Allegro CL included the necessary OpenSSL libraries
@@ -572,7 +602,7 @@ library files, other than the change to the API described
 in <a href="socket.htm#ssl-1">Secure Socket Layer
 (SSL)</a> in <a href="socket.htm">socket.htm</a>.
 </li>
-<li id="67">
+<li id="70">
 <b>Some compiler switches obsolete</b>. The compiler
 switches <a href="variables/compiler/peephole-optimize-switch.htm"><code>comp:peephole-optimize-switch</code></a>,
 and <a href="variables/compiler/save-arglist-switch.htm"><code>comp:save-arglist-switch</code></a>
@@ -583,18 +613,18 @@ always saved. It was determined that any possible savings were too
 small to be worth doing. This change was made in the initial 9.0
 release but was not properly documented.
 </li>
-<li id="68">
+<li id="71">
 <b>New types keyword argument to dbi:run-prepared-sql</b>. This new
 argument to <a href="operators/dbi/run-prepared-sql.htm"><b>dbi:run-prepared-sql</b></a> allows specifying
 the return type.
 </li>
-<li id="69">
+<li id="72">
 <b>New EC2 implementation</b>: an updated interface to the Amazon
 Elastic Compute Cloud (EC2) has been released in a patch dated
 November 4, 2014. The API version support is moved to version 2014-09-01.
 See <a href="ec2.htm">ec2.htm</a> for further information.
 </li>
-<li id="70">
+<li id="73">
 <b>A new for-as-in-sequence subclause for the loop
 macro</b>. The <a href="../ansicl/dictentr/loop.htm"><b>loop</b></a>
 macro now supports a <code>for-as-in-sequence</code> subclause
@@ -606,7 +636,7 @@ simple vector at runtime. See <a href="implementation.htm#cl-loop-2">cl:loop and
 in <a href="implementation.htm">implementation.htm</a>. This new subclause was added
 in a patch in May, 2014.
 </li>
-<li id="71">
+<li id="74">
 <b>New universal date parser</b>. New functions
 <a href="operators/excl/string-to-universal-time.htm"><b>string-to-universal-time</b></a> and
 <a href="operators/excl/universal-time-to-string.htm"><b>universal-time-to-string</b></a>
@@ -620,7 +650,7 @@ date to universal time parsers</a> section in that document
 describes the new facility. These functions were added in a patch
 released in May, 2014.
 </li>
-<li id="72">
+<li id="75">
 <b>jLinker update</b>: a patch released in April, 2014 made a number
 of changes to the jLinker module. There are now several calling
 models, including a new calling style where Lisp functions are
@@ -633,7 +663,7 @@ at run time by comparing the Lisp argument types to Java
 signatures. See <a href="jlinker.htm#calling-style-2">Calling Style from Lisp to Java</a>
 in <a href="jlinker.htm">jlinker.htm</a>.
 </li>
-<li id="73">
+<li id="76">
 <b>Major update to SSL socket module</b>. (This change is not related
 to the Heartbleed problem described in the next item.) The interface
 to SSL sockets has been upgraded. SSL contexts, re-usable objects
@@ -649,7 +679,7 @@ the <i>method</i> argument to <a href="operators/socket/make-ssl-server-stream.h
 is <code>:tlsv1+</code>. These modifications were added in a patch
 released in April, 2014.
 </li>
-<li id="74">
+<li id="77">
 <b>Fix for OpenSSL Heartbleed bug available</b>. The OpenSSL
 Heartbleed bug
 (see <a href="https://www.openssl.org/news/secadv_20140407.txt">https://www.openssl.org/news/secadv_20140407.txt</a>)
@@ -659,7 +689,7 @@ Corner Article</a> at
 <a href="http://franz.com/support/tech_corner/heartbleed040914.lhtml">http://franz.com/support/tech_corner/heartbleed040914.lhtml</a> for
 instructions. Users are <b>strongly</b> recommended to apply this fix.
 </li>
-<li id="75">
+<li id="78">
 <b>The list value of *global-gc-behavior* should not be used in an SMP
 Lisp.</b> The variable <a href="variables/excl/s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a> controls when and how
 often global garbage collections happen. On possible value for this
@@ -670,13 +700,13 @@ global gc's after a specified amount of idle time. But idle time is
 ill-defined in an SMP Lisp. The list value for <a href="variables/excl/s_global-gc-behavior_s.htm"><code>*global-gc-behavior*</code></a> uses <a href="operators/system/funcall-after-idle-timeout.htm"><b>sys:funcall-after-idle-timeout</b></a>, which, as
 the next item notes, should not be used in SMP Lisps.
 </li>
-<li id="76">
+<li id="79">
 <b>sys:funcall-after-idle-timeout should not be used in an SMP
 Lisp.</b> In an SMP Lisp, idle time is ill-defined. The function 
 <a href="operators/system/funcall-after-idle-timeout.htm"><b>sys:funcall-after-idle-timeout</b></a>, which calls
 a function after a specified idle time, should not be used.
 </li>
-<li id="77">
+<li id="80">
 <b>Documentation for load-compiled corrected</b>. The function
 <a href="operators/excl/load-compiled.htm"><b>load-compiled</b></a>, when first
 implemented, compiled a file but did not write a fasl file. That was
@@ -684,7 +714,7 @@ changed some time ago so <a href="operators/excl/load-compiled.htm"><b>load-comp
 the <a href="tpl-commands/cload.htm"><b>:cload</b></a> top-level command
 (compiling and loading file). The documentation has been corrected.
 </li>
-<li id="78">
+<li id="81">
 <b>Enhancement to net.post-office:send-letter</b>. The first argument
 to <a href="operators/post-office/send-letter.htm"><b>net.post-office:send-letter</b></a>, the
 server specification, can now specify an alternate transport
@@ -693,7 +723,7 @@ protocol. See <a href="operators/post-office/send-letter.htm"><b>net.post-office
 details. The patch implementing this cahange was released in early
 November, 2013.
 </li>
-<li id="79">
+<li id="82">
 <b>Some MySQL changes.</b> A
 new <b><i>client-flags</i></b> keyword argument
 to <a href="operators/mysql/connect.htm"><b>connect</b></a> was added to
@@ -708,7 +738,7 @@ columns as an existing row. Also, some support for stored procedures
 has been added. See
 <a href="mysql.htm#mysql-stored-proc-1">MySQL and stored procedures</a> in <a href="mysql.htm">mysql.htm</a>.
 </li>
-<li id="80">
+<li id="83">
 <b>A patch released in late Jult, 2013 implements a major jLinker
 upgrade.</b> A major patch release of jlinker (version 7.1) adds
 several new features.  The patch consists of Lisp code in a new fasl
@@ -719,7 +749,7 @@ backward compatible. See <a href="jlinker.htm">jlinker.htm</a> for a complete
 discussion of the patch. The patch is for version 9.0 only. It does
 not apply to earlier releases.
 </li>
-<li id="81">
+<li id="84">
 <b>New regexp patch fixes some replace-re behavior and enhances
 match-re.</b> A bug in <a href="operators/excl/replace-re.htm"><b>replace-re</b></a> caused handling of BOS and EOS
 markers incorrectly. So <code>(replace-re "abc abc bc" "^abc\\s+"
@@ -732,7 +762,7 @@ additional keyword arguments <i>start-unbounded</i> and
 <i>end-unbounded</i>. The behavior of <a href="operators/excl/match-re.htm"><b>match-re</b></a> is unchanged if the new arguments are
 not specified.
 </li>
-<li id="82">
+<li id="85">
 <b>Better control over proxies in Aserve.</b> If you allow proxies in
 AllegroServe, you may open a security hole. Proxies, which before were
 general, can now be restruicted to specific machines using the new
@@ -741,11 +771,11 @@ desired. See <a href="aserve/aserve.html#proxy">the Proxy section</a>
 of the <a href="aserve/aserve.html">the AllegroServe documentation</a>
 for details.
 </li>
-<li id="83">
+<li id="86">
 <b>The profiler may now be included in runtime images (except those
 created by Allegro Express).</b>
 </li>
-<li id="84">
+<li id="87">
 <b>New jlinker-init keyword argument: :end-function</b>.  The value of
 the <i>end-function</i> keyword argument
 to <a href="operators/jlinker/jlinker-init.htm"><b>jlinker-init</b></a> should be
@@ -753,7 +783,7 @@ a function called when a jlinker connection is terminated.  The
 function gets a single argument, the jlinker connection
 instance. Added by a pacth released May 1, 2013.
 </li>
-<li id="85">
+<li id="88">
 <b>All nicknames removed for the excl package</b>. This was done when
 9.0 was released but we neglected to document it. The nicknames
 were <code>excl</code>, <code>franz</code>,
@@ -766,7 +796,7 @@ backward incompatible change</b>. Users who depend on stream or franz
 as nicknames can add them back using <a href="../ansicl/dictentr/rename-p.htm"><b>rename-package</b></a> if desired. This item is
 repeated below in <a href="#acl-non-back-2">Section 6.2 Non-backward-compatible changes in the base Lisp</a>.
 </li>
-<li id="86">
+<li id="89">
 <b>regexp patch fixes some bugs, changes split-re behavior. WARNING:
 some changes result in changed behavior (nil might be returned instead
 of (""); some forms no longer signal errors).</b>. A patch released in
@@ -779,19 +809,19 @@ trailing empty fields are removed. See <a href="regexp.htm">regexp.htm</a>
 and also the description of <a href="operators/excl/split-re.htm"><b>split-re</b></a>, where we have examples of the
 changes.
 </li>
-<li id="87">
+<li id="90">
 <b>New ability to dump virtual images on Windows.</b>
 See <a href="dumplisp.htm#pseudo-fork-1">Virtual dumplisp:
 for very large images and pseudo-forks on Windows</a>
 </li>
-<li id="88">
+<li id="91">
 We have revised the <a href="regexp.htm">regexp.htm</a> and have removed the
 discussion of the older <b>regexp</b> module (which is still
 maintained for backward compatibility, and individual functions are
 still documented in the operators pages)). All new code should use the
 regexp2 module described in <a href="regexp.htm">regexp.htm</a>.
 </li>
-<li id="89">
+<li id="92">
 <b>text-line does not work on file streams</b>. The
 <a href="operators/cg/t/text-line.htm"><b>common-graphics:text-line</b></a> function only
 works on <a href="classes/cg/text-edit-pane.htm"><code>text-edit-pane</code></a>s and
@@ -806,16 +836,16 @@ make that clear.
 
 
 
-<hr><h2 id="90"><a name="acl-non-back-2">6.2 Non-backward-compatible changes in the base Lisp</a></h2>
+<hr><h2 id="93"><a name="acl-non-back-2">6.2 Non-backward-compatible changes in the base Lisp</a></h2>
 
-<p id="91">
+<p id="94">
 The following changes result in different behavior in Lisp compared to
 earlier releases.
 </p>
 
 <ol>
 
-<li id="92">
+<li id="95">
 <b>build-lisp-image arguments :c-heap-start and :c-heap-size are no
 longer supported.</b> These arguments to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> and
 <a href="operators/excl/generate-application.htm"><b>generate-application</b></a> were
@@ -827,12 +857,12 @@ removed and should not be
 used. Use <a href="building-images.htm#aclmalloc-heap-start">:acl-malloc-heap-start</a>
 and <a href="building-images.htm#aclmalloc-heap-size">:acl-malloc-heap-size</a> instead.
 </li>
-<li id="93">
+<li id="96">
 <b>The macro excl:atomic-read-modify-write no longer
 supported</b>. The macro was never documented and has now been
 removed.
 </li>
-<li id="94">
+<li id="97">
 <b>sys:resize-areas warns when :old argument is unspecified.</b>
 <a href="operators/system/resize-areas.htm"><b>sys:resize-areas</b></a> will
 signal a warning when no value is given for
@@ -842,7 +872,7 @@ will be as little free space as possible in the old area after the
 function returns. That is rarely what is desired. If that is what you
 want, specify a value of 0 to avoid the warning.
 </li>
-<li id="95">
+<li id="98">
 <b>:redhat10 is no longer on *features* on Linux versions.</b>
 </li>
 </ol>
@@ -851,14 +881,14 @@ want, specify a value of 0 to avoid the warning.
 
 
 
-<hr><h2 id="96"><a name="acl-other-2">6.3 Other changes to and notes about the base Lisp</a></h2>
+<hr><h2 id="99"><a name="acl-other-2">6.3 Other changes to and notes about the base Lisp</a></h2>
 
-<p id="97">
+<p id="100">
 Listed are other changes to and notes about Allegro CL.
 </p>
 
 <ol>
-<li id="98">
+<li id="101">
 <b>vcredist_*.exe executables copied to application directory on Windows</b>.
 Allegro CL applications on Windows may need to run
 <b>vcredist_x86.exe</b> or <b>vcredist_x64.exe</b> during
@@ -867,7 +897,7 @@ appropriate one of these files to the application's destination
 directory. See the <a href="delivery.htm#windows-specific-2">Windows specific information</a> section
 in <a href="delivery.htm">delivery.htm</a> for more information.
 </li>
-<li id="99">
+<li id="102">
 <b>New function nice-signal-name</b>. <a href="operators/excl/nice-signal-name.htm"><b>nice-signal-name</b></a> takes a signal number (an
 integer) as its argument and returns a string which is a meaningful
 and easy to interpret description of the associated
@@ -878,7 +908,7 @@ of <a href="operators/excl/nice-signal-name.htm"><b>nice-signal-name</b></a>. Bo
 work on all platforms. This function is available with a patch in
 Allegro CL 10.0.
 </li>
-<li id="100">
+<li id="103">
 <b>New variable *script-name*</b>. The
 variable <a href="variables/excl/s_script-name_s.htm"><code>*script-name*</code></a> is bound to the name of
 the script file being run when Allegro CL is being executed by a UNIX
@@ -886,7 +916,7 @@ script file. See <a href="startup.htm#starting-unix-script-3">Starting on UNIX u
 script</a> in <a href="startup.htm">startup.htm</a> for more
 information on running Lisp using a script on Unix.
 </li>
-<li id="101">
+<li id="104">
 <b>On Windows, starting Allegro CL causes the PATH environment
 variable to include the Allegro CL directory</b>. PATH is modified
 because loading DLLs on Windows from the directory in which the
@@ -895,7 +925,7 @@ work. See <a href="startup.htm#start-up-description-1">What
 Lisp does when it starts up</a> in <a href="startup.htm">startup.htm</a>
 for information on the startup sequence.
 </li>
-<li id="102">
+<li id="105">
 <b>sys:with-command-line-arguments does nothing when the
 :command-line-arguments argument is specified nil</b>. When the
 <code>:command-line-arguments</code> argument to
@@ -906,13 +936,13 @@ specified <code>nil</code>, it is assumed you want
 the <a href="operators/system/with-command-line-arguments.htm"><b>sys:with-command-line-arguments</b></a> form to do
 nothing, and that is what now happens.
 </li>
-<li id="103">
+<li id="106">
 <b>New variable *unicode-version*</b>. The
 variable <a href="variables/excl/s_unicode-version_s.htm"><code>*unicode-version*</code></a> is bound to a string
 containing the version number for the Unicode Character Database used
 to build the Allegro CL character name table and collation rules.
 </li>
-<li id="104">
+<li id="107">
 <b>script keyword argument to compile-file allows compilation of UNIX
 scripts</b>. <a href="../ansicl/dictentr/compile-.htm"><b>compile-file</b></a> (whose implementation in
 Allegro CL is described
@@ -924,7 +954,7 @@ code after those initial lines can be
 compiled. See <a href="compiling.htm#compile-file-1">compile-file</a>
 in <a href="compiling.htm">compiling.htm</a> for more information.
 </li>
-<li id="105">
+<li id="108">
 <b>print-type-counts prints information about open and closed old
 areas.</b> <a href="operators/excl/print-type-counts.htm"><b>print-type-counts</b></a> prints information
 about Lisp objects in the heap. It has always printed information
@@ -932,12 +962,12 @@ about old areas. Now information about just open old areas and just
 closed old areas (those that are and are not gc'ed during a global gc)
 can be requested.
 </li>
-<li id="106">
+<li id="109">
 <b>sniff-for-unicode has new return-bom keyword argument</b>. If
 specified non-<code>nil</code>, <a href="operators/excl/sniff-for-unicode.htm"><b>sniff-for-unicode</b></a> returns a third value with
 information on BOMs (Byte Order Markers) in the argument stream.
 </li>
-<li id="107">
+<li id="110">
 <b>Unicode external formats handles
 BOMs</b>. The <code>:unicode</code> external-format detects BOMS
 for UTF-8 UTF-16BE and UTF-16LE. The <code>:unicode-be</code>
@@ -949,7 +979,7 @@ BOM. See <a href="iacl.htm#unicode-and-fat-3">The unicode
 and fat External-Format Types; the unicode BOM</a>
 is <a href="iacl.htm">iacl.htm</a> for more information.
 </li>
-<li id="108">
+<li id="111">
 <b>sys:lispval-storage-type has new :pure type and new function
 sys:purep exists as a predicate.</b>. Objects which are stored in pure
 space, and are thus read-only and shareable, will have this storage
@@ -961,7 +991,7 @@ in <a href="gc.htm">gc.htm</a> for more information on pure space.  The
 new function <a href="operators/system/purep.htm"><b>sys:purep</b></a>
 returns true when applied to objects which reside in pure space.
 </li>
-<li id="109">
+<li id="112">
 <b>New generic function mp:process-sequence returns unique process
 id.</b> The default method for the generic function <a href="operators/mp/process-sequence.htm"><b>mp:process-sequence</b></a> returns an integer
 identifier unique to the argument process. This identifier can be used
@@ -969,7 +999,7 @@ in various places, in particular in many top-level commands that take
 processes as arguments. This value is displayed in the output of the
 <a href="tpl-commands/processes.htm"><b>:processes</b></a> top-level command.
 </li>
-<li id="110">
+<li id="113">
 <b>Top-level commands dealing with processes can take a process
 sequence number as arguments</b>. The new generic
 function <a href="operators/mp/process-sequence.htm"><b>mp:process-sequence</b></a>
@@ -985,7 +1015,7 @@ processing for :processes, :focus, :arrest, :unarrest and
 :kill</a> in <a href="top-level.htm">top-level.htm</a> for more
 information. 
 </li>
-<li id="111">
+<li id="114">
 <b>Top-level commands dealing with processes have their argument
 processing regularized</b>. The commands are
 <a href="tpl-commands/processes.htm"><b>:processes</b></a>, 
@@ -994,7 +1024,7 @@ processing regularized</b>. The commands are
 <a href="tpl-commands/unarrest.htm"><b>:unarrest</b></a>,
 and <a href="tpl-commands/kill.htm"><b>:kill</b></a>.
 </li>
-<li id="112">
+<li id="115">
 <b>New on-error argument to map-over-directory</b>. <a href="operators/excl/map-over-directory.htm"><b>map-over-directory</b></a> now has
 an <b><i>on-error</i></b> keyword argument which
 specifies what it should do when it encounters an unreadable
@@ -1005,14 +1035,14 @@ in earlier releases so the default behavior has not changed. When
 <i>on-error</i> has any other value, calling programs
 will see the errors that occur from accessing unreadable directories.
 </li>
-<li id="113">
+<li id="116">
 <b>MOP class redefinitions and SMP</b>. An application that updates a
 class definition while it is running should be designed to ensure that
 none of the objects are accessed, even for generic-function dispatch,
 until the redefinition is complete. A new <a href="smp.htm#smp-mop-2">section</a> in <a href="smp.htm">smp.htm</a> makes
 this point.
 </li>
-<li id="114">
+<li id="117">
 <b>New arguments to build-lisp-image: initial-oldspace and
 initial-newspace</b>. Two new argument to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> (actually described
 in <a href="building-images.htm">building-images.htm</a>)
@@ -1032,7 +1062,7 @@ ACL_BUILD_INITIAL_OLDSPACE. If these environment variables have
 values, they override values specified in the call
 to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a>.
 </li>
-<li id="115">
+<li id="118">
 <b>Sizes in build-lisp-image argument can be specified with strings
 ending in #\g or #\G to indicate gigabytes.</b> Various arguments
 which specify sizes in calls to <a href="operators/excl/build-lisp-image.htm"><b>build-lisp-image</b></a> (actually described
@@ -1044,7 +1074,7 @@ and megabytes. See <a href="building-images.htm#table-note-3">Table Note 3: spec
 for heaps and old and new space</a>
 in <a href="building-images.htm">building-images.htm</a> for more information.
 </li>
-<li id="116">
+<li id="119">
 <b>:regexp2 added to modules loaded by develenv.cl and :regexp
 removed</b>. <i>develenv.cl</i> is a file with <a href="../ansicl/dictentr/provider.htm"><b>require</b></a> statments for modules which are useful
 to include in Allegro CL development and delivery images. See
@@ -1055,11 +1085,11 @@ now been replaced with the <code>:regexp2</code> module. The
 <code>:regexp2</code> module is described
 in <a href="regexp.htm">regexp.htm</a>.
 </li>
-<li id="117">
+<li id="120">
 <b>SIGPIPE signals are not handled</b>. See <a href="operators/excl/add-signal-handler.htm"><b>add-signal-handler</b></a> if you want a signal
 handled.
 </li>
-<li id="118">
+<li id="121">
 <b>Applications are built in application mode</b>. When an Allegro CL
 application is built with <a href="operators/excl/generate-application.htm"><b>generate-application</b></a>, <a href="operators/excl/generate-executable.htm"><b>generate-executable</b></a>, or using the project
 system in the IDE, the image will be built in <b>application
@@ -1068,13 +1098,13 @@ values and signal handling is different (particularly with respect to
 messages reporting signals). See <a href="delivery.htm#application-mode-1">Application mode</a>
 in <a href="delivery.htm">delivery.htm</a> for more information.
 </li>
-<li id="119">
+<li id="122">
 <b>New multiprocessing macro with-locked-queue</b>. <a href="operators/mp/with-locked-queue.htm"><b>mp:with-locked-queue</b></a> macro has been added to
 facilitate specializing <a href="operators/mp/enqueue.htm"><b>enqueue</b></a> and <a href="operators/mp/dequeue.htm"><b>dequeue</b></a> methods for subclasses
 of <a href="classes/mp/queue.htm"><code>mp:queue</code></a>. (This macro
 was also added as a patch to version 10.0.)
 </li>
-<li id="120">
+<li id="123">
 <b>New function gcpath:find-gcpath and new macro
 gcpath:collected-newstuff</b>.
 <a href="gc.htm#find-gcpath-op-bookmarkxx"><b>gcpath:find-gcpath</b></a> and <a href="gc.htm#collected-newstuff-op-bookmarkxx"><b>gcpath:collected-newstuff</b></a>,
@@ -1084,14 +1114,14 @@ for finding a path of object references that shows why an object is
 not garbage and for determining what non-transient objects are created
 by evaluating a form.
 </li>
-<li id="121">
+<li id="124">
 <b>The special operator named-annotated-function documented</b>. The
 special-operator <a href="operators/excl/named-function.htm"><b>named-function</b></a> was incorrectly labeled
 a macro in earlier releases. The special operator
 <a href="operators/excl/named-annotated-function.htm"><b>named-annotated-function</b></a> was not
 documented (although it existed) and now is.
 </li>
-<li id="122">
+<li id="125">
 <b>Allegro CL 32-bit distributions including Express contain a script
 which installs Ubuntu 32-bit libraries.</b>. The 32-bit ACL
 distributions, Express included, now contain a
@@ -1104,14 +1134,14 @@ Allegro CL to run on 64-bit Ubuntu</a>).
 
 
 
-<hr><h2 id="123"><a name="acl-smp-2">6.4 Multiprocessing and SMP release notes</a></h2>
+<hr><h2 id="126"><a name="acl-smp-2">6.4 Multiprocessing and SMP release notes</a></h2>
 
-<p id="124">
+<p id="127">
 The following are multiprocessing and SMP-related changes.
 </p>
 
 <ol>
-<li id="125">
+<li id="128">
 <b>An SMP Lisp will fail if there is a thread which prevents garbage
 collections.</b> In an SMP Lisp, code that runs atomically, with
 interrupt checks optimized out, could block the gc indefinitely. This
@@ -1120,13 +1150,13 @@ When the garbage collector recognizes such a situation, it will print
 some diagnostic information and kill the entire Lisp process. A
 message will say which process(es) are blocking gc's.
 </li>
-<li id="126">
+<li id="129">
 <b>New with-virtual-timeout macro.</b> The new <a href="operators/mp/with-virtual-timeout.htm"><b>mp:with-virtual-timeout</b></a> macro is similar
 to <a href="operators/system/with-timeout.htm"><b>sys:with-timeout</b></a> except
 only non-gc cpu time is counted toward the timeout, not real time. In
 an SMP Lisp, time can be further resticted to a single thread.
 </li>
-<li id="127">
+<li id="130">
 <b>New macro memtrace-def allows definition of memtrace
 wrapper</b>. <a href="operators/mp/memtrace-def.htm"><b>memtrace-def</b></a>
 defines the wrapper but does not perform any fwrap operations. This
@@ -1139,9 +1169,9 @@ in runtime code.
 
 
 
-<hr><h2 id="128"><a name="acl-platform-specific-2">6.5 Base Lisp platform-specific information</a></h2>
+<hr><h2 id="131"><a name="acl-platform-specific-2">6.5 Base Lisp platform-specific information</a></h2>
 
-<p id="129">
+<p id="132">
 There are no entries at this time. Information may be placed here in
 documentation updates after the initial Allegro CL 10.1 release.
 </p>
@@ -1153,9 +1183,9 @@ documentation updates after the initial Allegro CL 10.1 release.
 
 
 
-<hr><hr><h2 id="130"><a name="clim-1">7.0 Release Notes for CLIM</a></h2>
+<hr><hr><h2 id="133"><a name="clim-1">7.0 Release Notes for CLIM</a></h2>
 
-<p id="131">
+<p id="134">
 The CLIM manual has not been updated (other than minor corrections)
 for the 10.1 release.  There have been no significant changes to CLIM
 functionality compared to 10.0.
@@ -1163,46 +1193,46 @@ functionality compared to 10.0.
 
 
 
-<hr><hr><h2 id="132"><a name="cg-1">8.0 Release Notes for Common Graphics and the IDE</a></h2>
+<hr><hr><h2 id="135"><a name="cg-1">8.0 Release Notes for Common Graphics and the IDE</a></h2>
 
 
 
 
-<p id="133">
+<p id="136">
 <b>Common Graphics and the IDE are supported on Windows SMP Lisp but
 are not supported in SMP Lisps on the Mac and Linux</b>. They are
 supported in the non-SMP Lisps on Windows, Linux, and the Mac.
 </p>
 
-<p id="134">
+<p id="137">
 The <a href="#cg-non-back-2">first
 subsection</a> describes changes to Common Graphics and
 the IDE that are non backward-compatible. Please review this section
 and make whatever necessary changes to your code to obtain the desired
 behavior.
 </p>
-<p id="135">
+<p id="138">
 The <a href="#cg-other-2">second subsection</a>
 describes other changes to Common Graphics and the IDE. These should
 not require code changes (please tell us if any do, because that may
 indicate a bug).
 </p>
-<p id="136">
+<p id="139">
 The section <a href="#ide-release-notes-2">Section 8.4 IDE release notes</a> and its
 subsections provide information about the IDE.
 </p>
 
-<hr><h2 id="137"><a name="cg-significant-new-2">8.1 Significant changes in Common Graphics</a></h2>
+<hr><h2 id="140"><a name="cg-significant-new-2">8.1 Significant changes in Common Graphics</a></h2>
 
 
-<p id="138">
+<p id="141">
 Most changes to Common Graphics in Allegro CL 10.1 are bug fixes and
 incremental improvements. There is also the following change which
 assists in identifying the causes of compiler warnings.
 </p>
 
 <ol>
-<li id="139">
+<li id="142">
 <b>New tools for identifying code that causes compiler warnings.</b>
 The dialog that shows compilation warnings has a new button for
 showing one of the functions that has warnings in the editor.  And
@@ -1214,15 +1244,15 @@ a runtime error is signaled for a call in a function whose source code
 location is known, the restarts dialog will include a restart for
 showing the calling function in the editor, and it will also select
 the form for the erroring call if source debug info is present.
-<p id="140">
+<p id="143">
 Here is an example of the pop-up window followed by a picture of the
 editor. There are two functions whose compilation signaled warnings,
 the first because the argument was unused and the other (the third
 definition) because an unbound, undeclared variable (y) is used.
 </p>
-<p id="141"><img src="pictures/compiler-warn-popup.jpg"></p>
+<p id="144"><img src="pictures/compiler-warn-popup.jpg"></p>
 
-<p id="142"><img src="pictures/comp-warn-plus-ed-ex.jpg"></p>
+<p id="145"><img src="pictures/comp-warn-plus-ed-ex.jpg"></p>
 
 </li>
 </ol>
@@ -1230,9 +1260,9 @@ definition) because an unbound, undeclared variable (y) is used.
 
 
 
-<hr><h2 id="143"><a name="cg-non-back-2">8.2 Non-backward-compatible changes in Common Graphics</a></h2>
+<hr><h2 id="146"><a name="cg-non-back-2">8.2 Non-backward-compatible changes in Common Graphics</a></h2>
 
-<p id="144">
+<p id="147">
 There are no non-backward compatible changes in release 10.1.
 </p>
 
@@ -1241,13 +1271,13 @@ There are no non-backward compatible changes in release 10.1.
 
 
 
-<hr><h2 id="145"><a name="cg-other-2">8.3 Other changes in Common Graphics</a></h2>
+<hr><h2 id="148"><a name="cg-other-2">8.3 Other changes in Common Graphics</a></h2>
 
 
 
 
 <ol>
-<li id="146">
+<li id="149">
 <b>New arguments to add-toolbar and remove-toolbar</b>. Additional
 optional arguments to <a href="operators/cg/a/add-toolbar.htm"><b>add-toolbar</b></a> and <a href="operators/cg/r/remove-toolbar.htm"><b>remove-toolbar</b></a> control whether existing
 toolbars and child-windows are rezied (for
@@ -1256,7 +1286,7 @@ toolbars and child-windows are rezied (for
 arguments have in fact been present for several releases but not
 documented until now.
 </li>
-<li id="147">
+<li id="150">
 <b>New function monitor-info</b>. The function <a href="operators/cg/m/monitor-info.htm"><b>monitor-info</b></a> returns information about
 all the monitors that are present. This function returns a list whose
 length is the number of monitors. For Common Graphics on GTK, the
@@ -1265,7 +1295,7 @@ specifting the coordinate range of the monitor. On Windows, the list
 elements are four element lists with the same first element and
 additional information in the remaining elements.
 </li>
-<li id="148">
+<li id="151">
 <b>The clipboard on Windows can contain items at custom
 locations</b>. See <a href="operators/cg/c/clipboard-object.htm"><b>clipboard-object</b></a> for a discussion of clipboard
 locations passed as the value of
@@ -1273,7 +1303,7 @@ the (required) <i>clipboard-format</i>
 argument. Examples show how such items can be accessed by the Lisp
 application that posted them and by other Lisp applications.
 </li>
-<li id="149">
+<li id="152">
 On the Mac, the Common Graphics "Alt" is now the Mac's Option/Alt key
 rather than the Command key as before.  This is more consistent with
 other applications, and reduces conflicts with global Mac keyboard
@@ -1283,7 +1313,7 @@ variable <code>cg.gtk::*use-option-key-for-alt*</code>
 to <code>nil</code>, though we hope that that is not
 needed.
 </li>
-<li id="150">
+<li id="153">
 On the Mac, the Command key (sometimes along with the
 Option key) can now be used with the arrow keys to scroll by pages and
 to move to the start and end.  This applies to the text-editing
@@ -1295,50 +1325,50 @@ needed keystrokes.
 </li>
 </ol>
 
-<hr><h2 id="151"><a name="cg-bug-fixes-3">8.3.1 Miscellaneous bug fixes in Common Graphics</a></h2>
+<hr><h2 id="154"><a name="cg-bug-fixes-3">8.3.1 Miscellaneous bug fixes in Common Graphics</a></h2>
 
 <ol>
-<li id="152">
+<li id="155">
 Fixed: The function <a href="operators/cg/f/fill-circle.htm"><b>fill-circle</b></a> drew in the wrong place when
 <a href="variables/cg/s_antialiasing_s.htm"><code>*antialiasing*</code></a> is true
 and the window is scrolled.
 </li>
-<li id="153">
+<li id="156">
 Fixed: Drawing with a <a href="operators/cg/f/fill-texture.htm"><b>fill-texture</b></a> did not align textures properly
 when the window is scrolled.
 </li>
-<li id="154">
+<li id="157">
 Fixed: Keypresses on non-English keyboards that produced
 multi-byte characters were not handled correctly by Common
 Graphics. (Patched for 10.0.)
 </li>
-<li id="155">
+<li id="158">
 Fixed: Common Graphics reversed the behavior of the
 commands on the Microsoft Windows right-click pop-up menu on a window
 scrollbar to scroll to either the top or the bottom of the window.
 (Patched for 10.0.)
 </li>
-<li id="156">
+<li id="159">
 The file dialog on Windows could crash when no
 :default-extension argument is passed. (Patched in 10.0.)
 </li>
-<li id="157">
+<li id="160">
 Fixed: <a href="../ansicl/dictentr/setfpset.htm"><b>setf</b></a>'ing
 <a href="operators/cg/s/stream-origin.htm"><b>stream-origin</b></a> failed within
 <a href="operators/cg/w/with-delayed-redraw.htm"><b>with-delayed-redraw</b></a>.
 </li>
-<li id="158">
+<li id="161">
 Fixed: in <a href="classes/cg/grid-widget.htm"><code>grid-widget</code></a>s, keystrokes such as Alt-O to invoke
 the "OK" default-button still work while editing text in a grid
 cell.
 </li>
-<li id="159">
+<li id="162">
 Fixed: in <a href="classes/cg/grid-widget.htm"><code>grid-widget</code></a>s,
 hangs could occur when dragging a grid row or column past the end of
 its section to cause the section to auto-scroll, especially for a
 larger grid that's drawing lots of stuff.
 </li>
-<li id="160">
+<li id="163">
 Fixed: in <a href="classes/cg/grid-widget.htm"><code>grid-widget</code></a>s,
 when the <a href="operators/cg/e/edit-start-trigger.htm"><b>edit-start-trigger</b></a> of a grid cell is
 <code>:get-focus</code>, the text editing will begin whenever
@@ -1346,12 +1376,12 @@ the cell gets the keyboard focus, including when selecting the dialog
 that the grid-widget is on or alt-tabbing back to the application.
 Previously it required tabbing to the cell or pressing the Enter key.
 </li>
-<li id="161">
+<li id="164">
 Fixed: on Linux and Mac, configuring a second monitor to
 the left of the primary monitor led to improper placement of IDE
 windows as well as modal dialogs in applications.
 </li>
-<li id="162">
+<li id="165">
 Fixed: programmatically moving a top-level window on the
 Mac to a different monitor left the window invisible in the Mac's
 default mode where it uses a separate "space" for each monitor.  You
@@ -1363,29 +1393,29 @@ the IDE on a secondary monitor and unplugging that monitor and
 plugging it back in could still leave the IDE invisible as well unless
 you turn off that Mission Control option.
 </li>
-<li id="163">
+<li id="166">
 Fixed: In generated Common Graphics applications on Mac and Linux,
 using the macro <a href="operators/cg/i/in-cg-process.htm"><b>in-cg-process</b></a> could lead to severe
 failure due to accidentally causing multiple lisp processes to handle
 events from the single GTK event queue.
 </li>
-<li id="164">
+<li id="167">
 Fixed: on Windows, if <a href="variables/cg/s_antialiasing_s.htm"><code>*antialiasing*</code></a> is true then the
 functions <a href="operators/cg/d/draw-to.htm"><b>draw-to</b></a> and
 <a href="operators/cg/d/draw-to-x-y.htm"><b>draw-to-x-y</b></a> did not
 update the current drawing position.
 </li>
-<li id="165">
+<li id="168">
 Fixed: on Linux and Mac, the functions
 <a href="operators/cg/a/ask-user-for-existing-pathname.htm"><b>ask-user-for-existing-pathname</b></a> and
 <a href="operators/cg/a/ask-user-for-new-pathname.htm"><b>ask-user-for-new-pathname</b></a> broke if the
 :initial-directory argument is the root directory.
 </li>
-<li id="166">
+<li id="169">
 Fixed: on Windows, <a href="operators/cg/c/clipboard-object.htm"><b>clipboard-object</b></a> can now write and read
 back text from multiple "locations" on the system clipboard.
 </li>
-<li id="167">
+<li id="170">
 Fixed: sometimes a <a href="operators/cg/f/fill-texture.htm"><b>fill-texture</b></a> could simply stop being
 drawn when using it to fill areas.
 </li>
@@ -1396,21 +1426,21 @@ drawn when using it to fill areas.
 
 
 
-<hr><h2 id="168"><a name="ide-release-notes-2">8.4 IDE release notes</a></h2>
+<hr><h2 id="171"><a name="ide-release-notes-2">8.4 IDE release notes</a></h2>
 
-<h4 id="169">
+<h4 id="172">
 The IDE is supported on the Windows SMP Lisp. It is not supported in
 the Mac or Linux SMP versions of Allegro CL 10.1. It is supported in
 the non-SMP version of those platforms.
 </h4>
-<p id="170">
+<p id="173">
 The non-SMP version runs on one hardware processor at a time, and
 corresponds to earlier versions of Allegro CL.
 </p>
 
 
 <ol>
-<li id="171">
+<li id="174">
 <b>New option show-quick-symbol-info-on-space.</b> The option
 <a href="operators/ide/show-quick-symbol-info-on-space.htm"><b>ide:show-quick-symbol-info-on-space</b></a>, if enabled
 (as it is by default) will display information about a symbol in the
@@ -1421,7 +1451,7 @@ one of the keys in such a sequence is the spacebar. If this happens,
 you can turn this option off, as described on the documentation page,
 to avoid the problem.
 </li>
-<li id="172">
+<li id="175">
 <b>New option find-in-files-search-subprojects-later.</b> The option
 <a href="operators/ide/find-in-files-search-subprojects-later.htm"><b>ide:find-in-files-search-subprojects-later</b></a>
 specifies the initial value of the <b>Search Subprojects Later</b>
@@ -1429,19 +1459,19 @@ checkbox on the <a href="ide-menus-and-dialogs/find-in-files-dialog.htm">Find In
 is remembered in the options file so it will be the same in the next
 invocation of the IDE.
 </li>
-<li id="173">
+<li id="176">
 <b>New option use-ide-debugger-on-all-processes</b>: the
 <a href="operators/ide/use-ide-debugger-on-all-processes.htm"><b>ide:use-ide-debugger-on-all-processes</b></a>
 configuration option controls controls whether the IDE's debugger will
 be used for all non-IDE processes when they signal errors, rather than
 using the base Lisp's debugger.
 </li>
-<li id="174">
+<li id="177">
 <b>The trace dialog now shows elapsed time for each traced call.</b>
 See the <a href="ide-menus-and-dialogs/trace-dialog.htm">Trace
 Dialog</a>.
 </li>
-<li id="175">
+<li id="178">
 <b>Moving the mouse over a local variable in the stepper's definition
 pane shows the current variable value</b>. See
 the <a href="ide-menus-and-dialogs/stepper-dialog.htm">Stepper
@@ -1449,35 +1479,35 @@ Dialog</a>.
 </li>
 </ol>
 
-<hr><h2 id="176"><a name="ide-bug-fixes-3">8.4.1 Miscellaneous bug fixes in the IDE</a></h2>
+<hr><h2 id="179"><a name="ide-bug-fixes-3">8.4.1 Miscellaneous bug fixes in the IDE</a></h2>
 
 <ol>
-<li id="177">
+<li id="180">
 Fixed: On the Windows platform, invoking the user's
 preferred third-party web browser for IDE help failed if Internet
 Explorer has been explicitly disabled. This includes showing Franz
 news when the Express version starts up.
 </li>
-<li id="178">
+<li id="181">
 Fixed: The Processes dialog could fail to show some
 processes in an SMP lisp, due to unpardonably sorting the global
 <a href="variables/system/s_all-processes_s.htm"><code>sys:*all-processes*</code></a>
 list.  (Patched for 10.0).
 </li>
-<li id="179">
+<li id="182">
 Fixed: In the runtime analyzer results dialog, keyboard
 shortcuts that were intended only for the main outline tab could break
 when used on other tabs.  The shortcuts also prevented typing some
 characters to move to list items that begin with those characters.
 </li>
-<li id="180">
+<li id="183">
 Fixed: When using the incremental-search option in the
 IDE's editor, and the <a href="operators/ide/warn-on-no-action-taken.htm"><b>warn-on-no-action-taken</b></a> option is also on,
 then a warning dialog awkwardly appeared while typing the search string
 when there is no match for a further typed character. The font in the
 small window for the search string is now a fixed-width font as well.
 </li>
-<li id="181">
+<li id="184">
 Fixed: On Linux and Mac, the IDE's source code editor
 sometimes did not read in the correct package, and so compilation of
 individual definitions failed.
@@ -1486,9 +1516,9 @@ individual definitions failed.
 
 
 
-<hr><h2 id="182"><a name="opening-earlier-projects-3">8.4.2 Opening projects from releases prior to 10.1</a></h2>
+<hr><h2 id="185"><a name="opening-earlier-projects-3">8.4.2 Opening projects from releases prior to 10.1</a></h2>
 
-<p id="183">
+<p id="186">
 Allegro CL 10.0 projects should open without problem in Allegro CL
 10.1. 
 </p>
@@ -1499,10 +1529,10 @@ Allegro CL 10.0 projects should open without problem in Allegro CL
 
 
 
-<hr><h2 id="184"><a name="mac-ide-2">8.5 Common Graphics and the IDE on the Mac</a></h2>
+<hr><h2 id="187"><a name="mac-ide-2">8.5 Common Graphics and the IDE on the Mac</a></h2>
 
 
-<p id="185">
+<p id="188">
 Common Graphics and the IDE and available on the Mac but only on the
 non-SMP Lisp. You must run X11 (it is in the <b>/Applications</b>
 directory and comes with recent versions of macOS and is usually
@@ -1510,11 +1540,11 @@ installed by default on 10.1, but see <a href="installation.htm#macosx-install-1
 in <a href="installation.htm">installation.htm</a> for full details). Usage is
 like that on Linux. See <a href="cgide.htm">cgide.htm</a> for details.
 </p>
-<p id="186">
+<p id="189">
 These are known problems using CG and the IDE on the Mac:
 </p>
 <ol>
-<li id="187">
+<li id="190">
 <b>Parenthesis-matching marks are drawn on pop-up windows.</b> They
 cannot be drawn directly on a lisp-edit-pane, so instead a pop-up
 window (which otherwise looks like it is drawn directly on the pane)
@@ -1528,18 +1558,18 @@ also <a href="variables/cg/s_parenthesis-match-pop-up-milliseconds_s.htm"><code>
 
 
 
-<hr><h2 id="188"><a name="cg-win-gtk-2">8.6 Functionality to handle differences between Windows and GTK</a></h2>
+<hr><h2 id="191"><a name="cg-win-gtk-2">8.6 Functionality to handle differences between Windows and GTK</a></h2>
 
-<h3 id="189">
+<h3 id="192">
 For complete information on the differences between Windows and GTK,
 please see
 <a href="cggtk-relnotes.html">cggtk-relnotes.html</a>.
 </h3>
 
-<p id="190">
+<p id="193">
 This section is repeated from the 10.0 release notes.
 </p>
-<p id="191">
+<p id="194">
 Common Graphics and the IDE run on Windows and Linux with
 GTK. Certain differences between the two operating systems and
 windowing systems mean that some things do not work the same in
@@ -1548,11 +1578,11 @@ tries to handle the differences. Some of the
 variables/operators/etc. are only available on one of the two platforms.
 </p>
 
-<h3 id="192">
+<h3 id="195">
 Known bug with menu-items and buttons
 </h3>
 
-<p id="193">
+<p id="196">
 <b>GTK Only</b>: all-black menu-items and half-black buttons.  There
 is still a mystery on the GTK platform where all button widgets can
 turn half black along a diagonal line, and all menu-items on some
@@ -1566,11 +1596,11 @@ such as the frame-child of a form window, but beyond that it is a
 total mystery.
 </p>
 
-<h4 id="194">
+<h4 id="197">
 Event handler processes
 </h4>
 
-<p id="195">
+<p id="198">
 Because Linux currently does not use native threads and Windows does,
 on Windows, all windows handle events in their own thread associated
 with the window while on Linux/GTK, there is one event-handling
@@ -1583,11 +1613,11 @@ handlers. See also <a href="operators/cg/p/process-pending-events-if-event-handl
 
 
 
-<h4 id="196">
+<h4 id="199">
 Miscellaneous
 </h4>
 
-<p id="197">
+<p id="200">
 The <a href="operators/cg/w/with-message-window.htm"><b>with-message-window</b></a> window
 is now a <a href="operators/cg/f/frameless-topmost-p.htm"><b>frameless-topmost-p</b></a>
 window on the GTK platforms to avoid problems that it had otherwise.
@@ -1599,9 +1629,9 @@ additional place such as a status bar.
 
 
 
-<hr><h2 id="198"><a name="win-pack-2">8.7 Release notes for the winapi module</a></h2>
+<hr><h2 id="201"><a name="win-pack-2">8.7 Release notes for the winapi module</a></h2>
 
-<p id="199">
+<p id="202">
 The winapi module contains certain functions, in the windows package,
 that perform OS-related tasks. See <a href="cgide.htm#nocg-winapp-1">The Windows API and a Windows API program with
 windows but without CG</a> in <a href="cgide.htm">cgide.htm</a> for
@@ -1609,7 +1639,7 @@ more information.
 </p>
 
 <ol>
-<li id="200">
+<li id="203">
 no entries
 </li>
 </ol>
@@ -1619,7 +1649,7 @@ no entries
 
 
 
-<hr><hr><h2 id="201"><a name="aserve-1">9.0 Release notes for AllegroServe</a></h2>
+<hr><hr><h2 id="204"><a name="aserve-1">9.0 Release notes for AllegroServe</a></h2>
 
 
 
@@ -1631,7 +1661,7 @@ no entries
 
 
 
-<hr><hr><h2 id="202"><a name="eli-misc-1">10.0 Release notes for The Emacs/Lisp interface</a></h2>
+<hr><hr><h2 id="205"><a name="eli-misc-1">10.0 Release notes for The Emacs/Lisp interface</a></h2>
 
 
 
@@ -1641,9 +1671,9 @@ no entries
 
 
 
-<hr><hr><h2 id="203"><a name="clx-1">11.0 Availability of CLX for Allegro CL</a></h2>
+<hr><hr><h2 id="206"><a name="clx-1">11.0 Availability of CLX for Allegro CL</a></h2>
 
-<p id="204">
+<p id="207">
 CLX (Common Lisp X) provides an interface between Common Lisp and the
 X window system. All versions of Allegro CL include a compiled
 version of CLX with the distribution. The <i>fasl</i>
@@ -1653,7 +1683,7 @@ Allegro Composer use CLX. Users wanting low-level access to an X
 server in Lisp may also want to use CLX.  CLX is not supported by
 Franz Inc.
 </p>
-<p id="205">
+<p id="208">
 The sources to CLX are supplied with the regular Allegro CL
 distributions in the <i>contrib/clx/</i> directory. Note
 that during installation, you are asked whether you wish to install
@@ -1662,21 +1692,21 @@ install it. The <i>contrib/</i> directory is not
 included in the Trial distribution, but Trial users can download the
 CLX sources from the Franz Inc. website as described next.
 </p>
-<p id="206">
+<p id="209">
 The sources to CLX are also available on the Franz Inc. web site (<a href="http://franz.com/">franz.com</a>), at the location <a href="ftp://ftp.franz.com/pub/clx/">ftp://ftp.franz.com/pub/clx/</a>.
 </p>
 
-<hr><hr><h2 id="207"><a name="orblink-1">12.0 Release notes for Orblink</a></h2>
+<hr><hr><h2 id="210"><a name="orblink-1">12.0 Release notes for Orblink</a></h2>
 
-<p id="208">
+<p id="211">
 No significant changes.
 </p>
 
 
 
-<hr><hr><h2 id="209"><a name="app-conformance-proj">Appendix A: ANSI Conformance in Allegro CL</a></h2>
+<hr><hr><h2 id="212"><a name="app-conformance-proj">Appendix A: ANSI Conformance in Allegro CL</a></h2>
 
-<p id="210">
+<p id="213">
 We discuss ANSI conformance in <a href="implementation.htm#compliance-1">Conformance with the ANSI specification</a>
 in <a href="implementation.htm">implementation.htm</a>. Elsewhere in
 <a href="implementation.htm">implementation.htm</a> we discuss specifics of our

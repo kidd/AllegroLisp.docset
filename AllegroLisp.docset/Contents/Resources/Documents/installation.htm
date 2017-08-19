@@ -1,4 +1,4 @@
-<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="acldoc-styles.css" type="text/css"><title>Installation of Allegro CL 10.1 and related products</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="introduction.htm#updates-s">Moderately revised from 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/installation.htm">10.0 version</a></td></tr></table><h1 id="2">Installation of Allegro CL 10.1 and related products</h1><p id="3">This document contains the following sections:</p><a href="#install-intro-1">1.0 Installation introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#install-definitions-2">1.1 Definitions of some terms used in this document</a><br>&nbsp;&nbsp;&nbsp;<a href="#install-sizes-2">1.2 Installation sizes and supported Operating System versions</a><br><a href="#pre-install-1">2.0 Preinstallation Steps</a><br>&nbsp;&nbsp;&nbsp;<a href="#acl-100-pre-install-2">2.1 You can leave Allegro CL 10.0 installed</a><br><a href="#install-steps-1">3.0 Installation steps</a><br><a href="#install-unix-1">4.0 Notes for installation of Allegro CL on UNIX (including Linux)</a><br>&nbsp;&nbsp;&nbsp;<a href="#ubuntu32-fix">4.1 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a><br>&nbsp;&nbsp;&nbsp;<a href="#selinux-2">4.2 Allegro CL may have problems starting up when run on SELinux</a><br>&nbsp;&nbsp;&nbsp;<a href="#unix-testing-2">4.3 Testing that the installation of Allegro CL on Unix was successful</a><br><a href="#install-windows-1">5.0 Installation on Windows</a><br>&nbsp;&nbsp;&nbsp;<a href="#windows-testing-2">5.1 Testing that the installation of Allegro CL on Windows was successful</a><br><a href="#macosx-install-1">6.0 Installation on macOS</a><br>&nbsp;&nbsp;&nbsp;<a href="#macosx-x11-2">6.1 Installing GTK and Open Motif on macOS</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#macosx-install-gtk-3">6.1.1 Installing X11 and GTK on macOS</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#macosx-x11-maverick-3">6.1.2 X11/XQuartz and updating macOS</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#macosx-x11-om-3">6.1.3 Installing OpenMotif on macOS</a><br>&nbsp;&nbsp;&nbsp;<a href="#macosx-testing-2">6.2 Testing that the installation of Allegro CL on macOS was successful</a><br><a href="#install-emacs-1">7.0 Installing Emacs from the web</a><br><a href="#install-openssl-1">8.0 Installing OpenSSL libraries</a><br><a href="#other-products-1">9.0 Other Allegro CL products</a><br><a href="#license-file-1">10.0 Getting a license file</a><br><a href="#source-install-1">11.0 Installing source code</a><br><a href="#express-install-1">12.0 The Express Edition</a><br>&nbsp;&nbsp;&nbsp;<a href="#express-license-2">12.1 Information on the Express license</a><br>&nbsp;&nbsp;&nbsp;<a href="#express-linux-ide-2">12.2 Running the IDE in Allegro CL Express on Linux</a><br>&nbsp;&nbsp;&nbsp;<a href="#express-images-2">12.3 Creating additional Express Edition images on Windows</a><br><a href="#student-install-1">13.0 The Student Edition</a><br>&nbsp;&nbsp;&nbsp;<a href="#student-installation-2">13.1 Information on installing the Student Edition</a><br>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="acldoc-styles.css" type="text/css"><title>Installation of Allegro CL 10.1 and related products</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="introduction.htm#updates-s">Moderately revised from 10.0.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/installation.htm">10.0 version</a></td></tr></table><h1 id="2">Installation of Allegro CL 10.1 and related products</h1><p id="3">This document contains the following sections:</p><a href="#install-intro-1">1.0 Installation introduction</a><br>&nbsp;&nbsp;&nbsp;<a href="#install-definitions-2">1.1 Definitions of some terms used in this document</a><br>&nbsp;&nbsp;&nbsp;<a href="#install-sizes-2">1.2 Installation sizes and supported Operating System versions</a><br><a href="#pre-install-1">2.0 Preinstallation Steps</a><br>&nbsp;&nbsp;&nbsp;<a href="#acl-100-pre-install-2">2.1 You can leave Allegro CL 10.0 installed</a><br><a href="#install-steps-1">3.0 Installation steps</a><br><a href="#install-unix-1">4.0 Notes for installation of Allegro CL on UNIX (including Linux)</a><br>&nbsp;&nbsp;&nbsp;<a href="#fedora32-fix-2">4.1 Getting 32-bit Allegro CL to run on 64-bit Fedora 25 and later</a><br>&nbsp;&nbsp;&nbsp;<a href="#ubuntu32-fix">4.2 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a><br>&nbsp;&nbsp;&nbsp;<a href="#selinux-2">4.3 Allegro CL may have problems starting up when run on SELinux</a><br>&nbsp;&nbsp;&nbsp;<a href="#unix-testing-2">4.4 Testing that the installation of Allegro CL on Unix was successful</a><br><a href="#install-windows-1">5.0 Installation on Windows</a><br>&nbsp;&nbsp;&nbsp;<a href="#windows-testing-2">5.1 Testing that the installation of Allegro CL on Windows was successful</a><br><a href="#macosx-install-1">6.0 Installation on macOS</a><br>&nbsp;&nbsp;&nbsp;<a href="#macosx-x11-2">6.1 Installing GTK and Open Motif on macOS</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#macosx-install-gtk-3">6.1.1 Installing X11 and GTK on macOS</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#macosx-x11-maverick-3">6.1.2 X11/XQuartz and updating macOS</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#macosx-x11-om-3">6.1.3 Installing OpenMotif on macOS</a><br>&nbsp;&nbsp;&nbsp;<a href="#macosx-testing-2">6.2 Testing that the installation of Allegro CL on macOS was successful</a><br><a href="#install-emacs-1">7.0 Installing Emacs from the web</a><br><a href="#install-openssl-1">8.0 Installing OpenSSL libraries</a><br><a href="#other-products-1">9.0 Other Allegro CL products</a><br><a href="#license-file-1">10.0 Getting a license file</a><br><a href="#source-install-1">11.0 Installing source code</a><br><a href="#express-install-1">12.0 The Express Edition</a><br>&nbsp;&nbsp;&nbsp;<a href="#express-license-2">12.1 Information on the Express license</a><br>&nbsp;&nbsp;&nbsp;<a href="#express-linux-ide-2">12.2 Running the IDE in Allegro CL Express on Linux</a><br>&nbsp;&nbsp;&nbsp;<a href="#express-images-2">12.3 Creating additional Express Edition images on Windows</a><br><a href="#student-install-1">13.0 The Student Edition</a><br>&nbsp;&nbsp;&nbsp;<a href="#student-installation-2">13.1 Information on installing the Student Edition</a><br>
 <p id="4">
 Allegro CL 10.1 is provided in two versions on those platforms which
 support SMP: an SMP version which can use more than one hardware
@@ -191,7 +191,7 @@ FreeBSD 9.3 (no SMP version)
 </li>
 <li id="35">
 Linux (x86), glibc 2.12; RHEL/CentOS 6.x <b>Note</b> Ubuntu no longer supports 32-bit libraries so 32-bit Allegro CL requires special
-action. See <a href="#ubuntu32-fix">Section 4.1 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
+action. See <a href="#ubuntu32-fix">Section 4.2 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
 information.
 </li>
 <li id="36">
@@ -223,7 +223,7 @@ Before installing Allegro CL, consider the following:
 <li id="40">
 <b>Note for Ubuntu users</b>: Because Ubuntu no longer supports 32-bit
 libraries, 32-bit Allegro CL requires special
-action. See <a href="#ubuntu32-fix">Section 4.1 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
+action. See <a href="#ubuntu32-fix">Section 4.2 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
 information.
 </li>
 
@@ -410,9 +410,13 @@ more details.
 </li>
 <li id="65">
 <b>Test Allegro CL: try to start Allegro CL as described
-in <a href="startup.htm">startup.htm</a></b>. Lisp may not
+in <a href="startup.htm">startup.htm</a></b>. 
+Lisp may not
+start up for users running a 32-bit Lisp on Fedora 25 or later:
+see <a href="#fedora32-fix-2">Section 4.1 Getting 32-bit Allegro CL to run on 64-bit Fedora 25 and later</a> for more
+information. Lisp may not
 start up for users running a 32-bit Lisp on Ubuntu:
-see <a href="#ubuntu32-fix">Section 4.1 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
+see <a href="#ubuntu32-fix">Section 4.2 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
 information. Users on other OS's who have difficulty at this point,
 contact <a href="mailto:support@franz.com">support@franz.com</a> for
 assistance.
@@ -436,10 +440,10 @@ installation. Do this by starting Lisp and evaluating
 
 <p id="68">
 Once Allegro CL is installed, see
-<a href="#unix-testing-2">Section 4.3 Testing that the installation of Allegro CL on Unix was successful</a> for information on how
+<a href="#unix-testing-2">Section 4.4 Testing that the installation of Allegro CL on Unix was successful</a> for information on how
 to test that Allegro CL is installed properly. Linux users who have
 trouble starting Allegro CL after installation
-see <a href="#selinux-2">Section 4.2 Allegro CL may have problems starting up when run on SELinux</a>.
+see <a href="#selinux-2">Section 4.3 Allegro CL may have problems starting up when run on SELinux</a>.
 </p>
 <p id="69">
 Also see these documentation files in the <b>doc/</b> subdirectory to
@@ -523,9 +527,34 @@ documentation for information on how to install this file as a valid
 font.
 </p>
 
-<hr><h2 id="80"><a name="ubuntu32-fix">4.1 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a></h2>
+<hr><h2 id="80"><a name="fedora32-fix-2">4.1 Getting 32-bit Allegro CL to run on 64-bit Fedora 25 and later</a></h2>
 
 <p id="81">
+The Fedora Linux operating system, starting with release 25, requires
+the following steps for 32-bit Allegro CL to run successfully (no
+additional steps are required for 64-bit Allegro CL). Steps 3 and 4
+are for Common Graphics and the IDE. Run each of the following commands:
+</p>
+<ol>
+<li id="82">
+<b><code>sudo dnf install libc.i686</code></b>
+</li>
+<li id="83">
+<b><code>sudo dnf install glibc.i686</code></b>
+</li>
+<li id="84">
+<b><code>sudo dnf libcanberra-gtk2-0.30-11.fc24.i686</code></b>
+</li>
+<li id="85">
+<b><code>sudo dnf install PackageKit-gtk-module-1.1.5-1.fc25.i686</code></b>
+</li>
+</ol>
+
+
+
+<hr><h2 id="86"><a name="ubuntu32-fix">4.2 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a></h2>
+
+<p id="87">
 The Ubuntu Linux operating system, starting with release 14.04,
 stopped supplying the 32-bit libraries needed by 32-bit Allegro CL,
 including Allegro CL Express Edition. While 32-bit Allegro CL did
@@ -536,27 +565,27 @@ Allegro CL with Unbuntu 14.04 (and later). As a consequence, we
 announced that that OS was no longer supported for 32-bit
 Lisps. (64-bit Allegro CL was not affected.)
 </p>
-<p id="82">
+<p id="88">
 Then an Allegro CL user pointed out that there was in fact a way to
 get 32-bit Allegro CL to work. Here are the steps:
 </p>
 <ol>
-<li id="83">
+<li id="89">
 Install Allegro CL as described in the Installation Guide. Try to
 start the Integrated Development Environment (IDE) up by invoking the
 <b>allegro</b> executable. If this works, you are done as you have the
 necessary libraries. If this fails, go to step 2.
 </li>
-<li id="84">
+<li id="90">
 Execute the following commands (you need sudo permissions to execute
 them -- ask your system administrator if necessary):
-<pre id="85">
+<pre id="91">
   sudo dpkg --add-architecture i386
   sudo apt-get update
   sudo apt-get install libc6:i386
   sudo apt-get install libgtk2.0-0:i386
 </pre>
-<p id="86">
+<p id="92">
 Once these commands complete, 32-bit Allegro CL should
 work. Contact <a href="mailto:support@franz.com">support@franz.com</a>
 if you have any problems.
@@ -567,9 +596,9 @@ if you have any problems.
 
 
 
-<hr><h2 id="87"><a name="selinux-2">4.2 Allegro CL may have problems starting up when run on SELinux</a></h2>
+<hr><h2 id="93"><a name="selinux-2">4.3 Allegro CL may have problems starting up when run on SELinux</a></h2>
 
-<p id="88">
+<p id="94">
 Security-Enhanced Linux, or SELinux is a feature that is available on
 many modern versions of Linux and is enabled by default on some. It
 affects the way shared libraries are loaded and that can prevent
@@ -577,11 +606,11 @@ Allegro CL from starting up. The error you will likely see is
 something like:
 </p>
 
-<pre id="89">
+<pre id="95">
 cannot restore segment prot after reloc: Permission denied
 </pre>
 
-<p id="90">
+<p id="96">
 Or the error can be <b>segmentation fault</b>. The solution is to mark
 the shared object files for special handling or to disable
 SELinux. See
@@ -594,9 +623,9 @@ FAQ</a> for futher details.
 
 
 
-<hr><h2 id="91"><a name="unix-testing-2">4.3 Testing that the installation of Allegro CL on Unix was successful</a></h2>
+<hr><h2 id="97"><a name="unix-testing-2">4.4 Testing that the installation of Allegro CL on Unix was successful</a></h2>
 
-<p id="92">
+<p id="98">
 We will test the installation by starting Allegro CL from a shell
 prompt. To a shell prompt, enter the full path of the Allegro CL
 executable (on installation, one of <i>mlisp</i>,
@@ -604,7 +633,7 @@ executable (on installation, one of <i>mlisp</i>,
 <i>mlisp8</i>; only <i>alisp</i> is
 provided with the Express Edition) to the shell prompt. 
 </p>
-<p id="93">
+<p id="99">
 Assuming the
 Allegro directory is <i>/usr/local/acl101a/</i>
 <i>/usr/local/acl101b/</i>
@@ -612,27 +641,27 @@ Allegro directory is <i>/usr/local/acl101a/</i>
 and that
 you wish to run the <i>mlisp</i> executable, enter:
 </p>
-<pre id="94">
+<pre id="100">
 /usr/local/acl101/mlisp
 </pre>
 
 
-<p id="95">
+<p id="101">
 With the Express Edition, only <i>alisp</i> is provided,
 so do:
 </p>
-<pre id="96">
+<pre id="102">
 /usr/local/acl101-express/alisp
 </pre>
 
-<p id="97">
+<p id="103">
 Allegro CL should start up. You will see the banner and perhaps
 additional messages, and the first prompt (the exact text depends on
 the platform and which image you are running, so you may see something
 slightly different from what is printed here):
 </p>
 
-<pre id="98">
+<pre id="104">
 Allegro CL Enterprise Edition 10.0 
 Copyright (C) 1985-2015, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
 ;; Optimization settings: safety 1, space 1, speed 1, debug 2.
@@ -643,7 +672,7 @@ user(1):
 </pre>
 
 
-<pre id="99">
+<pre id="105">
 Allegro CL Enterprise Edition 9101
 Copyright (C) 1985-2015, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
 ;; Optimization settings: safety 1, space 1, speed 1, debug 2.
@@ -654,7 +683,7 @@ user(1):
 </pre>
 
 
-<pre id="100">
+<pre id="106">
 Allegro CL Enterprise Edition 10.1
 Copyright (C) 1985-2015, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
 ;; Optimization settings: safety 1, space 1, speed 1, debug 2.
@@ -666,24 +695,24 @@ user(1):
 
 
 
-<p id="101">
+<p id="107">
 To the Lisp prompt <code>user(1):</code>, enter some form to ensure evaluation is working, like
 <code>(* 20 30)</code>:
 </p>
-<pre id="102">
+<pre id="108">
 user(1): (* 20 30)
 600
 user(2):
 </pre>
-<p id="103">
+<p id="109">
 You may now either
 exit Allegro CL by entering <code>:exit</code> (see the
 top-level command <a href="tpl-commands/exit.htm"><b>:exit</b></a>):
 </p>
-<pre id="104">
+<pre id="110">
 user(2): :exit
 </pre>
-<p id="105">
+<p id="111">
 or you may continue using Allegro CL.
 </p>
 
@@ -691,49 +720,49 @@ or you may continue using Allegro CL.
 
 
 
-<hr><hr><h2 id="106"><a name="install-windows-1">5.0 Installation on Windows</a></h2>
+<hr><hr><h2 id="112"><a name="install-windows-1">5.0 Installation on Windows</a></h2>
 
-<h3 id="107">
+<h3 id="113">
 Download the software
 </h3>
-<p id="108">
+<p id="114">
 Download the distribution file specific to the platform you are using
 (this file will have a name like acl100.exe). Download into a location of your
 choice.
 </p>
 
 
-<h4 id="109">
+<h4 id="115">
 Instructions for Enterprise, Professional, and Student versions
 </h4>
 <ol>
-<li id="110">
+<li id="116">
 <b>Exit all running programs</b>. Installation is most likely to be
 trouble free if there are no other programs running.
 </li>
 
-<li id="111">
+<li id="117">
 <b>Display the Windows Explorer</b>. Find the
 acl100.exe file you downloaded. 
 (Express
 users: the file is
 acl100-express.exe).
 </li>
-<li id="112">
+<li id="118">
 <b>Double click on acl100.exe</b> to
 execute it. This starts an installation program. During the
 installation, dialogs appear asking for input, as described in the
 next steps. (If you are installing the Express Edition, the filename is
 <i>acl82-express.exe</i>.)
 </li>
-<li id="113">
+<li id="119">
 <b>First dialog</b>: this is an informational dialog telling you again
 to exit all other running programs and informing you about licenses
 and copyrights. Click on the Cancel button if you wish to stop the
 installation (perhaps to exit running programs). Click Next to
 continue.
 </li>
-<li id="114">
+<li id="120">
 <b>Second dialog</b>: this dialog asks you for the location of the
 Allegro directory. A default is provided: <b>c:/acl100/</b>
 (<b>c:/acl100-express/</b> for the Express Edition) on main
@@ -745,13 +774,13 @@ you want to continue.  Once you have selected the desired location for
 the Allegro directory, click the Next button. You can cancel by
 clicking the Cancel button.
 </li>
-<li id="115">
+<li id="121">
 <b>Third dialog</b>: this dialog asks if you wish to leave out
 portions of the distribution: the [Allegro CL] documentation (about 26
 Mbytes), the ANSI spec documentation (about 11 Mbytes), and
 contributed files (about 3300 Kbytes). By default, the first two are
 included and the third left out. 
-<p id="116">
+<p id="122">
 If you do not install either the Allegro CL documentation and the ANSI
 spec, shortcuts relating to documentation on the Allegro CL menu item
 on the Start menu will link you to versions on the Franz Inc. web
@@ -760,13 +789,13 @@ documentation.) If you include the Allegro CL documentation but not
 the ANSI spec, links from the Allegro CL documentation to the ANSI
 spec will not work.
 </p>
-<p id="117">
+<p id="123">
 Check or uncheck the desired options. Click Cancel to cancel
 installation, Back to choose a different location, and Next to
 continue. If you click Next again, the installation will take place.
 </p>
 </li>
-<li id="118">
+<li id="124">
 <b>A dialog may appear when the installation is finished</b> telling
 you you must restart the machine to complete the installation and
 asking if you want to do this now. (Restarting is not always
@@ -775,7 +804,7 @@ does not restart the machine. If restarting is required and you choose
 to delay it, do not use Allegro CL until you have restarted.  We
 assume in the subsequent steps you have restarted if necessary.)
 </li>
-<li id="119">
+<li id="125">
 <b>Copy the license file into the Allegro directory</b> and change its
 name to <i>devel.lic</i>. (The license for Allegro
 Express is included with the product. Allegro Express users can skip
@@ -785,10 +814,10 @@ this step.)
 
 </ol>
 <a name="afterinstall"></a>
-<h4 id="120">
+<h4 id="126">
 Run sys:update-allegro
 </h4>
-<p id="121">
+<p id="127">
 Patches (correcting bugs or providing
 new features) are released for Allegro CL regularly. For normal usage,
 we recommend that you update regularly, including immediately after
@@ -803,7 +832,7 @@ perform both tasks (and ask for administrator privileges if it needs
 to be administrator to do so).
 </p>
 
-<p id="122">
+<p id="128">
 Allegro CL is now installed.  See these documentation files to start
 with. (Allegro CL Express and Allegro CL Student users look at
 documentation on the <a href="http://franz.com/">Franz
@@ -813,28 +842,28 @@ you how to download your own copy if desired.)
 </p>
 
 <ul>
-<li id="123">
+<li id="129">
 <a href="release-notes.htm">release-notes.htm</a>:
 the Release Notes for Allegro CL and all add-on products.
 </li>
-<li id="124">
+<li id="130">
 <a href="startup.htm">startup.htm</a>: this document
 describes how to start Allegro CL and what the startup procedure
 is. See particularly <a href="startup.htm#starting-windows-2">Starting on Windows machines</a> in
 that document.
 </li>
-<li id="125">
+<li id="131">
 <a href="introduction.htm">introduction.htm</a>: this
 document is the introduction to and overview of the documentation and
 has links to all other documents.
 </li>
-<li id="126">
+<li id="132">
 <a href="cgide.htm">cgide.htm</a>: this document is
 the introductory document for Common Graphics and the Integrated
 Development Environment. It contains pointers to the rest of the CG
 and IDE documentation.
 </li>
-<li id="127">
+<li id="133">
 <a href="eli.htm">eli.htm</a>: this is the
 documentation file for the Emacs-Lisp interface. While the IDE can
 provide a substitute for running Allegro CL as a subprocess of Emacs,
@@ -847,13 +876,13 @@ interface code is loaded.
 </li>
 </ul>
 
-<p id="128">
+<p id="134">
 The next section describes how to test the installation on Windows.
 </p>
 
-<hr><h2 id="129"><a name="windows-testing-2">5.1 Testing that the installation of Allegro CL on Windows was successful</a></h2>
+<hr><h2 id="135"><a name="windows-testing-2">5.1 Testing that the installation of Allegro CL on Windows was successful</a></h2>
 
-<p id="130">
+<p id="136">
 We will test the installation by starting Allegro CL from the menu.
 You should see an `Allegro CL
 10.0' item on the Programs submenu of the Start menu.
@@ -865,17 +894,17 @@ the IDE in this example. The Express does not have submenus for
 images, since only one is supplied (there are submenus for other
 things).
 </p>
-<p id="131">
+<p id="137">
 Choose 
 </p>
 <blockquote>
-<p id="132">
+<p id="138">
 <b>Start | Programs | Allegro CL
 10.0 | Modern ACL Images | Allegro CL
 10.0 (w IDE, Modern)</b>
 </p>
 </blockquote>
-<p id="133">
+<p id="139">
 (or <b>Start | Programs | Allegro CL
 10.0 Free Express Edition | Allegro CL
 10.0 Free Express Edition</b> or <b>Start | Programs | Allegro CL
@@ -888,9 +917,9 @@ with some dialogs which you must resond to or dismiss (dismissing is
 okay). After everything is started, your screen will have various
 windows, including the Debug (i.e. Listener) window shown here:
 </p>
-<p id="134"><img src="pictures/debug.jpg"></p>
+<p id="140"><img src="pictures/debug.jpg"></p>
 
-<p id="135">
+<p id="141">
 One of the dialogs that may appear, if you have worked on projects in
 the IDE in earlier sessions, is the
 <a href="ide-menus-and-dialogs/startup-dialog.htm">Startup Action</a>
@@ -899,15 +928,15 @@ projects. (We do not show it because we are assuming you have just
 installed Allegro CL. Note the Express edition does not have a startup
 dialog.)
 </p>
-<p id="136">
+<p id="142">
 To the prompt <code>cg-user(1):</code>, enter the form
 <code>(+ 1 2)</code>:
 </p>
-<pre id="137">
+<pre id="143">
 cg-user(1): (+ 1 2)
 3
 </pre>
-<p id="138">
+<p id="144">
 You may now either exit Allegro CL by
 choosing <a href="ide-menus-and-dialogs/file-menu.htm#exit">File | Exit</a> (that is, the
 <b>Exit</b> choice from the <b>File</b> menu) or you may continue
@@ -922,13 +951,13 @@ if you really want to exit. Answer Yes.
 
 
 
-<hr><hr><h2 id="139"><a name="macosx-install-1">6.0 Installation on macOS</a></h2>
+<hr><hr><h2 id="145"><a name="macosx-install-1">6.0 Installation on macOS</a></h2>
 
 
 
 <a name="back-from-xcode"></a>
 
-<p id="140">
+<p id="146">
 Allegro CL on macOS is distributed both as a
 <i>dmg</i> file and as a <i>bz2</i> file (there is no <i>bz2</i> file
 available for the Allegro CL Express edition). You may install using
@@ -941,43 +970,43 @@ in <a href="#macosx-x11-2">Section 6.1 Installing GTK and Open Motif on macOS</a
 section assumes you are installing with the <i>dmg</i> file.
 </p>
 
-<p id="141">
+<p id="147">
 There are various <i>dmg</i> files for Allegro CL 10.2, depending on what 
 product you are installing (64 bit with SMP but no IDE, 64-bit without SMP but with IDE, or 32-bit with IDE). The file names are:
 </p>
 <ul>
-<li id="142">
+<li id="148">
 acl101-macosx-x64.dmg
 </li>
-<li id="143">
+<li id="149">
 acl101-smp-macosx-x64.dmg
 </li>
-<li id="144">
+<li id="150">
 acl101-macosx-x86.dmg
 </li>
 </ul>
-<p id="145">
+<p id="151">
 Allegro CL requires macOS 10.10 or later.
 </p>
-<p id="146">
+<p id="152">
 This is how to install Allegro CL on macOS:
 </p>
 
 <ol>
-<li id="147">
+<li id="153">
 <b>Download the file to the local hard disk.</b>
 </li>
-<li id="148">
+<li id="154">
 <b>Find the <i>dmg</i> file in the Finder and double-click on it.</b>
 This will will open the <i>dmg</i> file and and display a window
 similar to the illustration, which is from the 64-bit non-SMP version
 -- for other choices, there will be obvious changes (such as 32
 instead of 64, SMP appearing, etc.)
 
-<p id="149"><img src="pictures/mac-install1.jpg"></p>
+<p id="155"><img src="pictures/mac-install1.jpg"></p>
 
 </li>
-<li id="150">
+<li id="156">
 <b>Drag the AllegroCL icon</b> to the Applications directory. (The
 picture shows AllegroCL64 in the picture but your name may be
 different depending on what you are installing).
@@ -986,87 +1015,87 @@ the installation as Administrator at this point. Please do so.
 </li>
 </ol>
 
-<p id="151">
+<p id="157">
 Allegro CL will then be installed (a progress bar will be displayed
 during installation). Once it is done, double click
 on <b>Applications</b> and you should see an entry for Allegro CL.
 </p>
 
-<h3 id="152">
+<h3 id="158">
 Installing the License File
 </h3>
 
-<p id="153">
+<p id="159">
 Again, try to start Allegro CL with the IDE. If you need to install
 the license file, you will get a message like that is the picture (if
 you do not need a license file or one is already present, Allegro CL
 will just start up). This will not work when starting mlisp or alisp.
 </p>
 
-<p id="154"><img src="pictures/mac-install2.jpg"></p>
-<p id="155">
+<p id="160"><img src="pictures/mac-install2.jpg"></p>
+<p id="161">
 Make sure that you have a valid license file (the license file is supplied
 separately, as described in
 <a href="#license-file-1">Section 10.0 Getting a license file</a>). It need not be
 named <b>devel.lic</b> (the name will be changed when it is copied).
 </p>
-<p id="156">
+<p id="162">
 <b>Click on the Install devel.lic button</b>. You will see a Finder
 Window. Navigate to your devel.lic file and double click on it. It
 will be copied to the correct location in the Allegro CL application.
 </p>
-<p id="157">
+<p id="163">
 If the GTK Frame is not needed or already installed, Allegro CL will
 start up. If not, you will see a message that the GTK Framework is not
 installed, as shown in the illustration.
 </p>
-<p id="158"><img src="pictures/mac-install3.jpg"></p>
+<p id="164"><img src="pictures/mac-install3.jpg"></p>
 
-<p id="159">
+<p id="165">
 Simple click on the Install GTK button. You may again be asked to
 authenticate by providing the administrator password. The GTK
 Framework will then be installed. (This takes a few seconds, but no
 progress bar is displayed).
 </p>
-<p id="160">
+<p id="166">
 That message will also appear if the GTK Framework is out of date or
 does not work. If your have upgraded to macOS 10.10, the existing
 version of the GTK Framework will fail. When you update Allegro CL
 with <b>update.sh</b>, a new version of the GTK Framework will be
 download and will install on first use by the IDE.
 </p>
-<p id="161">
+<p id="167">
 Allegro CL should start up when the GTK Framework installation is complete.
 </p>
 
 
 
 
-<h3 id="162">
+<h3 id="168">
 Download patches
 </h3>
-<p id="163">
+<p id="169">
 You should download available patches. See <a href="operators/system/update-allegro.htm"><b>sys:update-allegro</b></a>. 
 </p>
 
 
-<hr><h2 id="164"><a name="macosx-x11-2">6.1 Installing GTK and Open Motif on macOS</a></h2>
+<hr><h2 id="170"><a name="macosx-x11-2">6.1 Installing GTK and Open Motif on macOS</a></h2>
 
 
-<p id="165">
+<p id="171">
 The <i>dmg</i> installation described above takes care of installing
 GTK. If you are using CLIM, you need to install Open Motif. If you
 installed using the <i>bz2</i> file and wish to use the IDE, you need
 to install GTK as described in this section.
 </p>
-<p id="166">
+<p id="172">
 The IDE/Common Graphics require GTK, and CLIM additionally requires
 the OpenMotif libraries.
 </p>
 
-<hr><h2 id="167"><a name="macosx-install-gtk-3">6.1.1 Installing X11 and GTK on macOS</a></h2>
+<hr><h2 id="173"><a name="macosx-install-gtk-3">6.1.1 Installing X11 and GTK on macOS</a></h2>
 
-<p id="168">
+<p id="174">
 You
 can install X11 by downloading and
 installing <a href="http://xquartz.macosforge.org/landing/">XQuartz</a>. (Look
@@ -1074,7 +1103,7 @@ in the <b>Utilities</b> sub-folder of the <b>Applications</b> folder
 to see if X11 is installed.) 
 </p>
 
-<p id="169">
+<p id="175">
 <b>Download</b>
 <a href="http://franz.com/ftp/pub/macosx/GTK+-Framework-2.22.dmg">http://franz.com/ftp/pub/macosx/GTK+-Framework-2.22.dmg</a> and
 open it. In the Finder window that pops up, drag
@@ -1082,20 +1111,20 @@ the <b>Gtk.framework</b> file onto <b>Frameworks</b> (an alias for
 /Library/Frameworks) On the right. This will install the Gtk
 framework in the right place on your system.
 </p>
-<p id="170">
+<p id="176">
 If you should get an error message about insufficient permissions,
 it is likely you have an older version of the framework installed. To
 get rid of the old version, type this into a terminal window:
 </p>
-<pre id="171">
+<pre id="177">
  sudo rm -rf /Library/Frameworks/{Gtk,Cairo,GLib}.framework
 </pre>
 
-<p id="172">
+<p id="178">
 and retry this step.
 </p>
 
-<p id="173">
+<p id="179">
 After the <b>Gtk.framework</b> file is installed in this directory,
 the IDE and Common Graphics (see <a href="cgide.htm">cgide.htm</a>) will be
 ready to use.
@@ -1103,53 +1132,53 @@ ready to use.
 
 
 
-<hr><h2 id="174"><a name="macosx-x11-maverick-3">6.1.2 X11/XQuartz and updating macOS</a></h2>
+<hr><h2 id="180"><a name="macosx-x11-maverick-3">6.1.2 X11/XQuartz and updating macOS</a></h2>
 
-<p id="175">
+<p id="181">
 When you upgrade a macOS version, you may have to install the latest
 XQuartz version
 from <a href="http://xquartz.macosforge.org/landing/">http://xquartz.macosforge.org/landing/</a>.
 </p> 
-<p id="176">
+<p id="182">
 The symptom of a broken XQuartz is blank rectangles that should be filled
 with text in Common Graphics and Gruff displays.
 </p>
 
 
 
-<hr><h2 id="177"><a name="macosx-x11-om-3">6.1.3 Installing OpenMotif on macOS</a></h2>
+<hr><h2 id="183"><a name="macosx-x11-om-3">6.1.3 Installing OpenMotif on macOS</a></h2>
 
-<p id="178">
+<p id="184">
 The steps are:
 </p>
 <ol>
-<li id="179">
+<li id="185">
 <b>Install Apple's Xcode</b>. This may already be installed. If not,
 download it from <b>developer.apple.com/xcode/</b> and install.
 </li>
-<li id="180">
+<li id="186">
 <b>Install Mac Ports</b> (if
 necessary). See <a href="http://www.macports.org/">http://www.macports.org/</a>.
 </li>
-<li id="181">
+<li id="187">
 <b>Make sure Mac Ports is setup for universal binaries</b>. Do this by
 editing the file <b>/opt/local/etc/macports/macports.conf</b>. Make
 sure the line defining <code>universal_archs</code> contains
 just <code>i386</code> and <code>x86_64</code> (order does
 not matter). That is make sure the line is either: 
-<pre id="182">
+<pre id="188">
 universal_archs i386 x86_64
 </pre>
 
-<p id="183">
+<p id="189">
 or
 </p>
 
-<pre id="184">
+<pre id="190">
 universal_archs x86_64 i386
 </pre>
 
-<p id="185">
+<p id="191">
 If it includes <code>ppc</code> or just <code>i386</code>,
 then change it to the above. If it includes other architectures,
 please let us know
@@ -1157,14 +1186,14 @@ please let us know
 continuing.
 </p>
 </li>
-<li id="186">
+<li id="192">
 <b>Install Open Motif</b> with the command:
-<pre id="187">
+<pre id="193">
  sudo port install openmotif +universal
 </pre>
 </li>
 </ol>
-<p id="188">
+<p id="194">
 Installation on macOS is now
 done. See <a href="#macosx-testing-2">Section 6.2 Testing that the installation of Allegro CL on macOS was successful</a>, where we
 show how to test the installation and also how to get the latest
@@ -1175,9 +1204,9 @@ patches.
 
 
 
-<hr><h2 id="189"><a name="macosx-testing-2">6.2 Testing that the installation of Allegro CL on macOS was successful</a></h2>
+<hr><h2 id="195"><a name="macosx-testing-2">6.2 Testing that the installation of Allegro CL on macOS was successful</a></h2>
 
-<p id="190">
+<p id="196">
 Make sure you have downloaded patches with <a href="operators/system/update-allegro.htm"><b>sys:update-allegro</b></a>. The allegro image may
 not start because it may needs updates installed and images
 updated. In that case, start one of the non-IDE images (such
@@ -1186,7 +1215,7 @@ evaluate <code>(sys:update-allegro)</code>, exit Lisp, and run
 <b>update.sh</b>. Once images are updated, the <b>allegro</b>
 executable will work.
 </p>
-<p id="191">
+<p id="197">
 We will test the installation by starting Allegro CL from a Terminal
 Window. To the prompt in a Terminal Window, enter the full path of the
 Allegro CL executable (on installation, one of
@@ -1195,48 +1224,48 @@ Allegro CL executable (on installation, one of
 <i>alisp</i> is provided with the Express Edition) to
 the shell prompt.
 </p>
-<p id="192">
+<p id="198">
 Assuming the Allegro is installed as described above for
 the <i>dmg</i> installation, and that you wish to run
 the <i>mlisp</i> or <i>alisp</i>
 executable, enter (replacing 64 with 32 if necessary):
 </p>
-<pre id="193">
+<pre id="199">
 
 /Applications/AllegroCL.app/Contents/Resources/mlisp
 </pre>
 
-<p id="194">
+<p id="200">
 or
 </p>
 
-<pre id="195">
+<pre id="201">
 /Applications/AllegroCL64.app/Contents/Resources/mlisp
 </pre>
 
-<p id="196">
+<p id="202">
 But for the SMP version,
 </p>
 
-<pre id="197">
+<pre id="203">
 /Applications/AllegroCL64SMP/mlisp
 </pre>
 
-<p id="198">
+<p id="204">
 With the Express Edition, only <i>alisp</i> is provided,
 so do:
 </p>
-<pre id="199">
+<pre id="205">
 /Applications/AllegroCL/alisp
 </pre>
-<p id="200">
+<p id="206">
 Allegro CL should start up. You will see the banner and perhaps
 additional messages, and the first prompt (the exact text depends on
 the platform and which image you are running, so you may see something
 slightly different from what is printed here):
 </p>
 
-<pre id="201">
+<pre id="207">
 Allegro CL Enterprise Edition 10.1
 Copyright (C) 1985-2015, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
 ;; Optimization settings: safety 1, space 1, speed 1, debug 2.
@@ -1246,24 +1275,24 @@ Copyright (C) 1985-2015, Franz Inc., Oakland, CA, USA.  All Rights Reserved.
 user(1): 
 </pre>
 
-<p id="202">
+<p id="208">
 To the Lisp prompt <code>user(1):</code>, enter some form to ensure evaluation is working, like
 <code>(* 20 30)</code>:
 </p>
-<pre id="203">
+<pre id="209">
 user(1): (* 20 30)
 600
 user(2):
 </pre>
-<p id="204">
+<p id="210">
 You may now either
 exit Allegro CL by entering <code>:exit</code> (see the
 top-level command <a href="tpl-commands/exit.htm"><b>:exit</b></a>):
 </p>
-<pre id="205">
+<pre id="211">
 user(2): :exit
 </pre>
-<p id="206">
+<p id="212">
 or you may continue using Allegro CL.
 </p>
 
@@ -1272,49 +1301,49 @@ or you may continue using Allegro CL.
 
 
 
-<hr><hr><h2 id="207"><a name="install-emacs-1">7.0 Installing Emacs from the web</a></h2>
+<hr><hr><h2 id="213"><a name="install-emacs-1">7.0 Installing Emacs from the web</a></h2>
 
-<p id="208">
+<p id="214">
 We no longer supply a version of Emacs on the CD. In past releases,
 the version on the CD quickly became out of date. Emacs is easily
 downloaded from multiple sources on the net. See <a href="http://franz.com/emacs/">franz.com/emacs/</a> for
 information.
 </p>
-<p id="209">
+<p id="215">
 There is a downloadable installer for <b>GNU Emacs on Windows</b> on
 <a href="http://franz.com/emacs/">franz.com/emacs/</a>. That
 same location has links to locations from which to download Emacs for
 Unix platforms.
 </p>
-<p id="210">
+<p id="216">
 Once you have Emacs installed on your machine, you need to have it
 load the Emacs-Lisp interface files when it starts up. You do this by
 putting the appropriate form in your .emacs file, as described:
 </p>
 <ul>
-<li id="211">
+<li id="217">
 <b>On Windows</b>, create a .emacs file or add the following to your
 existing .emacs file. (If you have a home directory on your Windows
 machine -- many people do not -- place the .emacs file
 there. Otherwise place the .emacs file in <b>c:\</b>.
-<pre id="212">
+<pre id="218">
 (load "c:/acl101/eli/fi-site-init")
 </pre>
-<p id="213">
+<p id="219">
 That form assumes you installed Allegro CL in the standard location,
  (load "c:/acl101/eli/fi-site-init")
 Replace that with the correct location if it
 is different.
 </p>
 </li>
-<li id="214">
+<li id="220">
 <b>On Unix/Linux/macOS</b>, create a .emacs file or add the
 following to your existing .emacs file. The .emacs file goes in your
 home directory.
-<pre id="215">
+<pre id="221">
 (load "/usr/local/acl101/eli/fi-site-init")
 </pre>
-<p id="216">
+<p id="222">
 That form assumes you installed Allegro CL in the standard location,
 <b>/usr/local/acl101/</b>. Replace
 that with the correct location if it is different.
@@ -1322,7 +1351,7 @@ that with the correct location if it is different.
 </li>
 </ul>
 
-<p id="217">
+<p id="223">
 The page at <a href="http://franz.com/emacs/">franz.com/emacs/</a> has
 additional recommendations for the .emacs file, along with a list of
 convenient key bindings. See also <a href="eli.htm">eli.htm</a>: this is the documentation file for
@@ -1331,12 +1360,12 @@ the Emacs-Lisp interface.
 
 
 
-<hr><hr><h2 id="218"><a name="install-openssl-1">8.0 Installing OpenSSL libraries</a></h2>
+<hr><hr><h2 id="224"><a name="install-openssl-1">8.0 Installing OpenSSL libraries</a></h2>
 
 
 
 
-<p id="219">
+<p id="225">
 Allegro CL
 supports the Secure Socket Layer (SSL) protocol, as described in
 <a href="socket.htm#ssl-1">Secure Socket Layer
@@ -1344,10 +1373,10 @@ supports the Secure Socket Layer (SSL) protocol, as described in
 libraries are necessary to make use of this facility. 
 </p>
 
-<h3 id="220">
+<h3 id="226">
 Installing OpenSSL libraries on Unix platforms except macOS
 </h3>
-<p id="221">
+<p id="227">
 Many linux platforms include OpenSSL as part of the
 regular OS installation. On such platforms, no action is typically
 required to use OpenSSL with Allegro CL. If your platform does not
@@ -1360,80 +1389,80 @@ instructions on how to ensure Allegro CL can find the OpenSSL
 libraries when required.
 </p>
 
-<h3 id="222">
+<h3 id="228">
 Installing OpenSSL libraries on macOS
 </h3>
 
-<p id="223">
+<p id="229">
 If OpenSSL needs to be installed on macOS, the steps are as follows:
 </p>
 <ol>
-<li id="224">
+<li id="230">
 Download the appropriate Mac Ports installer
 from <a href="https://www.macports.org/install.php">https://www.macports.org/install.php</a>.
 </li>
-<li id="225">
+<li id="231">
 Run the file (with .pkg extension).
 </li>
-<li id="226">
+<li id="232">
 Open Terminal and type:
-<pre id="227">
+<pre id="233">
       $ sudo port install openssl +universal
 </pre>
-<p id="228">
+<p id="234">
 Unless you already have Xcode installed, there will a popup that gives
 you three choices:
 </p>
 <ul>
-<li id="229">
+<li id="235">
 <b>Get Xcode</b>: you will be directed to the App store to download
 Xcode, which is quite large (~4.5GB).
 </li>
-<li id="230">
+<li id="236">
 <b>Not Now</b>: nothing will be download and the installation of
 OpenSSL will fail.
 </li>
-<li id="231">
+<li id="237">
 <b>Install</b>: only the command line Xcode compilers will be
 installed, and the download seems to be quite small (it is hard to
 determine the exact size but it happens fairly quickly).
 </li>
 </ul>
-<p id="232">
+<p id="238">
 Select <b>Install</b>. When it finishes, there will be a prompt in the terminal asking 
 </p>
 
-<pre id="233">
+<pre id="239">
     The following dependencies will be installed: zlib
       Continue? [Y/n]
 </pre>
 
-<p id="234">
+<p id="240">
 Press <b>Enter</b>.
 </p>
 </li>
 </ol>
-<p id="235">
+<p id="241">
 At the end it should say <b>---&gt; No broken files found.</b> 
 and give you a Terminal prompt.
 </p>
-<p id="236">
+<p id="242">
 You will now have the 32 and 64-bit versions of the OpenSSL libraries,
 so that you can use either 32-bit Allegro CL or 64-bit Allegro CL (SMP
 or non-SMP).
 </p>
-<h3 id="237">
+<h3 id="243">
 Installing OpenSSL libraries on Windows
 </h3>
 <ol>
-<li id="238">
+<li id="244">
 <b>Update Allegro CL</b>: see <a href="operators/system/update-allegro.htm"><b>sys:update-allegro</b></a> for information on
 updating. (You can use that function or use other tools described
 on <a href="operators/system/update-allegro.htm"><b>sys:update-allegro</b></a>'s
 documentation page. You may have already updated as part of general
 installation.)
 </li>
-<li id="239">
+<li id="245">
 Follow the instructions
 at <a href="http://franz.com/ftp/pub/openssl/windows/readme.txt">http://franz.com/ftp/pub/openssl/windows/readme.txt</a>. Those instructions describe how
 to install the latest OpenSSL library on your Windows system.
@@ -1442,9 +1471,9 @@ to install the latest OpenSSL library on your Windows system.
 
 
 
-<hr><hr><h2 id="240"><a name="other-products-1">9.0 Other Allegro CL products</a></h2>
+<hr><hr><h2 id="246"><a name="other-products-1">9.0 Other Allegro CL products</a></h2>
 
-<p id="241">
+<p id="247">
 Allegro CL comes with various add-on products, such as the CLIM
 windowing system and Orblink. Some require additional licenses. Others
 are available to all users. All material needed for these products is
@@ -1453,13 +1482,13 @@ whether products can be used or not. Contact your Franz Inc. Account
 Manager for information on licensing.
 </p>
 
-<hr><hr><h2 id="242"><a name="license-file-1">10.0 Getting a license file</a></h2>
+<hr><hr><h2 id="248"><a name="license-file-1">10.0 Getting a license file</a></h2>
 
-<p id="243">
+<p id="249">
 You must have a license file to use Allegro CL and its associated
 products. The license file is not included with the distribution.
 </p>
-<p id="244">
+<p id="250">
 Professional and Enterprise customers with current maintenance
 agreements should have received an email message from Franz Inc. with
 instructions on how to obtain their license file. Express Edition
@@ -1467,13 +1496,13 @@ customers should receive such an email after providing the necessary
 information to Franz Inc. (usually by filling in a form on the Franz
 Inc. web site, franz.com).
 </p>
-<p id="245">
+<p id="251">
 The email sent by Franz Inc. gives an URL from which the license file
 can be retrieved. The email is in Mime format, with plain text and
 HTML versions. If you are able to read mail in a mime-enabled client,
 you will be able to click on the URL immediately.
 </p>
-<p id="246">
+<p id="252">
 You should retrieve the license as soon as you receive the email even
 if you have not downloaded the software. Then the license file will be
 ready when you install Allegro CL. The name of the file when it is put
@@ -1481,20 +1510,20 @@ in the Allegro directory must be
 <i>devel.lic</i>. However, you may use any name when
 retrieving, renaming when you copy it to the Allegro directory later.
 </p>
-<p id="247">
+<p id="253">
 The license file is a text file which includes encrypted text. See
 <a href="startup.htm#license-file-1">The Allegro CL
 license file</a> in <a href="startup.htm">startup.htm</a> for a sample
 (with the encrypted text much and obviously modified).
 </p>
-<p id="248">
+<p id="254">
 If you upgrade your license or purchase add-on products, you will be
 sent email with instructions for retrieving a new license
 file. Placing the new license file in the Allegro directory is all you
 must do to use the upgraded version of the new add-on products.
 </p>
 
-<p id="249">
+<p id="255">
 If you do not have a license file or the license file you have does
 not seem to license the correct product mix, <a href="introduction.htm#contacting-fi-1">contact your Account
 Manager</a> for information. (That link goes to the file
@@ -1505,10 +1534,10 @@ identify yourself and provide information on how you can be
 contacted.)
 </p>
 
-<hr><hr><h2 id="250"><a name="source-install-1">11.0 Installing source code</a></h2>
+<hr><hr><h2 id="256"><a name="source-install-1">11.0 Installing source code</a></h2>
 
 
-<p id="251">
+<p id="257">
 In order to get source code (if your license allows it), you must
 return the source code license addendum included with the
 distribution. When that addendum is received, you will be sent a new
@@ -1518,31 +1547,31 @@ charge. If you have questions about getting source code, please
 <a href="introduction.htm#contacting-fi-1">contact your
 Account Manager</a>.)
 </p>
-<p id="252">
+<p id="258">
 The sources available are:
 </p>
 <ul>
-<li id="253">
+<li id="259">
 <b>Lisp</b>: The Lisp sources to basic Common Lisp and CLOS, plus many
 Allegro provided features (jLinker, regexp v2, etc) and Common
 Graphics, the IDE, and DDE on Windows. No compiler or runtime system
 is provided.
 </li>
-<li id="254">
+<li id="260">
 <b>AODBC</b>: v2 Lisp sources.
 </li>
-<li id="255">
+<li id="261">
 <b>MYSQL</b>: sources for Allegro MySQL (see
 <a href="mysql.htm">mysql.htm</a>).
 </li>
-<li id="256">
+<li id="262">
 <b>ORACLE</b>: sources for Allegro Oracle Direct interface (see
 <a href="oracle-interface.htm">oracle-interface.htm</a>).
 </li>
-<li id="257">
+<li id="263">
 <b>CLIM</b>: Lisp sources to all of CLIM.
 </li>
-<li id="258">
+<li id="264">
 <b>ORBLink</b>: the entire sources to ORBLink (all in Lisp).
 </li>
 </ul>
@@ -1550,7 +1579,7 @@ is provided.
 
 
 
-<p id="259">
+<p id="265">
 Encrypted source files are already supplied with the Allegro CL
 distribution. Various <em>src*.sh</em> files (on UNIX and macOS)
 or <em>src*.bat</em> files (on Windows) will, on UNIX, decrypt these
@@ -1560,10 +1589,10 @@ updated license, here are the steps for installing the sources:
 </p>
 
 <ol>
-<li id="260">
+<li id="266">
 <b>On Windows</b>, open the Windows Explorer.
 </li>
-<li id="261"><b>On Windows</b>, find the Allegro directory in the explorer (it
+<li id="267"><b>On Windows</b>, find the Allegro directory in the explorer (it
 is typically <em>c:\Program Files\aclXX\</em> where XX is the release
 number without the dot (like acl101) but you may have chosen a
 different directory).
@@ -1573,7 +1602,7 @@ different directory).
 (it is typically <em>/usr/local/acl[versionrelease-number]/</em>
 but you may have chosen a different directory) in a shell.
 </li>
-<li id="262">
+<li id="268">
 <b>On Windows</b>, double-click on the files <em>srclisp.bat</em> (and
 also, if appropriate <i>srcclim.bat</i>,
 <i>srcaodbc.bat</i>, <i>srcmysql.bat</i>,
@@ -1589,7 +1618,7 @@ also, if appropriate <i>./srcclim.sh</i>,
 <i>./srcoracle.sh</i>, and
 <i>./srcorblink.sh</i>).
 </li>
-<li id="263">
+<li id="269">
 On UNIX, you are now done. The files decrypt into the src/
 subdirectory and are now available. On Windows, you will see a .zip
 file for each src*.bat file run. Clicking on the file in the Windows
@@ -1602,9 +1631,9 @@ Cygwin installed, it has an <b>unzip</b> program.
 
 
 
-<hr><hr><h2 id="264"><a name="express-install-1">12.0 The Express Edition</a></h2>
+<hr><hr><h2 id="270"><a name="express-install-1">12.0 The Express Edition</a></h2>
 
-<p id="265">
+<p id="271">
 The 10.1 Free Express Edition 
 contains the express license. Installation instructions
 for <a href="#express-inst-win">Windows</a>,
@@ -1613,58 +1642,58 @@ FreeBSD</a> are next. Installation on macOS is the same
 as for all macOS
 versions. See <a href="#macosx-install-1">Section 6.0 Installation on macOS</a>.
 </p>
-<h2 id="266">
+<h2 id="272">
 <a name="express-inst-win"></a>Express Installation for Windows
 </h2>
-<p id="267">
+<p id="273">
 Run <b>acl100express-x86.exe</b> (it may run automatically when you
 download it). The program when installed will use about 120
 Mbytes. of space.
 </p>
-<p id="268">
+<p id="274">
 The license file included. If you have license problems, please contact us
 (<a href="mailto:support@franz.com">support@franz.com</a>) for help.
 </p>
-<p id="269">
+<p id="275">
 You should download patches by selecting the <b>Rebuild images
 (download new patches first)</b> menu item on the <b>Allegro
 CL 10.1 Express</b> menu item on
 the <b>Start</b> menu. (Or use one of the other ways to download
 patches -- see <a href="operators/system/update-allegro.htm"><b>sys:update-allegro</b></a>).
 </p>
-<p id="270">
+<p id="276">
 Only the allegro.dxl image is provided. Other images can be created,
 as described in <a href="#express-images-2">Section 12.3 Creating additional Express Edition images on Windows</a>.
 </p>
 
-<h2 id="271">
+<h2 id="277">
 <a name="express-inst-linfbsd"></a>Express Installation for UNIX (Linux and FreeBSD)
 </h2>
-<p id="272">
+<p id="278">
 <b>Note for Ubuntu users</b>: you may may need to install an OS
 update. Ubuntu 11.04 (and likely later) does not contain 32bit
 compatability libraries and so 32-bit Allegro CL requires special
-action. See <a href="#ubuntu32-fix">Section 4.1 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
+action. See <a href="#ubuntu32-fix">Section 4.2 Getting 32-bit Allegro CL to run on 64-bit Ubuntu</a> for more
 information.
 </p>
-<p id="273">
+<p id="279">
 When installed, Allegro CL Express will use about 210 Mbytes of space.
 </p>
 <ol>
-<li id="274">
+<li id="280">
 If you already have <b>bunzip2</b> installed, skip to the next step.
 If you do not have <b>bunzip2</b> and want to use our version, then
 download it and make it executable. We assume it was downloaded to
 <b>/tmp</b>:
-<pre id="275">
+<pre id="281">
 % chmod 755 /tmp/bunzip2
 </pre>
 </li>
-<li id="276">
+<li id="282">
 We assume you downloaded <b>acl82express-[platform].bz2</b> ([platform] names the platform -- linux-x86 or freebsd), to <b>/tmp</b> and
 that you wish to install into <b>/usr/local/acl82express</b> (modify
 the command as necessary for other locations):
-<pre id="277">
+<pre id="283">
 For Linux:
 
 % bunzip2 &lt; /tmp/acl82express-linux-x86.bz2 | (cd /usr/local; tar xf -)
@@ -1675,25 +1704,25 @@ For freebsd:
 </pre>
 </li>
 
-<li id="278">
+<li id="284">
 Get available patches (see <a href="operators/system/update-allegro.htm"><b>sys:update-allegro</b></a>).
 </li>
 </ol>
 
-<h2 id="279">
+<h2 id="285">
 <a name="express-inst-mac"></a>Express Installation for macOS
 </h2>
-<p id="280">
+<p id="286">
 Installation on macOS is the same
 as for all macOS
 versions. See <a href="#macosx-install-1">Section 6.0 Installation on macOS</a>.
 </p>
 
 
-<h2 id="281">
+<h2 id="287">
 Information on Allegro CL Express
 </h2>
-<p id="282">
+<p id="288">
 The Express Edition, available for Windows, FreeBSD, Linux, and macOS
 (for Intel processors), is provided free of charge so that potential
 users may gain experience using Allegro CL and some add-ons before
@@ -1705,10 +1734,10 @@ information here. If there is a conflict between the information on
 the Web site and the information given here, the information on the
 Web site is correct.
 </p>
-<p id="283">
+<p id="289">
 CLIM and Allegro Composer are not available with Allegro CL Express.
 </p>
-<p id="284">
+<p id="290">
 To obtain an Express Edition, you fill out an information form on the
 Franz Inc. web site. Then, on Windows, you download a self-installing
 executable while on UNIX and UNIX-like platforms, you download a
@@ -1717,15 +1746,15 @@ Windows and UNIX, the installation also obtains the license file
 needed to run the software (you must be connected to the internet
 during installation).
 </p>
-<p id="285">
+<p id="291">
 The Express Edition must be
 downloaded. The Windows version does not include the documentation
 (but instead links to the documentation on the Web site).
 </p>
 
-<hr><h2 id="286"><a name="express-license-2">12.1 Information on the Express license</a></h2>
+<hr><h2 id="292"><a name="express-license-2">12.1 Information on the Express license</a></h2>
 
-<p id="287">
+<p id="293">
 Because there were many problems with downloading license files (many
 associated with firewalls, proxies, and the like), we have a new
 license scheme: you get a license with the download and that license
@@ -1739,22 +1768,22 @@ version of Express of a way to get a new license.
 
 
 
-<hr><h2 id="288"><a name="express-linux-ide-2">12.2 Running the IDE in Allegro CL Express on Linux</a></h2>
+<hr><h2 id="294"><a name="express-linux-ide-2">12.2 Running the IDE in Allegro CL Express on Linux</a></h2>
 
-<p id="289">
+<p id="295">
 To use the IDE on Linux, just as on Windows, you invoke the allegro or
 allegro-express executable. The associated image includes the IDE and
 starts it when Allegro CL is started. You do this also with Allegro CL
 Express on Linux on x86 processors.
 </p>
-<p id="290">
+<p id="296">
 But in Allegro CL Professional and Enterprise, you can also start a
 non-IDE image (alisp or mlisp) and load the IDE and call <a href="operators/ide/start-ide.htm"><b>ide:start-ide</b></a> (as described in
 <a href="cgide.htm">cgide.htm</a>). This second method does not work in
 Allegro CL Express Edition. To use the IDE, you must use the
 <b>allegro-express</b> executable/image.
 </p>
-<p id="291">
+<p id="297">
 Thus, you start Allegro CL in Emacs with the Emacs function
 <b>fi:common-lisp</b> (see <a href="startup.htm#acl-as-emacs-subprocess-1">Running Lisp as a subprocess of
 Emacs</a> in <a href="startup.htm">startup.htm</a>). When you are asked
@@ -1766,15 +1795,15 @@ does.
 
 
 
-<hr><h2 id="292"><a name="express-images-2">12.3 Creating additional Express Edition images on Windows</a></h2>
+<hr><h2 id="298"><a name="express-images-2">12.3 Creating additional Express Edition images on Windows</a></h2>
 
-<p id="293">
+<p id="299">
 To make the downloadable file as small as possible, on Windows we have
 only included one Allegro CL image, <b>allegro-express.exe</b>, one that
 includes the IDE and is in International "ANSI" mode (case insensitive
 upper, as opposed to case sensitive lower of "Modern" images).
 </p>
-<p id="294">
+<p id="300">
 The other images which are commonly found in an Allegro CL
 installation are:
 </p>
@@ -1820,14 +1849,14 @@ Modern base Lisp image, 8-bit characters (not available with express)
 </td>
 </tr>
 </table>
-<p id="295">
+<p id="301">
 To build one of the available above images (the 8-bit images are
 unavailable) see <b>readme.txt</b> in the distribution directory.
 </p>
 
 
 
-<hr><hr><h2 id="296"><a name="student-install-1">13.0 The Student Edition</a></h2>
+<hr><hr><h2 id="302"><a name="student-install-1">13.0 The Student Edition</a></h2>
 
 
 
@@ -1836,7 +1865,7 @@ unavailable) see <b>readme.txt</b> in the distribution directory.
 
 
 
-<p id="297">
+<p id="303">
 The Student Edition, available for Windows, FreeBSD, Linux, and macOS
 (for Intel processors), is available for sale at
 the <a href="https://secure.franz.com/store/home">Franz Store</a>. It
@@ -1852,16 +1881,16 @@ the Web site and the information given here, the information on the
 Web site is correct.
 </p>
 
-<p id="298">
+<p id="304">
 When you purchase a Student Edition, you will receive an email with
 information on retrieving a license (see
 <a href="#license-file-1">Section 10.0 Getting a license file</a>) and information on
 downloading. 
 </p>
-<h3 id="299">
+<h3 id="305">
 Documentation not included
 </h3>
-<p id="300">
+<p id="306">
 To reduce the download time, the documentation is not included in the
 Student Edition download. The documentation is available at <a href="http://franz.com/support/documentation/">http://franz.com/support/documentation/</a>. There
 are links on that page allowing you to download the documentation if
@@ -1870,22 +1899,22 @@ accessing documentation. These automatically link to the version on
 the Website unless the documentation is downloaded.
 </p>
 
-<hr><h2 id="301"><a name="student-installation-2">13.1 Information on installing the Student Edition</a></h2>
+<hr><h2 id="307"><a name="student-installation-2">13.1 Information on installing the Student Edition</a></h2>
 
 
 
-<p id="302">
+<p id="308">
 Here are the installation steps for the student Edition in brief:
 </p>
 
 <ol>
-<li id="303">
+<li id="309">
 <b>Get the license file</b>. See
 <a href="#license-file-1">Section 10.0 Getting a license file</a>. You can install
 without getting a license file but you cannot use the product without
 a license file. 
 </li>
-<li id="304">
+<li id="310">
 <b>Download the software</b>. Information on downloading should have
 been sent to you when you purchased the Student Edition. 
 If you bought a FreeBSD or Linux version, the files
@@ -1910,7 +1939,7 @@ desktop, and the file for Windows will be downloaded into the
 <b><i>c:\temp\</i></b> folder.
 
 </li>
-<li id="305">
+<li id="311">
 
 <b>Decide where you wish to install the Allegro Directory.</b> On
 UNIX, the typical location is
@@ -1935,7 +1964,7 @@ you like.
 </li>
 
 
-<li id="306">
+<li id="312">
 <b>Linux and FreeBSD: uncompress and untar the distribution file.</b> 
 Enter this
 command in <b><i>/usr/tmp/</i></b> (or wherever the downloaded files
@@ -1946,19 +1975,19 @@ are):
 
 
 
-<pre id="307">
+<pre id="313">
 % ./bunzip2 &lt; acl101student.bz2 | (cd /usr/local; tar xf -)
 </pre>
 
 
-<p id="308">
+<p id="314">
 <b>macOS: run the dmg file</b>. Find
 the <b>acl101student.dmg</b>
 image and double click on it.  It will open the <i>dmg</i> file and
 mount the disk image.
 </p>
 
-<p id="309">
+<p id="315">
 <b>Windows: run the exe file</b>. Double click on it
 if using the Windows Explorer. Execute it if at a Command Prompt or a
 DOS prompt. Follow the instructions that appear.
@@ -1966,7 +1995,7 @@ DOS prompt. Follow the instructions that appear.
 
 </li>
 
-<li id="310">
+<li id="316">
 
 <b>Copy the license file into [Allegro directory]/devel.lic</b>.  The
 license file you obtained in step one above should be copied into the
@@ -1974,11 +2003,11 @@ Allegro directory and its name should be changed to
 <i>devel.lic</i>. 
 </li>
 
-<li id="311">
+<li id="317">
 <b>Install Emacs off the web (optional)</b>. See
 <a href="#install-emacs-1">Section 7.0 Installing Emacs from the web</a> for details.
 </li>
-<li id="312">
+<li id="318">
 <b>Start Lisp and run sys:update-allegro</b>: patches (correcting bugs
 or providing new features) are released for Allegro CL regularly. For
 normal usage, we recommend that you update regularly, including
@@ -1989,12 +2018,12 @@ evaluating <code>(sys:update-allegro)</code>. See <a href="operators/system/upda
 </li>
 </ol>
 
-<p id="313">
+<p id="319">
 If you get an error when starting Allegro CL on Linux, it may be the
-SELinux problem. See <a href="#selinux-2">Section 4.2 Allegro CL may have problems starting up when run on SELinux</a> for more
+SELinux problem. See <a href="#selinux-2">Section 4.3 Allegro CL may have problems starting up when run on SELinux</a> for more
 information.
 </p>
-<p id="314">
+<p id="320">
 Somewhat more verbose instructions are available in
 <a href="#install-unix-1">Section 4.0 Notes for installation of Allegro CL on UNIX (including Linux)</a> for Linux and FreeBSD;
 in <a href="#macosx-install-1">Section 6.0 Installation on macOS</a> for macOS; and

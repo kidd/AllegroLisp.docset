@@ -1,4 +1,4 @@
-<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="acldoc-styles.css" type="text/css"><title>Miscellaneous Functionality</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/miscellaneous.htm">10.0 version</a></td></tr></table><h1 id="2">Miscellaneous Functionality</h1><p id="3">This document contains the following sections:</p><a href="#misc-intro-1">1.0 Introduction</a><br><a href="#fasl-read-write-1">2.0 The fasl reader/writer</a><br><a href="#extensions-1">3.0 Miscellaneous extensions</a><br><a href="#pll-file-1">4.0 Creating and using pll files</a><br><a href="#md5-1">5.0 MD5, SHA*, HMAC, RC4, and other message digest support</a><br><a href="#base64-1">6.0 Base64 support</a><br><a href="#encrypt-1">7.0 Support for encryption</a><br>&nbsp;&nbsp;&nbsp;<a href="#blowfish-2">7.1 Support for Blowfish encryption</a><br>&nbsp;&nbsp;&nbsp;<a href="#rsa-2">7.2 Support for rsa encryption</a><br><a href="#gzip-1">8.0 Support for gzip and bzip compression and decompression</a><br><a href="#pam-1">9.0 PAM support in Allegro Common Lisp</a><br>&nbsp;&nbsp;&nbsp;<a href="#pam-conversations-2">9.1 PAM conversation functions</a><br><a href="#asdf-1">10.0 asdf support in Allegro CL</a><br><a href="#tar-1">11.0 tar support in Allegro CL</a><br><a href="#coverage-1">12.0 Coverage analysis in Allegro CL</a><br><a href="#format-checking-1">13.0 Checking format forms during compilation</a><br><a href="#heap-walking-1">14.0 Heap walkers in Allegro CL</a><br><a href="#json-rpc-1">15.0 The JSON-RPC API</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-server-ops-2">15.1 JSON-RPC server operators and variables</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-client-ops-2">15.2 JSON-RPC client operators and variables</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-stream-trans-2">15.3 JSON-RPC built-in stream transport</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-aserve-trans-2">15.4 JSON-RPC built-in allegroserve transport</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-new-trans-2">15.5 JSON-RPC: how to add a new transport method</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-example-2">15.6 JSON-RPC: examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-index-2">15.7 JSON-RPC: functionality index</a><br><hr><hr><h2 id="4"><a name="misc-intro-1">1.0 Introduction</a></h2>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"> <meta http-equiv="content-type" content="text/html; charset=UTF-8"> <link rel="stylesheet" href="acldoc-styles.css" type="text/css"><title>Miscellaneous Functionality</title></head><body><table border="0" width="100%" cellpadding="1" cellspacing="0"><tr><td colspan="2" bgcolor="#00FFFF"><table border="0" cellpadding="5" cellspacing="3"><tr><td align="left" bgcolor="#00FFFF"><a href="contents.htm"><b>ToC</b></a></td><td align="left" bgcolor="#00FFFF"><a href="introduction.htm"><b>DocOverview</b></a></td><td align="left" bgcolor="#00FFFF"><a href="cgide.htm"><b>CGDoc</b></a></td><td align="left" bgcolor="#00FFFF"><a href="release-notes.htm"><b>RelNotes</b></a></td><td align="left" bgcolor="#00FFFF"><a href="http://www.franz.com/support/faq/"><b>FAQ</b></a></td><td align="left" bgcolor="#00FFFF"><a href="index.htm"><b>Index</b></a></td><td align="left" bgcolor="#00FFFF"><a href="permuted-index.htm"><b>PermutedIndex</b></a></td></tr></table></td><td align="right"><b>Allegro CL version 10.1</b><br><small><a href="introduction.htm#updates-s">Unrevised from 10.0 to 10.1.</a></small><br><a href="http://www.franz.com/support/documentation/10.0/doc/miscellaneous.htm">10.0 version</a></td></tr></table><h1 id="2">Miscellaneous Functionality</h1><p id="3">This document contains the following sections:</p><a href="#misc-intro-1">1.0 Introduction</a><br><a href="#fasl-read-write-1">2.0 The fasl reader/writer</a><br><a href="#extensions-1">3.0 Miscellaneous extensions</a><br><a href="#pll-file-1">4.0 Creating and using pll files</a><br><a href="#md5-1">5.0 MD5, SHA*, HMAC, RC4, and other message digest support</a><br><a href="#base64-1">6.0 Base64 support</a><br><a href="#encrypt-1">7.0 Support for encryption</a><br>&nbsp;&nbsp;&nbsp;<a href="#blowfish-2">7.1 Support for Blowfish encryption</a><br>&nbsp;&nbsp;&nbsp;<a href="#rsa-2">7.2 Support for rsa encryption</a><br><a href="#gzip-1">8.0 Support for gzip and bzip compression and decompression</a><br><a href="#pam-1">9.0 PAM support in Allegro Common Lisp</a><br>&nbsp;&nbsp;&nbsp;<a href="#pam-conversations-2">9.1 PAM conversation functions</a><br><a href="#asdf-1">10.0 asdf support in Allegro CL</a><br><a href="#tar-1">11.0 tar support in Allegro CL</a><br><a href="#coverage-1">12.0 Coverage analysis in Allegro CL</a><br><a href="#format-checking-1">13.0 Checking format forms during compilation</a><br><a href="#heap-walking-1">14.0 Heap walkers in Allegro CL</a><br><a href="#json-rpc-1">15.0 The JSON-RPC API</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-server-ops-2">15.1 JSON-RPC server operators and variables</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-client-ops-2">15.2 JSON-RPC client operators and variables</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-stream-trans-2">15.3 JSON-RPC built-in stream transport</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-aserve-trans-2">15.4 JSON-RPC built-in allegroserve transport</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-new-trans-2">15.5 JSON-RPC: how to add a new transport method</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-example-2">15.6 JSON-RPC: examples</a><br>&nbsp;&nbsp;&nbsp;<a href="#jsonrpc-index-2">15.7 JSON-RPC: functionality index</a><br><a href="#web-sock-1">16.0 Websocket API</a><br>&nbsp;&nbsp;&nbsp;<a href="#websock-server-func-2">16.1 Websocket server functionality</a><br>&nbsp;&nbsp;&nbsp;<a href="#websock-client-func-2">16.2 Websocket client functionality</a><br>&nbsp;&nbsp;&nbsp;<a href="#ws-event-handlers-2">16.3 Websocket event handlers</a><br>&nbsp;&nbsp;&nbsp;<a href="#websock-general-func-2">16.4 Websocket general functionality</a><br>&nbsp;&nbsp;&nbsp;<a href="#websock-classes-2">16.5 Websocket classes</a><br><hr><hr><h2 id="4"><a name="misc-intro-1">1.0 Introduction</a></h2>
 
 <p id="5">This document describes functionality that does not naturally fit
 in any of the other overview documents.</p>
@@ -73,7 +73,7 @@ naturally fit elsewhere in the documentation. We only provide brief
 information in the table. Please follow the link to the documentation
 page for a full description.</p>
 
-<table BORDER="1" CELLSPACING="1" CELLPADDING="7" WIDTH="638">
+<table BORDER="1" CELLSPACING="1" CELLPADDING="7" WIDTH="95%">
   <tr>
     <td WIDTH="33%" VALIGN="TOP"><b>Name</b></td>
     <td WIDTH="33%" VALIGN="TOP"><b>Arguments</b></td>
@@ -286,7 +286,7 @@ file with an image, to find out which <em>pll</em> file is used with
 an image, and to use strings in the <em>pll</em> file.
 </p>
 
-<table BORDER="1" CELLSPACING="1" CELLPADDING="7" WIDTH="638">
+<table BORDER="1" CELLSPACING="1" CELLPADDING="7" WIDTH="95%">
   <tr>
     <td WIDTH="33%" VALIGN="TOP"><b>Name</b></td>
     <td WIDTH="33%" VALIGN="TOP"><b>Arguments</b></td>
@@ -3101,6 +3101,1039 @@ To call a json-rpc method with named args:
 </ul>
 
 
+
+
+
+
+<hr><hr><h2 id="586"><a name="web-sock-1">16.0 Websocket API</a></h2>
+
+<p id="587">
+The websocket module implements the websocket protocol specified in
+<a href="https://tools.ietf.org/html/rfc6455">RFC 6455</a>. This
+document describes the Lisp functionality that support this
+specification; it is not a websocket tutorial by any measure. Many
+websocket tutorials are available on the web; the Mozilla Firefox
+tutorials
+at <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API">https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API</a>
+is one starting point.
+</p>
+<p id="588">
+This module implements both a server and a client API. Extensions are
+not implemented at this time, but protocol and extension negotiation
+is performed in the initial handshake, and extension data are parsed
+and transmitted correctly in websocket message payloads.
+</p>
+<p id="589">
+The module is included in a running Lisp with the expression
+</p>
+
+<pre id="590">
+(require :websocket)
+</pre>
+
+<p id="591">
+The module requires the AllegroServe component and includes the
+necessary calls to <a href="../ansicl/dictentr/provider.htm"><b>require</b></a>. Most of the documented symbols
+are in the <code>net.aserve</code> package. Symbols specific to
+the client API are in the <code>net.aserve.client</code>
+package.
+</p>
+
+
+<hr><h2 id="592"><a name="websock-server-func-2">16.1 Websocket server functionality</a></h2>
+
+<p id="593">
+The main server operator is <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a>.
+</p>
+
+<hr><h3 id="594"><a name="publish-websocket-op-bookmarkxx"></a>publish-websocket</h3><h3 id="595">Function</h3><h4 id="596">Package: net.aserve</h4>
+
+<p id="597"><b>Arguments: </b><i>
+</i>&amp;key <i>path host port content-type format server authorizer timeout hook headers remove on-open on-message on-close on-error on-ping on-pong on-idle on-fragment</i> (<i>class</i> (quote net.aserve:websocket-message-entity))<i> contract-class plist protocols extensions origins debug ply close-timeout fragment-size ping-interval</i><i>
+</i></p>
+
+<p id="598">
+This function enables a websocket service in an AllegroServe web server.
+It has many keyword arguments, which are divided into three groups:
+</p>
+<h3 id="599">
+Group 1: Arguments that are passed unchanged to the
+AllegroServe publish function
+</h3>
+<ul>
+<li id="600">
+<b><i>path</i></b>
+</li>
+<li id="601">
+<b><i>host</i></b>
+</li>
+<li id="602">
+<b><i>port</i></b>
+</li>
+<li id="603">
+<b><i>content-type</i></b>
+</li>
+<li id="604">
+<b><i>format</i></b>
+</li>
+<li id="605">
+<b><i>server</i></b>
+</li>
+<li id="606">
+<b><i>authorizer</i></b>
+</li>
+<li id="607">
+<b><i>timeout</i></b>
+</li>
+<li id="608">
+<b><i>hook</i></b>
+</li>
+<li id="609">
+<b><i>headers</i></b>
+</li>
+<li id="610">
+<b><i>remove</i></b>
+</li>
+</ul>
+<p id="611">
+See the description of the AllegroServe publish function
+in <a href="aserve/aserve.html">aserve/aserve.html</a>
+for details on these arguments.
+</p>
+<h3 id="612">
+Group 2: This group of arguments specify event handlers for messages
+</h3>
+<p id="613">
+The value of these arguments must be <code>nil</code> or
+an appropriate function which accepts the specified number of
+arguments. See <a href="#ws-event-handlers-2">Section 16.3 Websocket event handlers</a> for
+further information. The names of these arguments
+are: <b><i>on-open</i></b>,
+<b><i>on-message</i></b>,
+<b><i>on-close</i></b>, <b><i>on-error</i></b>,
+<b><i>on-ping</i></b>, <b><i>on-pong</i></b>,
+<b><i>on-idle</i></b>,
+and <b><i>on-fragment</i></b>.
+</p>
+<h3 id="614">
+Group 3: Other arguments specific to this function
+</h3>
+<ul>
+<li id="615">
+<b><i>class</i></b>: this argument allows a programmer
+to specialize the websocket methods on a class specific to an
+application. If specified, this argument must be the name of a
+subclass of <a href="miscellaneous.htm#websocket-entity-class-bookmarkxx"><code>websocket-entity</code></a>. The
+default (and only implemented class) is <a href="miscellaneous.htm#websocket-message-entity-class-bookmarkxx"><code>websocket-message-entity</code></a>.
+</li>
+<li id="616">
+<b><i>contract-class</i></b>: when specified, this
+argument must be the name of a subclass of <a href="miscellaneous.htm#websocket-message-server-contract-class-bookmarkxx"><code>websocket-message-server-contract</code></a>.
+</li>
+<li id="617">
+<b><i>plist</i></b>: this argument is stored unchanged in
+the entity instance. It allows a program to pass private data to
+request handlers.
+</li>
+<li id="618">
+<b><i>protocols</i></b>: a list of protocol names
+supported by this endpoint. Each item in the list can be a string or
+symbol naming a protocol. In the current implementation, protocol
+names are compared in the initial handshake as specified in the
+protocol, but there is currently no other effect on the behavior.
+</li>
+<li id="619">
+<b><i>extensions</i></b>: a list of extension names
+supported by this endpoint. Each item in the list can be a string or
+symbol naming an extension available in all protocols. An item can
+also be a list where the first element is a protocol name and the
+remaining elements are extensions that apply only to this protocol.
+<p id="620">
+In the current implementation, extension names are compared in the 
+initial handshake as specified in the protocol, but there is
+currently no other effect on the behavior.
+</p>
+</li>
+<li id="621">
+<b><i>origins</i></b>: a list of strings that are
+matched to the standard HTTP Origin header in the initial HTTP
+request. If the list is empty, all requests are accepted, and the
+Origin header is ignored. If the list begins with a string, then
+requests without an Origin header are accepted, requests with an
+Origin header are accepted if the header value matches one in the
+list. If the list begins with the keyword <code>:only</code>,
+then only requests with a matching Origin header are accepted.
+</li>
+<li id="622">
+<b><i>debug</i></b>: a reserved argument for support
+interactions with customer problems. Do not specify a value unless
+instructed to do so as part or resolving a problem report.
+</li>
+<li id="623">
+<b><i>ply</i></b>: this argument specifies the threading
+behavior of the websocket support code. The value can be:
+<ul>
+<li id="624">
+<code>nil</code>, 0, or 1: all server code in response to
+a websocket connection runs in the AllegroServe worker thread that
+handled the initial connection. The default value is 1.
+</li>
+<li id="625">
+2: Receiving of messages and event handlers run in the AllegroServe
+worker thread that handled the initial connection. Outgoing messages
+are queued and sent by a separate thread.
+</li>
+<li id="626">
+3: Currently the same as 2.
+</li>
+</ul>
+</li>
+<li id="627">
+<a name="arg-close-timeout"></a>
+<b><i>close-timeout</i></b>: the default timeout value
+for <a href="miscellaneous.htm#close-websocket-op-bookmarkxx"><b>close-websocket</b></a> (a positive real
+number, units are seconds). The default is 5 meaning 5 seconds.
+</li>
+<li id="628">
+<a name="arg-fragment-size"></a>
+<b><i>fragment-size</i></b>:
+when <code>nil</code>, there is no automatic fragmentation
+of messages. If specified, the value must be a positive integer and
+messages are fragmented to this maximum fragment size. Text fragment
+size may vary to accomodate complete UTF-8 octet sequences in each
+fragment (this behavior is not required by the websocket
+specification, but should make life much easier between Allegro CL
+clients and Allegro CL servers. Binary fragments will all be the
+specified size, except possibly the last one.
+</li>
+<li id="629">
+<a name="arg-ping-interval"></a>
+<b><i>ping-interval</i></b>: when
+non-<code>nil</code> the value must be a positive real
+number. Ping messages will be sent repeatedly with an interval
+approximately that number of seconds. The application payload in the
+message will be the string
+<pre id="630">
+       "Heartbeat ping at xxxxxxx"
+</pre>
+<p id="631">
+where <i>xxxxxx</i> is the ISO 8601 time string for the time when the
+ping was sent.
+</p>
+</li>
+</ul>
+
+<hr>
+
+
+
+<hr><h2 id="632"><a name="websock-client-func-2">16.2 Websocket client functionality</a></h2>
+
+<p id="633">
+Symbols naming websocket client functionality are in
+the <code>net.aserve.client</code> package.
+</p>
+
+<hr><h3 id="634"><a name="open-websocket-op-bookmarkxx"></a>open-websocket</h3><h3 id="635">Function</h3><h4 id="636">Package: net.aserve.client</h4>
+
+<p id="637"><b>Arguments: </b><i>
+</i>&amp;key <i>cookies proxy proxy-basic-authorization basic-authorization digest-authorization query user-agent ssl on-open on-message on-close on-error on-ping on-pong on-idle on-fragment headers class ply protocols extensions close-timeout fragment-size ping-interval</i><i>
+</i></p>
+
+<p id="638">
+This function opens a websocket connection to a server to enable
+sending and receiving websocket messages. The function operates in two
+modes depending on the specified threading behavior, as specified by
+the <i>ply</i> keyword argument. In one mode the
+function returns a websocket instance that is used subsequently to
+perform operations on this connection.  In the other mode, the
+function returns only after the connection is terminated; all
+application actions take place in event handlers.
+</p>
+<p id="639">
+The arguments to this function are divided into four groups: 
+</p>
+<ol>
+<li id="640">
+Arguments passed unchanged to the aserve
+function <b>make-http-client-request</b>. See <a href="#owg1">here</a>.
+</li>
+<li id="641">
+Event handling arguments. See <a href="#owg2">here</a>.
+</li>
+<li id="642">
+Arguments specific to this function. See <a href="#owg3">here</a>.
+</li>
+<li id="643">
+Arguments that are the same as arguments to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a>. 
+See <a href="#owg4">here</a>.
+</li>
+</ol>
+<h3 id="644">
+<a name="owg1"></a>Group 1: arguments passed to make-http-client-request
+</h3>
+<p id="645">
+This first argument group, which includes the following arguments, are
+passed unchanged to the AllegroServe
+function <b>net.aserve-client:make-http-client-request</b>:
+</p>
+<ul>
+<li id="646">
+<b><i>cookies</i></b>
+</li>
+<li id="647">
+<b><i>proxy</i></b>
+</li>
+<li id="648">
+<b><i>proxy-basic-authorization</i></b>
+</li>
+<li id="649">
+<b><i>basic-authorization</i></b>
+</li>
+<li id="650">
+<b><i>digest-authorization</i></b>
+</li>
+<li id="651">
+<b><i>query</i></b>
+</li>
+<li id="652">
+<b><i>user-agent</i></b>
+</li>
+<li id="653">
+<b><i>ssl</i></b>
+</li>
+</ul>
+<h3 id="654">
+<a name="owg2"></a>Group 2: arguments which specify event handlers
+</h3>
+<p id="655">
+The second group of arguments are event handlers. The value of these
+arguments must be <code>nil</code> or an appropriate
+function which accepts the specified number of
+arguments. See <a href="#ws-event-handlers-2">Section 16.3 Websocket event handlers</a> for
+further information. The names of these arguments
+are: <b><i>on-open</i></b>,
+<b><i>on-message</i></b>,
+<b><i>on-close</i></b>, <b><i>on-error</i></b>,
+<b><i>on-ping</i></b>, <b><i>on-pong</i></b>,
+<b><i>on-idle</i></b>,
+and <b><i>on-fragment</i></b>.
+</p>
+<h3 id="656">
+<a name="owg3"></a>Group 3: argument specific to this function
+</h3>
+<ul>
+<li id="657">
+<b><i>headers</i></b>: these headers are appended to the
+websocket protocol headers.
+</li>
+<li id="658">
+<b><i>class</i></b>: when specified, this argument must
+be the name of a subclass of <a href="miscellaneous.htm#websocket-message-client-contract-class-bookmarkxx"><code>websocket-message-client-contract</code></a>.
+</li>
+<li id="659">
+<b><i>ply</i></b>: this argument specifies the threading
+behavior of the websocket support code. The value must be a positive
+integer or <code>nil</code>. The arguments are interpreted
+as follows:
+<ul>
+<li id="660">
+0 or <code>nil</code>: the function call
+returns only after the connection is terminated. All application
+actions take place in event handlers. Receiving and sending of
+messages takes place in the same thread.
+</li>
+<li id="661">
+1: the function returns as soon as a
+connection is established. The function returns a
+<a href="miscellaneous.htm#websocket-contract-class-bookmarkxx"><code>websocket-contract</code></a>
+instance that is used as an argument in subsequent websocket calls by
+the application. One new thread is created to handle both receiving
+and sending of messages.
+</li>
+<li id="662">
+2 (the default): same as the value 1 except two threads are created,
+one to receive messages and one to send messages.
+</li>
+<li id="663">
+3 or larger: reserved for future use.
+</li>
+</ul>
+</li>
+<li id="664">
+<b><i>protocols</i></b>: specifies the desired
+protocol. The value may be <code>nil</code> (the default),
+a string, a symbol, or a list of strings or symbols. The
+value <code>nil</code> means the client is requesting the
+basic unmodified websocket protocol. When given a
+non-<code>nil</code> value, the server will choose the
+first supported protocol in the list.  If the server was unable to
+negotiate a protocol, the connection is closed and an error is
+signaled. The negotiated protocol is queried with
+<a href="miscellaneous.htm#websocket-protocol-op-bookmarkxx"><b>websocket-protocol</b></a>.
+</li>
+<li id="665">
+<b><i>extensions</i></b>: this argument specifies the
+desired extensions. Value must be a list of strings or symbols.  If
+the server returns extensions not in this list, the connection is
+closed and an error is signaled. Otherwise, the negotiated extensions
+are a subset of the requested extensions. The negotiated extensions
+are queried with <a href="miscellaneous.htm#websocket-extensions-op-bookmarkxx"><b>websocket-extensions</b></a>.
+</li>
+</ul>
+<h3 id="666">
+<a name="owg4"></a>Group 4: arguments identical to publish-websocket arguments
+</h3>
+<p id="667">
+These final arguments are the same as the identically named arguments
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a>. See that
+description for details. For each argument, there is a link to the
+description in the <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> documentation.
+</p>
+<ul>
+<li id="668">
+<b><i>close-timeout</i></b>: see
+the <i>close-timeout</i> argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> described
+<a href="#arg-close-timeout">here</a>.
+</li>
+<li id="669">
+<b><i>fragment-size</i></b>: see
+the <i>fragment-size</i> argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> described
+<a href="#arg-fragment-size">here</a>.
+</li>
+<li id="670">
+<b><i>ping-interval</i></b>: see
+the <i>ping-interval</i> argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> described
+<a href="#arg-ping-interval">here</a>.
+</li>
+</ul>
+
+<hr>
+
+<hr><h3 id="671"><a name="close-websocket-op-bookmarkxx"></a>close-websocket</h3><h3 id="672">Generic Function</h3><h4 id="673">Package: net.aserve.client</h4>
+
+<p id="674"><b>Arguments: </b><i>
+contract
+</i>&amp;key <i>code message wait</i><i>
+</i></p>
+<p id="675">
+This generic function can be specialized on the contract argument. A
+method is predefined on the class <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a>. This
+method begins and possibly waits for the completion of a closing
+handshake on the websocket connection specified by contract.
+</p>
+<p id="676">
+The keyword arguments are:
+</p>
+<ul>
+<li id="677">
+<b><i>code</i></b>: this argument specifies the status
+code that will be sent to the server. The default value is 1000.
+</li>
+<li id="678">
+<b><i>message</i></b>: this argument must
+be <code>nil</code> or a string. If a string, the text is
+included in the closing message sent to the server.  The text is
+transmitted as UTF-8 octets. The text is truncated if the UTF-8
+representation is longer than 125 octets.
+</li>
+<li id="679">
+<b><i>wait</i></b>: if <code>nil</code>, the
+function initiates the closing handshake and
+returns <code>nil</code>. If an integer greater than zero,
+wait that many seconds for completion; if not completed in that
+interval, return 2 values, <code>nil</code>
+and <code>:timeout</code>. If another
+non-<code>nil</code> value, then wait indefinitely (such
+values are <b>not</b> recommended). If omitted, the default is the
+<i>close-timeout</i> value in the contract.
+</li>
+</ul>
+<p id="680">
+On successful completion, the method returns two values: the status code
+sent by the server and a string containing the message text if any.
+</p>
+
+<hr>
+
+
+
+<hr><h2 id="681"><a name="ws-event-handlers-2">16.3 Websocket event handlers</a></h2>
+
+<p id="682">
+Event handlers are application functions (written by the application
+programmer) called by a websocket implementation when specified
+messages arrive at the endpoint. The functions are specified by the
+corresponding keyword arguments to
+<a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a>
+and <a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a>.
+</p>
+<p id="683">
+The first argument is in all cases the instance of
+<a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a>
+specific to the current websocket connection.
+</p>
+
+
+<hr><h3 id="684"><a name="on-message-op-bookmarkxx"></a>on-message</h3><h3 id="685">Function</h3><h4 id="686">Package: net.aserve</h4>
+
+<p id="687"><b>Arguments: </b><i>
+contract data ext
+</i></p>
+
+<p id="688">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-message</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-message</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+<p id="689">
+This function is called when an endpoint receives a complete message.
+When the message is a text message,
+the <b><i>data</i></b>
+and <b><i>ext</i></b> arguments
+are <code>nil</code> or strings.
+</p>
+<p id="690">
+When the message is a binary message,
+the <b><i>data</i></b>
+and <b><i>ext</i></b> arguments
+are <code>nil</code> or arrays of octets.
+</p>
+
+<hr>
+
+<hr><h3 id="691"><a name="on-fragment-op-bookmarkxx"></a>on-fragment</h3><h3 id="692">Function</h3><h4 id="693">Package: net.aserve</h4>
+
+<p id="694"><b>Arguments: </b><i>
+contract message-contract in-message ftype appdata ext
+</i></p>
+
+<p id="695">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-fragment</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-fragment</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+
+<p id="696">
+When this function is specified, it is called for every message
+fragment.
+</p>
+<p id="697">
+If the function returns <code>nil</code>, it must
+return <code>nil</code> for every fragment in a single
+message, and the fragments are collected and handled as if no function
+was specified. The function is used simply to note the passing of
+fragments. The <a href="miscellaneous.htm#on-message-op-bookmarkxx"><b>on-message</b></a> function is called
+after the final fragment has been collected.
+</p>
+<p id="698">
+If the function returns a non-<code>nil</code> value,
+it must return a non-<code>nil</code> value for every
+fragment in a single message.  The function is responsible for
+collecting and handling the content of the message.  The
+<a href="miscellaneous.htm#on-message-op-bookmarkxx"><b>on-message</b></a> function is not
+called for that message.
+</p>
+<p id="699">
+If the <a href="miscellaneous.htm#on-fragment-op-bookmarkxx"><b>on-fragment</b></a> function returns an
+inconsistent sequence of values, the results are unspecified.
+</p>
+<p id="700">
+The <b><i>in-message</i></b> argument is one of the
+keywords <code>:text</code> or <code>:binary</code>.
+</p>
+<p id="701">
+The <b><i>ftype</i></b> argument is one of the
+keywords <code>:only</code>, <code>:first</code>,
+<code>:continuation</code>, or <code>:final</code>.
+</p>
+<p id="702">
+The <b><i>appdata</i></b>
+and <b><i>ext</i></b> arguments are
+always <code>nil</code> or arrays
+of <code>(unsigned-byte 8)</code> elements. Note that when
+the <i>ftype</i> is <code>:text</code>, these
+arrays may begin or end with incomplete UTF-8 multi-octet
+characters.
+</p>
+
+<hr>
+
+<hr><h3 id="703"><a name="on-close-op-bookmarkxx"></a>on-close</h3><h3 id="704">Function</h3><h4 id="705">Package: net.aserve</h4>
+
+<p id="706"><b>Arguments: </b><i>
+contract code data-string
+</i></p>
+
+<p id="707">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-close</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-close</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+<p id="708">
+This function is called when a close message is received.
+</p>
+
+<hr>
+
+
+<hr><h3 id="709"><a name="on-ping-op-bookmarkxx"></a>on-ping</h3><h3 id="710">Function</h3><h4 id="711">Package: net.aserve</h4>
+
+<p id="712"><b>Arguments: </b><i>
+contract data-usb8
+</i></p>
+
+<p id="713">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-ping</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-ping</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+<p id="714">
+This function is called when a ping message is received and is called
+before the required pong response is sent, and its behavior does not
+affect the standard response.
+</p>
+
+<hr>
+    
+<hr><h3 id="715"><a name="on-pong-op-bookmarkxx"></a>on-pong</h3><h3 id="716">Function</h3><h4 id="717">Package: net.aserve</h4>
+
+<p id="718"><b>Arguments: </b><i>
+contract data-usb8
+</i></p>
+
+<p id="719">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-pong</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-pong</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+<p id="720">
+This function is called when a pong message is received.
+</p>
+
+<hr>
+
+
+
+<hr><h3 id="721"><a name="on-error-op-bookmarkxx"></a>on-error</h3><h3 id="722">Function</h3><h4 id="723">Package: net.aserve</h4>
+
+<p id="724"><b>Arguments: </b><i>
+contract
+</i></p>
+
+<p id="725">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-error</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-error</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+<p id="726">
+This function is called when an endpoint detects an error that causes an
+attempt to send an abnormal termination message. The message may or may
+not actually be sent.
+</p>
+
+<hr>
+
+
+<hr><h3 id="727"><a name="on-open-op-bookmarkxx"></a>on-open</h3><h3 id="728">Function</h3><h4 id="729">Package: net.aserve</h4>
+
+<p id="730"><b>Arguments: </b><i>
+contract
+</i></p>
+
+<p id="731">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-open</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-open</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+
+<p id="732">
+This function is called when a connection is first opened after a 
+successful handshake.
+</p>
+<p id="733">
+In a client application where <a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> is called
+with <b><i>ply</i></b>
+value <code>nil</code> or 0, this is the where the
+application would normally begin operation on the client side (unless
+it expected an unsolicited server message instead).
+</p>
+
+<hr>
+
+<hr><h3 id="734"><a name="on-idle-op-bookmarkxx"></a>on-idle</h3><h3 id="735">Function</h3><h4 id="736">Package: net.aserve</h4>
+
+<p id="737"><b>Arguments: </b><i>
+contract
+</i></p>
+
+<p id="738">
+This function is not already defined. The application writer must
+define a function which accepts the arguments listed and returns
+values as specified in the function description below. The symbol
+naming the function (which need not be <b>on-idle</b>) or the
+associated function object should be passed as the value of
+the <b><i>on-idle</i></b> keyword argument
+to <a href="miscellaneous.htm#publish-websocket-op-bookmarkxx"><b>publish-websocket</b></a> and/or
+<a href="miscellaneous.htm#open-websocket-op-bookmarkxx"><b>open-websocket</b></a> (different
+functions can be specified for each).
+</p>
+<p id="739">
+This function is called when the websocket handler is setup to handle 
+receiving and sending in the same thread. The function is called when there
+is no incoming message and the send queue is empty.
+</p>
+<p id="740">
+If the function returns <code>nil</code>, the handler
+enters an operating system wait state waiting for input from the other
+endpoint. If the function return a non-<code>nil</code>
+value, the handler polls for input or queued messages to send.
+</p>
+
+<hr>
+
+
+
+
+<hr><h2 id="741"><a name="websock-general-func-2">16.4 Websocket general functionality</a></h2>
+
+<p id="742">
+Symbols naming general websocket functionality are in
+the <code>net.aserve</code> package.
+</p>
+
+<hr><h3 id="743"><a name="websocket-send-op-bookmarkxx"></a>websocket-send</h3><h3 id="744">Generic Function</h3><h4 id="745">Package: net.aserve</h4>
+
+<p id="746"><b>Arguments: </b><i>
+contract message
+</i>&amp;key <i>ext fragment-size</i><i>
+</i></p>
+
+<p id="747">
+There is a predefined method on this generic function specialized on 
+<code>(websocket-message-contract t)</code>:
+</p>
+<p id="748">
+That method sends a websocket message to the other endpoint and
+returns the keyword <code>:text</code>
+or <code>:binary</code> depending on the message type.
+</p>
+<p id="749">
+The <b><i>contract</i></b> argument must be an open
+websocket connection instance.
+</p>
+<p id="750">
+If the <b><i>message</i></b> argument is a string, the
+message type is <code>:text</code>.  If
+the <b><i>message</i></b> argument is an array of
+octets, the message type is <code>:binary</code>. Any other
+type causes an error to be signaled.
+</p>
+<p id="751">
+The <b><i>ext</i></b> argument when specified must be
+the same type as the <i>message</i> argument. The data
+is included in the message payload and will be presented as extension
+data to the receiver. The current implementation in Allegro CL does not
+support any named extensions.
+</p>
+<p id="752">
+The <b><i>fragment-size</i></b> argument if specified
+overrides the fragment-size default for the connection. Messages
+above this size will be sent in fragments of approximately the
+specified size. If the <i>ext</i> argument is specified,
+any fragment-size specification is ignored; the message is always sent
+in a single payload.
+</p>
+
+<hr>
+
+<hr><h3 id="753"><a name="websocket-ping-op-bookmarkxx"></a>websocket-ping</h3><h3 id="754">Generic Function</h3><h4 id="755">Package: net.aserve</h4>
+
+<p id="756"><b>Arguments: </b><i>
+contract
+</i>&amp;key <i>message</i><i>
+</i></p>
+
+<p id="757">
+The predefined method specialized on <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a>
+does the following:
+</p>
+<p id="758">
+The method sends a ping message to the other
+endpoint. The <b><i>message</i></b> argument must be a
+string or <code>nil</code>.
+</p>
+
+
+<hr>
+
+<hr><h3 id="759"><a name="websocket-pong-op-bookmarkxx"></a>websocket-pong</h3><h3 id="760">Generic Function</h3><h4 id="761">Package: net.aserve</h4>
+
+<p id="762"><b>Arguments: </b><i>
+contract
+</i>&amp;key <i>message</i><i>
+</i></p>
+
+<p id="763">
+The predefined method specialized on <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a>
+does the following:
+</p>
+<p id="764">
+The method sends a pong message to the other
+endpoint. The <b><i>message</i></b> argument must be a
+string or <code>nil</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="765"><a name="websocket-close-op-bookmarkxx"></a>websocket-close</h3><h3 id="766">Generic Function</h3><h4 id="767">Package: net.aserve</h4>
+
+<p id="768"><b>Arguments: </b><i>
+contract
+</i>&amp;key <i>code message</i><i>
+</i></p>
+
+<p id="769">
+The predefined method specialized on (<a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a> t)
+does the following:
+</p>
+<p id="770">
+This method sends a close message to the other endpoint.  If
+a <b><i>code</i></b> is specified it should be a valid
+websocket close code. The <b><i>message</i></b> argument
+must be a string or <code>nil</code>.
+</p>
+<p id="771">
+Once the close message is sent, subsequent send calls are ignored.
+</p>
+
+<hr>
+
+<hr><h3 id="772"><a name="websocket-state-op-bookmarkxx"></a>websocket-state</h3><h3 id="773">Generic Function</h3><h4 id="774">Package: net.aserve</h4>
+
+<p id="775"><b>Arguments: </b><i>
+contract
+</i></p>
+
+<p id="776">
+The predefined method specialized on <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a> does
+the following:
+</p>
+<p id="777">
+The method queries the state of the connection, returning one of the
+keywords <code>:connecting</code>, <code>:open</code>, 
+<code>:closing</code>,
+or <code>:closed</code>.
+</p>
+
+<hr>
+
+<hr><h3 id="778"><a name="websocket-protocol-op-bookmarkxx"></a>websocket-protocol</h3><h3 id="779">Generic Function</h3><h4 id="780">Package: net.aserve</h4>
+
+<p id="781"><b>Arguments: </b><i>
+contract
+</i></p>
+
+<p id="782">
+The predefined method specialized on <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a> does
+the following:
+</p>
+<p id="783">
+Returns a symbol or a string naming the protocol negotiated for the
+connection idenified by <b><i>contract</i></b>. Returns
+<code>nil</code> if the negotiated result is the
+unmodified websocket protocol.
+</p>.
+
+<hr>
+
+<hr><h3 id="784"><a name="websocket-extensions-op-bookmarkxx"></a>websocket-extensions</h3><h3 id="785">Generic Function</h3><h4 id="786">Package: net.aserve</h4>
+
+<p id="787"><b>Arguments: </b><i>
+contract
+</i></p>
+
+<p id="788">
+The predefined method specialized on <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a> does
+the following:
+</p>
+<p id="789">
+this method returns a list of strings or symbols naming the extensions
+negotiated for this connection.
+</p>
+
+<hr>
+
+<hr><h3 id="790"><a name="websocket-send-fragment-op-bookmarkxx"></a>websocket-send-fragment</h3><h3 id="791">Generic Function</h3><h4 id="792">Package: net.aserve</h4>
+
+<p id="793"><b>Arguments: </b><i>
+contract fq
+</i>&amp;key <i>begin final data ext</i><i>
+</i></p>
+
+<p id="794">
+The predefined method specialized on (<a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a> t)
+does the following:
+</p>
+<p id="795">
+The method allows an application to exert more control over the
+fragmentation of a message.  Each call prepares a separate message
+fragment.  Any number of fragments can be prepared before any
+sending takes place.  As soon as the first fragment is sent, no
+other messages will be sent (except for ping or pong) until the
+final fragment is sent.
+</p>
+<p id="796">
+The <b><i>fq</i></b> argument must
+be <code>nil</code> for the first call of a fragmented
+message. The value returned is an opaque handle used as
+the <i>fq</i> argument in subsequent calls.
+</p>
+<p id="797">
+The keyword arguments have the following effect:
+</p>
+<ul>
+<li id="798">
+When <b><i>begin</i></b> is <code>t</code>,
+begin sending this or previously prepared fragments.  Once the first
+fragment is sent, new messages will be queued and will wait until the
+final fragment in this message is sent.
+</li>
+<li id="799">
+When <b><i>final</i></b> is <code>t</code>,
+the fragment is the last, and no more will be accepted.
+</li>
+</ul>
+<p id="800">
+When <b><i>fq</i></b> is <code>nil</code>,
+return new fq, required in subsequent calls.
+</p>
+
+<p id="801">
+The <b><i>data</i></b>
+and <b><i>ext</i></b> arguments are as in
+<a href="miscellaneous.htm#websocket-send-op-bookmarkxx"><b>websocket-send</b></a>.  Note that this
+function allows an application to scatter extension data among
+fragments.
+</p>
+<p id="802">
+This method may be called with a <code>nil</code> value
+for <i>data</i> and <i>begin</i> specified
+as <code>t</code>.
+</p>
+
+<hr>
+
+
+
+
+
+<hr><h2 id="803"><a name="websock-classes-2">16.5 Websocket classes</a></h2>
+
+<p id="804">
+Websocket classes are named by symbols in
+the <code>net.aserve</code> package.
+</p>
+
+<hr><h3 id="805"><a name="websocket-entity-class-bookmarkxx"></a>websocket-entity</h3><h3 id="806">Class</h3><h4 id="807">Package: net.aserve</h4>
+
+<p id="808">
+The superclass of any websocket implementation for
+AllegroServe. Currently the only subclass is <a href="miscellaneous.htm#websocket-message-entity-class-bookmarkxx"><code>websocket-message-entity</code></a>.
+</p>
+
+
+<hr>
+
+<hr><h3 id="809"><a name="websocket-message-entity-class-bookmarkxx"></a>websocket-message-entity</h3><h3 id="810">Class</h3><h4 id="811">Package: net.aserve</h4>
+
+<p id="812">
+This class implements the server part of the websocket protocol
+specified in RFC 6455.
+</p>
+
+<hr>
+
+<hr><h3 id="813"><a name="websocket-contract-class-bookmarkxx"></a>websocket-contract</h3><h3 id="814">Class</h3><h4 id="815">Package: net.aserve</h4>
+
+<p id="816">
+The superclass on any any websocket contract classes. Currently the
+only subclass is <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a>.
+</p>
+
+<hr>
+
+<hr><h3 id="817"><a name="websocket-message-contract-class-bookmarkxx"></a>websocket-message-contract</h3><h3 id="818">Class</h3><h4 id="819">Package: net.aserve</h4>
+
+<p id="820">
+An instance of this superclass is the opaque handle for all websocket
+operations in both server and client applications. This class
+implements the websocket protocol specified in RFC 6455.
+</p>
+
+<hr>
+
+<hr><h3 id="821"><a name="websocket-message-client-contract-class-bookmarkxx"></a>websocket-message-client-contract</h3><h3 id="822">Class</h3><h4 id="823">Package: net.aserve</h4>
+
+<p id="824">
+The subclass of <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a> used
+by client code.
+</p>
+
+<hr>
+
+<hr><h3 id="825"><a name="websocket-message-server-contract-class-bookmarkxx"></a>websocket-message-server-contract</h3><h3 id="826">Class</h3><h4 id="827">Package: net.aserve</h4>
+<p id="828">
+The subclass of <a href="miscellaneous.htm#websocket-message-contract-class-bookmarkxx"><code>websocket-message-contract</code></a> used
+by server code.
+</p>
+
+<hr>
 
 
 
